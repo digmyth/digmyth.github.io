@@ -61,6 +61,62 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-04-装饰器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/26/python-04-装饰器/" class="article-date">
+  <time datetime="2017-01-26T10:08:26.000Z" itemprop="datePublished">2017-01-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/26/python-04-装饰器/">python-04-装饰器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>装饰器</li>
+</ul>
+<p>Python装饰器，英文<code>decorator</code>, 以被装饰函数作为参数对其装饰。这里会用到函数，我们可以像使用变量一样使用函数，函数有对象一致特性。</p>
+<ul>
+<li>函数可以被赋值给其它变量</li>
+<li>函数可以内部再定义函数</li>
+<li>函数可以作为参数传递给另外一个函数</li>
+<li>函数可以直接返回给外层函数<h3 id="简单函数进行装饰"><a href="#简单函数进行装饰" class="headerlink" title="简单函数进行装饰"></a>简单函数进行装饰</h3>有这么一个函数<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def hello():</div><div class="line">    return &apos;hello world&apos;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>我们想在不修改原函数的情况下，让函数返回特定标签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def maketag(func):</div><div class="line">    def wrapper():</div><div class="line">        return &quot;&lt;h&gt;&quot; + func() + &quot;&lt;/h&gt;&quot;</div><div class="line">    return wrapper</div></pre></td></tr></table></figure></p>
+<p>我们定义了一个函数maketag(),该函数有一个参数func,这个参数必须是一个函数，内部又定义了一个wrapper()函数，并直接返回给maketag()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; hello = maketag(hello)  # 将 hello 函数传给 maketag</div><div class="line">&gt;&gt;&gt; hello()</div><div class="line">&apos;&lt;h&gt;hello world&lt;/h&gt;&apos;</div></pre></td></tr></table></figure></p>
+<p>上面我们把最初hello数传给maketag()函数并将返回赋值给变量hello,此时调用hello得到我们想要的结果。<br><code>注意：</code> maketag()返回赋值给hello,hello函数本身还存在，但函数名引用己经变为了maketag返回函数的名称wrapper,不在是原来的hello,验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">In [6]: a = maketag(hello)</div><div class="line">In [8]: a.__name__</div><div class="line">Out[8]: &apos;wrapper&apos;</div><div class="line"></div><div class="line">In [9]: hello = maketag(hello)</div><div class="line">In [10]: hello.__name__</div><div class="line">Out[10]: &apos;wrapper&apos;</div></pre></td></tr></table></figure></p>
+<p>总结一下：为了增强原函数hello的功能定义了一个maketag函数，它接收一个函数作为参数，maketag返回一个新的函数赋值给一个变量hello,然后hello可直接调用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/26/python-04-装饰器/" data-id="ciy1dipkc000e6ojxsw2xe76e" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-python-03-02-函数" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/23/python-03-02-函数/" class="article-date">
@@ -91,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ciy1bn9pt000c39jxkw4iq9jt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ciy1dipkb000c6ojxu1lz2a6g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -153,7 +209,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciy1bn9pp000a39jx46dces1q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciy1dipk9000a6ojx24ni9yh0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -166,7 +222,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/17/hello-world/" class="article-date">
-  <time datetime="2017-01-17T09:33:00.775Z" itemprop="datePublished">2017-01-17</time>
+  <time datetime="2017-01-17T10:25:27.265Z" itemprop="datePublished">2017-01-17</time>
 </a>
     
   <div class="article-category">
@@ -202,7 +258,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/17/hello-world/" data-id="ciy1bn9pj000339jxdunq05f6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/17/hello-world/" data-id="ciy1dipk200036ojxszbxooet" class="article-share-link">Share</a>
       
       
     </footer>
@@ -242,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="ciy1bn9pv000e39jx76cf3ef8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="ciy1dipkd000g6ojxy8vkg2go" class="article-share-link">Share</a>
       
       
     </footer>
@@ -282,7 +338,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制/" data-id="ciy1bn9pn000839jxbx1lshq6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制/" data-id="ciy1dipk600086ojxrk74rm4w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -353,7 +409,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础/" data-id="ciy1bn9pl000639jxx3668wlx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础/" data-id="ciy1dipk400066ojxdlxbigku" class="article-share-link">Share</a>
       
       
     </footer>
@@ -395,7 +451,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ciy1bn9p9000039jxf3sti7mr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ciy1dipjr00006ojxbdsch8pe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -450,7 +506,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ciy1bn9px000g39jx306eefwk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ciy1dipkf000i6ojxztlpmb1t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -497,6 +553,10 @@ Age_of_name = &quot;xx&quot;  #类名
       <ul>
         
           <li>
+            <a href="/2017/01/26/python-04-装饰器/">python-04-装饰器</a>
+          </li>
+        
+          <li>
             <a href="/2017/01/23/python-03-02-函数/">python-03-02-函数</a>
           </li>
         
@@ -510,10 +570,6 @@ Age_of_name = &quot;xx&quot;  #类名
         
           <li>
             <a href="/2017/01/15/python-orm-原理篇/">python-orm-原理篇</a>
-          </li>
-        
-          <li>
-            <a href="/2017/01/15/python-02-流程控制/">python_02_流程控制</a>
           </li>
         
       </ul>
