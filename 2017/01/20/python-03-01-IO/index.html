@@ -23,7 +23,7 @@ OS 对象
 IO 编程文件对象文件对象用于访问系统文件的接口，文件系统是计算机存储数据，组织数据的方式。计算机文件是存储在设备中的一段数据流，归属于文件系统管理之下。是计算机中由OS管理的具有名字的存储区域，对Linux而言，文件可以被看作字节序列。
 序列化的对象才能存储的文件系统中，非字节序列化的数据不能存储在文件系统中的。
 文件对象接口不仅用于访问普通文件，还可以访问套接字">
-<meta property="og:updated_time" content="2017-01-15T15:07:08.000Z">
+<meta property="og:updated_time" content="2017-01-17T09:30:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-03-01-IO">
 <meta name="twitter:description" content="目录
@@ -119,7 +119,7 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
 <p>bufsize:定义输出缓存<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">0 表示无输出缓存,禁用缓冲</div><div class="line">1 表示使用缓冲，只缓冲一行数据</div><div class="line">负数表示使用系统默认设置</div><div class="line">2+之后的正数表示使用指定大小缓冲</div></pre></td></tr></table></figure></p>
 <p>open(‘/var/log/message’, ‘r’)<br>简单模式，首次打开的文件指针于文件首部<br>r:  只读<br>w:  新建文件或文件首部覆盖写入。<br>a: 尾部追加，即打开时指针处于文件尾部</p>
 <p>在模式后使用<code>+</code>表示同时支输入输出操作<br><code>r+</code>  <code>w+</code> <code>a+</code></p>
-<p>在模式后附加    <code>b</code> 夫示二进制方式打开<br><code>rb</code> <code>wb+</code></p>
+<p>在模式后附加    <code>b</code> 表示二进制方式打开<br><code>rb</code> <code>wb+</code></p>
 <p>创建一个文件对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt; f = open(&apos;/etc/fstab&apos;, &apos;r&apos;)</div><div class="line">In [3]: type(f)</div><div class="line">Out[3]: _io.TextIOWrapper</div></pre></td></tr></table></figure></p>
 <p>只读模式打开一个不存在文件是不可以的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">In [1]: f = open(&apos;/tmp/abc&apos;, &apos;r&apos;)</div><div class="line">---------------------------------------------------------------------------</div><div class="line">FileNotFoundError                         Traceback (most recent call last)</div><div class="line">&lt;ipython-input-1-07bb2dbd474f&gt; in &lt;module&gt;()</div><div class="line">----&gt; 1 f = open(&apos;/tmp/abc&apos;, &apos;r&apos;)</div><div class="line"></div><div class="line">FileNotFoundError: [Errno 2] No such file or directory: &apos;/tmp/abc&apos;</div></pre></td></tr></table></figure></p>
 <p>以写模式打开一个不存在文件，这个文件会自动被创建<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">In [3]: import os</div><div class="line">In [7]: os.path.isfile(&apos;/tmp/f1&apos;)</div><div class="line">Out[7]: False</div><div class="line"></div><div class="line">In [8]: f = open(&apos;/tmp/f1&apos;, &apos;w+&apos;)</div><div class="line"></div><div class="line">In [9]: os.path.isfile(&apos;/tmp/f1&apos;)</div><div class="line">Out[9]: True</div></pre></td></tr></table></figure></p>
@@ -133,7 +133,7 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cixytni1y000a2hjxutntxas8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciy1be6fe0008zwjxyjau36u5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -152,7 +152,7 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
     </a>
   
   
-    <a href="/2017/01/15/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/01/17/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">Hello World</div>
     </a>
@@ -206,7 +206,7 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
           </li>
         
           <li>
-            <a href="/2017/01/15/hello-world/">Hello World</a>
+            <a href="/2017/01/17/hello-world/">Hello World</a>
           </li>
         
           <li>
