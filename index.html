@@ -61,10 +61,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-python-04-装饰器" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-python-20-01-web开发" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/26/python-04-装饰器/" class="article-date">
-  <time datetime="2017-01-26T10:08:26.000Z" itemprop="datePublished">2017-01-26</time>
+    <a href="/2017/05/01/python-20-01-web开发/" class="article-date">
+  <time datetime="2017-05-01T13:00:14.000Z" itemprop="datePublished">2017-05-01</time>
 </a>
     
   <div class="article-category">
@@ -79,7 +79,473 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/26/python-04-装饰器/">python-04-装饰器</a>
+      <a class="article-title" href="/2017/05/01/python-20-01-web开发/">python-20-01-web开发</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>HTTP协议简介</li>
+<li>HTML简介</li>
+<li>WSGI接口</li>
+<li>使用web框架</li>
+<li>使用模板</li>
+</ul>
+<p>web开发属于B/S架构，在此架构下客户端只需要浏览器，应用程序的逻辑和数据都保存在服务器，浏览器只需要请求服务器，获取web页面，并把web页面展示给用户即可。web页面具有极强的交互性，是用html编写，展示能力突出，服务端升级后客户端不做任何更改，使得B/S架构流行起来</p>
+<p>web开发经历了几个阶段：</p>
+<ul>
+<li>静态web页面：由文本编辑器直接编辑生成静态html页面, 如果要修改web页面的内容，就需要再次编辑html源文件(早期)</li>
+<li><p>CGI : 由于静态web页面无法与用户交互，比如用户填写的注册表单，静态web页面就无法处理。要处理用户发送的动态数    据，出现了用C/C++编写的Common Gateway Interface，简称 CGI。 </p>
+</li>
+<li><p>ASP/JSP/PHP: 由于web应用修改频繁，C/C++这样的低级语言不适合web开发，这时与html结合紧密，开发效率高的脚本语言流行起来，取代了CGI,  ASP是微软推出的用VBScript脚本编程的web开发技术，而 JSP是 Java来编写脚本，PHP则就是开源脚本语言。</p>
+</li>
+<li>MVC 为了解决直接用脚本语言嵌入html 导致的可维护性差的问题，web应用也引入了Model-View-Controller的模式来简化web开发，ASP发展为 ASP.NET， JSP/PHP也有一大堆MVC框架</li>
+</ul>
+<p>目前，web开发技术仍在快速发展，异步开发与新的MVVM前端技术层出不穷。 </p>
+<h2 id="HTTP协议简介"><a href="#HTTP协议简介" class="headerlink" title="HTTP协议简介"></a>HTTP协议简介</h2><p>在Web应用中，服务器把网页传给浏览器，实际上就是把网页的HTML代码发送给浏览器，让浏览器显示出来。而浏览器和服务器之间的传输协议是HTTP，所以：</p>
+<p>HTML是一种用来定义网页的文本，会HTML，就可以编写网页；</p>
+<p>HTTP是在网络上传输HTML的协议，用于浏览器和服务器的通信。</p>
+<p>我们需要在浏览器中调试我们的Web应用，建议安装安装Google的Chrome浏览器，它提供了一套适合Web开发的调试工具。</p>
+<p>安装好Chrome浏览器后，打开Chrome，在菜单中选择“视图”，“开发者”，“开发者工具”，就可以显示开发者工具：#^#</p>
+<p>Elements显示网页的结构，Network显示浏览器和服务器的通信。我们点Network，确保第一个小红灯亮着，Chrome就会记录所有浏览器和服务器之间的通信：#^#</p>
+<p>当我们在地址栏输入www.sina.com.cn时，浏览器将显示新浪的首页。在这个过程中，浏览器都干了哪些事情呢？通过Network的记录，我们就可以知道。在Network中，定位到第一条记录，点击，右侧将显示Request Headers，点击右侧的view source，我们就可以看到浏览器发给新浪服务器的请求：#^#</p>
+<p>最主要的头两行分析如下，第一行：</p>
+<p>GET / HTTP/1.1<br>GET表示一个读取请求，将从服务器获得网页数据，/表示URL的路径，URL总是以/开头，/就表示首页，最后的HTTP/1.1指示采用的HTTP协议版本是1.1。目前HTTP协议的版本就是1.1，但是大部分服务器也支持1.0版本，主要区别在于1.1版本允许多个HTTP请求复用一个TCP连接，以加快传输速度。</p>
+<p>从第二行开始，每一行都类似于Xxx: abcdefg：</p>
+<p>Host: www.sina.com.cn<br>表示请求的域名是www.sina.com.cn。如果一台服务器有多个网站，服务器就需要通过Host来区分浏览器请求的是哪个网站。</p>
+<p>继续往下找到Response Headers，点击view source，显示服务器返回的原始响应数据：#^#</p>
+<p>HTTP响应分为Header和Body两部分（Body是可选项），我们在Network中看到的Header最重要的几行如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">200 OK</div></pre></td></tr></table></figure></p>
+<p>200表示一个成功的响应，后面的OK是说明。失败的响应有404 Not Found：网页不存在，500 Internal Server Error：服务器内部出错，等等。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Content-Type: text/html</div></pre></td></tr></table></figure></p>
+<p>Content-Type指示响应的内容，这里是text/html表示HTML网页。请注意，浏览器就是依靠Content-Type来判断响应的内容是网页还是图片，是视频还是音乐。浏览器并不靠URL来判断响应的内容，所以，即使URL是<code>http://example.com/abc.jpg</code>，它也不一定就是图片。</p>
+<p>HTTP响应的Body就是HTML源码，我们在菜单栏选择“视图”，“开发者”，“查看网页源码”就可以在浏览器中直接查看HTML源码：#^#<br>当浏览器读取到新浪首页的HTML源码后，它会解析HTML，显示页面，然后，根据HTML里面的各种链接，再发送HTTP请求给新浪服务器，拿到相应的图片、视频、Flash、JavaScript脚本、CSS等各种资源，最终显示出一个完整的页面。所以我们在Network下面能看到很多额外的HTTP请求。</p>
+<p>HTTP请求</p>
+<p>跟踪了新浪的首页，我们来总结一下HTTP请求的流程：</p>
+<p> 步骤1：浏览器首先向服务器发送HTTP请求，请求包括：</p>
+<p>方法：GET还是POST，GET仅请求资源，POST会附带用户数据；</p>
+<p>路径：/full/url/path；</p>
+<p>域名：由Host头指定：Host: www.sina.com.cn</p>
+<p>以及其他相关的Header；</p>
+<p>如果是POST，那么请求还包括一个Body，包含用户数据。</p>
+<p> 步骤2：服务器向浏览器返回HTTP响应，响应包括：</p>
+<p>响应代码：200表示成功，3xx表示重定向，4xx表示客户端发送的请求有错误，5xx表示服务器端处理时发生了错误；</p>
+<p>响应类型：由Content-Type指定；</p>
+<p>以及其他相关的Header；</p>
+<p>通常服务器的HTTP响应会携带内容，也就是有一个Body，包含响应的内容，网页的HTML源码就在Body中。</p>
+<p> 步骤3：如果浏览器还需要继续向服务器请求其他资源，比如图片，就再次发出HTTP请求，重复步骤1、2。</p>
+<p>Web采用的HTTP协议采用了非常简单的请求-响应模式，从而大大简化了开发。当我们编写一个页面时，我们只需要在HTTP请求中把HTML发送出去，不需要考虑如何附带图片、视频等，浏览器如果需要请求图片和视频，它会发送另一个HTTP请求，因此，一个HTTP请求只处理一个资源。</p>
+<p>HTTP协议同时具备极强的扩展性，虽然浏览器请求的是<code>http://www.sina.com.cn/</code>的首页，但是新浪在HTML中可以链入其他服务器的资源，比如<code>&lt;img src=&quot;http://i1.sinaimg.cn/home/2013/1008/U8455P30DT20131008135420.png&quot;&gt;</code>，从而将请求压力分散到各个服务器上，并且，一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web，简称WWW。</p>
+<p>HTTP格式</p>
+<p>每个HTTP请求和响应都遵循相同的格式，一个HTTP包含Header和Body两部分，其中Body是可选的。</p>
+<p>HTTP协议是一种文本协议，所以，它的格式也非常简单。HTTP GET请求的格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">GET /path HTTP/1.1</div><div class="line">Header1: Value1</div><div class="line">Header2: Value2</div><div class="line">Header3: Value3</div><div class="line">每个Header一行一个，换行符是\r\n。</div><div class="line"></div><div class="line">HTTP POST请求的格式：</div><div class="line"></div><div class="line">POST /path HTTP/1.1</div><div class="line">Header1: Value1</div><div class="line">Header2: Value2</div><div class="line">Header3: Value3</div><div class="line"></div><div class="line">body data goes here...</div><div class="line">当遇到连续两个\r\n时，Header部分结束，后面的数据全部是Body。</div><div class="line"></div><div class="line">HTTP响应的格式：</div><div class="line"></div><div class="line">200 OK</div><div class="line">Header1: Value1</div><div class="line">Header2: Value2</div><div class="line">Header3: Value3</div><div class="line"></div><div class="line">body data goes here...</div></pre></td></tr></table></figure></p>
+<p>HTTP响应如果包含body，也是通过\r\n\r\n来分隔的。请再次注意，Body的数据类型由Content-Type头来确定，如果是网页，Body就是文本，如果是图片，Body就是图片的二进制数据。</p>
+<p>当存在Content-Encoding时，Body数据是被压缩的，最常见的压缩方式是gzip，所以，看到Content-Encoding: gzip时，需要将Body数据先解压缩，才能得到真正的数据。压缩的目的在于减少Body的大小，加快网络传输。</p>
+<p>  要详细了解HTTP协议，推荐“HTTP: The Definitive Guide”一书,中文译本：HTTP权威指南</p>
+<h2 id="HTML简介"><a href="#HTML简介" class="headerlink" title="HTML简介"></a>HTML简介</h2><h2 id="WSGI接口"><a href="#WSGI接口" class="headerlink" title="WSGI接口"></a>WSGI接口</h2><p>了解了HTTP协议和HTML文档，我们其实就明白了一个Web应用的本质就是：</p>
+<p>浏览器发送一个HTTP请求；</p>
+<p>服务器收到请求，生成一个HTML文档；</p>
+<p>服务器把HTML文档作为HTTP响应的Body发送给浏览器；</p>
+<p>浏览器收到HTTP响应，从HTTP Body取出HTML文档并显示。</p>
+<p>所以，最简单的Web应用就是先把HTML用文件保存好，用一个现成的HTTP服务器软件，接收用户请求，从文件中读取HTML，返回。Apache、Nginx、Lighttpd等这些常见的静态服务器就是干这件事情的。</p>
+<p>如果要动态生成HTML，就需要把上述步骤自己来实现。不过，接受HTTP请求、解析HTTP请求、发送HTTP响应都是苦力活，如果我们自己来写这些底层代码，还没开始写动态HTML呢，就得花个把月去读HTTP规范。</p>
+<p>正确的做法是底层代码由专门的服务器软件实现，我们用Python专注于生成HTML文档。因为我们不希望接触到TCP连接、HTTP原始请求和响应格式，所以，需要一个统一的接口，让我们专心用Python编写Web业务。</p>
+<p>这个接口就是WSGI：Web Server Gateway Interface。</p>
+<p>WSGI接口定义非常简单，它只要求Web开发者实现一个函数，就可以响应HTTP请求。我们来看一个最简单的Web版本的“Hello, web!”：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">def application(environ, start_response):</div><div class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div><div class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</div></pre></td></tr></table></figure></p>
+<p>上面的application()函数就是符合WSGI标准的一个HTTP处理函数，它接收两个参数：</p>
+<p>environ：一个包含所有HTTP请求信息的dict对象；</p>
+<p>start_response：一个发送HTTP响应的函数。</p>
+<p>在application()函数中，调用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div></pre></td></tr></table></figure></p>
+<p>就发送了HTTP响应的Header，注意Header只能发送一次，也就是只能调用一次start_response()函数。start_response()函数接收两个参数，一个是HTTP响应码，一个是一组list表示的HTTP Header，每个Header用一个包含两个str的tuple表示。</p>
+<p>通常情况下，都应该把Content-Type头发送给浏览器。其他很多常用的HTTP Header也应该发送。</p>
+<p>然后，函数的返回值<code>b&#39;&lt;h1&gt;Hello, web!&lt;/h1&gt;&#39;</code>将作为HTTP响应的Body发送给浏览器。</p>
+<p>有了WSGI，我们关心的就是如何从environ这个dict对象拿到HTTP请求信息，然后构造HTML，通过start_response()发送Header，最后返回Body。</p>
+<p>整个application()函数本身没有涉及到任何解析HTTP的部分，也就是说，底层代码不需要我们自己编写，我们只负责在更高层次上考虑如何响应请求就可以了。</p>
+<p>不过，等等，这个application()函数怎么调用？如果我们自己调用，两个参数environ和start_response我们没法提供，返回的bytes也没法发给浏览器。</p>
+<p>所以application()函数必须由WSGI服务器来调用。有很多符合WSGI规范的服务器，我们可以挑选一个来用。但是现在，我们只想尽快测试一下我们编写的application()函数真的可以把HTML输出到浏览器，所以，要赶紧找一个最简单的WSGI服务器，把我们的Web应用程序跑起来。</p>
+<p>好消息是Python内置了一个WSGI服务器，这个模块叫wsgiref，它是用纯Python编写的WSGI服务器的参考实现。所谓“参考实现”是指该实现完全符合WSGI标准，但是不考虑任何运行效率，仅供开发和测试使用。</p>
+<p>运行WSGI服务</p>
+<p>我们先编写hello.py，实现Web应用程序的WSGI处理函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># hello.py</div><div class="line"></div><div class="line">def application(environ, start_response):</div><div class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div><div class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</div></pre></td></tr></table></figure></p>
+<p>然后，再编写一个server.py，负责启动WSGI服务器，加载application()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># server.py</div><div class="line"># 从wsgiref模块导入:</div><div class="line">from wsgiref.simple_server import make_server</div><div class="line"># 导入我们自己编写的application函数:</div><div class="line">from hello import application</div><div class="line"></div><div class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application:</div><div class="line">httpd = make_server(&apos;&apos;, 8000, application)</div><div class="line">print(&apos;Serving HTTP on port 8000...&apos;)</div><div class="line"># 开始监听HTTP请求:</div><div class="line">httpd.serve_forever()</div><div class="line">确保以上两个文件在同一个目录下，然后在命令行输入python server.py来启动WSGI服务器：</div></pre></td></tr></table></figure></p>
+<p>启动成功后，打开浏览器，输入<code>http://localhost:8000/</code>，就可以看到结果了：#^#</p>
+<p>在命令行可以看到wsgiref打印的log信息：#^#<br>如果你觉得这个Web应用太简单了，可以稍微改造一下，从environ里读取PATH_INFO，这样可以显示更加动态的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># hello.py</div><div class="line"></div><div class="line">def application(environ, start_response):</div><div class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div><div class="line">    body = &apos;&lt;h1&gt;Hello, %s!&lt;/h1&gt;&apos; % (environ[&apos;PATH_INFO&apos;][1:] or &apos;web&apos;)</div><div class="line">    return [body.encode(&apos;utf-8&apos;)]</div></pre></td></tr></table></figure></p>
+<p>你可以在地址栏输入用户名作为URL的一部分，将返回Hello, xxx!： #^#</p>
+<p>小结</p>
+<p>无论多么复杂的Web应用程序，入口都是一个WSGI处理函数。HTTP请求的所有输入信息都可以通过environ获得，HTTP响应的输出都可以通过start_response()加上函数返回值作为Body。</p>
+<p>复杂的Web应用程序，光靠一个WSGI函数来处理还是太底层了，我们需要在WSGI之上再抽象出Web框架，进一步简化Web开发。</p>
+<h2 id="使用WEB框架"><a href="#使用WEB框架" class="headerlink" title="使用WEB框架"></a>使用WEB框架</h2><h2 id="使用模板"><a href="#使用模板" class="headerlink" title="使用模板"></a>使用模板</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/01/python-20-01-web开发/" data-id="ciymyrxxw000s16jxraqldblw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-07-02-面象对象高级编程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/28/python-07-02-面象对象高级编程/" class="article-date">
+  <time datetime="2017-04-28T14:28:41.000Z" itemprop="datePublished">2017-04-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/28/python-07-02-面象对象高级编程/">python-07-02-面象对象高级编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录<br>*</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/28/python-07-02-面象对象高级编程/" data-id="ciymyrxxu000q16jxaljvm6gr" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-07-01-面象对象编程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/31/python-07-01-面象对象编程/" class="article-date">
+  <time datetime="2017-03-31T14:28:28.000Z" itemprop="datePublished">2017-03-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/31/python-07-01-面象对象编程/">python-07-01-面象对象编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录<br>*</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/03/31/python-07-01-面象对象编程/" data-id="ciymyrxxs000o16jx4mxhwpib" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-06-02-网络编程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/31/python-06-02-网络编程/" class="article-date">
+  <time datetime="2017-03-31T14:26:46.000Z" itemprop="datePublished">2017-03-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/31/python-06-02-网络编程/">python-06-02-网络编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/03/31/python-06-02-网络编程/" data-id="ciymyrxxm000m16jxtr40fmm9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-06-01-进程和线程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/03/python-06-01-进程和线程/" class="article-date">
+  <time datetime="2017-03-03T14:26:37.000Z" itemprop="datePublished">2017-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/03/python-06-01-进程和线程/">python-06-01-进程和线程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/03/03/python-06-01-进程和线程/" data-id="ciymyrxxk000k16jx33zd47ft" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-05-01-正则表达式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/25/python-05-01-正则表达式/" class="article-date">
+  <time datetime="2017-02-25T09:03:01.000Z" itemprop="datePublished">2017-02-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/25/python-05-01-正则表达式/">python-05-01-正则表达式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>基础</li>
+<li>进阶</li>
+<li>re模块</li>
+<li>分组</li>
+<li>切分字符串</li>
+<li>编译compile</li>
+<li>贪婪模式匹配</li>
+</ul>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>元字符：(Meta-Characters)是正则表达式中具有特殊意义的专用字符<br>比如：\d表示数字 \s表示空格 \w表示[a-zA-Z0-9_]大小写字母数字下划线<br>元字符表 <a href="http://www.runoob.com/regexp/regexp-metachar.html" target="_blank" rel="external">链接</a><br>字符类：又字符集，一组可以匹配[ ]中字符串的字符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">.                     # 任意单个字符</div><div class="line">[]                    # 集合内</div><div class="line">[^]                   # 集合内取反</div><div class="line">?                     # 表示前一个字符长度为0或1</div><div class="line">+                     # 表示前一个字符长度为1或1以上</div><div class="line">*                     # 表示前一个字符长度为任意，等同于?+的并集</div><div class="line">&#123;m&#125;</div><div class="line">&#123;m,n&#125;</div><div class="line">&#123;0,n&#125;</div><div class="line">&#123;m,&#125;</div><div class="line">^</div><div class="line">$</div><div class="line">pat1|pat2</div><div class="line">()         	      # 分组</div><div class="line">\b                    # 嘛意思</div><div class="line">[0-9]  \d</div><div class="line">[0-9a-zA-Z_]  \w</div><div class="line">\s         	      # 任意空白字符</div><div class="line">\nn</div><div class="line">a*?                   # 这里？使用非贪婪模式（正则表达式默认工作在贪婪模式，尽可能多的去匹配）</div><div class="line">(*|+|?|&#123;&#125;)?`          # 使用非贪婪模式</div><div class="line">match 		      # 只匹配首项以开头的，与shell中^相同</div></pre></td></tr></table></figure></p>
+<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><h2 id="re模块"><a href="#re模块" class="headerlink" title="re模块"></a>re模块</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; res = re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</div><div class="line">&gt;&gt;&gt; print(res)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;              # 没有匹配到打印为None</div><div class="line"></div><div class="line">&gt;&gt;&gt; res.group()                                                 # 匹配到时用.group()取出匹配结果 </div><div class="line">&apos;wxq&apos;</div><div class="line"></div><div class="line">&gt;&gt;&gt; &quot;I love wxq &quot;.find(&apos;wxq&apos;)</div><div class="line">7</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;.&apos;, &apos;I love digmyth.com&apos;)                       # 匹配任意单个字符，所以匹配到&quot;I&quot;</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;\.&apos;, &apos;I love digmyth.com&apos;)                      # 只匹配.需要转义</div><div class="line">&lt;_sre.SRE_Match object; span=(14, 15), match=&apos;.&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;wx.&apos;, &apos;I love wxq.com&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;\d&apos;, &apos;I love 123 wxq&apos;)                          # 匹配单个数字</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 8), match=&apos;1&apos;&gt;</div><div class="line"> </div><div class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d&apos;, &apos;I love 123 wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;123&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d.\d\d\d.\d\d\d.\d\d\d&apos;, &apos;192.168.100.10&apos;)   # 少一位匹配不到</div><div class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d.\d\d\d.\d\d\d.\d\d\d&apos;, &apos;192.168.100.100&apos;)  # 匹配到</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 15), match=&apos;192.168.100.100&apos;&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(r&apos;[aeiou]&apos;, &apos;I love wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(3, 4), match=&apos;o&apos;&gt;</div><div class="line">&gt;&gt;&gt; re.search(r&apos;[aeiouAEIOU]&apos;, &apos;I love wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</div><div class="line">&gt;&gt;&gt; re.search(r&apos;[a-z]&apos;, &apos;I love wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(2, 3), match=&apos;l&apos;&gt;</div><div class="line"> </div><div class="line">&gt;&gt;&gt; re.search(r&apos;[2-9]&apos;, &apos;I love 123  wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(8, 9), match=&apos;2&apos;&gt;</div><div class="line"> </div><div class="line">&gt;&gt;&gt; re.search(r&apos;[0-9]&apos;, &apos;I love 123  wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 8), match=&apos;1&apos;&gt;</div><div class="line">&gt;&gt;&gt; re.search(r&apos;ab&#123;3&#125;c&apos;, &apos;abbbc&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 5), match=&apos;abbbc&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;ab&#123;3,10&#125;c&apos;, &apos;abbbbbc&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 7), match=&apos;abbbbbc&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;[0-255]&apos;, &apos;188&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;1&apos;&gt;</div><div class="line">&gt;&gt;&gt; </div><div class="line">&gt;&gt;&gt; re.search(r&apos;[0-2][0-5][0-5]&apos;, &apos;188&apos;)                  # 没有匹配到</div><div class="line">&gt;&gt;&gt; </div><div class="line">&gt;&gt;&gt; re.search(r&apos;[01]\d\d|2[0-2]\d|25[0-5]&apos;, &apos;188&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 3), match=&apos;188&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5]\.&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5]))&apos;, &apos;192.168.1.1&apos;)   # 只匹配到192</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 3), match=&apos;192&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5])\.&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;)   # 匹配不到</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5]\.)&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;)   # 匹配不到</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(([01]\d\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;) # 匹配不到</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]?\d?\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;) # 匹配有误细看</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 11), match=&apos;192.168.1.1&apos;&gt;</div></pre></td></tr></table></figure>
+<p>ip地址匹配最终完美写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]?\d?\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.240.240&apos;)  # 匹配有误细看</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 14), match=&apos;192.168.240.24&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;(2[0-4]\d|25[0-5]|[0-1]?\d?\d)&apos;, &apos;192.168.240.240&apos;) # 这个写法完美</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 15), match=&apos;192.168.240.240&apos;&gt;</div></pre></td></tr></table></figure></p>
+<p>[0-255]表示的是0，1，2后跟上55<br>[0-2][0-5][0-5]只是三个占位上的数字，没有个位，百位这样的区分，当然不能匹配188了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;3&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)       # 重复</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 24), match=&apos;daemon_Ddaemon_Ddaemon_D&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;1, 5&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)    # 注意没有空格</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;1,5&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)     # 匹配到了</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 24), match=&apos;daemon_Ddaemon_Ddaemon_D&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; s = &quot;&lt;html&gt;&lt;title&gt;I love www.digmyth.com&lt;/title&gt;&lt;/html&gt;&quot;</div><div class="line">&gt;&gt;&gt; re.search(r&apos;&lt;.+?&gt;&apos;, s)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 6), match=&apos;&lt;html&gt;&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;&lt;.+&gt;&apos;, s)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 50), match=&apos;&lt;html&gt;&lt;title&gt;I love www.digmyth.com&lt;/title&gt;&lt;/html&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.findall(r&apos;\bFishC\b&apos;, &quot;FishC.com!FishC_com!(FishC)&quot;)       # 待续。#^#</div><div class="line">[&apos;FishC&apos;, &apos;FishC&apos;]</div><div class="line">&gt;&gt;&gt; </div><div class="line">&gt;&gt;&gt; re.findall(r&apos;\w&apos;, &quot;牛X工作室Love_FishC_com!)&quot;)</div><div class="line">[&apos;牛&apos;, &apos;X&apos;, &apos;工&apos;, &apos;作&apos;, &apos;室&apos;, &apos;L&apos;, &apos;o&apos;, &apos;v&apos;, &apos;e&apos;, &apos;_&apos;, &apos;F&apos;, &apos;i&apos;, &apos;s&apos;, &apos;h&apos;, &apos;C&apos;, &apos;_&apos;, &apos;c&apos;, &apos;o&apos;, &apos;m&apos;]</div></pre></td></tr></table></figure>
+<p><code>re-replace/sub</code>的例子如下<br>字符串的strip方法只能去前后空格、字符串的replace方法是字符替换、re.sub方法也是替换功能。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; name = &apos; w   x   q&apos;</div><div class="line">&gt;&gt;&gt; name.strip()</div><div class="line">&apos;w   x   q&apos;</div><div class="line">&gt;&gt;&gt; name.replace(&apos; &apos;, &apos;&apos;)</div><div class="line">&apos;wxq&apos;</div><div class="line">&gt;&gt;&gt; re.sub(&apos; &apos;, &apos;&apos;, name)</div><div class="line">&apos;wxq&apos;</div><div class="line">&gt;&gt;&gt; re.sub(&apos;wxq&apos;, &apos;love&apos;, &apos;I wxq wxq wxq&apos;, count=2)</div><div class="line">&apos;I love love wxq&apos;</div></pre></td></tr></table></figure></p>
+<h2 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h2><p>eg1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; name = re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</div><div class="line">&gt;&gt;&gt; name.group()                       # .group()打印匹配对象</div><div class="line">&apos;wxq&apos;</div></pre></td></tr></table></figure></p>
+<p>eg2:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; s = &apos;aa bb cc dd  &apos;</div><div class="line">&gt;&gt;&gt; p = re.compile(r&apos;\w+\s+\w+&apos;)       #  匹配单词空格单词这样的分组</div><div class="line">&gt;&gt;&gt; p.findall(s)                       #  匹配分为了2组</div><div class="line">[&apos;aa bb&apos;, &apos;cc dd&apos;]</div><div class="line">&gt;&gt;&gt; p = re.compile(r&apos;(\w+)\s+\w+&apos;)     #  只匹配单词空格单词中括号那个单词</div><div class="line">&gt;&gt;&gt; p.findall(s)</div><div class="line">[&apos;aa&apos;, &apos;cc&apos;]</div><div class="line">&gt;&gt;&gt; p = re.compile(r&apos;((\w+)\s+\w+)&apos;)   #  先打印外括号，后打印内括号，先后内容组成元组，最后列表呈现</div><div class="line">&gt;&gt;&gt; p.findall(s)</div><div class="line">[(&apos;aa bb&apos;, &apos;aa&apos;), (&apos;cc dd&apos;, &apos;cc&apos;)]</div></pre></td></tr></table></figure></p>
+<p>eg3:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(&quot;(?P&lt;province&gt;[0-9]&#123;4&#125;)(?P&lt;city&gt;[0-9]&#123;2&#125;(?P&lt;birthday&gt;[0-9]&#123;4&#125;))&quot;, &quot;371481199306143242&quot;).groupdict()</div><div class="line">&#123;&apos;province&apos;: &apos;3714&apos;, &apos;birthday&apos;: &apos;1993&apos;, &apos;city&apos;: &apos;811993&apos;&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="切分字符串"><a href="#切分字符串" class="headerlink" title="切分字符串"></a>切分字符串</h2><p><code>re.split用法</code><br>split 以至少2个空格为分隔,  两种写法:<br>re.split(r’\s{2,}’,  str)<br>re.split(r’\s\s+’，str)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import re</div><div class="line">&gt;&gt;&gt; re.split(r&apos;\s&#123;2,&#125;&apos;, &apos;17:19:28 up  2:00,  3 users,  load average: 0.01, 0.03, 0.05&apos;) # 以2个空隔分割字符串返回列表</div><div class="line">[&apos;17:19:28 up&apos;, &apos;2:00,&apos;, &apos;3 users,&apos;, &apos;load average: 0.01, 0.03, 0.05&apos;]</div><div class="line">&gt;&gt;&gt; re.split(r&apos;\s\s+&apos;, &apos;17:19:28 up  2:00,  3 users,  load average: 0.01, 0.03, 0.05&apos;)</div><div class="line">[&apos;17:19:28 up&apos;, &apos;2:00,&apos;, &apos;3 users,&apos;, &apos;load average: 0.01, 0.03, 0.05&apos;]</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># cat whodata.txt</div><div class="line"> 17:24:49 up  2:05,  3 users,  load average: 0.00, 0.02, 0.05</div><div class="line">USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT</div><div class="line">root     pts/1    192.168.109.1    15:33    9.00s  0.17s  0.04s python3</div><div class="line">&gt;&gt;&gt; import re</div><div class="line">&gt;&gt;&gt; with open(&apos;whodata.txt&apos;, &apos;r&apos;) as f:</div><div class="line">...     for line in f:</div><div class="line">...         res = re.split(&apos;\s\s+&apos;, line)</div><div class="line">...         print(res)</div><div class="line">... </div><div class="line">[&apos; 17:24:49 up&apos;, &apos;2:05,&apos;, &apos;3 users,&apos;, &apos;load average: 0.00, 0.02, 0.05\n&apos;]</div><div class="line">[&apos;USER&apos;, &apos;TTY&apos;, &apos;FROM&apos;, &apos;LOGIN@&apos;, &apos;IDLE&apos;, &apos;JCPU&apos;, &apos;PCPU WHAT\n&apos;]</div><div class="line">[&apos;root&apos;, &apos;pts/1&apos;, &apos;192.168.109.1&apos;, &apos;15:33&apos;, &apos;9.00s&apos;, &apos;0.17s&apos;, &apos;0.04s python3\n&apos;]</div></pre></td></tr></table></figure>
+<p>eg1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.sub(&apos; &apos;, &apos;&apos;, name)</div><div class="line">&apos;wxq&apos;</div><div class="line">&gt;&gt;&gt; p = re.compile(&apos;\.&apos;)</div><div class="line">&gt;&gt;&gt; p.split(&apos;www.digmyth.com&apos;)</div><div class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</div><div class="line">&gt;&gt;&gt; url = &apos;www.digmyth.com&apos;</div><div class="line">&gt;&gt;&gt; re.compile(&apos;\.&apos;).split(url)</div><div class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</div><div class="line">&gt;&gt;&gt; re.sub(&apos;www&apos;, &apos;mail&apos;, url)</div><div class="line">&apos;mail.digmyth.com&apos;</div><div class="line">&gt;&gt;&gt; url.split(&apos;.&apos;)</div><div class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</div></pre></td></tr></table></figure></p>
+<p>eg2:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import re</div><div class="line">&gt;&gt;&gt; name = &apos;hello    world&apos;</div><div class="line">&gt;&gt;&gt; str_a, str_b = re.split(r&apos;\s+&apos;, name)</div><div class="line">&gt;&gt;&gt; str_a, str_b</div><div class="line">(&apos;hello&apos;, &apos;world&apos;)</div><div class="line">&gt;&gt;&gt; str_a</div><div class="line">&apos;hello&apos;</div><div class="line">&gt;&gt;&gt; str_b</div><div class="line">&apos;world&apos;</div></pre></td></tr></table></figure></p>
+<p>eg3:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat put_split.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">import os</div><div class="line">import re</div><div class="line">input = input(&quot;enter you str: &quot;).strip()</div><div class="line">cmd, path = re.split(r&apos;\s+&apos;, input)</div><div class="line">print(cmd.strip())</div><div class="line">print(path.strip())</div><div class="line">root@ubuntu:~# python3 put_split.py </div><div class="line">enter you str:    put /root/demo.txt</div><div class="line">put</div><div class="line">/root/demo.txt</div></pre></td></tr></table></figure></p>
+<h2 id="编译compile"><a href="#编译compile" class="headerlink" title="编译compile"></a>编译compile</h2><p>正则表达式工作流程： 检测语法–&gt; 编译–&gt; 匹配<br>当一个正则表达式多次调用时，建议预先编译好，后续直接用于匹配以提高效率</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; p = re.compile(r&apos;[A-Z]&apos;)</div><div class="line">&gt;&gt;&gt; type(p)</div><div class="line">&lt;class &apos;_sre.SRE_Pattern&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; p.search(&quot;I Love www.DigMyth.Com&quot;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; p.findall(&quot;I LLove www.DigMyth.Com&quot;)</div><div class="line">[&apos;I&apos;, &apos;L&apos;, &apos;L&apos;, &apos;D&apos;, &apos;M&apos;, &apos;C&apos;]</div></pre></td></tr></table></figure>
+<h2 id="贪婪模式匹配"><a href="#贪婪模式匹配" class="headerlink" title="贪婪模式匹配"></a>贪婪模式匹配</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/02/25/python-05-01-正则表达式/" data-id="ciymyrxxi000i16jxq4g65tqu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-04-02-模块" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/11/python-04-02-模块/" class="article-date">
+  <time datetime="2017-02-11T02:09:10.000Z" itemprop="datePublished">2017-02-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/11/python-04-02-模块/">python-04-02-模块</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>相关概念</li>
+<li>模块paramiko</li>
+<li>模块configparser</li>
+<li>模块MySQLdb</li>
+<li>模块</li>
+<li>模块</li>
+<li>模块</li>
+<li>模块</li>
+<li>模块</li>
+<li>模块</li>
+<li>模块</li>
+<li>模块</li>
+</ul>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><ul>
+<li>过程编程 , 函数式编程, 模块化编程是一个意思，区别于面向对象编程</li>
+<li>面向对象编程好处：（特性:  封装，继承，多态）</li>
+</ul>
+<p>python程序可以分解成模块，语句，表达式和 对象</p>
+<ul>
+<li>程序由模块构成</li>
+<li>模块包含语句</li>
+<li>语句包含表达式</li>
+<li>表达式建立并处理对象<br>表达式是”某事“， 语句是“做某事”即指令<br>语句的特性：它们改变了事物，例如，赋值语句改变了变量，print改变了屏幕输出。</li>
+</ul>
+<p>模块导入的使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import platform</div><div class="line">&gt;&gt;&gt; print(platform.uname())</div><div class="line">uname_result(system=&apos;Linux&apos;, node=&apos;ubuntu&apos;, release=&apos;4.2.0-35-generic&apos;, version=&apos;#40~14.04.1-Ubuntu SMP Fri Mar 18 16:37:35 UTC 2016&apos;, machine=&apos;x86_64&apos;, processor=&apos;x86_64&apos;)</div><div class="line">&gt;&gt;&gt; import platform</div><div class="line">&gt;&gt;&gt; dir(platform)</div><div class="line">[&apos;DEV_NULL&apos;, &apos;_UNIXCONFDIR&apos;, &apos;__builtins__&apos; 此处略... ]</div></pre></td></tr></table></figure>
+<p>模块导入区别</p>
+<p>import 导入会形成以模块名同名的名称空间，如果有个方法叫uname(),那么我们调用是print(platform.uname())加上platform名称空间前缀不会冲突</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import random     # 独立名称空间</div><div class="line">&gt;&gt;&gt; random.choice([3,5,6,7,8,9])  </div><div class="line">7</div><div class="line">&gt;&gt;&gt; from random import choice  # 没有独立名称空间，当前有choice方法会覆盖，这就是区别</div><div class="line">&gt;&gt;&gt; choice([3,5,6,7,8,9])</div><div class="line">6</div></pre></td></tr></table></figure>
+<p>from-import是导入指定模块的某些方法和属性，会导入在当前名称空间里，如果当前名称空间也有choice方法，那么会覆盖choice方法。<br>import和from-import是可执行语句，独立可执行片断，可以嵌套在if测试中，或出现在def中，这样在我们满足条件再导入模块。</p>
+<p>己知模块查找此模块在系统中的路径，用法<code>module_name.__file__</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import random</div><div class="line">&gt;&gt;&gt; random.__file__</div><div class="line">&apos;/usr/lib/python3.4/random.py&apos;</div></pre></td></tr></table></figure></p>
+<h2 id="模块paramiko"><a href="#模块paramiko" class="headerlink" title="模块paramiko"></a>模块paramiko</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">`pycrypto-2.6.1.tar.gz`# 下载安装</div><div class="line">apt-get install python-dev</div><div class="line">python setup.py build</div><div class="line">python setup.py install</div><div class="line">import Crypto</div><div class="line">`paramiko-1.10.1.tar.gz` 下载安装</div><div class="line">python setup.py build</div><div class="line">python setup.py install</div><div class="line">import paramiko</div></pre></td></tr></table></figure>
+<h2 id="模块configparser"><a href="#模块configparser" class="headerlink" title="模块configparser"></a>模块configparser</h2><p>生成如下example.ini 文件，该如何做呢<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat example.ini</div><div class="line">[DEFAULT]</div><div class="line">compression = yes</div><div class="line">serveraliveinterval = 45</div><div class="line">compressionlevel = 9</div><div class="line">forwardx11 = yes</div><div class="line"></div><div class="line">[bitbucket.org]</div><div class="line">user = wxq</div><div class="line"></div><div class="line">[topsecret.server.com]</div><div class="line">host port = 5000</div><div class="line">forwardx11 = no</div></pre></td></tr></table></figure></p>
+<p>编写如下脚本执行 python3  create_example.py即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat create_example.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">#</div><div class="line">import configparser</div><div class="line"></div><div class="line">config = configparser.ConfigParser()</div><div class="line">config[&quot;DEFAULT&quot;] = &#123;&apos;ServerAliveInterval&apos;: &apos;45&apos;,</div><div class="line">                      &apos;Compression&apos;: &apos;yes&apos;,</div><div class="line">                      &apos;CompressionLevel&apos;: &apos;9&apos;&#125;</div><div class="line"></div><div class="line">config[&apos;bitbucket.org&apos;] = &#123;&#125;</div><div class="line">config[&apos;bitbucket.org&apos;][&apos;User&apos;] = &apos;wxq&apos;</div><div class="line">config[&apos;topsecret.server.com&apos;] = &#123;&#125;</div><div class="line">topsecret = config[&apos;topsecret.server.com&apos;]</div><div class="line">topsecret[&apos;Host Port&apos;] = &apos;5000&apos;   # mutates the parser</div><div class="line">topsecret[&apos;Forwardx11&apos;] = &apos;no&apos;  # same here</div><div class="line">config[&apos;DEFAULT&apos;][&apos;Forwardx11&apos;] = &apos;yes&apos;</div><div class="line">with open(&apos;example.ini&apos;, &apos;w&apos;) as configfile:</div><div class="line">    config.write(configfile)</div></pre></td></tr></table></figure>
+<p>那么有了example.ini  这样的文件，如何读取呢<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import configparser   # 导入模块</div><div class="line">&gt;&gt;&gt; config = configparser.ConfigParser() # 类实例化</div><div class="line">&gt;&gt;&gt; config.sections()      # 调用类中一个方法</div><div class="line">[]</div><div class="line">&gt;&gt;&gt; config.read(&apos;example.ini&apos;)   # 文件读入</div><div class="line">[&apos;example.ini&apos;]</div><div class="line">&gt;&gt;&gt; config.sections()      # 除了[DEFAULT]还有哪些区块，列表呈现</div><div class="line">[&apos;bitbucket.org&apos;, &apos;topsecret.server.com&apos;]</div><div class="line">&gt;&gt;&gt; &apos;bitbucket.org&apos; in config</div><div class="line">True</div><div class="line">&gt;&gt;&gt; config[&apos;bitbucket.org&apos;][&apos;user&apos;]   # 指定区块指定字典键对应值</div><div class="line">&apos;wxq&apos;</div><div class="line">&gt;&gt;&gt; config[&apos;DEFAULT&apos;][&apos;compression&apos;]</div><div class="line">&apos;yes&apos;</div><div class="line">&gt;&gt;&gt; for i in config[&apos;bitbucket.org&apos;]:  # 指定区块打印键</div><div class="line">...     print(i)    # 注意：包括[DEFAULT]区块的键也在这里呈现</div><div class="line">... </div><div class="line">user</div><div class="line">compression</div><div class="line">serveraliveinterval</div><div class="line">compressionlevel</div><div class="line">forwardx11</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; d1 = config[&apos;bitbucket.org&apos;]  # 指定区块读出其实是一个字典</div><div class="line">&gt;&gt;&gt; for k,v in d1.items():</div><div class="line">...    print(&quot;%s = %s&quot; % (k,v))</div><div class="line">... </div><div class="line">user = wxq</div><div class="line">compression = yes</div><div class="line">serveraliveinterval = 45</div><div class="line">compressionlevel = 9</div><div class="line">forwardx11 = yes</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat wxq.txt   # 有这么一个文件</div><div class="line">[section1]</div><div class="line">k1 = v1</div><div class="line">k2: v2</div><div class="line"></div><div class="line">[section2]</div><div class="line">k1 = v111</div><div class="line">&gt;&gt;&gt; import configparser</div><div class="line">&gt;&gt;&gt; config = configparser.ConfigParser()</div><div class="line">&gt;&gt;&gt; config.read(&apos;/root/wxq.txt&apos;)   # 读入这样的文件</div><div class="line">[&apos;/root/wxq.txt&apos;]</div><div class="line">&gt;&gt;&gt; config.sections()       # 查看这个文件的区块</div><div class="line">[&apos;section1&apos;, &apos;section2&apos;]</div><div class="line">&gt;&gt;&gt; config.items(&apos;section1&apos;)  # 查看指定区块的键值对</div><div class="line">[(&apos;k1&apos;, &apos;v1&apos;), (&apos;k2&apos;, &apos;v2&apos;)]</div><div class="line"></div><div class="line">&gt;&gt;&gt; config.options(&apos;section1&apos;) ＃　只显示指定区块的键</div><div class="line">[&apos;k1&apos;, &apos;k2&apos;]</div><div class="line">&gt;&gt;&gt; config.has_section(&apos;section3&apos;)　# 判断某区块是否存在返回True/False</div><div class="line">False</div><div class="line">&gt;&gt;&gt; config.add_section(&apos;section3&apos;) # 添加一个区块</div><div class="line">&gt;&gt;&gt; config.has_section(&apos;section3&apos;) # 有了这个区块</div><div class="line">True</div><div class="line">&gt;&gt;&gt; config.set(&apos;section3&apos;, &apos;k1&apos;, &apos;v1&apos;) ＃　添加一行配置，也就是设置一个区块的键值对</div><div class="line">&gt;&gt;&gt; config.write(open(&apos;wxq&apos;, &apos;w&apos;))</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat wxq   # 按照上面的写入会生成了一个新文件</div><div class="line">[section1]</div><div class="line">k1 = v1</div><div class="line">k2 = v2</div><div class="line"></div><div class="line">[section2]</div><div class="line">k1 = v111</div><div class="line"></div><div class="line">[section3]</div><div class="line">k1 = v1</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; config.remove_option(&apos;section3&apos;, &apos;k1&apos;)  # 删除某键值对</div><div class="line">True</div><div class="line">&gt;&gt;&gt; config.write(open(&apos;wxq.txt&apos;, &apos;w&apos;))</div><div class="line">&gt;&gt;&gt; config.remove_section(&apos;section3&apos;)      #　删除某区块</div><div class="line">True</div><div class="line">&gt;&gt;&gt; config.write(open(&apos;wxq.txt&apos;, &apos;w&apos;))</div></pre></td></tr></table></figure>
+<h2 id="模块MySQLdb"><a href="#模块MySQLdb" class="headerlink" title="模块MySQLdb"></a>模块MySQLdb</h2><p>python连接数据库操作</p>
+<ul>
+<li>建立数据库连接</li>
+<li>创建游标cursor(用于发送sql语句，获取sql结果，解析返回结果)</li>
+<li>关闭游标cursor  curname.close()</li>
+<li>关闭数据库连接 conname.close()</li>
+</ul>
+<p>模块安装<br>apt-get install python-mysqldb<br>查看模块<br>help(‘modules’)<br>加载数据库模块<br>import MySQLdb as mysql</p>
+<p>创建连接，会生成一个con.cursor()的类<br>con = mysql.connect(host=’127.0.0.1’,user=’root’,passwd=’dbpass’)</p>
+<p>游标类实例化<br>cur = con.cursor()</p>
+<p>cur.execute      传入一个参数执行sql语句<br>cur.executemany  传入多个参数执行sql语句</p>
+<p>cur.fetchall   查询执行后的结果返回所有<br>cur.fetchmany查询执行后的结果返回多个<br>cur.fetchone  查询执行后的结果返回一个<br>游标回滚<br>help(cur.scroll)<br>scroll(self, value, mode=’relative’)</p>
+<p>cur.scroll(0,mode=’absolute’)</p>
+<h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-1"><a href="#模块-1" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-2"><a href="#模块-2" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-3"><a href="#模块-3" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-4"><a href="#模块-4" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-5"><a href="#模块-5" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-6"><a href="#模块-6" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-7"><a href="#模块-7" class="headerlink" title="模块"></a>模块</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/02/11/python-04-02-模块/" data-id="ciymyrxxg000g16jxrq3qb895" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-04-01-装饰器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/04/python-04-01-装饰器/" class="article-date">
+  <time datetime="2017-02-04T10:08:26.000Z" itemprop="datePublished">2017-02-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/04/python-04-01-装饰器/">python-04-01-装饰器</a>
     </h1>
   
 
@@ -98,56 +564,44 @@
 <li>函数可以作为参数传递给另外一个函数</li>
 <li>函数可以直接返回给外层函数</li>
 </ul>
-<h3 id="简单函数进行装饰"><a href="#简单函数进行装饰" class="headerlink" title="简单函数进行装饰"></a>简单函数进行装饰</h3><p>有这么一个函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def hello():  </div><div class="line">    return &apos;hello world&apos;</div></pre></td></tr></table></figure></p>
+<h2 id="简单函数进行装饰"><a href="#简单函数进行装饰" class="headerlink" title="简单函数进行装饰"></a>简单函数进行装饰</h2><p>有这么一个函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def hello():  </div><div class="line">    return &apos;hello world&apos;</div></pre></td></tr></table></figure></p>
 <p>我们想在不修改原函数的情况下，让函数返回特定标签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def maketag(func):</div><div class="line">    def wrapper():</div><div class="line">        return &quot;&lt;h&gt;&quot; + func() + &quot;&lt;/h&gt;&quot;</div><div class="line">    return wrapper</div></pre></td></tr></table></figure></p>
 <p>我们定义了一个函数maketag(),该函数有一个参数func,这个参数必须是一个函数，内部又定义了一个wrapper()函数，并直接返回给maketag()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; hello = maketag(hello)  # 将 hello 函数传给 maketag</div><div class="line">&gt;&gt;&gt; hello()</div><div class="line">&apos;&lt;h&gt;hello world&lt;/h&gt;&apos;</div></pre></td></tr></table></figure></p>
-<p>上面我们把最初hello数传给maketag()函数并将返回赋值给变量hello,此时调用hello得到我们想要的结果。<br><code>注意：</code> maketag()返回赋值给hello,hello函数本身还存在，但函数名引用己经变为了maketag返回函数的名称wrapper,不在是原来的hello,验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">In [6]: a = maketag(hello)</div><div class="line">In [8]: a.__name__</div><div class="line">Out[8]: &apos;wrapper&apos;</div><div class="line"></div><div class="line">In [9]: hello = maketag(hello)</div><div class="line">In [10]: hello.__name__</div><div class="line">Out[10]: &apos;wrapper&apos;</div></pre></td></tr></table></figure></p>
+<p>上面我们把最初hello函数传给maketag()函数并将返回赋值给变量hello,此时调用hello得到我们想要的结果。<br><code>注意：</code> maketag()返回赋值给hello,hello函数本身还存在，但函数名引用己经变为了maketag返回函数的名称wrapper,不在是原来的hello,验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">In [6]: a = maketag(hello)</div><div class="line">In [8]: a.__name__</div><div class="line">Out[8]: &apos;wrapper&apos;</div><div class="line"></div><div class="line">In [9]: hello = maketag(hello)</div><div class="line">In [10]: hello.__name__</div><div class="line">Out[10]: &apos;wrapper&apos;</div></pre></td></tr></table></figure></p>
 <p>总结一下：为了增强原函数hello的功能定义了一个maketag函数，它接收一个函数作为参数，maketag返回一个新的函数赋值给一个变量hello,然后hello可直接调用。</p>
+<p>一般情况下，我们使用装饰器提供的 @ 语法糖（Syntactic Sugar）来简化上面的写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def maketag(func):</div><div class="line">    def wrapper():</div><div class="line">        return &quot;&lt;h&gt;&quot; + func() + &quot;&lt;/h&gt;&quot;</div><div class="line">    return wrapper</div><div class="line"></div><div class="line">@maketag</div><div class="line">def hello():</div><div class="line">    return &apos;hello world&apos;</div></pre></td></tr></table></figure></p>
+<p>像上面的情况，可以动态修改函数（或类）功能的函数就是装饰器。本质上，它是一个高阶函数，以被装饰的函数（比如上面的 hello）为参数，并返回一个包装后的函数（比如上面的 wrapper）给被装饰函数（hello）。</p>
+<h2 id="单-多个装饰器的使用形式"><a href="#单-多个装饰器的使用形式" class="headerlink" title="单/多个装饰器的使用形式"></a>单/多个装饰器的使用形式</h2><p>装饰器的一般使用形式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@decorator</div><div class="line">def func():</div><div class="line">    pass</div><div class="line">等价于下面的形式：</div><div class="line"></div><div class="line">def func():</div><div class="line">    pass</div><div class="line">func = decorator(func)</div></pre></td></tr></table></figure></p>
+<p>装饰器可以定义多个，离函数定义最近的装饰器先被调用，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@decorator_one</div><div class="line">@decorator_two</div><div class="line">def func():</div><div class="line">    pass</div><div class="line">等价于：</div><div class="line"></div><div class="line">def func():</div><div class="line">    pass</div><div class="line"></div><div class="line">func = decorator_one(decorator_two(func))</div></pre></td></tr></table></figure></p>
+<p>看下多个装饰器的例子，为了简单起见，下面的例子就不使用带参数的装饰器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">def maketag1(func):</div><div class="line">    def wrapper():</div><div class="line">        return &apos;&lt;html&gt;&apos; + func() + &apos;&lt;/html&gt;&apos;</div><div class="line">    return wrapper</div><div class="line">    </div><div class="line">def maketag2(func):</div><div class="line">    def wrapper():</div><div class="line">        return &apos;&lt;i&gt;&apos; + func() + &apos;&lt;/i&gt;&apos;</div><div class="line">    return wrapper</div><div class="line"></div><div class="line">@maketag1</div><div class="line">@maketag2</div><div class="line">def hello():</div><div class="line">    return &apos;hello world&apos;</div></pre></td></tr></table></figure></p>
+<p>上面定义了两个装饰器，对 hello 进行装饰，上面的最后几行代码相当于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def hello():</div><div class="line">    return &apos;hello world&apos;</div><div class="line">    </div><div class="line">hello = maketag1(maketag2(hello))</div><div class="line">调用函数 hello：</div><div class="line"></div><div class="line">&gt;&gt;&gt; hello()    </div><div class="line">&apos;&lt;html&gt;&lt;i&gt;hello world&lt;/i&gt;&lt;/html&gt;&apos;</div></pre></td></tr></table></figure></p>
+<p>似乎理解深刻了：当多个装饰器时，离函数定义最近的装饰器先被调用</p>
+<h2 id="对带参数的函数进行装饰"><a href="#对带参数的函数进行装饰" class="headerlink" title="对带参数的函数进行装饰"></a>对带参数的函数进行装饰</h2><p>装饰器还可以带参数，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@decorator(args1, args2)</div><div class="line">def func():</div><div class="line">    pass</div><div class="line">等价于：</div><div class="line"></div><div class="line">def func():</div><div class="line">    pass</div><div class="line"></div><div class="line">func = decorator(args1, args2)(func)</div></pre></td></tr></table></figure></p>
+<p>我们来几个具体的例子参悟一下：</p>
+<p>让被装饰函数带有参数，对前面例子中的 hello() 函数进行改写使其带参数，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">def maketag(func):</div><div class="line">    def wrapper(*args, **kwargs):</div><div class="line">        res = func(*args, **kwargs)</div><div class="line">        return &apos;&lt;h&gt;&apos; + res + &apos;&lt;/h&gt;&apos;</div><div class="line">    return wrapper</div><div class="line"></div><div class="line">@maketag</div><div class="line">def hello(name):</div><div class="line">    return &apos;hello %s&apos; % name</div><div class="line">    </div><div class="line">@maketag</div><div class="line">def hello2(name1=&apos;user1&apos;, name2=&apos;user2&apos;):</div><div class="line">    return &apos;hello %s, %s&apos; % (name1, name2)</div></pre></td></tr></table></figure>
+<p>由于函数 hello 带参数，因此内嵌包装函数 wrapper 也做了一点改变：</p>
+<p>内嵌包装函数的参数传给了 func，即被装饰函数，也就是说内嵌包装函数的参数跟被装饰函数的参数对应，这里使用了 (<em>args, *</em>kwargs)，是为了适应可变参数。<br>看看使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; hello1(&apos;python&apos;)</div><div class="line">&apos;&lt;h&gt;hello python&lt;/h&gt;&apos;</div><div class="line">&gt;&gt;&gt; hello2(&apos;python&apos;, &apos;java&apos;)</div><div class="line">&apos;&lt;h&gt;hello python, java&lt;/h&gt;&apos;</div></pre></td></tr></table></figure></p>
+<h2 id="带参数的装饰器"><a href="#带参数的装饰器" class="headerlink" title="带参数的装饰器"></a>带参数的装饰器</h2><p>上面的例子，我们想改用标签 <code>&lt;html&gt;...&lt;/html&gt;</code> 是不是要再定义一个装饰器呢？不必，其实我们可以装饰器外层再定义一个函数，将标签作为参数，返回一个装饰器，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def outer_decorator(tag):     # 外层函数参数传给装饰器</div><div class="line">    def decorator(func):      # 真正的装饰器参数必然是被装饰器函数func</div><div class="line">        def wrapper(*args, **kwargs):       # 装饰器内层函数的参数是func的参数</div><div class="line">            res = func(*args, **kwargs)     # 被装饰函数正常调用</div><div class="line">#           return &apos;&lt;&apos; + tag + &apos;&gt;&apos; + res + &apos;&lt;/&apos; + tag + &apos;&gt;&apos;</div><div class="line">            return &apos;&lt;&#123;tag&#125;&gt;&#123;res&#125;&lt;/&#123;tag&#125;&gt;&apos;.format(tag=tag, res=res)</div><div class="line">        return wrapper        # 内层函数作返回值返回给装饰器</div><div class="line">    return decorator          # 装饰器本身作为返回值返回给最外层函数</div></pre></td></tr></table></figure></p>
+<p>现在，我们可以根据需要生成想要的装饰器了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">outer_decorator = outer_decorator(&apos;html&apos;)</div><div class="line">@outer_decorator</div><div class="line">def hello(name):</div><div class="line">    return &apos;hello %s&apos; % name</div><div class="line">    </div><div class="line">&gt;&gt;&gt; hello(&apos;world&apos;)</div><div class="line">&apos;&lt;html&gt;hello world&lt;/html&gt;&apos;</div></pre></td></tr></table></figure></p>
+<p>上面的形式也可以写得更加简洁：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@outer_decorator(&apos;html&apos;)     # @语法糖syntactic sugar</div><div class="line">def hello(name):</div><div class="line">    return &apos;hello,  %s&apos; % name</div></pre></td></tr></table></figure></p>
+<p>这就是带参数的装饰器，其实就是在装饰器外面多了一层包装，根据不同的参数返回不同的装饰器。</p>
+<h2 id="基于类的装饰器"><a href="#基于类的装饰器" class="headerlink" title="基于类的装饰器"></a>基于类的装饰器</h2><p>前面的装饰器都是一个函数，其实也可以基于类定义装饰器，看下面的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">class Deco_C(object):</div><div class="line">    def __init__(self, func):</div><div class="line">        self.func = func</div><div class="line"></div><div class="line">    def __call__(self, *args, **kwargs):</div><div class="line">        return &apos;&lt;html&gt;&apos; + self.func(*args, **kwargs) + &apos;&lt;/html&gt;&apos;</div><div class="line"></div><div class="line">@Deco_C</div><div class="line">def hello(name):</div><div class="line">    return &apos;hello %s&apos; % name</div><div class="line"></div><div class="line">&gt;&gt;&gt; hello(&apos;world&apos;)</div><div class="line">&apos;&lt;html&gt;hello world&lt;/html&gt;&apos;</div></pre></td></tr></table></figure></p>
+<p>可以看到，类 Deco_C 有两个方法：</p>
+<p><code>__init__()：</code>它接收一个函数作为参数，也就是被装饰的函数<br><code>__call__()：</code>让类对象可调用，就像函数调用一样，在调用被装饰函数时被调用<br>还可以让类装饰器带参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">class Tag(object):</div><div class="line">    def __init__(self, tag):</div><div class="line">        self.tag = tag</div><div class="line"></div><div class="line">    def __call__(self, func):</div><div class="line">        def wrapper(*args, **kwargs):</div><div class="line">            return &quot;&lt;&#123;tag&#125;&gt;&#123;res&#125;&lt;/&#123;tag&#125;&gt;&quot;.format(res=func(*args, **kwargs), tag=self.tag)</div><div class="line">        return wrapper</div><div class="line"></div><div class="line">@Tag(&apos;html&apos;)</div><div class="line">def hello(name):</div><div class="line">    return &apos;hello %s&apos; % name</div><div class="line"></div><div class="line">&gt;&gt; hello(&apos;, welcome&apos;)</div><div class="line">&apos;&lt;html&gt;hello, welcome&lt;/html&gt;&apos;</div></pre></td></tr></table></figure>
+<p>需要注意的是，如果类装饰器有参数，则 <strong>init</strong> 接收此参数，而 <strong>call</strong> 接收 func函数，并多了一层wrapper(<em>args, *</em>kwargs)来接收func函数的参数。</p>
+<h2 id="装饰器的副作用"><a href="#装饰器的副作用" class="headerlink" title="装饰器的副作用"></a>装饰器的副作用</h2><p>前面提到装饰器有一个瑕疵，就是被装饰函数的函数名称已经不是原来的名称了，回到最开始的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def maketagc(func):</div><div class="line">    def wrapper():</div><div class="line">        return &quot;&lt;i&gt;&quot; + func() + &quot;&lt;/i&gt;&quot;</div><div class="line">    return wrapper</div><div class="line"></div><div class="line">@maketag</div><div class="line">def hello():</div><div class="line">    return &apos;hello world&apos;</div></pre></td></tr></table></figure></p>
+<p>函数 hello 被 maketag 装饰后，它的函数名称已经改变了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; hello.__name__</div><div class="line">&apos;wrapper&apos;</div></pre></td></tr></table></figure></p>
+<p>为了消除这样的副作用，Python 中的 functool 包提供了一个 wraps 的装饰器：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">from functools import wraps</div><div class="line"></div><div class="line">def maketag(func):</div><div class="line">    @wraps(func)       # 加上 wraps 装饰器</div><div class="line">    def wrapper():</div><div class="line">        return &quot;&lt;i&gt;&quot; + func() + &quot;&lt;/i&gt;&quot;</div><div class="line">    return wrapper</div><div class="line"></div><div class="line">@maketag</div><div class="line">def hello():</div><div class="line">    return &apos;hello world&apos;</div><div class="line"></div><div class="line">&gt;&gt;&gt; hello.__name__</div><div class="line">&apos;hello&apos;</div></pre></td></tr></table></figure></p>
+<p><code>小结:</code><br>本质上，装饰器就是一个有返回函数的高阶函数。<br>装饰器可以动态地修改一个类或函数的功能，通过在原有的类或者函数上包裹一层修饰类或修饰函数实现。<br>事实上，装饰器就是闭包的一种应用，但它比较特别，以被装饰函数为参数，并返回一个函数，赋给被装饰函数，闭包则没这种限制。</p>
+<h2 id="装饰器生产化进阶"><a href="#装饰器生产化进阶" class="headerlink" title="装饰器生产化进阶"></a>装饰器生产化进阶</h2><p>eg1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">def deco(func):</div><div class="line">    def wrapper(x):</div><div class="line">        print(&quot;what ...&quot;)</div><div class="line">        func(x)</div><div class="line">        print(&apos;Game over ...&apos;)</div><div class="line">    return wrapper</div><div class="line"></div><div class="line">@deco</div><div class="line">def show(x):</div><div class="line">    print(x)</div><div class="line">&gt;&gt;&gt;show(&quot;I am a pythoner&quot;)</div><div class="line">what ...</div><div class="line">I am a pythoner</div><div class="line">Game over ...</div></pre></td></tr></table></figure></p>
+<p>eg2:</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/26/python-04-装饰器/" data-id="ciy59bcar000e29jx22hlfc0l" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-03-02-函数" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/23/python-03-02-函数/" class="article-date">
-  <time datetime="2017-01-23T12:42:06.000Z" itemprop="datePublished">2017-01-23</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/23/python-03-02-函数/">python-03-02-函数</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ciy59bcap000c29jxhrl6yz8l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="ciymyrxxe000e16jxcxyt6urp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -159,8 +613,8 @@
   
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/20/hello-world/" class="article-date">
-  <time datetime="2017-01-20T03:38:49.720Z" itemprop="datePublished">2017-01-20</time>
+    <a href="/2017/02/01/hello-world/" class="article-date">
+  <time datetime="2017-02-01T13:03:39.634Z" itemprop="datePublished">2017-02-01</time>
 </a>
     
   <div class="article-category">
@@ -175,7 +629,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/20/hello-world/">Hello World</a>
+      <a class="article-title" href="/2017/02/01/hello-world/">Hello World</a>
     </h1>
   
 
@@ -196,7 +650,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/hello-world/" data-id="ciy59bcag000329jxzep1kjbn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/01/hello-world/" data-id="ciymyrxwy000316jxu0hlik1z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,14 +660,14 @@
 
 
   
-    <article id="post-python-03-01-IO" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/20/python-03-01-IO/" class="article-date">
-  <time datetime="2017-01-19T18:12:36.000Z" itemprop="datePublished">2017-01-20</time>
+    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
   </div>
 
   </div>
@@ -224,7 +678,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/20/python-03-01-IO/">python-03-01-IO</a>
+      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
     </h1>
   
 
@@ -232,300 +686,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>文件对象</li>
-<li>OS 对象</li>
-</ul>
-<h2 id="IO-编程"><a href="#IO-编程" class="headerlink" title="IO 编程"></a>IO 编程</h2><h3 id="文件对象"><a href="#文件对象" class="headerlink" title="文件对象"></a>文件对象</h3><p>文件对象用于访问系统文件的接口，文件系统是计算机存储数据，组织数据的方式。<br>计算机文件是存储在设备中的一段数据流，归属于文件系统管理之下。是计算机中由<code>OS</code>管理的具有名字的存储区域，对Linux而言，文件可以被看作字节序列。</p>
-<p>序列化的对象才能存储的文件系统中，非字节序列化的数据不能存储在文件系统中的。</p>
-<p>文件对象接口不仅用于访问普通文件，还可以访问套接字文件，管道文件。<br>在Python中，文件读写是通过open()函数打开的文件对象完成的。使用with语句操作文件IO是个好习惯。</p>
-<p>open(name[,mode[,bufsize]]) 返回的是一个文件对象。这里三个参数分别表示文件名，文件打开模式和缓冲区大小</p>
-<p>bufsize:定义输出缓存<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">0 表示无输出缓存,禁用缓冲</div><div class="line">1 表示使用缓冲，只缓冲一行数据</div><div class="line">负数表示使用系统默认设置</div><div class="line">2+之后的正数表示使用指定大小缓冲</div></pre></td></tr></table></figure></p>
-<p>open(‘/var/log/message’, ‘r’)<br>简单模式，首次打开的文件指针于文件首部<br>r:  只读<br>w:  新建文件或文件首部覆盖写入。<br>a: 尾部追加，即打开时指针处于文件尾部</p>
-<p>在模式后使用<code>+</code>表示同时支输入输出操作<br><code>r+</code>  <code>w+</code> <code>a+</code></p>
-<p>在模式后附加    <code>b</code> 表示二进制方式打开<br><code>rb</code> <code>wb+</code></p>
-<p>创建一个文件对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt; f = open(&apos;/etc/fstab&apos;, &apos;r&apos;)</div><div class="line">In [3]: type(f)</div><div class="line">Out[3]: _io.TextIOWrapper</div></pre></td></tr></table></figure></p>
-<p>只读模式打开一个不存在文件是不可以的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">In [1]: f = open(&apos;/tmp/abc&apos;, &apos;r&apos;)</div><div class="line">---------------------------------------------------------------------------</div><div class="line">FileNotFoundError                         Traceback (most recent call last)</div><div class="line">&lt;ipython-input-1-07bb2dbd474f&gt; in &lt;module&gt;()</div><div class="line">----&gt; 1 f = open(&apos;/tmp/abc&apos;, &apos;r&apos;)</div><div class="line"></div><div class="line">FileNotFoundError: [Errno 2] No such file or directory: &apos;/tmp/abc&apos;</div></pre></td></tr></table></figure></p>
-<p>以写模式打开一个不存在文件，这个文件会自动被创建<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">In [3]: import os</div><div class="line">In [7]: os.path.isfile(&apos;/tmp/f1&apos;)</div><div class="line">Out[7]: False</div><div class="line"></div><div class="line">In [8]: f = open(&apos;/tmp/f1&apos;, &apos;w+&apos;)</div><div class="line"></div><div class="line">In [9]: os.path.isfile(&apos;/tmp/f1&apos;)</div><div class="line">Out[9]: True</div></pre></td></tr></table></figure></p>
-<p>查看一个文件的描述符，描述符是一个很小的数字表示，0表示标准输入，1表示标准输出，2表示标准错误输出它们所使用的描述符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">In [20]: f.fileno()</div><div class="line">Out[20]: 8</div></pre></td></tr></table></figure></p>
-<p>f.readline()   读文件一行数据<br>f.readlines()  读文件指针处至尾部所有数据包括行结束符\n，一行为一个对象，然后多行多个对象组成一个列表</p>
-<p>返回指针在当前文件中的位置，表示在多少个字节的位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">In [23]: f.tell()</div><div class="line">Out[23]: 597</div></pre></td></tr></table></figure></p>
-<p> f.seek(offset, whence)  offset:表示偏移多少个字节，whence表示从 多少节字数开始偏移。下面表示回到文件首部：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">In [37]: f.seek(0)</div><div class="line">Out[37]: 0</div></pre></td></tr></table></figure></p>
-<p>f.read()   读取给定字节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [44]: f.seek(0)</div><div class="line">Out[44]: 0</div><div class="line">In [45]: f.read(10)</div><div class="line">Out[45]: &apos;# /etc/fst&apos;</div><div class="line">In [46]: f.tell()</div><div class="line">Out[46]: 10</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">In [57]: f = open(&apos;/etc/fstab&apos;, &apos;r&apos;)</div><div class="line">In [58]: f.name                   #返回文件名</div><div class="line">Out[58]: &apos;/etc/fstab&apos;</div><div class="line"></div><div class="line">In [59]: f.closed       #返回是否关闭文件</div><div class="line">Out[59]: False</div><div class="line"></div><div class="line">In [60]: f.close()      #关闭文件</div><div class="line">In [61]: f.closed</div><div class="line">Out[61]: True</div></pre></td></tr></table></figure>
-<h3 id="OS-对象"><a href="#OS-对象" class="headerlink" title="OS 对象"></a>OS 对象</h3>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciy59bcan000a29jxos8pq11q" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-orm-原理篇" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/15/python-orm-原理篇/" class="article-date">
-  <time datetime="2017-01-15T12:51:41.000Z" itemprop="datePublished">2017-01-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/15/python-orm-原理篇/">python-orm-原理篇</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>声明：部份参考 <a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="external">原文</a></p>
+        <blockquote>
+<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="ciy59bcas000g29jxbeerqsc7" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-02-流程控制" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/15/python-02-流程控制/" class="article-date">
-  <time datetime="2017-01-15T05:03:41.000Z" itemprop="datePublished">2017-01-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/15/python-02-流程控制/">python_02_流程控制/枚举</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>流程控制</li>
-<li>三元表达式</li>
-<li>枚举类</li>
-</ul>
-<h1 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h1><h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2><p>if 玩猜数字游戏<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/env python3</div><div class="line">i = 0</div><div class="line">try_num = 3</div><div class="line">AGE = 27</div><div class="line">while i &lt; try_num:</div><div class="line">    enter = int(input(&apos;enter you num:&apos;))</div><div class="line">    if enter == AGE:</div><div class="line">        print(&quot;Conguratulations, you got it&quot;)</div><div class="line">        break</div><div class="line">    elif enter &gt; AGE:</div><div class="line">        print(&quot;too large&quot;)</div><div class="line">        i += 1</div><div class="line">    else:</div><div class="line">        print(&quot;too smaller&quot;)</div><div class="line">        i+=1</div></pre></td></tr></table></figure></p>
-<p>if成绩查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/env python3</div><div class="line">__author__ = &quot;wxq&quot;</div><div class="line"></div><div class="line">enter_score = int(input(&quot;enter your score :&quot;).strip())</div><div class="line"></div><div class="line">if enter_score &lt;=100 and enter_score &gt;=0:</div><div class="line">    if enter_score &gt;=90:</div><div class="line">        print(&quot;A&quot;)</div><div class="line">    elif enter_score &gt;=80:</div><div class="line">        print(&quot;B&quot;)</div><div class="line">    elif enter_score &gt;=70:</div><div class="line">        print(&quot;C&quot;)</div><div class="line">    elif enter_score &gt;= 60:</div><div class="line">        print(&quot;D&quot;)</div><div class="line">    else:</div><div class="line">        print(&quot;you are too low&quot;)</div><div class="line"></div><div class="line">else:</div><div class="line">    print(&quot;invalid score&quot;)</div></pre></td></tr></table></figure></p>
-<p>##while<br>这里主要注意与<code>shell</code>中的区别，python里<code>while</code>后有<code>else</code>, 即while语句正常执行完后才执行else中的语句，否则不会执行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">i = 0</div><div class="line">while i &lt;3:</div><div class="line">    if i &gt;=2:</div><div class="line">        break</div><div class="line">    print(i)</div><div class="line">    i += 1</div><div class="line">else:</div><div class="line">    print(&apos;end&apos;)    </div><div class="line">#结果</div><div class="line">0</div><div class="line">1</div></pre></td></tr></table></figure></p>
-<p>来个小练习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">count1 = 0</div><div class="line">while True:</div><div class="line">    if count1 == 10000000:</div><div class="line">        break</div><div class="line">    count1 += 1</div><div class="line">print(&quot;cost&quot;, time.time() - t1_start, count1)</div><div class="line"></div><div class="line"></div><div class="line">t2_start = time.time()</div><div class="line">count2 = 0</div><div class="line">while count2 &lt; 10000000:</div><div class="line">    count2 += 1</div><div class="line">print(&quot;cose&quot;, time.time() - t2_start, count2)</div></pre></td></tr></table></figure></p>
-<h1 id="for"><a href="#for" class="headerlink" title="for"></a>for</h1><p> 很懒什么也没有留下…<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">count = 3</div><div class="line">AGE = 27</div><div class="line">for i in range(100):</div><div class="line">    if i &gt;3:</div><div class="line">        enter=input(&quot;are you want to keep trying ....&quot;).strip()</div><div class="line">        if enter == &quot;y&quot;:</div><div class="line">            count = 0</div><div class="line">        else:</div><div class="line">            break</div><div class="line"></div><div class="line">    enter = int(input(&apos;enter you num:&apos;))</div><div class="line">    if enter == AGE:</div><div class="line">        print(&quot;Conguratulations, you got it&quot;)</div><div class="line">        break</div><div class="line">    elif enter &gt; AGE:</div><div class="line">        print(&quot;too large&quot;)</div><div class="line">    else:</div><div class="line">        print(&quot;too smaller&quot;)</div><div class="line"></div><div class="line">    count +=1</div></pre></td></tr></table></figure></p>
-<h2 id="continue-break"><a href="#continue-break" class="headerlink" title="continue/break"></a>continue/break</h2><p><code>continue</code>结束本次循环，提前进入下一轮循环<br><code>break</code> 直接终止循环</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/env python3</div><div class="line">__author__ = &quot;wangxiaoqiang&quot;</div><div class="line"></div><div class="line">for i in range(10):</div><div class="line">    if i == 5:</div><div class="line">        for j in range(10):</div><div class="line">            if j == 8:</div><div class="line">                break</div><div class="line">            print(&quot;inner loop&quot;,j)</div><div class="line">        continue</div><div class="line">    print(&quot;loop&quot;,i)</div><div class="line">结果：</div><div class="line">loop 0</div><div class="line">loop 1</div><div class="line">loop 2</div><div class="line">loop 3</div><div class="line">loop 4</div><div class="line">inner loop 0</div><div class="line">inner loop 1</div><div class="line">inner loop 2</div><div class="line">inner loop 3</div><div class="line">inner loop 4</div><div class="line">inner loop 5</div><div class="line">inner loop 6</div><div class="line">inner loop 7</div><div class="line">loop 6</div><div class="line">loop 7</div><div class="line">loop 8</div><div class="line">loop 9</div></pre></td></tr></table></figure>
-<h1 id="三元表达式"><a href="#三元表达式" class="headerlink" title="三元表达式"></a>三元表达式</h1><p>三元表达式很简单， 这里来几个小例子就明白了</p>
-<p>条件满足为1，否则为False<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">n [44]: 1 if True else False</div><div class="line">Out[44]: 1</div></pre></td></tr></table></figure></p>
-<p>成员关系判断，条件满足为True, 否则为False<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [53]: True if 1 in [1,2,3] else False</div><div class="line">Out[53]: True</div><div class="line"></div><div class="line">In [54]: True if 0 in [1,2,3] else False</div><div class="line">Out[54]: False</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [45]: a = 10</div><div class="line">In [46]: b = 15</div><div class="line"></div><div class="line">In [47]: a if a&gt;b else b</div><div class="line">Out[47]: 15</div></pre></td></tr></table></figure>
-<h1 id="枚举类"><a href="#枚举类" class="headerlink" title="枚举类"></a>枚举类</h1><p>枚举 <code>enumerate</code>, 在用到index和value对应关系时能用到enumerate函数，参数为可遍历对象（字符串，列表等），返回多个元组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [3]: for i in enumerate(&apos;abc&apos;):</div><div class="line">   ...:     print(i)</div><div class="line">   ...:     </div><div class="line">(0, &apos;a&apos;)</div><div class="line">(1, &apos;b&apos;)</div><div class="line">(2, &apos;c&apos;)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">In [4]: a = enumerate(&apos;abc&apos;)</div><div class="line"></div><div class="line">In [5]: list(a)</div><div class="line">Out[5]: [(0, &apos;a&apos;), (1, &apos;b&apos;), (2, &apos;c&apos;)]</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">In [6]: import string</div><div class="line">In [7]: s  = string.ascii_uppercase</div><div class="line">In [8]: E = enumerate(s)</div><div class="line">In [9]: s</div><div class="line">Out[9]: &apos;ABCDEFGHIJKLMNOPQRSTUVWXYZ&apos;</div><div class="line"></div><div class="line">In [10]: list(E)</div><div class="line">Out[10]: </div><div class="line">[(0, &apos;A&apos;),</div><div class="line"> (1, &apos;B&apos;),</div><div class="line">此处略...</div><div class="line"></div><div class="line">In [11]: for i in E:</div><div class="line">   ....:     print(i, end=&apos; &apos;)</div><div class="line">   ....:     </div><div class="line">In [12]: E = enumerate(s)</div><div class="line">In [13]: for i in E:</div><div class="line">    print(i, end=&apos; &apos;)</div><div class="line">   ....:     </div><div class="line">(0, &apos;A&apos;) (1, &apos;B&apos;) (2, &apos;C&apos;) (3, &apos;D&apos;) (4, &apos;E&apos;) (5, &apos;F&apos;) (6, &apos;G&apos;) (7, &apos;H&apos;) (8, &apos;I&apos;) (9, &apos;J&apos;) (10, &apos;K&apos;) (11, &apos;L&apos;) (12, &apos;M&apos;) (13, &apos;N&apos;) (14, &apos;O&apos;) (15, &apos;P&apos;) (16, &apos;Q&apos;) (17, &apos;R&apos;) (18, &apos;S&apos;) (19, &apos;T&apos;) (20, &apos;U&apos;) (21, &apos;V&apos;) (22, &apos;W&apos;) (23, &apos;X&apos;) (24, &apos;Y&apos;) (25, &apos;Z&apos;)</div></pre></td></tr></table></figure>
-<p>枚举类用法<br>int 常量默认从1开始，我们来看个例子</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">In [16]: from enum import Enum</div><div class="line"></div><div class="line">In [17]: Month = Enum(&apos;Month&apos;,  (&apos;January&apos;, &apos;February&apos;, &apos;March&apos;, &apos;April&apos;, &apos;May&apos;, &apos;June&apos;, &apos;July&apos;, &apos;August&apos;, &apos;September&apos;, &apos;October&apos;, &apos;November&apos;, &apos;December&apos;))</div><div class="line">In [19]: print(Month.January)</div><div class="line">Month.January</div><div class="line"></div><div class="line">In [20]: print(Month[&apos;January&apos;])</div><div class="line">Month.January</div><div class="line"></div><div class="line">In [21]: print(Month[&apos;January&apos;].value)</div><div class="line">1</div><div class="line"></div><div class="line">In [22]: print(Month(4))</div><div class="line">Month.April</div><div class="line">In [24]: for name, members in Month.__members__.items():</div><div class="line">    print(&quot;%s =&gt; %s =&gt; %s&quot; % (name, members, members.value))</div><div class="line">   ....:     </div><div class="line">January =&gt; Month.January =&gt; 1</div><div class="line">February =&gt; Month.February =&gt; 2</div><div class="line">March =&gt; Month.March =&gt; 3</div><div class="line">April =&gt; Month.April =&gt; 4</div><div class="line">May =&gt; Month.May =&gt; 5</div><div class="line">June =&gt; Month.June =&gt; 6</div><div class="line">July =&gt; Month.July =&gt; 7</div><div class="line">August =&gt; Month.August =&gt; 8</div><div class="line">September =&gt; Month.September =&gt; 9</div><div class="line">October =&gt; Month.October =&gt; 10</div><div class="line">November =&gt; Month.November =&gt; 11</div><div class="line">December =&gt; Month.December =&gt; 12</div></pre></td></tr></table></figure>
-<p>自定义枚举类（自定义int常量从0开始）<br>@unique帮助我们检查没有重复值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">In [29]: from enum import Enum, unique</div><div class="line"></div><div class="line">In [30]: @unique</div><div class="line">   ....: class Myday(Enum):</div><div class="line">   ....:     Sun = 0</div><div class="line">   ....:     Mon = 1</div><div class="line">   ....:     Tue = 2</div><div class="line">   ....:     Wed = 3</div><div class="line">   ....:     Thu = 4</div><div class="line">   ....:     Fri = 5</div><div class="line">   ....:     Sat = 6</div><div class="line">   ....:     </div><div class="line"></div><div class="line">In [31]: Myday.Fri</div><div class="line">Out[31]: &lt;Myday.Fri: 5&gt;</div><div class="line"></div><div class="line">In [32]: print(Myday.Fri)</div><div class="line">Myday.Fri</div><div class="line"></div><div class="line">In [33]: print(Myday.Fri.value)</div><div class="line">5</div><div class="line">In [34]: print(Myday[&apos;Fri&apos;])</div><div class="line">Myday.Fri</div><div class="line"></div><div class="line">In [35]: print(Myday(5))</div><div class="line">Myday.Fri</div><div class="line"></div><div class="line">In [37]: for name, members in Myday.__members__.items():</div><div class="line">   ....:     print(&quot;%s, %s, %s&quot; % (name, members, members.value))</div><div class="line">   ....:     </div><div class="line">Sun, Myday.Sun, 0</div><div class="line">Mon, Myday.Mon, 1</div><div class="line">Tue, Myday.Tue, 2</div><div class="line">Wed, Myday.Wed, 3</div><div class="line">Thu, Myday.Thu, 4</div><div class="line">Fri, Myday.Fri, 5</div><div class="line">Sat, Myday.Sat, 6</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制/" data-id="ciy59bcal000829jxc67q34a5" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-01-基础" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/08/python-01-基础/" class="article-date">
-  <time datetime="2017-01-08T02:37:13.000Z" itemprop="datePublished">2017-01-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/08/python-01-基础/">python_01_基础篇</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>python简介</li>
-<li>python变量</li>
-<li>数据类型</li>
-<li>运算</li>
-<li>用户交互</li>
-</ul>
-<h1 id="第一节-简介"><a href="#第一节-简介" class="headerlink" title="第一节 简介"></a>第一节 简介</h1><p>Python 简介<br>Python 安装<br>More info: <a href="https://www.python.org/" target="_blank" rel="external">官网</a></p>
-<p>Python第一个程序<code>斐波那契数列</code>：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># Python 3: Fibonacci series up to n</div><div class="line">&gt;&gt;&gt; def fib(n):</div><div class="line">&gt;&gt;&gt;     a, b = 0, 1</div><div class="line">&gt;&gt;&gt;     while a &lt; n:</div><div class="line">&gt;&gt;&gt;         print(a, end=&apos; &apos;)</div><div class="line">&gt;&gt;&gt;         a, b = b, a+b</div><div class="line">&gt;&gt;&gt;     print()</div><div class="line">&gt;&gt;&gt; fib(1000)</div><div class="line">0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987</div></pre></td></tr></table></figure>
-<p>Python 编码<br>Python 注释<br>单行注释：#<br>多行注释：英文三引号  ‘’’<br>‘’’<br>say somethig<br>‘’’<br>有种特殊的用法,此时并非注释<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@apt:/mnt/proper<span class="comment"># cat people_info.py </span></div><div class="line"><span class="comment">#!/usr/bin/env python3</span></div><div class="line">name = input(<span class="string">"your name: "</span>).strip()</div><div class="line">age = input(<span class="string">"your age: "</span>).strip()</div><div class="line">salary = input(<span class="string">"your money: "</span>).strip()</div><div class="line"></div><div class="line">info = <span class="string">''</span><span class="string">' -------- day day up ------------</span></div><div class="line">     name: %s</div><div class="line">     age: %s</div><div class="line">     salary: %s</div><div class="line">'<span class="string">''</span> % (name, age, salary)</div><div class="line"></div><div class="line"><span class="built_in">print</span>(info)</div><div class="line">root@apt:/mnt/proper<span class="comment"># python3 people_info.py </span></div><div class="line">your name: wxq </div><div class="line">your age: 18</div><div class="line">your money: 5000</div><div class="line"> -------- day day up ------------</div><div class="line">     name: wxq</div><div class="line">     age: 18</div><div class="line">     salary: 5000</div></pre></td></tr></table></figure></p>
-<h1 id="第二节-变量"><a href="#第二节-变量" class="headerlink" title="第二节 变量"></a>第二节 变量</h1><h4 id="2-1-变量规范"><a href="#2-1-变量规范" class="headerlink" title="2.1 变量规范"></a>2.1 变量规范</h4><p>变量： 字母，数字，下划线且不能以数字开头，并系统己经引用的关键字不能为变量名<br>关键字<br>[‘and’, ‘as’, ‘assert’, ‘break’, ‘class’, ‘continue’, ‘def’, ‘del’, ‘elif’, ‘else’, ‘except’, ‘exec’, ‘finally’, ‘for’, ‘from’, ‘global’, ‘if’, ‘import’,<br>‘in’, ‘is’, ‘lambda’, ‘not’, ‘or’, ‘pass’, ‘print’, ‘raise’, ‘return’, ‘try’, ‘while’, ‘with’, ‘yield’]<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">In [2]: name = <span class="string">"wxq"</span></div><div class="line"></div><div class="line">In [3]: <span class="built_in">print</span>(name)</div><div class="line">wxq</div></pre></td></tr></table></figure></p>
-<h4 id="2-2-变量标准"><a href="#2-2-变量标准" class="headerlink" title="2.2 变量标准"></a>2.2 变量标准</h4><p>eg: age_of_name = ‘wxq’   #习惯上</p>
-<pre><code>AGE_OF_NAME = &quot;XX&quot;  #常量
-Age_Of_Name = &quot;XX&quot;  #驼峰体
-Age_of_name = &quot;xx&quot;  #类名
-</code></pre><h1 id="第三节-数据类型"><a href="#第三节-数据类型" class="headerlink" title="第三节 数据类型"></a>第三节 数据类型</h1><h4 id="3-1-数字"><a href="#3-1-数字" class="headerlink" title="3.1 数字"></a>3.1 数字</h4><p>int(整型)<br>long(长整型) python3 中己经没有了<br>float(浮点型)<br>complex(复数)</p>
-<h4 id="3-2-布尔值"><a href="#3-2-布尔值" class="headerlink" title="3.2 布尔值"></a>3.2 布尔值</h4><p>True 1<br>False 0</p>
-<h4 id="3-3-字符串"><a href="#3-3-字符串" class="headerlink" title="3.3 字符串"></a>3.3 字符串</h4><p>不可变类型<br>字符串常用功能：<br>字符串拼接</p>
-<p>join()方法： 用于指定字符把序列中的每一个元素连接起来<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">In [11]: str = <span class="string">'_'</span></div><div class="line">In [12]: seq = (<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>)</div><div class="line">In [13]: str.join(seq)</div><div class="line">Out[13]: <span class="string">'a_b_c'</span></div></pre></td></tr></table></figure></p>
-<p>移除前后空白<br>分割<br>len()长度<br>index()索引<br>split()切片<br>格式化输出<br>% 格式化输出<br>%s 字符串<br>%d 数字<br>%f 符点<br>%r 原生字符串，不会对\n \t进行转换<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [5]: name = <span class="string">'wxq'</span></div><div class="line">In [6]: <span class="built_in">print</span>(<span class="string">"hello, %s"</span> % name)</div><div class="line">hello, wxq</div></pre></td></tr></table></figure></p>
-<p>format 格式化输出<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">In [7]: <span class="string">"&lt;&#123;tag&#125;&gt;&#123;str&#125;&lt;/&#123;tag&#125;&gt;"</span>.format(tag=<span class="string">'b'</span>, str=<span class="string">'hello world'</span>)</div><div class="line">Out[7]: <span class="string">'&lt;b&gt;hello world&lt;/b&gt;'</span></div></pre></td></tr></table></figure></p>
-<h4 id="3-4-列表"><a href="#3-4-列表" class="headerlink" title="3.4 列表"></a>3.4 列表</h4><p>可变类型<br>name = [‘hello’, ‘world’]<br>通过下标访问列表中元素，下标从0开始计数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [9]: name[0]</div><div class="line">Out[9]: <span class="string">'hello'</span></div><div class="line"></div><div class="line">In [10]: name[-1]</div><div class="line">Out[10]: <span class="string">'world'</span></div></pre></td></tr></table></figure></p>
-<p>列表常用操作：<br>切片：取出多个元素<br>追加<br>插入<br>修改<br>删除<br>扩展</p>
-<h4 id="3-5-字典"><a href="#3-5-字典" class="headerlink" title="3.5 字典"></a>3.5 字典</h4><p>python支持dictionary,采用key-value存储方式，在存放时根据key算出value的存放位置，这样取的时候根据key直接拿到value，这也说明了为什么字典查找速度比列表快的原因。</p>
-<p>由于dict根据key来计算value的存储位置，就决定了dict的key必须是不可变对象，利于每次计算相同的key得出的相同的结果，这个通过key计算位置的算法称为哈希算法（Hash）。要保证hash的正确性，作为key的对象就不能变.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">In [2]: dict = &#123;&#125;</div><div class="line">In [3]: for i in range(4):</div><div class="line">   ...:     k = &apos;f%s&apos; % (i+1)</div><div class="line">   ...:     v = &apos;v%s&apos; % i</div><div class="line">   ...:     dict[k] = v</div><div class="line">   ...:     </div><div class="line">In [4]: dict</div><div class="line">Out[4]: &#123;&apos;f1&apos;: &apos;v0&apos;, &apos;f2&apos;: &apos;v1&apos;, &apos;f3&apos;: &apos;v2&apos;, &apos;f4&apos;: &apos;v3&apos;&#125;</div><div class="line"></div><div class="line">In [5]: dict.get(&apos;f4&apos;)</div><div class="line">Out[5]: &apos;v3&apos;</div><div class="line"></div><div class="line">In [6]: for k,v in dict.items():</div><div class="line">   ...:     print(k,v)</div><div class="line">   ...:     </div><div class="line">(&apos;f1&apos;, &apos;v0&apos;)</div><div class="line">(&apos;f2&apos;, &apos;v1&apos;)</div><div class="line">(&apos;f3&apos;, &apos;v2&apos;)</div><div class="line">(&apos;f4&apos;, &apos;v3&apos;)</div></pre></td></tr></table></figure>
-<h4 id="3-6-元组"><a href="#3-6-元组" class="headerlink" title="3.6 元组"></a>3.6 元组</h4><h4 id="3-7-集合"><a href="#3-7-集合" class="headerlink" title="3.7 集合"></a>3.7 集合</h4><p>可变集合<br>集合：一组无序排列的可哈希的值，集合没有特定语法格式，使用工厂函数创建。<br>支持：<br>     支持集合关系测试：并集<br>     支持成员关系测试：in /not in/迭代<br>不支持： 索引,元素获取，切片</p>
-<h4 id="3-8-集合forzent"><a href="#3-8-集合forzent" class="headerlink" title="3.8 集合forzent()"></a>3.8 集合forzent()</h4><p>不可变集合</p>
-<h1 id="第四节-运算"><a href="#第四节-运算" class="headerlink" title="第四节 运算"></a>第四节 运算</h1><h1 id="第五节-用户交互"><a href="#第五节-用户交互" class="headerlink" title="第五节 用户交互"></a>第五节 用户交互</h1><p>for python2.x<br>name = raw_input(“What is your name:”)<br>for python3.x<br>name = input(“What is your name:”)<br>eg: 想要输入密码时不可见，可以利用getpass模块的getpass()方法<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">root@apt:/mnt<span class="comment"># cat getp.py </span></div><div class="line"><span class="comment">#!/usr/bin/env python3</span></div><div class="line">import getpass</div><div class="line"><span class="built_in">pwd</span> = getpass.getpass(<span class="string">"请输入密码："</span>)</div><div class="line"><span class="built_in">print</span>(<span class="built_in">pwd</span>)</div><div class="line">root@apt:/mnt<span class="comment"># python3 getp.py </span></div><div class="line">请输入密码：</div><div class="line">123</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础/" data-id="ciy59bcai000629jxi4s50b5z" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-PyCharm基本使用-01" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/05/PyCharm基本使用-01/" class="article-date">
-  <time datetime="2017-01-05T02:37:13.000Z" itemprop="datePublished">2017-01-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/05/PyCharm基本使用-01/">PyCharm基本使用-01</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><p>More info: 参考官网  <a href="http://www.jetbrains.com/pycharm/download/#section=windows" target="_blank" rel="external">下载</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">1 在Pycharm为你的python项目配置python解释器</div><div class="line">	 Project当前项目名为&gt;&gt;Project Interpreter &gt;&gt; add Local</div><div class="line">2 在Pycharm下创建Python 文件，Python模块</div><div class="line">	 File&gt;&gt;New&gt;&gt;Python file</div><div class="line">	 File &gt;&gt; New &gt;&gt; Python Package</div><div class="line">3 使用Pycharm安装python 三方模块</div><div class="line">	Project 当前项目名&gt;&gt;  Project Interpreter &gt;&gt; 点击右侧绿色小加号</div><div class="line">4  Pycharm基本设置，例如不使用tab, tab=4空格，字体，字体颜色，主题，脚本设置，显示行号等，</div><div class="line">	如何导出入导入自定义设置</div><div class="line">	1 不使用tab,tab=4空格：Editor&gt;&gt;Code Style&gt;&gt;python</div><div class="line">	2 字体，字体颜色：Editor&gt; Color&amp;Fronts &gt;&gt; python</div><div class="line">	3 关闭自动更新：Apperance&amp; Behavior &gt; System Setting &gt;&gt; Updates</div><div class="line">	4 脚本关设置: Editor&gt;&gt; File and Code Templates &gt;&gt; Python Script 注：其它类似</div><div class="line">	5 显示行号： Editor&gt;&gt; Geratal &gt;&gt; Apperance &gt;&gt; Show Line number 注：2016.2默认显示行号</div><div class="line">	6 右侧坚线是PEP8的代码规范，提示一行不要超过120个字符</div><div class="line">	7 导出，导入你自定义的配置：File &gt;&gt; Export Settings,  Import Settings</div><div class="line">5 常用快捷键，例如复制当前行，删除当前行，批量注释，缩进，查找和替换</div><div class="line">	1 常用快捷键的查询和配置：Keymap</div><div class="line">		1  Ctrl + D :    复制当前行</div><div class="line">		2  Ctrl + E :    删除当前行</div><div class="line">		3  Ctrl + Enter  快捷换行</div><div class="line">		4  Ctrl +  /    快捷注释，（选中多行后可以批量注释）</div><div class="line">		5  Tab:  缩进当前行（选中多行后可以批量缩进）</div><div class="line">		6  Shift + Tab : 取消缩进（选中多行后可以批量取消缩进）</div><div class="line">		7  Ctrl + F:  查找</div><div class="line">		8  Ctrl + H :  替换</div><div class="line">		9  批量注释：ctrl + ?</div><div class="line">6 Pycharm安装插件，例如Markdown supprot,数据库支持插件等</div><div class="line">		1  Plugins &gt; Browse reposltories (下方三个按钮中间寻个)&gt;&gt; </div><div class="line">			  搜索 markdown supprot &gt; Install</div><div class="line">		2 右上解View有三个选项可选，一般我们都用中间那个左侧编写，右侧实时预览</div><div class="line">7 Git配置 ？</div><div class="line">		1  需要本地安装好git</div><div class="line">		2  Version control  &gt; git</div><div class="line">		3  配置了git等版本控制系统之后，可以很方便的diff查看文件的不同</div><div class="line">8 常用操作指南，例如复制文件路径，在文件管理中打开，快速定位，查看模块结构视图，tab批量换space ,TODO的使用 ，</div><div class="line">  Debug的使用，</div><div class="line">	1 复制文件路径: 左侧文件列表右键选中的文 件&gt; Copy Path</div><div class="line">	2 在文件管理器中打开：右键选中的文件&gt;&gt;往下找到show In Explorer</div><div class="line">	3 快速定位： Ctrl + 某些内键模块之后，点击在源文件中展开</div><div class="line">	4 查看结构： IDE左侧边栏Structure 查看当前项目的结构</div><div class="line">	5  tab 批量换space: Editor &gt; Convert Indents</div><div class="line">	6  Todo的使用： #todo要记录的事情</div><div class="line">	7  tab页上右键 &gt;&gt; Move Right (Down) , 把当前Tab 页移到窗口右边（下边），方便对比</div><div class="line">	8  文件中右键 &gt;&gt;Local History 能够查看文件修改前后对比</div><div class="line">	9  IDE右下解能看到一些有用的信息，光标当前在第几行的基本几个字符，当前回车换行，当前编码类型 ，</div><div class="line">           当前git 分支</div><div class="line">	10  IDE 右侧边栏&gt;&gt;  Database</div><div class="line">9  如何去掉烦人的波浪线？PEP8是什么？</div></pre></td></tr></table></figure></p>
-<p>完</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ciy59bca7000029jxyfyk2bxb" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-为什么写博客" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/01/为什么写博客/" class="article-date">
-  <time datetime="2017-01-01T00:08:08.000Z" itemprop="datePublished">2017-01-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/生活/">生活</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/01/为什么写博客/">为什么写博客</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>.</p>
-<h2 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h2><h3 id="欢迎大家来到个人博客-我来自成都无疑不幸与万幸是北漂IT-engineer-尤如www-digmyth-com"><a href="#欢迎大家来到个人博客-我来自成都无疑不幸与万幸是北漂IT-engineer-尤如www-digmyth-com" class="headerlink" title="欢迎大家来到个人博客,我来自成都无疑不幸与万幸是北漂IT engineer ! 尤如www.digmyth.com,"></a>欢迎大家来到个人博客,我来自成都无疑不幸与万幸是北漂IT engineer ! 尤如www.digmyth.com,</h3><h3 id="一个想要遆造神话却总在路上的人。"><a href="#一个想要遆造神话却总在路上的人。" class="headerlink" title="一个想要遆造神话却总在路上的人。"></a>一个想要遆造神话却总在路上的人。</h3><hr>
-<p>.</p>
-<h2 id="一个选择"><a href="#一个选择" class="headerlink" title="一个选择"></a>一个选择</h2><h3 id="至于为什么写博客，有很多原因-一段时间，一个心境，一段经历，一个情怀。在一个适当的时间"><a href="#至于为什么写博客，有很多原因-一段时间，一个心境，一段经历，一个情怀。在一个适当的时间" class="headerlink" title="至于为什么写博客，有很多原因, 一段时间，一个心境，一段经历，一个情怀。在一个适当的时间"></a>至于为什么写博客，有很多原因, 一段时间，一个心境，一段经历，一个情怀。在一个适当的时间</h3><h3 id="做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。"><a href="#做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。" class="headerlink" title="做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。"></a>做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。</h3><hr>
-<p>.</p>
-<h2 id="认知时间"><a href="#认知时间" class="headerlink" title="认知时间"></a>认知时间</h2><h3 id="时间对年轻人来说太快了，2016年己远去，2017年己来临-刚好2017年1月1日-此时成立博客也许是"><a href="#时间对年轻人来说太快了，2016年己远去，2017年己来临-刚好2017年1月1日-此时成立博客也许是" class="headerlink" title="时间对年轻人来说太快了，2016年己远去，2017年己来临,刚好2017年1月1日,此时成立博客也许是"></a>时间对年轻人来说太快了，2016年己远去，2017年己来临,刚好2017年1月1日,此时成立博客也许是</h3><h3 id="天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住"><a href="#天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住" class="headerlink" title="天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住"></a>天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住</h3><h3 id="它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么"><a href="#它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么" class="headerlink" title="它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么"></a>它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么</h3><h3 id="错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感-让人"><a href="#错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感-让人" class="headerlink" title="错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感,让人"></a>错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感,让人</h3><h3 id="很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己"><a href="#很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己" class="headerlink" title="很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己"></a>很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己</h3><h3 id="很充实"><a href="#很充实" class="headerlink" title="很充实."></a>很充实.</h3><hr>
-<p>.</p>
-<h2 id="共鸣共勉"><a href="#共鸣共勉" class="headerlink" title="共鸣共勉"></a>共鸣共勉</h2><h3 id="欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗"><a href="#欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗" class="headerlink" title="欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗"></a>欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗</h3><h3 id="平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在"><a href="#平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在" class="headerlink" title="平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在"></a>平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在</h3><h3 id="沉淀中积累-才不会迷失方向-才不会迷失自我。-越是浮躁越是保持淡定，越是功利越是要适度恬静"><a href="#沉淀中积累-才不会迷失方向-才不会迷失自我。-越是浮躁越是保持淡定，越是功利越是要适度恬静" class="headerlink" title="沉淀中积累,才不会迷失方向,才不会迷失自我。 越是浮躁越是保持淡定，越是功利越是要适度恬静."></a>沉淀中积累,才不会迷失方向,才不会迷失自我。 越是浮躁越是保持淡定，越是功利越是要适度恬静.</h3><h3 id="焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难"><a href="#焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难" class="headerlink" title="焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难"></a>焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难</h3><h3 id="的岁月-再大的风险和考验都可以轻轻的付之一笑-有定力的人才有希望，告别2016，迎来2017，善"><a href="#的岁月-再大的风险和考验都可以轻轻的付之一笑-有定力的人才有希望，告别2016，迎来2017，善" class="headerlink" title="的岁月,再大的风险和考验都可以轻轻的付之一笑.有定力的人才有希望，告别2016，迎来2017，善"></a>的岁月,再大的风险和考验都可以轻轻的付之一笑.有定力的人才有希望，告别2016，迎来2017，善</h3><h3 id="待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼-给自己多些淡定和从容"><a href="#待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼-给自己多些淡定和从容" class="headerlink" title="待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼, 给自己多些淡定和从容."></a>待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼, 给自己多些淡定和从容.</h3><hr>
-<p>.</p>
-<h2 id="记录点滴"><a href="#记录点滴" class="headerlink" title="记录点滴"></a>记录点滴</h2><h3 id="记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。"><a href="#记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。" class="headerlink" title="记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。"></a>记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。</h3>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ciy59bcau000i29jx287f6iyn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ciymyrxyf000w16jxaw7a0www" class="article-share-link">Share</a>
       
       
     </footer>
@@ -536,6 +705,10 @@ Age_of_name = &quot;xx&quot;  #类名
 
   
 
+
+  <nav id="page-nav">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+  </nav>
 </section>
         
           <aside id="sidebar">
@@ -544,7 +717,7 @@ Age_of_name = &quot;xx&quot;  #类名
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
     </div>
   </div>
 
@@ -559,7 +732,7 @@ Age_of_name = &quot;xx&quot;  #类名
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -572,23 +745,23 @@ Age_of_name = &quot;xx&quot;  #类名
       <ul>
         
           <li>
-            <a href="/2017/01/26/python-04-装饰器/">python-04-装饰器</a>
+            <a href="/2017/05/01/python-20-01-web开发/">python-20-01-web开发</a>
           </li>
         
           <li>
-            <a href="/2017/01/23/python-03-02-函数/">python-03-02-函数</a>
+            <a href="/2017/04/28/python-07-02-面象对象高级编程/">python-07-02-面象对象高级编程</a>
           </li>
         
           <li>
-            <a href="/2017/01/20/hello-world/">Hello World</a>
+            <a href="/2017/03/31/python-07-01-面象对象编程/">python-07-01-面象对象编程</a>
           </li>
         
           <li>
-            <a href="/2017/01/20/python-03-01-IO/">python-03-01-IO</a>
+            <a href="/2017/03/31/python-06-02-网络编程/">python-06-02-网络编程</a>
           </li>
         
           <li>
-            <a href="/2017/01/15/python-orm-原理篇/">python-orm-原理篇</a>
+            <a href="/2017/03/03/python-06-01-进程和线程/">python-06-01-进程和线程</a>
           </li>
         
       </ul>

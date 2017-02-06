@@ -23,7 +23,7 @@ OS 对象
 IO 编程文件对象文件对象用于访问系统文件的接口，文件系统是计算机存储数据，组织数据的方式。计算机文件是存储在设备中的一段数据流，归属于文件系统管理之下。是计算机中由OS管理的具有名字的存储区域，对Linux而言，文件可以被看作字节序列。
 序列化的对象才能存储的文件系统中，非字节序列化的数据不能存储在文件系统中的。
 文件对象接口不仅用于访问普通文件，还可以访问套接字">
-<meta property="og:updated_time" content="2017-01-17T09:30:54.000Z">
+<meta property="og:updated_time" content="2017-01-29T14:23:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-03-01-IO">
 <meta name="twitter:description" content="目录
@@ -129,11 +129,14 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
 <p> f.seek(offset, whence)  offset:表示偏移多少个字节，whence表示从 多少节字数开始偏移。下面表示回到文件首部：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">In [37]: f.seek(0)</div><div class="line">Out[37]: 0</div></pre></td></tr></table></figure></p>
 <p>f.read()   读取给定字节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [44]: f.seek(0)</div><div class="line">Out[44]: 0</div><div class="line">In [45]: f.read(10)</div><div class="line">Out[45]: &apos;# /etc/fst&apos;</div><div class="line">In [46]: f.tell()</div><div class="line">Out[46]: 10</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">In [57]: f = open(&apos;/etc/fstab&apos;, &apos;r&apos;)</div><div class="line">In [58]: f.name                   #返回文件名</div><div class="line">Out[58]: &apos;/etc/fstab&apos;</div><div class="line"></div><div class="line">In [59]: f.closed       #返回是否关闭文件</div><div class="line">Out[59]: False</div><div class="line"></div><div class="line">In [60]: f.close()      #关闭文件</div><div class="line">In [61]: f.closed</div><div class="line">Out[61]: True</div></pre></td></tr></table></figure>
-<h3 id="OS-对象"><a href="#OS-对象" class="headerlink" title="OS 对象"></a>OS 对象</h3>
+<p>操作完毕会自动关闭文件对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">with  open(&apos;/root/wxq.txt&apos;,&apos;w+&apos;) as  f:</div><div class="line">      f.write(&apos;hello world!\n&apos;)</div></pre></td></tr></table></figure></p>
+<h3 id="OS-对象"><a href="#OS-对象" class="headerlink" title="OS 对象"></a>OS 对象</h3><p>一些方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">os.path   跟文件路径相关</div><div class="line">	basename()      路径基名</div><div class="line">	dirname()       路径目录名</div><div class="line"> 	join()</div><div class="line">	split()		返回dirname(), basename()元组</div><div class="line">	splitext()	返回(filename, extension_name)元组</div><div class="line">	</div><div class="line">信息：</div><div class="line">	getatime()</div><div class="line">	getctime()</div><div class="line">	getmtime()</div><div class="line">	getsize()	获取文件大小</div><div class="line"></div><div class="line">查询：</div><div class="line"> 	exists()	指定文件是否存在</div><div class="line">	isabs()		指定路径是否为绝对路径</div><div class="line">	isdir()		是否为目录</div><div class="line">	isfile()	是否为文件</div><div class="line">	islink()	是否为符号链接</div><div class="line">	ismount()	是否为挂载点</div><div class="line">	samefile()	两个路径是否指向了同一个文件</div></pre></td></tr></table></figure></p>
+<p>来几个小练习，似乎参悟了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import os</div><div class="line">&gt;&gt;&gt; os.path.split(&apos;/root/wxq.txt&apos;)</div><div class="line">(&apos;/root&apos;, &apos;wxq.txt&apos;)</div><div class="line">&gt;&gt;&gt; os.path.splitext(&apos;/root/wxq.txt&apos;)</div><div class="line">(&apos;/root/wxq&apos;, &apos;.txt&apos;)</div><div class="line">&gt;&gt;&gt; os.path.dirname(&apos;/root/wxq.txt&apos;)</div><div class="line">&apos;/root&apos;</div><div class="line">&gt;&gt;&gt; os.path.basename(&apos;/root/wxq.txt&apos;)</div><div class="line">&apos;wxq.txt&apos;</div><div class="line">&gt;&gt;&gt; dir, file_name = os.path.split(&apos;/root/wxq.txt&apos;)</div><div class="line">&gt;&gt;&gt; dir</div><div class="line">&apos;/root&apos;</div><div class="line">&gt;&gt;&gt; file_name</div><div class="line">&apos;wxq.txt&apos;</div></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciy59bcan000a29jxos8pq11q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciymyrxxc000c16jx1a2zrjal" class="article-share-link">Share</a>
       
       
     </footer>
@@ -142,11 +145,11 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
     
 <nav id="article-nav">
   
-    <a href="/2017/01/20/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/01/23/python-03-02-函数/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          Hello World
+          python-03-02-函数
         
       </div>
     </a>
@@ -170,7 +173,7 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
     </div>
   </div>
 
@@ -185,7 +188,7 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -198,23 +201,23 @@ IO 编程文件对象文件对象用于访问系统文件的接口，文件系�
       <ul>
         
           <li>
-            <a href="/2017/01/26/python-04-装饰器/">python-04-装饰器</a>
+            <a href="/2017/05/01/python-20-01-web开发/">python-20-01-web开发</a>
           </li>
         
           <li>
-            <a href="/2017/01/23/python-03-02-函数/">python-03-02-函数</a>
+            <a href="/2017/04/28/python-07-02-面象对象高级编程/">python-07-02-面象对象高级编程</a>
           </li>
         
           <li>
-            <a href="/2017/01/20/hello-world/">Hello World</a>
+            <a href="/2017/03/31/python-07-01-面象对象编程/">python-07-01-面象对象编程</a>
           </li>
         
           <li>
-            <a href="/2017/01/20/python-03-01-IO/">python-03-01-IO</a>
+            <a href="/2017/03/31/python-06-02-网络编程/">python-06-02-网络编程</a>
           </li>
         
           <li>
-            <a href="/2017/01/15/python-orm-原理篇/">python-orm-原理篇</a>
+            <a href="/2017/03/03/python-06-01-进程和线程/">python-06-01-进程和线程</a>
           </li>
         
       </ul>

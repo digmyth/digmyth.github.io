@@ -3,18 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>python-orm-原理篇 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>shell getopts语法 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="声明：部份参考 原文">
+  <meta name="description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下
+
+12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
 <meta property="og:type" content="article">
-<meta property="og:title" content="python-orm-原理篇">
-<meta property="og:url" content="http://www.digmyth.com/2017/01/15/python-orm-原理篇/index.html">
+<meta property="og:title" content="shell getopts语法">
+<meta property="og:url" content="http://www.digmyth.com/2017/01/29/shell-getopts语法/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="声明：部份参考 原文">
-<meta property="og:updated_time" content="2017-01-20T03:38:45.000Z">
+<meta property="og:description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下
+
+12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
+<meta property="og:updated_time" content="2017-01-29T02:02:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="python-orm-原理篇">
-<meta name="twitter:description" content="声明：部份参考 原文">
+<meta name="twitter:title" content="shell getopts语法">
+<meta name="twitter:description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下
+
+12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -63,14 +69,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-python-orm-原理篇" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/15/python-orm-原理篇/" class="article-date">
-  <time datetime="2017-01-15T12:51:41.000Z" itemprop="datePublished">2017-01-15</time>
+    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
   </div>
 
   </div>
@@ -81,7 +87,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      python-orm-原理篇
+      shell getopts语法
     </h1>
   
 
@@ -89,12 +95,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>声明：部份参考 <a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="external">原文</a></p>
+        <blockquote>
+<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="ciymyrxxx000u16jxkinlpbeo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ciymyrxyf000w16jxaw7a0www" class="article-share-link">Share</a>
       
       
     </footer>
@@ -103,19 +112,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2017/01/20/python-03-01-IO/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/02/01/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          python-03-01-IO
+          Hello World
         
       </div>
     </a>
   
   
-    <a href="/2017/01/15/python-02-流程控制/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/01/23/python-03-02-函数/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">python_02_流程控制/枚举</div>
+      <div class="article-nav-title">python-03-02-函数</div>
     </a>
   
 </nav>
