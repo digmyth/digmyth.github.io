@@ -91,6 +91,7 @@
 <li>目录</li>
 <li>函数概念</li>
 <li>普通函数</li>
+<li>匿名函数</li>
 <li>递归函数</li>
 <li>高阶函数</li>
 </ul>
@@ -107,7 +108,9 @@
 </li>
 </ul>
 <h4 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h4><p>def 是一个可执行语句,因此可以出现在任意语句可以出现的地方，甚至可以嵌套于其它if/while语句中<br>def 创建了一个对象并将其赋值给一个变量名，也就是函数名<br>return 用于返回结果对象,其为可选,无return语句时函数自动返回None对象,多个返回值时用逗号分隔，并组合为元组形式返回一个对象<br>def 语句运行之后可以在程序中通过函数后附加括号的形式进行调用</p>
-<h2 id="普通函数"><a href="#普通函数" class="headerlink" title="普通函数"></a>普通函数</h2><h2 id="递归函数"><a href="#递归函数" class="headerlink" title="递归函数"></a>递归函数</h2><p>定义： 一个函数的自我循环调用称为递归</p>
+<h2 id="普通函数"><a href="#普通函数" class="headerlink" title="普通函数"></a>普通函数</h2><h2 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [31]: f = (lambda x,y,z=10: x+y+z)       # 匿名函数也支持默认参数   </div><div class="line">In [32]: f(4,9)</div><div class="line">Out[32]: 23</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [56]: L = [ (lambda x: x*2),(lambda y: y*3) ]    # 匿名函数可以出现在任意表达式可以出现的地方</div><div class="line">In [56]: for i in L:</div><div class="line">   ....:     print(i(4))</div><div class="line">   ....:     </div><div class="line">8</div><div class="line">12</div></pre></td></tr></table></figure>
+<h2 id="递归函数"><a href="#递归函数" class="headerlink" title="递归函数"></a>递归函数</h2><p>定义： 一个函数的自我循环调用称为递归</p>
 <ul>
 <li><p>阶乘</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; def fact(x):</div><div class="line">...     if x &lt;= 1: return 1</div><div class="line">...     else: return x * fact(x-1)</div><div class="line">... </div><div class="line">&gt;&gt;&gt; fact(4)</div><div class="line">24</div></pre></td></tr></table></figure>
@@ -119,12 +122,35 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat fibonacci.py </div><div class="line">#!/usr/bin/env python3</div><div class="line"></div><div class="line">def fibonacci():</div><div class="line">    a = b = 1</div><div class="line">    yield a</div><div class="line">    yield b</div><div class="line">    while True:</div><div class="line">        a, b = b, a+b</div><div class="line">        yield b</div><div class="line">for num in fibonacci():</div><div class="line">    if num &gt; 100:</div><div class="line">        break</div><div class="line">    print(num, end=&apos; &apos;)</div><div class="line"></div><div class="line">print()</div><div class="line">root@ubuntu:~# python3 fibonacci.py </div><div class="line">1 1 2 3 5 8 13 21 34 55 89</div></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><p>定义： 一个函数当参数传递给另一个函数，我们就称这样的函数为高阶函数，装饰器是有返回函数的高阶函数，是高阶函数的特例<br>map()<br>filter()<br>reduce()</p>
-
+<h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><p>定义： 一个函数当参数传递给另一个函数，我们就称这样的函数为高阶函数.<br>装饰器/函数闭包: 是有返回函数的高阶函数，是高阶函数的特例</p>
+<table>
+<thead>
+<tr>
+<th>高阶函数</th>
+<th>用法说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>map(func,seq1,seq2)</td>
+<td>将函数func作用于给定序列(s)的每个元素，并用一个列表来提供返回值，如果func为None,func表现为一个身份函数，返回一个含有每个序列中元素集合的n个元组列表</td>
+</tr>
+<tr>
+<td>reduce(func, seq, init)</td>
+<td>将二元函数作用于seq序列的元素，每次携带一对(先前的结果以及下一个序列无素)，连续地将现有的结果和下一个值作用在获得的随后的结果上，最后减少我们的序列为一个单一的返回值，如果初始值init给定，第一个比较会是init和第一个序列元素而不是序列的头两个元素</td>
+</tr>
+<tr>
+<td>filter(func,seq)</td>
+<td>调用一个布尔函数func来迭代遍历每个seq中的元素，返回一人使func返回值为True的元素组成的序列</td>
+</tr>
+</tbody>
+</table>
+<h4 id="map"><a href="#map" class="headerlink" title="map()"></a>map()</h4><h4 id="reduce"><a href="#reduce" class="headerlink" title="reduce()"></a>reduce()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [39]: from functools import reduce</div><div class="line">In [50]: def add(x,y):</div><div class="line">   ....:     return x+y</div><div class="line">   ....: </div><div class="line">In [52]: reduce(add, [1,2,3], 10)</div><div class="line">Out[52]: 16</div></pre></td></tr></table></figure>
+<h4 id="filter"><a href="#filter" class="headerlink" title="filter()"></a>filter()</h4>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ciymyrxx9000a16jxogky8gfj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ciyy3cl35000cxsjxgoasluj0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -189,7 +215,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciymyrxxc000c16jx1a2zrjal" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciyy3cl2i000axsjx3dfhk5ph" class="article-share-link">Share</a>
       
       
     </footer>
@@ -230,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="ciymyrxxx000u16jxkinlpbeo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="ciyy3cl51000xxsjx9r5yd6bl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -294,7 +320,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制/" data-id="ciymyrxx7000816jxojivq8nm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制/" data-id="ciyy3cl2f0008xsjxoqqp09vf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -445,7 +471,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="ciymyrxx4000616jxzuqbwzaq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="ciyy3cl2a0003xsjx18jtdu7f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -487,7 +513,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ciymyrxwo000016jxhevbawcz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ciyy3cl1x0000xsjxontvirwj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -536,7 +562,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ciymyrxyj000z16jxgbu7z5im" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ciyy3cl53000zxsjxw2e4o677" class="article-share-link">Share</a>
       
       
     </footer>
