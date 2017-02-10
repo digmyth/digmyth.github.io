@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>python-04-03-列表解析_生成器_迭代器 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录
+列表解析
+生成器
+迭代器
+
+列表解析列表解析什么是列表解析？定义： 基于一个列表生成另外一个列表，或动态生成一个列表。如：12345In [26]: [ i ** 2 for i in range(2,8)]    # 对原列表乘以2Out[26]: [4, 9, 16, 25, 36, 49]In [25]: [ i for i in range(1,10) if i % 2 ]  #">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python-04-03-列表解析_生成器_迭代器">
+<meta property="og:url" content="http://www.digmyth.com/2017/02/15/python-04-03-列表解析-生成器-迭代器/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+列表解析
+生成器
+迭代器
+
+列表解析列表解析什么是列表解析？定义： 基于一个列表生成另外一个列表，或动态生成一个列表。如：12345In [26]: [ i ** 2 for i in range(2,8)]    # 对原列表乘以2Out[26]: [4, 9, 16, 25, 36, 49]In [25]: [ i for i in range(1,10) if i % 2 ]  #">
+<meta property="og:updated_time" content="2017-02-10T02:56:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python-04-03-列表解析_生成器_迭代器">
+<meta name="twitter:description" content="目录
+列表解析
+生成器
+迭代器
+
+列表解析列表解析什么是列表解析？定义： 基于一个列表生成另外一个列表，或动态生成一个列表。如：12345In [26]: [ i ** 2 for i in range(2,8)]    # 对原列表乘以2Out[26]: [4, 9, 16, 25, 36, 49]In [25]: [ i for i in range(1,10) if i % 2 ]  #">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python-04-03-列表解析-生成器-迭代器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/15/python-04-03-列表解析-生成器-迭代器/" class="article-date">
+  <time datetime="2017-02-15T02:53:38.000Z" itemprop="datePublished">2017-02-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      python-04-03-列表解析_生成器_迭代器
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>列表解析</li>
+<li>生成器</li>
+<li>迭代器</li>
+</ul>
+<h2 id="列表解析"><a href="#列表解析" class="headerlink" title="列表解析"></a>列表解析</h2><h2 id="列表解析-1"><a href="#列表解析-1" class="headerlink" title="列表解析"></a>列表解析</h2><p>什么是列表解析？<br>定义： 基于一个列表生成另外一个列表，或动态生成一个列表。<br>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [26]: [ i ** 2 for i in range(2,8)]    # 对原列表乘以2</div><div class="line">Out[26]: [4, 9, 16, 25, 36, 49]</div><div class="line"></div><div class="line">In [25]: [ i for i in range(1,10) if i % 2 ]  # 对原列表取奇数</div><div class="line">Out[25]: [1, 3, 5, 7, 9]</div></pre></td></tr></table></figure></p>
+<p>练习1： 有如下文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># cat word.txt</div><div class="line">render practice inventory  indent accelerate,</div><div class="line">trigger status,wxq.</div></pre></td></tr></table></figure></p>
+<p>我们计算<code>word.txt</code>单词个数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">In [29]: f = open(&apos;/root/word.txt&apos;, &apos;r&apos;)</div><div class="line">In [31]: word_list = [ word for line in f for word in line.split() ]</div><div class="line"></div><div class="line">In [36]: print(word_list)</div><div class="line">[&apos;render&apos;, &apos;practice&apos;, &apos;inventory&apos;, &apos;indent&apos;, &apos;accelerate,&apos;, &apos;trigger&apos;, &apos;status,wxq.&apos;]</div><div class="line"></div><div class="line">In [37]: f.seek(0)       # 上面读取过文件，指针己然在最后了，这里是把指针移到文件首部</div><div class="line">Out[37]: 0</div><div class="line"></div><div class="line">In [38]: len([ word for line in f for word in line.split() ])  # 计算结果为7</div><div class="line">Out[38]: 7</div></pre></td></tr></table></figure></p>
+<p>我们计算<code>word.txt</code>非空白字符数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [37]: f.seek(0)       # 把指针移到文件首部</div><div class="line">Out[37]: 0</div><div class="line"></div><div class="line">In [41]: sum([ len(word) for line in f for word in line.split() ])</div><div class="line">Out[41]: 58</div></pre></td></tr></table></figure></p>
+<p>练习2： 打印一个3行5列的矩阵<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [45]: list1 = [ (x+1, y+1) for x in range(3) for y in range(5) ]</div><div class="line">In [47]: print(list1)</div><div class="line">[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5)]</div></pre></td></tr></table></figure></p>
+<p>练习3：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; d = &#123;&apos;x&apos;: &apos;A&apos;, &apos;y&apos;: &apos;B&apos;, &apos;z&apos;: &apos;C&apos; &#125;</div><div class="line">&gt;&gt;&gt; [k + &apos;=&apos; + v for k, v in d.items()]</div><div class="line">[&apos;y=B&apos;, &apos;x=A&apos;, &apos;z=C&apos;]</div></pre></td></tr></table></figure></p>
+<p>练习4：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">In [61]: L = [&apos;I&apos;, &apos;WILL&apos;, &apos;STUDY&apos;, &apos;HARD&apos;, &apos;PYTHON&apos;]</div><div class="line"></div><div class="line">In [62]: [ s.capitalize() for s in L ]</div><div class="line">Out[62]: [&apos;I&apos;, &apos;Will&apos;, &apos;Study&apos;, &apos;Hard&apos;, &apos;Python&apos;]</div></pre></td></tr></table></figure></p>
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/02/15/python-04-03-列表解析-生成器-迭代器/" data-id="ciyz82fb3000i1djxlwi73jw5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/02/25/python-05-01-正则表达式/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          python-05-01-正则表达式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/02/11/python-04-02-模块/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">python-04-02-模块</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/01/python-20-01-web开发/">python-20-01-web开发</a>
+          </li>
+        
+          <li>
+            <a href="/2017/04/28/python-07-02-面象对象高级编程/">python-07-02-面象对象高级编程</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/31/python-07-01-面象对象编程/">python-07-01-面象对象编程</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/31/python-06-02-网络编程/">python-06-02-网络编程</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/03/python-06-01-进程和线程/">python-06-01-进程和线程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
