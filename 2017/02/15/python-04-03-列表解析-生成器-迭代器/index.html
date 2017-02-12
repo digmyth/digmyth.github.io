@@ -21,7 +21,7 @@
 迭代器
 
 列表解析什么是列表解析？定义： 基于一个列表生成另外一个列表，或动态生成一个列表。如：12345In [26]: [ i ** 2 for i in range(2,8)]    # 对原列表乘以2Out[26]: [4, 9, 16, 25, 36, 49]In [25]: [ i for i in range(1,10) if i % 2 ]  # 对原列表">
-<meta property="og:updated_time" content="2017-02-10T10:30:08.000Z">
+<meta property="og:updated_time" content="2017-02-12T10:00:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-04-03-列表解析_生成器_迭代器">
 <meta name="twitter:description" content="目录
@@ -129,11 +129,32 @@
 </li>
 </ul>
 <p>后面协程正是用的这个知识点。</p>
-<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2>
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p>细心的朋友不难发现生成器可以被next()函数不断调用并返回下一个值，直到最后抛出StopIteration错误表示无法继续返回下一个值为止。</p>
+<ul>
+<li>可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator</li>
+<li>可以直接作用于for循环的对象统称为可迭代对象：Iterable</li>
+</ul>
+<p>哪些是可迭代对象呢？或说可作用于for循环呢？有以下几种数据类型：</p>
+<p>一类是集合数据类型，如list、tuple、dict、set、str等；</p>
+<p>一类是generator，包括生成器和带yield的generator function。</p>
+<p>可以使用isinstance()判断一个对象是否是Iterable对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from collections import Iterable</div><div class="line">&gt;&gt;&gt; isinstance([], Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(&#123;&#125;, Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(&apos;abc&apos;, Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance((x for x in range(10)), Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(100, Iterable)</div><div class="line">False</div></pre></td></tr></table></figure></p>
+<p>可以使用isinstance()判断一个对象是否是Iterator对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from collections import Iterator</div><div class="line">&gt;&gt;&gt; isinstance((x for x in range(10)), Iterator)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance([], Iterator)</div><div class="line">False</div><div class="line">&gt;&gt;&gt; isinstance(&#123;&#125;, Iterator)</div><div class="line">False</div><div class="line">&gt;&gt;&gt; isinstance(&apos;abc&apos;, Iterator)</div><div class="line">False</div></pre></td></tr></table></figure></p>
+<p>生成器都是Iterator对象，但list、dict、str虽然是Iterable，却不是Iterator。</p>
+<p>把list、dict、str等Iterable变成Iterator可以使用iter()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; isinstance(iter([]), Iterator)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(iter(&apos;abc&apos;), Iterator)</div><div class="line">True</div></pre></td></tr></table></figure></p>
+<p>为什么list、dict、str等数据类型不是Iterator 呢？</p>
+<p>这是因为Python的Iterator对象表示的是一个数据流，Iterator对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误。可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过next()函数实现按需计算下一个数据，所以Iterator的计算是惰性的，只有在需要返回下一个数据时它才会计算。</p>
+<p><code>Iterator</code>甚至可以表示一个无限大的数据流，例如全体自然数。而使用list是永远不可能存储全体自然数的。</p>
+<p>小结</p>
+<p>凡是可作用于for循环的对象都是Iterable类型；</p>
+<p>凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；</p>
+<p>集合数据类型如list、dict、str等是Iterable但不是Iterator，不过可以通过iter()函数获得一个Iterator对象。</p>
+<p>Python的for循环本质上就是通过不断调用next()函数实现的，例如：</p>
+<p>for x in [1, 2, 3, 4, 5]:<br>    pass<br>实际上完全等价于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># 首先获得Iterator对象:</div><div class="line">it = iter([1, 2, 3, 4, 5])</div><div class="line"># 循环:</div><div class="line">while True:</div><div class="line">    try:</div><div class="line">        # 获得下一个值:</div><div class="line">        x = next(it)</div><div class="line">    except StopIteration:</div><div class="line">        # 遇到StopIteration就退出循环</div><div class="line">        break</div></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/python-04-03-列表解析-生成器-迭代器/" data-id="ciyzo8hsh000exmjxo80wc885" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/python-04-03-列表解析-生成器-迭代器/" data-id="ciz2hzqdv000i0ajx62bd4f8o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -152,9 +173,9 @@
     </a>
   
   
-    <a href="/2017/02/11/python-04-02-模块/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/02/12/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">python-04-02-模块</div>
+      <div class="article-nav-title">Hello World</div>
     </a>
   
 </nav>
@@ -185,7 +206,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -196,10 +217,6 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2017/05/01/python-20-01-web开发/">python-20-01-web开发</a>
-          </li>
         
           <li>
             <a href="/2017/04/28/python-07-02-面象对象高级编程/">python-07-02-面象对象高级编程</a>
@@ -215,6 +232,10 @@
         
           <li>
             <a href="/2017/03/03/python-06-01-进程和线程/">python-06-01-进程和线程</a>
+          </li>
+        
+          <li>
+            <a href="/2017/02/25/python-05-01-正则表达式/">python-05-01-正则表达式</a>
           </li>
         
       </ul>
