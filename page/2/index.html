@@ -109,7 +109,121 @@
 </li>
 </ul>
 <h4 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h4><p>def 是一个可执行语句,因此可以出现在任意语句可以出现的地方，甚至可以嵌套于其它if/while语句中<br>def 创建了一个对象并将其赋值给一个变量名，也就是函数名<br>return 用于返回结果对象,其为可选,无return语句时函数自动返回None对象,多个返回值时用逗号分隔，并组合为元组形式返回一个对象<br>def 语句运行之后可以在程序中通过函数后附加括号的形式进行调用</p>
-<h2 id="普通函数"><a href="#普通函数" class="headerlink" title="普通函数"></a>普通函数</h2><h2 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [31]: f = (lambda x,y,z=10: x+y+z)       # 匿名函数也支持默认参数   </div><div class="line">In [32]: f(4,9)</div><div class="line">Out[32]: 23</div></pre></td></tr></table></figure>
+<h2 id="普通函数"><a href="#普通函数" class="headerlink" title="普通函数"></a>普通函数</h2><h4 id="函数传参"><a href="#函数传参" class="headerlink" title="函数传参"></a>函数传参</h4><h4 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h4><p>官方 <a href="https://docs.python.org/3/library/functions.html?highlight=built#ascii" target="_blank" rel="external">详解</a><br>More info <a href="http://www.cnblogs.com/alex3714/articles/5740985.html" target="_blank" rel="external">动我试试</a></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th>Built-in Functions</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>abs()</td>
+<td>dict()</td>
+<td>help()</td>
+<td>main()</td>
+<td>setattr()</td>
+</tr>
+<tr>
+<td>all()</td>
+<td>dir()</td>
+<td>hex()</td>
+<td>next()</td>
+<td>slice()</td>
+</tr>
+<tr>
+<td>any()</td>
+<td>divmod()</td>
+<td>id()</td>
+<td>object()</td>
+<td>sorted()</td>
+</tr>
+<tr>
+<td>ascii()</td>
+<td>enumerate()</td>
+<td>input()</td>
+<td>oct()</td>
+<td>staticmethod()</td>
+</tr>
+<tr>
+<td>bin()</td>
+<td>eval()</td>
+<td>int()</td>
+<td>open()</td>
+<td>str()</td>
+</tr>
+<tr>
+<td>bool()</td>
+<td>exec()</td>
+<td>isinstance()</td>
+<td>ord ()</td>
+<td>sum()</td>
+</tr>
+<tr>
+<td>bytearray()</td>
+<td>filter()</td>
+<td>issubclass()</td>
+<td>pow()</td>
+<td>super()</td>
+</tr>
+<tr>
+<td>bytes()</td>
+<td>float()</td>
+<td>iter()</td>
+<td>print()</td>
+<td>tuple()</td>
+</tr>
+<tr>
+<td>callable()</td>
+<td>format()</td>
+<td>len()</td>
+<td>property()</td>
+<td>type()</td>
+</tr>
+<tr>
+<td>chr()</td>
+<td>frozenset()</td>
+<td>list()</td>
+<td>range()</td>
+<td>vars()</td>
+</tr>
+<tr>
+<td>classmethod()</td>
+<td>getattr()</td>
+<td>locals()</td>
+<td>repr()</td>
+<td>zip()</td>
+</tr>
+<tr>
+<td>compile()</td>
+<td>globals()</td>
+<td>map()</td>
+<td>reversed()</td>
+<td><code>__import__()</code></td>
+</tr>
+<tr>
+<td>complex()</td>
+<td>hasattr()</td>
+<td>max()</td>
+<td>round()</td>
+<td></td>
+</tr>
+<tr>
+<td>delattr()</td>
+<td>hash()</td>
+<td>memoryview()</td>
+<td>set()</td>
+</tr>
+</tbody>
+</table>
+<p>拿几个作下说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">ASCII编码表查询：</div><div class="line">ord(&apos;a&apos;) 字符在编码表中的数字表示</div><div class="line">chr(97)  数字在编码表中的字符表示</div><div class="line"></div><div class="line">global() 查看全局变量</div><div class="line">locals() 查看局部变量</div><div class="line">vars()  无参数时等于locals(), 有参数时vars(a) == a.__dict__ (__dict__一个对象的属性)</div><div class="line"></div><div class="line">eval()  把字符串形式的表达式解析并扫行</div><div class="line">exec()  把字符串形式的代码解析并执行</div><div class="line">compile()把文件的代码加载进来，按 eval, exec方式解析并执行</div><div class="line"></div><div class="line"># 以字符串的形式导入模块, 后面模块章节也会讲到__import__()用法</div><div class="line">mode = &apos;module_name&apos;</div><div class="line">__import__(mode)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">all()与any()区别：</div><div class="line">all:</div><div class="line">传入一个可迭代对象，对其中每个元素求bool(x),所有返回True,则返回Tru</div><div class="line">迭代对象为空时返回True，注意是为空如[]，不是空元素如[&apos;&apos;]</div><div class="line"></div><div class="line">any:</div><div class="line">传入一个可迭代对象，对其中每个元素求bool(x),任意一个返回True，则返回True</div><div class="line">迭代对象为空时，返回False</div><div class="line"></div><div class="line">def all(*args, **kwargs): # real signature unknown</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    Return True if bool(x) is True for all values x in the iterable.</div><div class="line">    </div><div class="line">    If the iterable is empty, return True.</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    pass</div><div class="line"></div><div class="line">def any(*args, **kwargs): # real signature unknown</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    Return True if bool(x) is True for any x in the iterable.</div><div class="line">    </div><div class="line">    If the iterable is empty, return False.</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    pass</div></pre></td></tr></table></figure>
+<h2 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [31]: f = (lambda x,y,z=10: x+y+z)       # 匿名函数也支持默认参数   </div><div class="line">In [32]: f(4,9)</div><div class="line">Out[32]: 23</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [56]: L = [ (lambda x: x*2),(lambda y: y*3) ]    # 匿名函数可以出现在任意表达式可以出现的地方</div><div class="line">In [56]: for i in L:</div><div class="line">   ....:     print(i(4))</div><div class="line">   ....:     </div><div class="line">8</div><div class="line">12</div></pre></td></tr></table></figure>
 <h2 id="递归函数"><a href="#递归函数" class="headerlink" title="递归函数"></a>递归函数</h2><p>定义： 一个函数的自我循环调用称为递归</p>
 <ul>
@@ -188,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ciz2hzqdl000c0ajxomdhryi1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cizdxkmx9000c12jxw42n5c4n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -248,12 +362,15 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">In [57]: f = open(&apos;/etc/fstab&apos;, &apos;r&apos;)</div><div class="line">In [58]: f.name                   #返回文件名</div><div class="line">Out[58]: &apos;/etc/fstab&apos;</div><div class="line"></div><div class="line">In [59]: f.closed       #返回是否关闭文件</div><div class="line">Out[59]: False</div><div class="line"></div><div class="line">In [60]: f.close()      #关闭文件</div><div class="line">In [61]: f.closed</div><div class="line">Out[61]: True</div></pre></td></tr></table></figure>
 <p>操作完毕会自动关闭文件对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">with  open(&apos;/root/wxq.txt&apos;,&apos;w+&apos;) as  f:</div><div class="line">      f.write(&apos;hello world!\n&apos;)</div></pre></td></tr></table></figure></p>
 <h3 id="OS-对象"><a href="#OS-对象" class="headerlink" title="OS 对象"></a>OS 对象</h3><p>一些方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">os.path   跟文件路径相关</div><div class="line">	basename()      路径基名</div><div class="line">	dirname()       路径目录名</div><div class="line"> 	join()</div><div class="line">	split()		返回dirname(), basename()元组</div><div class="line">	splitext()	返回(filename, extension_name)元组</div><div class="line">	</div><div class="line">信息：</div><div class="line">	getatime()</div><div class="line">	getctime()</div><div class="line">	getmtime()</div><div class="line">	getsize()	获取文件大小</div><div class="line"></div><div class="line">查询：</div><div class="line"> 	exists()	指定文件是否存在</div><div class="line">	isabs()		指定路径是否为绝对路径</div><div class="line">	isdir()		是否为目录</div><div class="line">	isfile()	是否为文件</div><div class="line">	islink()	是否为符号链接</div><div class="line">	ismount()	是否为挂载点</div><div class="line">	samefile()	两个路径是否指向了同一个文件</div></pre></td></tr></table></figure></p>
+<p><code>__file__</code>属性</p>
+<p>在上面的glabals()中有一个<strong>file</strong>属性，其中保存的是程序运行的相对路径，<br>如python3 ../py3_training/test/yy.py，则路径为../py3_training/test/yy.py<br>在pycharm中为什么又变成了绝对路径了呢，不要认为是pycharm做了封装，是因为pycharm运行路径永远从c:\开始，这样看不出效果</p>
+<p>要获取程序绝对路径os.path.abspath(<strong>file</strong>)<br>应用举例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">import os</div><div class="line">import sys</div><div class="line">base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))</div><div class="line">print(base_dir)</div><div class="line">sys.path.append(base_dir)</div><div class="line"></div><div class="line">from core import main</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    main.run()</div></pre></td></tr></table></figure></p>
 <p>来几个小练习，似乎参悟了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import os</div><div class="line">&gt;&gt;&gt; os.path.split(&apos;/root/wxq.txt&apos;)</div><div class="line">(&apos;/root&apos;, &apos;wxq.txt&apos;)</div><div class="line">&gt;&gt;&gt; os.path.splitext(&apos;/root/wxq.txt&apos;)</div><div class="line">(&apos;/root/wxq&apos;, &apos;.txt&apos;)</div><div class="line">&gt;&gt;&gt; os.path.dirname(&apos;/root/wxq.txt&apos;)</div><div class="line">&apos;/root&apos;</div><div class="line">&gt;&gt;&gt; os.path.basename(&apos;/root/wxq.txt&apos;)</div><div class="line">&apos;wxq.txt&apos;</div><div class="line">&gt;&gt;&gt; dir, file_name = os.path.split(&apos;/root/wxq.txt&apos;)</div><div class="line">&gt;&gt;&gt; dir</div><div class="line">&apos;/root&apos;</div><div class="line">&gt;&gt;&gt; file_name</div><div class="line">&apos;wxq.txt&apos;</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ciz2hzqdd000a0ajxoz15ifz4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cizdxkmx1000a12jxwez4lruk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -294,7 +411,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="ciz2hzqe9000w0ajx7lvahowm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="cizdxkmy9000x12jxfyv0ljz1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +475,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制/" data-id="ciz2hzqd900080ajxndrq1ba0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制/" data-id="cizdxkmwz000812jxsmfpx854" class="article-share-link">Share</a>
       
       
     </footer>
@@ -419,6 +536,7 @@ Age_of_name = &quot;xx&quot;  #类名
 <h4 id="3-3-字符串"><a href="#3-3-字符串" class="headerlink" title="3.3 字符串"></a>3.3 字符串</h4><p>不可变类型<br>字符串常用功能：<br>字符串拼接</p>
 <p>join()方法： 用于指定字符把序列中的每一个元素连接起来<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">In [11]: str = <span class="string">'_'</span></div><div class="line">In [12]: seq = (<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>)</div><div class="line">In [13]: str.join(seq)</div><div class="line">Out[13]: <span class="string">'a_b_c'</span></div></pre></td></tr></table></figure></p>
 <p>移除前后空白<br>分割<br>len()长度<br>index()索引<br>split()切片<br>格式化输出<br>% 格式化输出<br>%s 字符串<br>%d 数字<br>%f 符点<br>%r 原生字符串，不会对\n \t进行转换<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [5]: name = <span class="string">'wxq'</span></div><div class="line">In [6]: <span class="built_in">print</span>(<span class="string">"hello, %s"</span> % name)</div><div class="line">hello, wxq</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 字符串.center()方法+颜色格式化输出</div><div class="line">In [22]: print(&quot;\033[32;1m%s\033[0m&quot; %  &quot;wxq&quot;.center(50, &apos;-&apos;))</div><div class="line"></div><div class="line">-----------------------wxq------------------------</div></pre></td></tr></table></figure>
 <p>format 格式化输出<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">In [7]: <span class="string">"&lt;&#123;tag&#125;&gt;&#123;str&#125;&lt;/&#123;tag&#125;&gt;"</span>.format(tag=<span class="string">'b'</span>, str=<span class="string">'hello world'</span>)</div><div class="line">Out[7]: <span class="string">'&lt;b&gt;hello world&lt;/b&gt;'</span></div></pre></td></tr></table></figure></p>
 <h4 id="3-4-列表"><a href="#3-4-列表" class="headerlink" title="3.4 列表"></a>3.4 列表</h4><p>可变类型<br>name = [‘hello’, ‘world’]<br>通过下标访问列表中元素，下标从0开始计数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [9]: name[0]</div><div class="line">Out[9]: <span class="string">'hello'</span></div><div class="line"></div><div class="line">In [10]: name[-1]</div><div class="line">Out[10]: <span class="string">'world'</span></div></pre></td></tr></table></figure></p>
 <p>列表常用操作：<br>切片：取出多个元素<br>追加<br>插入<br>修改<br>删除<br>扩展</p>
@@ -509,7 +627,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="ciz2hzqd700060ajx1wn71kig" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="cizdxkmwv000312jxq10iuf4j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -551,7 +669,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ciz2hzqcj00000ajxiglo3u4b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cizdxkmwy000612jxei3aqw99" class="article-share-link">Share</a>
       
       
     </footer>
@@ -600,7 +718,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ciz2hzqef00110ajx04qru46y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cizdxkmyb000z12jx2swly6vs" class="article-share-link">Share</a>
       
       
     </footer>

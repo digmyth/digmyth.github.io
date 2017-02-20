@@ -57,7 +57,7 @@ python程序可以分解成模块，语句，表达式和 对象
 模块包含语句
 语句包含表达式
 表达式建立并处理对象">
-<meta property="og:updated_time" content="2017-02-09T08:29:15.000Z">
+<meta property="og:updated_time" content="2017-02-20T10:37:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-04-02-模块">
 <meta name="twitter:description" content="目录
@@ -191,6 +191,8 @@ python程序可以分解成模块，语句，表达式和 对象
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import random     # 独立名称空间</div><div class="line">&gt;&gt;&gt; random.choice([3,5,6,7,8,9])  </div><div class="line">7</div><div class="line">&gt;&gt;&gt; from random import choice  # 没有独立名称空间，当前有choice方法会覆盖，这就是区别</div><div class="line">&gt;&gt;&gt; choice([3,5,6,7,8,9])</div><div class="line">6</div></pre></td></tr></table></figure>
 <p>from-import是导入指定模块的某些方法和属性，会导入在当前名称空间里，如果当前名称空间也有choice方法，那么会覆盖choice方法。<br>import和from-import是可执行语句，独立可执行片断，可以嵌套在if测试中，或出现在def中，这样在我们满足条件再导入模块。</p>
 <p>己知模块查找此模块在系统中的路径，用法<code>module_name.__file__</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import random</div><div class="line">&gt;&gt;&gt; random.__file__</div><div class="line">&apos;/usr/lib/python3.4/random.py&apos;</div></pre></td></tr></table></figure></p>
+<p>反射<br>有一种说法叫反射<br>1 以字符串的形式导入模块<br>2 以字符串的形式调用函数</p>
+<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">root@apt:~# cat /usr/local/lib/python2.7/dist-packages/pkg/mysql.py</div><div class="line">#!/usr/bin/python2.7</div><div class="line">def count():</div><div class="line">    return 3306</div><div class="line">root@apt:~#</div><div class="line">In [1]: var = &apos;pkg.mysql&apos;</div><div class="line">In [2]: mode = __import__(var)</div><div class="line">In [3]: mode.mysql.count()</div><div class="line">Out[3]: 3306</div><div class="line">In [4]: func = &apos;count&apos;</div><div class="line">In [5]: Func = getattr(mode.mysql, func)</div><div class="line">In [6]: Func()</div><div class="line">Out[6]: 3306</div></pre></td></tr></table></figure></p>
 <h2 id="模块paramiko"><a href="#模块paramiko" class="headerlink" title="模块paramiko"></a>模块paramiko</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">`pycrypto-2.6.1.tar.gz`# 下载安装</div><div class="line">apt-get install python-dev</div><div class="line">python setup.py build</div><div class="line">python setup.py install</div><div class="line">import Crypto</div><div class="line">`paramiko-1.10.1.tar.gz` 下载安装</div><div class="line">python setup.py build</div><div class="line">python setup.py install</div><div class="line">import paramiko</div></pre></td></tr></table></figure>
 <h2 id="模块configparser"><a href="#模块configparser" class="headerlink" title="模块configparser"></a>模块configparser</h2><p>生成如下example.ini 文件，该如何做呢<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat example.ini</div><div class="line">[DEFAULT]</div><div class="line">compression = yes</div><div class="line">serveraliveinterval = 45</div><div class="line">compressionlevel = 9</div><div class="line">forwardx11 = yes</div><div class="line"></div><div class="line">[bitbucket.org]</div><div class="line">user = wxq</div><div class="line"></div><div class="line">[topsecret.server.com]</div><div class="line">host port = 5000</div><div class="line">forwardx11 = no</div></pre></td></tr></table></figure></p>
 <p>编写如下脚本执行 python3  create_example.py即可</p>
@@ -218,7 +220,7 @@ python程序可以分解成模块，语句，表达式和 对象
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/11/python-04-02-模块/" data-id="ciz2hzqdq000g0ajxga2xoms2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/11/python-04-02-模块/" data-id="cizdxkmxr000g12jxf42klm9s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -227,11 +229,11 @@ python程序可以分解成模块，语句，表达式和 对象
     
 <nav id="article-nav">
   
-    <a href="/2017/02/12/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/02/15/python-04-03-列表解析-生成器-迭代器/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          Hello World
+          python-04-03-列表解析_生成器_迭代器
         
       </div>
     </a>
