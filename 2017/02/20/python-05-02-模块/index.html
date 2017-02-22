@@ -52,7 +52,7 @@ python程序可以分解成模块，语句，表达式和 对象
 
 程序由模">
 <meta property="og:image" content="http://p1.bqimg.com/586082/bfd381fb697c135fs.png">
-<meta property="og:updated_time" content="2017-02-22T03:16:00.000Z">
+<meta property="og:updated_time" content="2017-02-22T03:18:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-05-02-模块">
 <meta name="twitter:description" content="目录
@@ -193,7 +193,77 @@ python程序可以分解成模块，语句，表达式和 对象
 <p>上面的日志是直接输出，怎么才能让应用程序日志写入文件呢？ 也很简单<br>定义一个log.py的文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">root@apt:/tmp# cat log.py </div><div class="line">#!/usr/bin/env python3</div><div class="line"></div><div class="line">import logging</div><div class="line">#日志级别：	DEGUG INFO WARNING ERROR CRITICAL</div><div class="line">#数字表示分别为 10     20     30     40     50</div><div class="line"></div><div class="line">log_file = &apos;example.log&apos;</div><div class="line">logging.basicConfig(filename=log_file,level=logging.INFO)</div><div class="line">logging.debug(&apos;program debug message ...&apos;)</div><div class="line">logging.info(&apos;info message&apos;)</div><div class="line">logging.warning(&quot;warning message&quot;)</div><div class="line">logging.error(&quot;error message&quot;)</div></pre></td></tr></table></figure></p>
 <p>运行一下log.py文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">root@apt:/tmp# python3 log.py</div><div class="line">root@apt:/tmp# cat example.log </div><div class="line">INFO:root:info message</div><div class="line">WARNING:root:warning message</div><div class="line">ERROR:root:error message</div></pre></td></tr></table></figure></p>
 <p>我们注意到logging.debug信息并没有写入，为什么呢？因为<code>level=logging.INFO</code>定义要写入日志的日志级别，只有达到定义的日志级别才会记录。</p>
-<p>但是发现记录的日志太丑了，怎么样才能让打印的日志人性化呢，就需要格式化输出。<br>|    格式       |      说明        |<br>|—————-|——————-|<br>|%(name)s           | Logger的名字 |<br>|%(levelno)s        | 数字形式的日志级别|<br>|%(levelname)s  |文本形式的日志级别 |<br>|%(pathname)s    |调用日志输出函数的模块的完整路径名，可能没有|<br>|%(filename)s    |调用日志输出函数的模块的文件名 |<br>|%(module)s       |调用日志输出函数的模块名 |<br>|%(funcName)s     |调用日志输出函数的函数名 |<br>|%(lineno)d      |调用日志输出函数的语句所在的代码行 |<br>|%(created)f    |当前时间，用UNIX标准的表示时间的浮 点数表示 |<br>|%(relativeCreated)d |输出日志信息时的，自Logger创建以 来的毫秒数 |<br>|%(asctime)s    |字符串形式的当前时间。默认格式是 “2003-07-08 16:49:45,896”。逗号后面的是毫秒|<br>|%(thread)d         |线程ID。可能没有 |<br>|%(threadName)s |线程名。可能没有 |<br>|%(process)d    |进程ID。可能没有 |<br>|%(message)s     |用户输出的消息 |</p>
+<p>但是发现记录的日志太丑了，怎么样才能让打印的日志人性化呢，就需要格式化输出。</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>%(name)s</td>
+<td>Logger的名字</td>
+</tr>
+<tr>
+<td>%(levelno)s</td>
+<td>数字形式的日志级别</td>
+</tr>
+<tr>
+<td>%(levelname)s</td>
+<td>文本形式的日志级别</td>
+</tr>
+<tr>
+<td>%(pathname)s</td>
+<td>调用日志输出函数的模块的完整路径名，可能没有</td>
+</tr>
+<tr>
+<td>%(filename)s</td>
+<td>调用日志输出函数的模块的文件名</td>
+</tr>
+<tr>
+<td>%(module)s</td>
+<td>调用日志输出函数的模块名</td>
+</tr>
+<tr>
+<td>%(funcName)s</td>
+<td>调用日志输出函数的函数名</td>
+</tr>
+<tr>
+<td>%(lineno)d</td>
+<td>调用日志输出函数的语句所在的代码行</td>
+</tr>
+<tr>
+<td>%(created)f</td>
+<td>当前时间，用UNIX标准的表示时间的浮 点数表示</td>
+</tr>
+<tr>
+<td>%(relativeCreated)d</td>
+<td>输出日志信息时的，自Logger创建以 来的毫秒数</td>
+</tr>
+<tr>
+<td>%(asctime)s</td>
+<td>字符串形式的当前时间。默认格式是 “2003-07-08 16:49:45,896”。逗号后面的是毫秒</td>
+</tr>
+<tr>
+<td>%(thread)d</td>
+<td>线程ID。可能没有</td>
+</tr>
+<tr>
+<td>%(threadName)s</td>
+<td>线程名。可能没有</td>
+</tr>
+<tr>
+<td>%(process)d</td>
+<td>进程ID。可能没有</td>
+</tr>
+<tr>
+<td>%(message)s</td>
+<td>用户输出的消息</td>
+</tr>
+</tbody>
+</table>
 <p>如果想同时把log打印在屏幕和文件日志里，或者有日志切割的需求，可能要复杂些</p>
 <ul>
 <li>logger提供了应用程序可以直接使用的接口；</li>
@@ -232,7 +302,7 @@ python程序可以分解成模块，语句，表达式和 对象
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cizgdylny000kxfjxtlfgmh38" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cizge41pw000iynjxlf54uuj5" class="article-share-link">Share</a>
       
       
     </footer>
