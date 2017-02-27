@@ -3,18 +3,33 @@
 <head>
   <meta charset="utf-8">
   
-  <title>python-orm-原理篇 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>python-07-01-面象对象编程 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="声明：部份参考 原文">
+  <meta name="description" content="目录*
+
+相关概念定义： 面向对象编程(oop=object-oriented programming):  相对于面对过程编程，它只是一种编程范示。
+状态和转换这种状态的操作: 状态其实就是数据，转换这种状态的操作其实就是方法
+类：将同一种具体的共同特性抽象出来数据：如变量方法：函数：操作变量引用的数据的代码方法是类的组成部份，属性也是在类中定义的, 但数据是在类实例化时赋值的.
+对象是类的实">
 <meta property="og:type" content="article">
-<meta property="og:title" content="python-orm-原理篇">
-<meta property="og:url" content="http://www.digmyth.com/2017/01/15/python-orm-原理篇/index.html">
+<meta property="og:title" content="python-07-01-面象对象编程">
+<meta property="og:url" content="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="声明：部份参考 原文">
-<meta property="og:updated_time" content="2017-01-20T03:38:45.000Z">
+<meta property="og:description" content="目录*
+
+相关概念定义： 面向对象编程(oop=object-oriented programming):  相对于面对过程编程，它只是一种编程范示。
+状态和转换这种状态的操作: 状态其实就是数据，转换这种状态的操作其实就是方法
+类：将同一种具体的共同特性抽象出来数据：如变量方法：函数：操作变量引用的数据的代码方法是类的组成部份，属性也是在类中定义的, 但数据是在类实例化时赋值的.
+对象是类的实">
+<meta property="og:updated_time" content="2017-02-27T08:36:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="python-orm-原理篇">
-<meta name="twitter:description" content="声明：部份参考 原文">
+<meta name="twitter:title" content="python-07-01-面象对象编程">
+<meta name="twitter:description" content="目录*
+
+相关概念定义： 面向对象编程(oop=object-oriented programming):  相对于面对过程编程，它只是一种编程范示。
+状态和转换这种状态的操作: 状态其实就是数据，转换这种状态的操作其实就是方法
+类：将同一种具体的共同特性抽象出来数据：如变量方法：函数：操作变量引用的数据的代码方法是类的组成部份，属性也是在类中定义的, 但数据是在类实例化时赋值的.
+对象是类的实">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -63,10 +78,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-python-orm-原理篇" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-python-07-01-面象对象编程" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/15/python-orm-原理篇/" class="article-date">
-  <time datetime="2017-01-15T12:51:41.000Z" itemprop="datePublished">2017-01-15</time>
+    <a href="/2017/03/01/python-07-01-面象对象编程/" class="article-date">
+  <time datetime="2017-03-01T00:28:28.000Z" itemprop="datePublished">2017-03-01</time>
 </a>
     
   <div class="article-category">
@@ -81,7 +96,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      python-orm-原理篇
+      python-07-01-面象对象编程
     </h1>
   
 
@@ -89,12 +104,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>声明：部份参考 <a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="external">原文</a></p>
-
+        <ul>
+<li>目录<br>*</li>
+</ul>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><p>定义： 面向对象编程(<code>oop</code>=object-oriented programming):  相对于面对过程编程，它只是一种编程范示。</p>
+<p>状态和转换这种状态的操作: 状态其实就是数据，转换这种状态的操作其实就是方法</p>
+<p>类：将同一种具体的共同特性抽象出来<br>数据：如变量<br>方法：函数：操作变量引用的数据的代码<br>方法是类的组成部份，属性也是在类中定义的, 但数据是在类实例化时赋值的.</p>
+<p>对象是类的实例，对象的某个方法的调用理解为对其发消息，或接口调用<br>同一个类的所有对象都能接收相同的消息，也就是同种方法<br>依赖  一个类中的方法操作另一个类的对象<br>聚合 类A的对象包含类B的对象<br>继承：描述特殊或具体与一般性的关系<br>面向对象的模型机制有3原则：封装，继承，多态</p>
+<p>类或类成员有数据和方法<br>一个类的行为和接口是通过类的方法来定义的<br>对象是类的实例<br>自定义类—实例化—–对象–对象间的操作—消息传递<br>这里消息就是调用请求</p>
+<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="ciznupls1000x8djxfelc10qw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="ciznuplrr000p8djxl03i3xik" class="article-share-link">Share</a>
       
       
     </footer>
@@ -103,19 +125,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2017/01/20/python-03-01-IO/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/03/01/python-06-01-正则表达式/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          python-03-01-IO
+          python-06-01-正则表达式
         
       </div>
     </a>
   
   
-    <a href="/2017/01/15/python-02-流程控制_枚举/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/02/27/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">python_02_流程控制/枚举</div>
+      <div class="article-nav-title">Hello World</div>
     </a>
   
 </nav>
