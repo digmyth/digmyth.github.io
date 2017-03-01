@@ -61,6 +61,50 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cizqybynq001164jxjlr5bzoi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-python-03-02-函数" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/23/python-03-02-函数/" class="article-date">
@@ -302,7 +346,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cizqy5lni000f32jx4q3mvdau" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cizqybyn0000f64jx1u9d076q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -370,7 +414,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cizqy5lnd000b32jxylnfdbcp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cizqybymz000d64jx1d8wb27y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -406,12 +450,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>声明：部份参考 <a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="external">原文</a></p>
+        <p>声明：请参考 <a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="external">原文</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="cizqy5lo2000x32jxs086h0ni" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="cizqybynp000z64jxxrryz8o3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -475,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cizqy5lnh000d32jxwz6c6m2z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cizqybymw000b64jxc3a2sczs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -627,7 +671,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="cizqy5lnb000932jx3p2n9h7o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="cizqybymt000964jxwrpa97su" class="article-share-link">Share</a>
       
       
     </footer>
@@ -669,7 +713,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cizqy5lmx000032jx20djet6b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cizqybymf000064jxxzaanuzt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -713,7 +757,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cizqy5ln4000332jxoyzvspv8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cizqybymn000364jx4b8zy6c5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -762,7 +806,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cizqy5lo6001232jxksobx9my" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cizqybyns001464jxzvm5eywf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -825,11 +869,11 @@ Age_of_name = &quot;xx&quot;  #类名
           </li>
         
           <li>
-            <a href="/2017/03/01/hello-world/">Hello World</a>
+            <a href="/2017/03/25/python-08-02-异常/">python-08-02-异常</a>
           </li>
         
           <li>
-            <a href="/2017/03/01/python-06-01-正则表达式/">python-06-01-正则表达式</a>
+            <a href="/2017/03/01/hello-world/">Hello World</a>
           </li>
         
       </ul>
