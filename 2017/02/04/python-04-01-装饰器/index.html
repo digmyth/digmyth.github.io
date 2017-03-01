@@ -31,7 +31,7 @@ Python装饰器，英文decorator, 以被装饰函数作为参数对其装饰。
 函数可以直接返回给外层函数
 
 简单函数进行装饰有这么一个函数12def hello():      return &amp;apos;hello world">
-<meta property="og:updated_time" content="2017-01-31T08:57:16.000Z">
+<meta property="og:updated_time" content="2017-03-01T12:12:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-04-01-装饰器">
 <meta name="twitter:description" content="目录
@@ -142,13 +142,12 @@ Python装饰器，英文decorator, 以被装饰函数作为参数对其装饰。
 <p>看下多个装饰器的例子，为了简单起见，下面的例子就不使用带参数的装饰器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">def maketag1(func):</div><div class="line">    def wrapper():</div><div class="line">        return &apos;&lt;html&gt;&apos; + func() + &apos;&lt;/html&gt;&apos;</div><div class="line">    return wrapper</div><div class="line">    </div><div class="line">def maketag2(func):</div><div class="line">    def wrapper():</div><div class="line">        return &apos;&lt;i&gt;&apos; + func() + &apos;&lt;/i&gt;&apos;</div><div class="line">    return wrapper</div><div class="line"></div><div class="line">@maketag1</div><div class="line">@maketag2</div><div class="line">def hello():</div><div class="line">    return &apos;hello world&apos;</div></pre></td></tr></table></figure></p>
 <p>上面定义了两个装饰器，对 hello 进行装饰，上面的最后几行代码相当于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def hello():</div><div class="line">    return &apos;hello world&apos;</div><div class="line">    </div><div class="line">hello = maketag1(maketag2(hello))</div><div class="line">调用函数 hello：</div><div class="line"></div><div class="line">&gt;&gt;&gt; hello()    </div><div class="line">&apos;&lt;html&gt;&lt;i&gt;hello world&lt;/i&gt;&lt;/html&gt;&apos;</div></pre></td></tr></table></figure></p>
 <p>似乎理解深刻了：当多个装饰器时，离函数定义最近的装饰器先被调用</p>
-<h2 id="对带参数的函数进行装饰"><a href="#对带参数的函数进行装饰" class="headerlink" title="对带参数的函数进行装饰"></a>对带参数的函数进行装饰</h2><p>装饰器还可以带参数，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@decorator(args1, args2)</div><div class="line">def func():</div><div class="line">    pass</div><div class="line">等价于：</div><div class="line"></div><div class="line">def func():</div><div class="line">    pass</div><div class="line"></div><div class="line">func = decorator(args1, args2)(func)</div></pre></td></tr></table></figure></p>
-<p>我们来几个具体的例子参悟一下：</p>
-<p>让被装饰函数带有参数，对前面例子中的 hello() 函数进行改写使其带参数，如下：</p>
+<h2 id="对带参数的函数进行装饰"><a href="#对带参数的函数进行装饰" class="headerlink" title="对带参数的函数进行装饰"></a>对带参数的函数进行装饰</h2><p>让被装饰函数带有参数，对前面例子中的 hello() 函数进行改写使其带参数，如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">def maketag(func):</div><div class="line">    def wrapper(*args, **kwargs):</div><div class="line">        res = func(*args, **kwargs)</div><div class="line">        return &apos;&lt;h&gt;&apos; + res + &apos;&lt;/h&gt;&apos;</div><div class="line">    return wrapper</div><div class="line"></div><div class="line">@maketag</div><div class="line">def hello(name):</div><div class="line">    return &apos;hello %s&apos; % name</div><div class="line">    </div><div class="line">@maketag</div><div class="line">def hello2(name1=&apos;user1&apos;, name2=&apos;user2&apos;):</div><div class="line">    return &apos;hello %s, %s&apos; % (name1, name2)</div></pre></td></tr></table></figure>
 <p>由于函数 hello 带参数，因此内嵌包装函数 wrapper 也做了一点改变：</p>
 <p>内嵌包装函数的参数传给了 func，即被装饰函数，也就是说内嵌包装函数的参数跟被装饰函数的参数对应，这里使用了 (<em>args, *</em>kwargs)，是为了适应可变参数。<br>看看使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; hello1(&apos;python&apos;)</div><div class="line">&apos;&lt;h&gt;hello python&lt;/h&gt;&apos;</div><div class="line">&gt;&gt;&gt; hello2(&apos;python&apos;, &apos;java&apos;)</div><div class="line">&apos;&lt;h&gt;hello python, java&lt;/h&gt;&apos;</div></pre></td></tr></table></figure></p>
-<h2 id="带参数的装饰器"><a href="#带参数的装饰器" class="headerlink" title="带参数的装饰器"></a>带参数的装饰器</h2><p>上面的例子，我们想改用标签 <code>&lt;html&gt;...&lt;/html&gt;</code> 是不是要再定义一个装饰器呢？不必，其实我们可以装饰器外层再定义一个函数，将标签作为参数，返回一个装饰器，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def outer_decorator(tag):     # 外层函数参数传给装饰器</div><div class="line">    def decorator(func):      # 真正的装饰器参数必然是被装饰器函数func</div><div class="line">        def wrapper(*args, **kwargs):       # 装饰器内层函数的参数是func的参数</div><div class="line">            res = func(*args, **kwargs)     # 被装饰函数正常调用</div><div class="line">#           return &apos;&lt;&apos; + tag + &apos;&gt;&apos; + res + &apos;&lt;/&apos; + tag + &apos;&gt;&apos;</div><div class="line">            return &apos;&lt;&#123;tag&#125;&gt;&#123;res&#125;&lt;/&#123;tag&#125;&gt;&apos;.format(tag=tag, res=res)</div><div class="line">        return wrapper        # 内层函数作返回值返回给装饰器</div><div class="line">    return decorator          # 装饰器本身作为返回值返回给最外层函数</div></pre></td></tr></table></figure></p>
+<h2 id="带参数的装饰器"><a href="#带参数的装饰器" class="headerlink" title="带参数的装饰器"></a>带参数的装饰器</h2><p>装饰器还可以带参数，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@decorator(args1, args2)</div><div class="line">def func():</div><div class="line">    pass</div><div class="line">等价于：</div><div class="line"></div><div class="line">def func():</div><div class="line">    pass</div><div class="line"></div><div class="line">func = decorator(args1, args2)(func)</div></pre></td></tr></table></figure></p>
+<p>我们想改用标签 <code>&lt;html&gt;...&lt;/html&gt;</code> 是不是要再定义一个装饰器呢？不必，其实我们可以装饰器外层再定义一个函数，将标签作为参数，返回一个装饰器，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">def outer_decorator(tag):     # 外层函数参数传给装饰器</div><div class="line">    def decorator(func):      # 真正的装饰器参数必然是被装饰器函数func</div><div class="line">        def wrapper(*args, **kwargs):       # 装饰器内层函数的参数是func的参数</div><div class="line">            res = func(*args, **kwargs)     # 被装饰函数正常调用</div><div class="line">#           return &apos;&lt;&apos; + tag + &apos;&gt;&apos; + res + &apos;&lt;/&apos; + tag + &apos;&gt;&apos;</div><div class="line">            return &apos;&lt;&#123;tag&#125;&gt;&#123;res&#125;&lt;/&#123;tag&#125;&gt;&apos;.format(tag=tag, res=res)</div><div class="line">        return wrapper        # 内层函数作返回值返回给装饰器</div><div class="line">    return decorator          # 装饰器本身作为返回值返回给最外层函数</div></pre></td></tr></table></figure></p>
 <p>现在，我们可以根据需要生成想要的装饰器了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">outer_decorator = outer_decorator(&apos;html&apos;)</div><div class="line">@outer_decorator</div><div class="line">def hello(name):</div><div class="line">    return &apos;hello %s&apos; % name</div><div class="line">    </div><div class="line">&gt;&gt;&gt; hello(&apos;world&apos;)</div><div class="line">&apos;&lt;html&gt;hello world&lt;/html&gt;&apos;</div></pre></td></tr></table></figure></p>
 <p>上面的形式也可以写得更加简洁：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@outer_decorator(&apos;html&apos;)     # @语法糖syntactic sugar</div><div class="line">def hello(name):</div><div class="line">    return &apos;hello,  %s&apos; % name</div></pre></td></tr></table></figure></p>
 <p>这就是带参数的装饰器，其实就是在装饰器外面多了一层包装，根据不同的参数返回不同的装饰器。</p>
@@ -167,7 +166,7 @@ Python装饰器，英文decorator, 以被装饰函数作为参数对其装饰。
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="ciznuplrh000h8djx3658coq4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cizqx431r000hxsjxc9iqqnay" class="article-share-link">Share</a>
       
       
     </footer>
@@ -236,19 +235,19 @@ Python装饰器，英文decorator, 以被装饰函数作为参数对其装饰。
           </li>
         
           <li>
-            <a href="/2017/03/31/python-10-02-网络编程/">python-06-02-网络编程</a>
+            <a href="/2017/03/31/python-10-02-网络编程/">python-09-02-网络编程</a>
           </li>
         
           <li>
-            <a href="/2017/03/03/python-10-01-进程和线程/">python-06-01-进程和线程</a>
+            <a href="/2017/03/31/python-10-01-进程和线程/">python-08-01-进程和线程</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/01/hello-world/">Hello World</a>
           </li>
         
           <li>
             <a href="/2017/03/01/python-06-01-正则表达式/">python-06-01-正则表达式</a>
-          </li>
-        
-          <li>
-            <a href="/2017/03/01/python-07-01-面象对象编程/">python-07-01-面象对象编程</a>
           </li>
         
       </ul>
