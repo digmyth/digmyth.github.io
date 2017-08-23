@@ -5,22 +5,22 @@
   
   <title>linux_iptables应用 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="网上各种贴子各种飞总说不到重点，本人表示不喜欢。
-##　iptables规则应用总结防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
-反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --d">
+  <meta name="description" content="##　iptables 规则应用总结
+防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
+反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPTiptabl">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux_iptables应用">
 <meta property="og:url" content="http://www.digmyth.com/2017/06/15/linux-iptables应用/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="网上各种贴子各种飞总说不到重点，本人表示不喜欢。
-##　iptables规则应用总结防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
-反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --d">
-<meta property="og:updated_time" content="2017-08-23T07:28:48.000Z">
+<meta property="og:description" content="##　iptables 规则应用总结
+防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
+反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPTiptabl">
+<meta property="og:updated_time" content="2017-08-23T07:36:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux_iptables应用">
-<meta name="twitter:description" content="网上各种贴子各种飞总说不到重点，本人表示不喜欢。
-##　iptables规则应用总结防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
-反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --d">
+<meta name="twitter:description" content="##　iptables 规则应用总结
+防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
+反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPTiptabl">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -95,8 +95,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><code>网上各种贴子各种飞总说不到重点，本人表示不喜欢。</code></p>
-<p>##　<code>iptables</code>规则应用总结<br>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
+        <p>##　iptables 规则应用总结</p>
+<p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
 <p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
 <p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
 <p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
@@ -107,7 +107,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj6opeaj80009bbjxypfz7ar8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj6opgw7w0009c5jxmft1xgl7" class="article-share-link">Share</a>
       
       
     </footer>
