@@ -6,21 +6,18 @@
   <title>ceph-luminous安装 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面
-
-1  /etc/hosts解析略2  ntpservers时间同步略3  系统配置123456sed -i &amp;apos;s/SELINUX=.*/SELINUX=disabled/&amp;apos; /etc/selinux/configsetenforce 0systemctl stop firewalld s">
+1  /etc/hosts解析略2  ntpservers时间同步略3  系统配置123456sed -i &amp;apos;s/SELINUX=.*/SELINUX=disabled/&amp;apos; /etc/selinux/configsetenforce 0systemctl stop firewalld sy">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ceph-luminous安装">
 <meta property="og:url" content="http://www.digmyth.com/2017/09/05/ceph-luminous安装/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
 <meta property="og:description" content="这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面
-
-1  /etc/hosts解析略2  ntpservers时间同步略3  系统配置123456sed -i &amp;apos;s/SELINUX=.*/SELINUX=disabled/&amp;apos; /etc/selinux/configsetenforce 0systemctl stop firewalld s">
-<meta property="og:updated_time" content="2017-09-05T06:39:52.000Z">
+1  /etc/hosts解析略2  ntpservers时间同步略3  系统配置123456sed -i &amp;apos;s/SELINUX=.*/SELINUX=disabled/&amp;apos; /etc/selinux/configsetenforce 0systemctl stop firewalld sy">
+<meta property="og:updated_time" content="2017-09-05T06:41:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ceph-luminous安装">
 <meta name="twitter:description" content="这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面
-
-1  /etc/hosts解析略2  ntpservers时间同步略3  系统配置123456sed -i &amp;apos;s/SELINUX=.*/SELINUX=disabled/&amp;apos; /etc/selinux/configsetenforce 0systemctl stop firewalld s">
+1  /etc/hosts解析略2  ntpservers时间同步略3  系统配置123456sed -i &amp;apos;s/SELINUX=.*/SELINUX=disabled/&amp;apos; /etc/selinux/configsetenforce 0systemctl stop firewalld sy">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -76,7 +73,7 @@
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/ceph/">ceph</a>
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
   </div>
 
   </div>
@@ -95,9 +92,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面</p>
-</blockquote>
+        <p> 这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面</p>
 <p>1  /etc/hosts解析略<br>2  ntpservers时间同步略<br>3  系统配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">sed -i &apos;s/SELINUX=.*/SELINUX=disabled/&apos; /etc/selinux/config</div><div class="line">setenforce 0</div><div class="line">systemctl stop firewalld </div><div class="line">systemctl disable firewalld</div><div class="line">systemctl  stop NetworkManager</div><div class="line">systemctl  disable NetworkManager</div></pre></td></tr></table></figure></p>
 <p>添加yum源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@cluster-sql ~]# cat ceph.repo </div><div class="line">[ceph]</div><div class="line">name=ceph</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/x86_64/</div><div class="line">gpgcheck=0</div><div class="line">[ceph-noarch]</div><div class="line">name=cephnoarch</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/noarch/</div><div class="line">gpgcheck=0</div></pre></td></tr></table></figure></p>
 <p>4   新建集群<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># mkdir /mnt/cluster</div><div class="line"># cd /mnt/cluster</div><div class="line"> </div><div class="line"># yum -y install ceph-deploy</div><div class="line"># ceph-deploy  install --no-adjust-repos node01 node02 node03</div><div class="line"># ceph-deploy  new  node01 node02 node03</div></pre></td></tr></table></figure></p>
@@ -116,7 +111,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj7786nnm00000gjxmgyez5lg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj7788rgn00031djx24w6kz9j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -153,7 +148,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ceph/">ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
     </div>
   </div>
 
