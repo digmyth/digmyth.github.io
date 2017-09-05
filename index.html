@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/05/hello-world/" class="article-date">
-  <time datetime="2017-09-05T07:23:51.560Z" itemprop="datePublished">2017-09-05</time>
+  <time datetime="2017-09-05T07:26:49.879Z" itemprop="datePublished">2017-09-05</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/hello-world/" data-id="cj779qydl00090sjxo2rmq8au" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/hello-world/" data-id="cj779uryv00091gjx81n9m9xp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -157,7 +157,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj779qydd00030sjxedy33v4f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj779uryn00031gjxbvba6hjl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -228,7 +228,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS 7的PXE装机/" data-id="cj779qyfd001i0sjx27ha4ztp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS 7的PXE装机/" data-id="cj779us0z001i1gjx20py3wqj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -275,7 +275,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj779qydo000c0sjx1ny0otul" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj779uryy000c1gjxd4lbsnwp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -312,15 +312,16 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="python加密解密，加签验签"><a href="#python加密解密，加签验签" class="headerlink" title="python加密解密，加签验签"></a>python加密解密，加签验签</h2><p>(转)<br>在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步</p>
-<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">import base64</div><div class="line">from Crypto.PublicKey import RSA</div><div class="line">from Crypto.Hash import SHA</div><div class="line">from Crypto.Cipher import PKCS1_v1_5</div><div class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</div><div class="line"></div><div class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</div><div class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</div></pre></td></tr></table></figure></p>
+<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">import base64</div><div class="line">from Crypto.PublicKey import RSA</div><div class="line">from Crypto.Hash import SHA</div><div class="line">from Crypto.Cipher import PKCS1_v1_5</div><div class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</div><div class="line"></div><div class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</div><div class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</div></pre></td></tr></table></figure>
 <p>加密</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">def split_data(l, n):</div><div class="line">    for i in range(0, len(l), n):</div><div class="line">        yield l[i: i+n]</div><div class="line">        </div><div class="line">def encrypt(params):</div><div class="line">    raw = params.encode(&apos;utf-8&apos;)</div><div class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</div><div class="line">    ＃ 加密超长字节117个字节一加密</div><div class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</div><div class="line">    return base64.b64encode(content)</div><div class="line">``` </div><div class="line">解密</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">def split_data(l, n):</div><div class="line">    for i in range(0, len(l), n):</div><div class="line">        yield l[i: i+n]</div><div class="line">        </div><div class="line">def encrypt(params):</div><div class="line">    raw = params.encode(&apos;utf-8&apos;)</div><div class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</div><div class="line">    ＃ 加密超长字节117个字节一加密</div><div class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</div><div class="line">    return base64.b64encode(content)</div><div class="line">``` </div><div class="line"></div><div class="line">解密</div></pre></td></tr></table></figure>
 <p>def decrypt(data):<br>    raw = data.encode(‘utf-8’)<br>    decrypt = PKCS1_v1_5.new(PRI_KEY).decrypt</p>
 <pre><code># 解密超长字符128一解密
 content = b&apos;&apos;.join(decrypt(x, object()) for x in chunks(raw, 128))
 return content.decode()
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">加签</div></pre></td></tr></table></figure>
-<p>def signer(data):<br>    signstr = data.encode(‘utf-8’)<br>    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))<br>    return base64.b64encode(sign)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">验签</div></pre></td></tr></table></figure></p>
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">加签</div></pre></td></tr></table></figure>
+<p>def signer(data):<br>    signstr = data.encode(‘utf-8’)<br>    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))<br>    return base64.b64encode(sign)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">验签</div></pre></td></tr></table></figure></p>
 <p>def verify_sign(unsign, raw_sign):</p>
 <pre><code># unsign: 签名
 # raw_sign: 待验证签名
@@ -330,7 +331,7 @@ assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj779qyf5001a0sjxl9lvo78z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj779us0n001a1gjx70xnwm73" class="article-share-link">Share</a>
       
       
     </footer>
@@ -374,7 +375,7 @@ assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj779qyex00160sjxrukkipz6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj779us0e00161gjxizewtk3q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -421,7 +422,7 @@ assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj779qyet00120sjx1wjtdrwb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj779us0a00121gjxkhxp44gr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -465,7 +466,7 @@ assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj779qyev00140sjxsqju36wt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj779us0c00141gjx0asi3rdw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -522,7 +523,7 @@ assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj779qyer00100sjxqhze6ijt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj779us0000101gjxs4m0mh6x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -591,7 +592,7 @@ assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cj779qyel000w0sjxzxx36ff8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cj779urzu000w1gjxodncq4g5" class="article-share-link">Share</a>
       
       
     </footer>
