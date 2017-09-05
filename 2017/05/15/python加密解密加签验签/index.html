@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>python-加密解密加签验签 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="python加密解密，加签验签(转)在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步
+一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。12345678import base64from Crypto.PublicKey import RSAfrom Crypto.Hash import SHA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python-加密解密加签验签">
+<meta property="og:url" content="http://www.digmyth.com/2017/05/15/python加密解密加签验签/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="python加密解密，加签验签(转)在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步
+一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。12345678import base64from Crypto.PublicKey import RSAfrom Crypto.Hash import SHA">
+<meta property="og:updated_time" content="2017-09-05T07:19:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python-加密解密加签验签">
+<meta name="twitter:description" content="python加密解密，加签验签(转)在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步
+一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。12345678import base64from Crypto.PublicKey import RSAfrom Crypto.Hash import SHA">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
+  <time datetime="2017-05-15T12:51:41.000Z" itemprop="datePublished">2017-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      python-加密解密加签验签
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="python加密解密，加签验签"><a href="#python加密解密，加签验签" class="headerlink" title="python加密解密，加签验签"></a>python加密解密，加签验签</h2><p>(转)<br>在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步</p>
+<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">import base64</div><div class="line">from Crypto.PublicKey import RSA</div><div class="line">from Crypto.Hash import SHA</div><div class="line">from Crypto.Cipher import PKCS1_v1_5</div><div class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</div><div class="line"></div><div class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</div><div class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</div></pre></td></tr></table></figure></p>
+<p>加密</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">def split_data(l, n):</div><div class="line">    for i in range(0, len(l), n):</div><div class="line">        yield l[i: i+n]</div><div class="line">        </div><div class="line">def encrypt(params):</div><div class="line">    raw = params.encode(&apos;utf-8&apos;)</div><div class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</div><div class="line">    ＃ 加密超长字节117个字节一加密</div><div class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</div><div class="line">    return base64.b64encode(content)</div><div class="line">``` </div><div class="line">解密</div></pre></td></tr></table></figure>
+<p>def decrypt(data):<br>    raw = data.encode(‘utf-8’)<br>    decrypt = PKCS1_v1_5.new(PRI_KEY).decrypt</p>
+<pre><code># 解密超长字符128一解密
+content = b&apos;&apos;.join(decrypt(x, object()) for x in chunks(raw, 128))
+return content.decode()
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">加签</div></pre></td></tr></table></figure>
+<p>def signer(data):<br>    signstr = data.encode(‘utf-8’)<br>    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))<br>    return base64.b64encode(sign)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">验签</div></pre></td></tr></table></figure></p>
+<p>def verify_sign(unsign, raw_sign):<br>    “””<br>     unsign: 签名<br>     raw_sign: 待验证签名<br>    “””<br>    assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(‘utf-8’)), raw_sign)<br>```</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj779lq1k0014zwjx7wz0h8u6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/06/15/linux-iptables应用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          linux_iptables应用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/03/31/python-10-02-网络编程/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">python-09-02-网络编程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/09/05/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/09/05/ceph-luminous安装/">ceph-luminous安装</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/01/基于CentOS 7的PXE装机/">基于CentOS 7的PXE装机</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
+          </li>
+        
+          <li>
+            <a href="/2017/05/15/python加密解密加签验签/">python-加密解密加签验签</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

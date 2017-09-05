@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/05/hello-world/" class="article-date">
-  <time datetime="2017-09-05T06:55:48.509Z" itemprop="datePublished">2017-09-05</time>
+  <time datetime="2017-09-05T07:19:47.397Z" itemprop="datePublished">2017-09-05</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/hello-world/" data-id="cj778qvq500093fjxoc7ojcxb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/hello-world/" data-id="cj779lpz90006zwjx172lie09" class="article-share-link">Share</a>
       
       
     </footer>
@@ -157,7 +157,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj778qvpw00033fjxpzmhxbwf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj779lpz30003zwjxaa15b24e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -228,7 +228,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS 7的PXE装机/" data-id="cj778qvsc001g3fjx9vkp8tt5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS 7的PXE装机/" data-id="cj779lq2f001izwjxaq49hjuw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -275,7 +275,58 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj778qvq9000c3fjx0kjpyx7p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj779lpzd0009zwjx0svowaea" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
+  <time datetime="2017-05-15T12:51:41.000Z" itemprop="datePublished">2017-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/15/python加密解密加签验签/">python-加密解密加签验签</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="python加密解密，加签验签"><a href="#python加密解密，加签验签" class="headerlink" title="python加密解密，加签验签"></a>python加密解密，加签验签</h2><p>(转)<br>在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步</p>
+<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">import base64</div><div class="line">from Crypto.PublicKey import RSA</div><div class="line">from Crypto.Hash import SHA</div><div class="line">from Crypto.Cipher import PKCS1_v1_5</div><div class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</div><div class="line"></div><div class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</div><div class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</div></pre></td></tr></table></figure></p>
+<p>加密</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">def split_data(l, n):</div><div class="line">    for i in range(0, len(l), n):</div><div class="line">        yield l[i: i+n]</div><div class="line">        </div><div class="line">def encrypt(params):</div><div class="line">    raw = params.encode(&apos;utf-8&apos;)</div><div class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</div><div class="line">    ＃ 加密超长字节117个字节一加密</div><div class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</div><div class="line">    return base64.b64encode(content)</div><div class="line">``` </div><div class="line">解密</div></pre></td></tr></table></figure>
+<p>def decrypt(data):<br>    raw = data.encode(‘utf-8’)<br>    decrypt = PKCS1_v1_5.new(PRI_KEY).decrypt</p>
+<pre><code># 解密超长字符128一解密
+content = b&apos;&apos;.join(decrypt(x, object()) for x in chunks(raw, 128))
+return content.decode()
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">加签</div></pre></td></tr></table></figure>
+<p>def signer(data):<br>    signstr = data.encode(‘utf-8’)<br>    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))<br>    return base64.b64encode(sign)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">验签</div></pre></td></tr></table></figure></p>
+<p>def verify_sign(unsign, raw_sign):<br>    “””<br>     unsign: 签名<br>     raw_sign: 待验证签名<br>    “””<br>    assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(‘utf-8’)), raw_sign)<br>```</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj779lq1k0014zwjx7wz0h8u6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -319,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj778qvrt00163fjx05py0ebr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj779lq25001dzwjxeb9qvjbm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -366,7 +417,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj778qvrn00123fjxqrbaaarm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj779lq1n0016zwjx3fozgx63" class="article-share-link">Share</a>
       
       
     </footer>
@@ -410,7 +461,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj778qvrp00143fjxoec0r8v9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj779lq1q0018zwjxvmb7p8ug" class="article-share-link">Share</a>
       
       
     </footer>
@@ -467,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj778qvrk00103fjx77ervbq6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj779lq1e0010zwjxyiwkuvqc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -536,55 +587,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cj778qvre000w3fjxg22v7byy" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-07-01-面象对象编程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/01/python-07-01-面象对象编程/" class="article-date">
-  <time datetime="2017-03-01T00:28:28.000Z" itemprop="datePublished">2017-03-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/01/python-07-01-面象对象编程/">python-07-01-面象对象编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录<br>*</li>
-</ul>
-<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><p>定义： 面向对象编程(<code>oop</code>=object-oriented programming):  相对于面对过程编程，它只是一种编程范示。</p>
-<p>状态和转换这种状态的操作: 状态其实就是数据，转换这种状态的操作其实就是方法</p>
-<p>类：将同一种具体的共同特性抽象出来<br>数据：如变量<br>方法：函数：操作变量引用的数据的代码<br>方法是类的组成部份，属性也是在类中定义的, 但数据是在类实例化时赋值的.</p>
-<p>对象是类的实例，对象的某个方法的调用理解为对其发消息，或接口调用<br>同一个类的所有对象都能接收相同的消息，也就是同种方法<br>依赖  一个类中的方法操作另一个类的对象<br>聚合 类A的对象包含类B的对象<br>继承：描述特殊或具体与一般性的关系<br>面向对象的模型机制有3原则：封装，继承，多态</p>
-<p>类或类成员有数据和方法<br>一个类的行为和接口是通过类的方法来定义的<br>对象是类的实例<br>自定义类—实例化—–对象–对象间的操作—消息传递<br>这里消息就是调用请求</p>
-<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cj778qvrh000y3fjxqbv721id" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cj779lq18000wzwjxo7jl5aba" class="article-share-link">Share</a>
       
       
     </footer>
@@ -622,7 +625,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -651,7 +654,7 @@
           </li>
         
           <li>
-            <a href="/2017/03/31/python-10-02-网络编程/">python-09-02-网络编程</a>
+            <a href="/2017/05/15/python加密解密加签验签/">python-加密解密加签验签</a>
           </li>
         
       </ul>
