@@ -18,7 +18,7 @@
 <meta property="og:image" content="http://i1.bvimg.com/586082/2ebe4e649eaa62ab.png">
 <meta property="og:image" content="http://i1.bvimg.com/586082/c6730a22b86ec275.png">
 <meta property="og:image" content="http://i1.bvimg.com/586082/2c1648284822b2ff.png">
-<meta property="og:updated_time" content="2017-09-05T10:46:56.000Z">
+<meta property="og:updated_time" content="2017-09-05T10:49:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ceph-luminous安装">
 <meta name="twitter:description" content="这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面
@@ -115,12 +115,12 @@
 <p>13 ceph-fs部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># ceph-deploy   mds  create node01 node02 node03</div><div class="line"># ceph osd pool create cephfs_data &lt;pg_num&gt;</div><div class="line"># ceph osd pool create cephfs_metadata &lt;pg_num&gt;</div><div class="line"></div><div class="line"># ceph fs new cephfs cephfs_metadata cephfs_data</div></pre></td></tr></table></figure></p>
 <h2 id="总结几点"><a href="#总结几点" class="headerlink" title="总结几点"></a>总结几点</h2><p>1 ceph quorum_status –format json-pretty 可查看选举详情<br>2 ceph osd pool application enable volumes rbd 标记一个池的应用(cephfs/rbd/rgw),不标记可以使用但集群状态将为warning<br>3 保护机制的存在默认删除池是不允许的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@ceph cluster]# ceph --show-config | grep delete</div><div class="line">mon_allow_pool_delete = false</div><div class="line">mon_fake_pool_delete = false</div><div class="line">osd_pool_default_flag_nodelete = false</div><div class="line">rbd_mirror_delete_retry_interval = 30.000000</div></pre></td></tr></table></figure></p>
 <p>需要编辑ceph.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">mon_allow_pool_delete=true</div></pre></td></tr></table></figure></p>
-<h2 id="界面视图"><a href="#界面视图" class="headerlink" title="界面视图"></a>界面视图</h2><p><img src="http://i1.bvimg.com/586082/6a6e097a7e84d123.png" alt=""><br><img src="http://i1.bvimg.com/586082/edd5691d3bc9875a.png" alt=""><br><img src="http://i1.bvimg.com/586082/2ebe4e649eaa62ab.png" alt=""><br><img src="http://i1.bvimg.com/586082/c6730a22b86ec275.png" alt=""><br><img src="http://i1.bvimg.com/586082/2c1648284822b2ff.png" alt=""></p>
+<h2 id="界面视图"><a href="#界面视图" class="headerlink" title="界面视图"></a>界面视图</h2><p><img src="http://i1.bvimg.com/586082/6a6e097a7e84d123.png" alt="figure1"><br><img src="http://i1.bvimg.com/586082/edd5691d3bc9875a.png" alt="figure2"><br><img src="http://i1.bvimg.com/586082/2ebe4e649eaa62ab.png" alt="figure3"><br><img src="http://i1.bvimg.com/586082/c6730a22b86ec275.png" alt="figure4"><br><img src="http://i1.bvimg.com/586082/2c1648284822b2ff.png" alt="figure5"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj77h17vd0003zljx00750tyb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj77h3qbd000307jx8n3vejjy" class="article-share-link">Share</a>
       
       
     </footer>
