@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/05/hello-world/" class="article-date">
-  <time datetime="2017-09-05T06:41:43.184Z" itemprop="datePublished">2017-09-05</time>
+  <time datetime="2017-09-05T06:50:42.830Z" itemprop="datePublished">2017-09-05</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/hello-world/" data-id="cj7788rgx00091djxkq9pcdpq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/hello-world/" data-id="cj778kbv300092kjx4up9i2h4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -151,11 +151,12 @@
 <p>可以看到己被激活<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ceph -s</div><div class="line">  cluster:</div><div class="line">    id:     d8fa6509-0196-41bc-838e-6226c927e680</div><div class="line">    health: HEALTH_WARN</div><div class="line">            clock skew detected on mon.node02, mon.node03</div><div class="line"> </div><div class="line">  services:</div><div class="line">    mon: 3 daemons, quorum node01,node02,node03</div><div class="line">    mgr: node01(active), standbys: node02, node03</div><div class="line">    osd: 3 osds: 3 up, 3 in</div><div class="line"> </div><div class="line">  data:</div><div class="line">    pools:   0 pools, 0 pgs</div><div class="line">    objects: 0 objects, 0 bytes</div><div class="line">    usage:   3164 MB used, 146 GB / 149 GB avail</div><div class="line">    pgs:</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ceph config-key put mgr/dashboard/server_addr  192.168.1.10</div><div class="line">set mgr/dashboard/server_addr</div><div class="line">[root@node01 cluster]# ceph config-key put mgr/dashboard/server_port 7000</div><div class="line">set mgr/dashboard/server_port</div><div class="line"></div><div class="line">[root@node01 cluster]# ceph mgr  module enable dashboard</div><div class="line">[root@node01 cluster]# ceph mgr  module ls</div><div class="line">[</div><div class="line">    &quot;dashboard&quot;,</div><div class="line">    &quot;restful&quot;,</div><div class="line">    &quot;status&quot;</div><div class="line">]</div><div class="line"></div><div class="line">[root@node01 cluster]# netstat -tnlp | grep 7000</div><div class="line">tcp        0      0 192.168.1.10:7000       0.0.0.0:*               LISTEN      34774/ceph-mgr</div></pre></td></tr></table></figure>
 <p>13 ceph-fs部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># ceph-deploy   mds  create node01 node02 node03</div><div class="line"># ceph osd pool create cephfs_data &lt;pg_num&gt;</div><div class="line"># ceph osd pool create cephfs_metadata &lt;pg_num&gt;</div><div class="line"></div><div class="line"># ceph fs new cephfs cephfs_metadata cephfs_data</div></pre></td></tr></table></figure></p>
+<p>注意：<br>1 ceph quorum_status –format json-pretty 可查看选举详情<br>2 ceph osd pool application enable volumes rbd 标记一个池的应用(cephfs/rbd/rgw),不标记可以使用但集群状态将为warning</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj7788rgn00031djx24w6kz9j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj778kbuv00032kjx1mw6dhj4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -226,7 +227,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS 7的PXE装机/" data-id="cj7788rj0001g1djx8wiio3l7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS 7的PXE装机/" data-id="cj778kbww001g2kjxhrjej6jj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,7 +274,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj7788rh0000c1djxoqs82j56" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj778kbv7000c2kjxkhkhsk3q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -317,7 +318,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj7788rii00161djxndotcc2q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj778kbwf00162kjx9kr3cu01" class="article-share-link">Share</a>
       
       
     </footer>
@@ -364,7 +365,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj7788rid00121djxmeqjh3ay" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj778kbwb00122kjx4x3qykni" class="article-share-link">Share</a>
       
       
     </footer>
@@ -408,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj7788rif00141djxq00siw9z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj778kbwc00142kjxseuvhjvm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -465,7 +466,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj7788ria00101djxs09caan7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj778kbw700102kjx5hv21po8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -534,7 +535,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cj7788ri3000w1djxufqymkjl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cj778kbw3000w2kjx2mev52v6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -582,7 +583,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cj7788ri7000y1djxus6z3x4k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cj778kbw5000y2kjxx7g6bf3a" class="article-share-link">Share</a>
       
       
     </footer>
