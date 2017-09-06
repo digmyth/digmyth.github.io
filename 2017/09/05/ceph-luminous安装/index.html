@@ -13,16 +13,16 @@
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
 <meta property="og:description" content="这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面
 1  /etc/hosts解析略2  ntpservers时间同步略3  系统配置123456sed -i &amp;apos;s/SELINUX=.*/SELINUX=disabled/&amp;apos; /etc/selinux/configsetenforce 0systemctl stop firewalld sy">
-<meta property="og:image" content="http://www.digmyth.com/images/cephmgr1.jpg">
+<meta property="og:image" content="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150467077578.jpg">
 <meta property="og:image" content="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466837396.jpg">
 <meta property="og:image" content="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466890154.jpg">
 <meta property="og:image" content="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466902942.jpg">
-<meta property="og:updated_time" content="2017-09-06T03:37:42.000Z">
+<meta property="og:updated_time" content="2017-09-06T04:06:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ceph-luminous安装">
 <meta name="twitter:description" content="这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面
 1  /etc/hosts解析略2  ntpservers时间同步略3  系统配置123456sed -i &amp;apos;s/SELINUX=.*/SELINUX=disabled/&amp;apos; /etc/selinux/configsetenforce 0systemctl stop firewalld sy">
-<meta name="twitter:image" content="http://www.digmyth.com/images/cephmgr1.jpg">
+<meta name="twitter:image" content="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150467077578.jpg">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -114,12 +114,12 @@
 <p>13 ceph-fs部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># ceph-deploy   mds  create node01 node02 node03</div><div class="line"># ceph osd pool create cephfs_data &lt;pg_num&gt;</div><div class="line"># ceph osd pool create cephfs_metadata &lt;pg_num&gt;</div><div class="line"></div><div class="line"># ceph fs new cephfs cephfs_metadata cephfs_data</div></pre></td></tr></table></figure></p>
 <h2 id="总结几点"><a href="#总结几点" class="headerlink" title="总结几点"></a>总结几点</h2><p>1 ceph quorum_status –format json-pretty 可查看选举详情<br>2 ceph osd pool application enable volumes rbd 标记一个池的应用(cephfs/rbd/rgw),不标记可以使用但集群状态将为warning<br>3 保护机制的存在默认删除池是不允许的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@ceph cluster]# ceph --show-config | grep delete</div><div class="line">mon_allow_pool_delete = false</div><div class="line">mon_fake_pool_delete = false</div><div class="line">osd_pool_default_flag_nodelete = false</div><div class="line">rbd_mirror_delete_retry_interval = 30.000000</div></pre></td></tr></table></figure></p>
 <p>需要编辑ceph.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">mon_allow_pool_delete=true</div></pre></td></tr></table></figure></p>
-<h2 id="界面视图"><a href="#界面视图" class="headerlink" title="界面视图"></a>界面视图</h2><p><img src="/images/cephmgr1.jpg" alt="figure1"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466837396.jpg" alt="figure2"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466890154.jpg" alt="figure3"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466902942.jpg" alt="figure4"></p>
+<h2 id="界面视图"><a href="#界面视图" class="headerlink" title="界面视图"></a>界面视图</h2><p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150467077578.jpg" alt="figure1"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466837396.jpg" alt="figure2"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466890154.jpg" alt="figure3"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466902942.jpg" alt="figure4"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj78h5vjl0003b7jxd6o7texn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj78i5dxa0003ckjxrz0j4bt9" class="article-share-link">Share</a>
       
       
     </footer>
