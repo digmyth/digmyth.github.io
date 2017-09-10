@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/11/hello-world/" class="article-date">
-  <time datetime="2017-09-10T16:02:23.256Z" itemprop="datePublished">2017-09-11</time>
+  <time datetime="2017-09-10T16:06:13.778Z" itemprop="datePublished">2017-09-11</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/11/hello-world/" data-id="cj7exh1nc00096ojxll1p4ick" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/11/hello-world/" data-id="cj7exlziq000980jxp1cgmxnp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -158,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj7exh1n300036ojx9e6lhdzf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj7exlzii000380jx7rx6cgtn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -202,23 +202,23 @@
 <h1 id="5-update-yum"><a href="#5-update-yum" class="headerlink" title="5. update yum"></a>5. update yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum clean all</div><div class="line">yum update</div><div class="line">yum install epel-release axel vim git curl wget   net-tools git gcc lrzsz python-devel vsftpd createrepo</div></pre></td></tr></table></figure>
 <h1 id="6-optimization-system"><a href="#6-optimization-system" class="headerlink" title="6. optimization system"></a>6. optimization system</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">close selinux</div><div class="line">close NetworkManager</div><div class="line">close firewalld</div></pre></td></tr></table></figure>
 <h1 id="7-add-docker-yum"><a href="#7-add-docker-yum" class="headerlink" title="7.  add docker yum"></a>7.  add docker yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">tee /etc/yum.repos.d/docker.repo &lt;&lt; &apos;EOF&apos;</div><div class="line">[dockerrepo]</div><div class="line">name=Docker Repository</div><div class="line">baseurl=https://yum.dockerproject.org/repo/main/centos/7/</div><div class="line">enabled=1</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=https://yum.dockerproject.org/gpg</div><div class="line">EOF</div></pre></td></tr></table></figure>
-<p>#8. install docker<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</div></pre></td></tr></table></figure></p>
+<h1 id="8-install-docker"><a href="#8-install-docker" class="headerlink" title="8. install docker"></a>8. install docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</div></pre></td></tr></table></figure>
 <p>如果安装很慢，可以挂载ocata_20170420.iso光盘进入目录Packages/d 下面有相应软件包，执行下面命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum localinstall docker-engine-selinux-1.12.6-1.el7.centos.noarch.rpm docker-engine-1.12.6-1.el7.centos.x86_64.rpm</div></pre></td></tr></table></figure></p>
 <p>再执行完成安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</div></pre></td></tr></table></figure></p>
-<p>#9. 配置docker<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir  /etc/systemd/system/docker.service.d/</div><div class="line">tee /etc/systemd/system/docker.service.d/kolla.conf &lt;&lt; eof  </div><div class="line">[Service]</div><div class="line">MountFlags=shared</div><div class="line">eof</div></pre></td></tr></table></figure></p>
+<h1 id="9-配置docker"><a href="#9-配置docker" class="headerlink" title="9. 配置docker"></a>9. 配置docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir  /etc/systemd/system/docker.service.d/</div><div class="line">tee /etc/systemd/system/docker.service.d/kolla.conf &lt;&lt; eof  </div><div class="line">[Service]</div><div class="line">MountFlags=shared</div><div class="line">eof</div></pre></td></tr></table></figure>
 <p>edit  /usr/lib/systemd/system/docker.service<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ExecStart=/usr/bin/dockerd --insecure-registry 192.168.200.2:4000</div></pre></td></tr></table></figure></p>
 <p>启动docker:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable docker</div><div class="line">systemctl restart docker</div><div class="line">systemctl status  docker</div></pre></td></tr></table></figure></p>
-<p>#9. install pip<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum install python-pip</div><div class="line">pip install -U pip</div><div class="line">#easy_install -U pip    # 或者easy_install工具安装</div><div class="line">pip install docker-py</div></pre></td></tr></table></figure></p>
-<p>#10. install kolla-ansible<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># yum install gcc libffi-devel python-devel openssl-devel</div><div class="line"># pip install kolla-ansible</div><div class="line">#cp -rf /usr/share/kolla-ansible/etc_examples/kolla/ /etc/</div><div class="line"># kolla-genpwd</div></pre></td></tr></table></figure></p>
-<p>#11. install docker registry<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mount /dev/sr0 /mnt</div><div class="line">docker load &lt; registry.tar</div><div class="line"></div><div class="line">mkdir /opt/registry</div><div class="line">tar -zxf docker-registry.tar.gz -C /opt/registry</div><div class="line">docker run -d -p 4000:5000 --restart=always --name registry -v /opt/registry/:/var/lib/registry registry</div><div class="line"># curl http://172.16.100.100:4000/v2/_catalog</div><div class="line"># curl http://172.16.100.100:4000/v2/kolla/centos-source-nova-api/tags/list</div><div class="line">&#123;&quot;name&quot;:&quot;kolla/centos-source-nova-api&quot;,&quot;tags&quot;:[&quot;4.0.0.3&quot;]&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="12-ceph-disk-set"><a href="#12-ceph-disk-set" class="headerlink" title="12.  ceph disk set"></a>12.  ceph disk set</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">parted /dev/sdb  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div><div class="line">parted /dev/sdc  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div><div class="line">parted /dev/sdd  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div></pre></td></tr></table></figure>
-<p>#13.   in case of vm<br>如果只是在虚机中实验搭建kolla，需要额外配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir -p /etc/kolla/config/nova</div><div class="line">vim /etc/kolla/config/nova/nova-compute.conf</div><div class="line">[libvirt]</div><div class="line">virt_type = qemu</div><div class="line">cpu_mode = none</div></pre></td></tr></table></figure></p>
+<h1 id="10-install-pip"><a href="#10-install-pip" class="headerlink" title="10. install pip"></a>10. install pip</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum install python-pip</div><div class="line">pip install -U pip</div><div class="line">#easy_install -U pip    # 或者easy_install工具安装</div><div class="line">pip install docker-py</div></pre></td></tr></table></figure>
+<h1 id="11-install-kolla-ansible"><a href="#11-install-kolla-ansible" class="headerlink" title="11. install kolla-ansible"></a>11. install kolla-ansible</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># yum install gcc libffi-devel python-devel openssl-devel</div><div class="line"># pip install kolla-ansible</div><div class="line">#cp -rf /usr/share/kolla-ansible/etc_examples/kolla/ /etc/</div><div class="line"># kolla-genpwd</div></pre></td></tr></table></figure>
+<h1 id="12-install-docker-registry"><a href="#12-install-docker-registry" class="headerlink" title="12. install docker registry"></a>12. install docker registry</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mount /dev/sr0 /mnt</div><div class="line">docker load &lt; registry.tar</div><div class="line"></div><div class="line">mkdir /opt/registry</div><div class="line">tar -zxf docker-registry.tar.gz -C /opt/registry</div><div class="line">docker run -d -p 4000:5000 --restart=always --name registry -v /opt/registry/:/var/lib/registry registry</div><div class="line"># curl http://172.16.100.100:4000/v2/_catalog</div><div class="line"># curl http://172.16.100.100:4000/v2/kolla/centos-source-nova-api/tags/list</div><div class="line">&#123;&quot;name&quot;:&quot;kolla/centos-source-nova-api&quot;,&quot;tags&quot;:[&quot;4.0.0.3&quot;]&#125;</div></pre></td></tr></table></figure>
+<h1 id="13-ceph-disk-set"><a href="#13-ceph-disk-set" class="headerlink" title="13.  ceph disk set"></a>13.  ceph disk set</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">parted /dev/sdb  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div><div class="line">parted /dev/sdc  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div><div class="line">parted /dev/sdd  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div></pre></td></tr></table></figure>
+<h1 id="14-in-case-of-vm"><a href="#14-in-case-of-vm" class="headerlink" title="14.   in case of vm"></a>14.   in case of vm</h1><p>如果只是在虚机中实验搭建kolla，需要额外配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir -p /etc/kolla/config/nova</div><div class="line">vim /etc/kolla/config/nova/nova-compute.conf</div><div class="line">[libvirt]</div><div class="line">virt_type = qemu</div><div class="line">cpu_mode = none</div></pre></td></tr></table></figure></p>
 <p>创建 /etc/kolla/config/ceph.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">osd pool default size = 1</div><div class="line">osd pool default min size = 1</div></pre></td></tr></table></figure></p>
 <p>如果有需要，请手动调整副本数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd pool set rbd size 1</div></pre></td></tr></table></figure></p>
-<h1 id="14-edit-global-yml"><a href="#14-edit-global-yml" class="headerlink" title="14.  edit global.yml"></a>14.  edit global.yml</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">edit /etc/kolla/global.yml</div><div class="line">此处略过。。。</div></pre></td></tr></table></figure>
-<p>#15. kolla-ansible deploy<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">kolla-ansible prechecks</div><div class="line">kolla-ansible pull</div><div class="line">kolla-ansible deploy</div><div class="line">kolla-ansible post-deploy</div></pre></td></tr></table></figure></p>
-<p>#16. cli-commands install<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum  install ceph-common </div><div class="line">pip python-openstackclient   python-neutronclient</div></pre></td></tr></table></figure></p>
-<p>#17. access dashboard<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://172.16.100.100/horizon</div></pre></td></tr></table></figure></p>
+<h1 id="15-edit-global-yml"><a href="#15-edit-global-yml" class="headerlink" title="15.  edit global.yml"></a>15.  edit global.yml</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">edit /etc/kolla/global.yml</div><div class="line">此处略过。。。</div></pre></td></tr></table></figure>
+<h1 id="16-kolla-ansible-deploy"><a href="#16-kolla-ansible-deploy" class="headerlink" title="16. kolla-ansible deploy"></a>16. kolla-ansible deploy</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">kolla-ansible prechecks</div><div class="line">kolla-ansible pull</div><div class="line">kolla-ansible deploy</div><div class="line">kolla-ansible post-deploy</div></pre></td></tr></table></figure>
+<h1 id="17-cli-commands-install"><a href="#17-cli-commands-install" class="headerlink" title="17. cli-commands install"></a>17. cli-commands install</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum  install ceph-common </div><div class="line">pip python-openstackclient   python-neutronclient</div></pre></td></tr></table></figure>
+<h1 id="18-access-dashboard"><a href="#18-access-dashboard" class="headerlink" title="18. access dashboard"></a>18. access dashboard</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://172.16.100.100/horizon</div></pre></td></tr></table></figure>
 <p>如果在openstack平台虚机中搭建kolla情况下，让其能通过浮动地址访问内部地址的dashboard<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -d 172.18.128.244 -p tcp --dport 80 -j DNAT --to 172.16.100.100</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">成功访问：http://172.18.128.244</div></pre></td></tr></table></figure>
 <p>《成功》。。。</p>
@@ -226,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj7exh1nf000c6ojxq6ukysry" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj7exlziu000c80jxncv19jo6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -297,7 +297,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj7exh1pj001l6ojxwmn2yfys" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj7exlzla001l80jxjmru7vdn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -344,7 +344,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj7exh1nl000f6ojxjy1khuoz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj7exlziz000f80jxsjscotjm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -392,7 +392,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj7exh1pa001d6ojxy0pkrzcx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj7exlzl1001d80jx48vcp89c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -436,7 +436,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj7exh1p100196ojxm1jcez70" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj7exlzkr001980jxy8x2fq41" class="article-share-link">Share</a>
       
       
     </footer>
@@ -483,7 +483,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj7exh1ot00156ojxmbcprbq1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj7exlzkj001580jx8zq8lbgj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -527,7 +527,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj7exh1ox00176ojxqb2pb983" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj7exlzkl001780jx30nyovm4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -584,7 +584,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj7exh1op00136ojxp2zzxu0h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj7exlzkg001380jxj37vc0yk" class="article-share-link">Share</a>
       
       
     </footer>
