@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/11/hello-world/" class="article-date">
-  <time datetime="2017-09-10T16:08:24.386Z" itemprop="datePublished">2017-09-11</time>
+  <time datetime="2017-09-10T16:10:15.599Z" itemprop="datePublished">2017-09-11</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/11/hello-world/" data-id="cj7exosar00098mjx4y1151kk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/11/hello-world/" data-id="cj7exr640000997jxyplwl4e4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -158,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj7exosaa00038mjxaedb8bm5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj7exr63p000397jx944qpqvv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -226,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj7exosb1000c8mjxtvh3g79f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj7exr643000c97jxlnp4vzuv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -286,7 +286,7 @@
 <p>此外还有一些额外文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# ls /mnt/isolinux/</div><div class="line">boot.cat  grub.conf   isolinux.bin  memtest     TRANS.TBL    vesamenu.c32</div><div class="line">boot.msg  initrd.img  isolinux.cfg  splash.png  upgrade.img  vmlinuz</div><div class="line">[root@master ~]# ll /var/lib/tftpboot/</div><div class="line">boot.msg  initrd.img  pxelinux.0   splash.png  vesamenu.c32  vmlinuz</div></pre></td></tr></table></figure></p>
 <h2 id="定义安装树"><a href="#定义安装树" class="headerlink" title="定义安装树"></a>定义安装树</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install httpd</div><div class="line"># mkdir /var/www/html/pxe</div><div class="line"># mkdir /var/www/html/pub</div><div class="line"># mount --bind /mnt /var/www/html/pub/ </div><div class="line"># systemctl  start httpd</div></pre></td></tr></table></figure>
 <h2 id="定义ks文件"><a href="#定义ks文件" class="headerlink" title="定义ks文件"></a>定义ks文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">/pxe/CentOS72.ks</div><div class="line">[root@master pxe]# cat CentOS72.ks</div><div class="line">#version=DEVEL</div><div class="line"># System authorization information</div><div class="line"></div><div class="line">install</div><div class="line"># Keyboard layouts</div><div class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</div><div class="line">auth --enableshadow --passalgo=sha512</div><div class="line"></div><div class="line"># Use CDROM installation media</div><div class="line"># Run the Setup Agent on first boot</div><div class="line">#firstboot --enable</div><div class="line"># System language</div><div class="line">lang en_US.UTF-8</div><div class="line"></div><div class="line">url --url=http://172.16.10.1/pub/</div><div class="line"># Use graphical install</div><div class="line">graphical</div><div class="line">#text</div><div class="line"></div><div class="line">selinux --disabled</div><div class="line">skipx</div><div class="line"></div><div class="line">reboot</div><div class="line"></div><div class="line"># Network information</div><div class="line">#network  --bootproto=static --device=ens33 --gateway=172.16.10.254 --ip=172.16.10.30 --nameserver=114.114.114.114 --netmask=255.255.255.0 --onboot=on --ipv6=auto --activate</div><div class="line">network  --bootproto=dhcp --device=ens33 --onboot=yes --ipv6=auto --activate</div><div class="line">network  --hostname=digmyth</div><div class="line"></div><div class="line"># Root password=123456</div><div class="line">rootpw --iscrypted $6$6ErC1johQ5LVAYwQ$cGGxb6Q6./SpvXCZs.K39d9LpV/IeFnspUT6mHmsVsARzToRCSsZ4fLxcOh0tYWpt38Yh6JoMzmSEkEtCtMlS/</div><div class="line"># System services</div><div class="line">services --disabled=&quot;chronyd&quot;</div><div class="line"></div><div class="line"># System timezone</div><div class="line">timezone Asia/Shanghai --isUtc --nontp</div><div class="line"># System bootloader configuration</div><div class="line">clearpart --all --initlabel</div><div class="line">bootloader --append=&quot; crashkernel=auto&quot; --location=mbr --boot-drive=sda</div><div class="line"># Partition clearing information</div><div class="line"></div><div class="line">#clearpart --drives=sda --initlabel</div><div class="line">#clearpart --none --initlabel</div><div class="line"># Disk partitioning information</div><div class="line"></div><div class="line">#ignoredisk --only-use=sda</div><div class="line">#part pv.735 --fstype=&quot;lvmpv&quot; --ondisk=sda --size=19979</div><div class="line">#volgroup vg --pesize=4096 pv.735</div><div class="line">#logvol /boot --fstype=&quot;xfs&quot; --size=500 --name=boot --vgname=vg</div><div class="line">#logvol /  --fstype=&quot;xfs&quot; --size=16000 --name=root --vgname=vg</div><div class="line">#logvol /data  --fstype=&quot;xfs&quot; --size=3000 --name=data --vgname=vg</div><div class="line">#logvol swap --fstype=&quot;swap&quot; --grow --size=1</div><div class="line"></div><div class="line"></div><div class="line">%packages</div><div class="line">@^minimal</div><div class="line">@core</div><div class="line">kexec-tools</div><div class="line">vim</div><div class="line">net-tools</div><div class="line">sysstat</div><div class="line"></div><div class="line">%end</div><div class="line"></div><div class="line">%post</div><div class="line">touch /root/wxq.txt</div><div class="line">%end</div><div class="line"></div><div class="line">%addon com_redhat_kdump --enable --reserve-mb=&apos;auto&apos;</div><div class="line">%end</div></pre></td></tr></table></figure>
-<p>上面的装机将进入图形界面手动分区安装<br><img src="bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466910816.jpg" alt="pxe-boot"></p>
+<p>上面的装机将进入图形界面手动分区安装    </p>
 <p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466910816.jpg" alt="pxeboot"></p>
 <p>到此完结，可以结合cobbler实现多pxe环境并存。</p>
 <ul>
@@ -298,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj7exosda001l8mjx5zroa9xg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj7exr66p001l97jxgofy17ou" class="article-share-link">Share</a>
       
       
     </footer>
@@ -345,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj7exosb8000f8mjxqv92bf95" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj7exr648000f97jxhszv4gda" class="article-share-link">Share</a>
       
       
     </footer>
@@ -393,7 +393,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj7exosd0001d8mjxsq9eh1dt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj7exr66c001d97jxk77tkdai" class="article-share-link">Share</a>
       
       
     </footer>
@@ -437,7 +437,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj7exoscr00198mjx4knjzp0x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj7exr660001997jxbkt49u3q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -484,7 +484,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj7exoscm00158mjx664e88ux" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj7exr65t001597jxwng6j9b3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -528,7 +528,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj7exoscp00178mjxhzlqia5a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj7exr65w001797jx7fgf77lu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -585,7 +585,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj7exosci00138mjxq7hjnklk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj7exr65r001397jxu9wt3ioh" class="article-share-link">Share</a>
       
       
     </footer>
