@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/10/29/hello-world/" class="article-date">
-  <time datetime="2017-10-29T14:02:36.868Z" itemprop="datePublished">2017-10-29</time>
+  <time datetime="2017-10-29T14:02:58.172Z" itemprop="datePublished">2017-10-29</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/29/hello-world/" data-id="cj9ctrr9g00099bjxy4tkzz0t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/29/hello-world/" data-id="cj9cts7p900099wjxrnxq21gm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -165,11 +165,8 @@
 <h3 id="5-1-路由系统URLS"><a href="#5-1-路由系统URLS" class="headerlink" title="5.1 路由系统URLS"></a>5.1 路由系统URLS</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1  /index/                     -&gt; def index(request)</div><div class="line">2  /detail-(\d+)/               -&gt; def detail(request, nid)</div><div class="line">  /detail-(?P&lt;nid&gt;\d+)/        -&gt; def detail(request,nid)</div><div class="line"></div><div class="line">3 </div><div class="line">    /index/          -&gt; def index(request)   name=n1</div><div class="line">    </div><div class="line">    使用别名生成URL：</div><div class="line">        模板语言：     &#123;% url  n1 %&#125;   -&gt; /index/</div><div class="line">        </div><div class="line">        视图函数：（需要导入reverse模块）    reverse(name=&quot;n1&quot;)  --&gt; /index/</div><div class="line"></div><div class="line"> 4  /web/   include(&quot;app01.urls&quot;)</div></pre></td></tr></table></figure>
 <h3 id="5-2-视图函数"><a href="#5-2-视图函数" class="headerlink" title="5.2 视图函数"></a>5.2 视图函数</h3><p>1 函数至少一个参数 request<br>2 request<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">request.method     # 请求方法</div><div class="line">request.GET        # 请求方法为GET的数据</div><div class="line">request.POST       # 请求方法为POST的数据</div><div class="line">    注：      如何获取request.post数据的呢，如果有请求头</div><div class="line">             （Content-Type:application/x-www-form-urlencoded; charset=UTF-8），</div><div class="line">              则从request.body里取出post数据</div><div class="line">request.body       #   请求时发送的所有数据</div><div class="line">request.FILES      #   请求时发送的文件数据</div></pre></td></tr></table></figure></p>
 <p>注意:<br>form表单提交方法只能是get或post<br>当提交文件时特别注明<code>enctype=&quot;multipart/form-data&quot;</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;&quot;  method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</div><div class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;</div><div class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;&gt;</div><div class="line">    &lt;input type=&quot;file&quot; name=&quot;filename&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<p>3 返回方式</p>
-<pre><code>HttpResponse()
-render(request,)
-redirect()
-</code></pre><h3 id="5-3-ORM操作"><a href="#5-3-ORM操作" class="headerlink" title="5.3 ORM操作"></a>5.3 ORM操作</h3><p>1 创建表</p>
+<p>3 返回方式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">HttpResponse()</div><div class="line">render(request,)</div><div class="line">redirect()</div></pre></td></tr></table></figure></p>
+<h3 id="5-3-ORM操作"><a href="#5-3-ORM操作" class="headerlink" title="5.3 ORM操作"></a>5.3 ORM操作</h3><p>1 创建表</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class UserInfo(models.Model):</div><div class="line">    nid=models.AutoField(primary_key=True)</div><div class="line">    name=models.CharField(max_length=32)</div><div class="line">    pwd = models.CharField(max_length=32)</div></pre></td></tr></table></figure>
 <p>2  操作表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">q = models.UserInfo.objects.all()</div><div class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</div><div class="line">     </div><div class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</div><div class="line"></div><div class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</div><div class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</div><div class="line"></div><div class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</div><div class="line">q = models.UserInfo.objects..filter(name=&apos;wxq&apos;).first()   # 推荐</div></pre></td></tr></table></figure></p>
 <h3 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h3><p>1 基本方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</div><div class="line">   x.html</div><div class="line">    &#123;&#123; k.2  &#125;&#125;</div><div class="line"></div><div class="line">   &#123;% for i in d %&#125;</div><div class="line">     &#123;&#123; i &#125;&#125;  --key</div><div class="line">   &#123;% endfor %&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">   &#123;% for k,v in d.items %&#125;</div><div class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</div><div class="line">   &#123;% endfor %&#125;</div></pre></td></tr></table></figure></p>
@@ -179,7 +176,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9ctrrcq001j9bjx0lod0b1e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9cts7rw001j9wjxhhfjkm4q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -251,7 +248,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-开发知识/" data-id="cj9ctrrct001l9bjx66xbpc9s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-开发知识/" data-id="cj9cts7ry001l9wjxjlpvzc74" class="article-share-link">Share</a>
       
       
     </footer>
@@ -309,7 +306,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9ctrr9900039bjxt20qjb2y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9cts7p000039wjxtmlfbyay" class="article-share-link">Share</a>
       
       
     </footer>
@@ -377,7 +374,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9ctrr9j000c9bjxtnqutill" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9cts7pb000c9wjxh2g1nvnu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -449,7 +446,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9ctrrcz001q9bjx7ttoi1k4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9cts7s3001q9wjx7xrs6std" class="article-share-link">Share</a>
       
       
     </footer>
@@ -496,7 +493,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9ctrrax000f9bjx1la59zci" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9cts7pf000f9wjxyl2u6xro" class="article-share-link">Share</a>
       
       
     </footer>
@@ -544,7 +541,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9ctrrck001e9bjxp1aix5ms" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9cts7rr001e9wjxsp972r6c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -588,7 +585,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9ctrrca00199bjxi8cjsn9x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9cts7rk00199wjxm85y61i7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -635,7 +632,7 @@ redirect()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9ctrrc400159bjxf1bs9p8r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9cts7ri00159wjxj467sf6s" class="article-share-link">Share</a>
       
       
     </footer>
