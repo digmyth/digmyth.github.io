@@ -63,8 +63,8 @@
   
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/09/11/hello-world/" class="article-date">
-  <time datetime="2017-09-10T16:10:15.599Z" itemprop="datePublished">2017-09-11</time>
+    <a href="/2017/10/29/hello-world/" class="article-date">
+  <time datetime="2017-10-29T10:04:07.424Z" itemprop="datePublished">2017-10-29</time>
 </a>
     
   <div class="article-category">
@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/11/hello-world/">Hello World</a>
+      <a class="article-title" href="/2017/10/29/hello-world/">Hello World</a>
     </h1>
   
 
@@ -100,7 +100,79 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/11/hello-world/" data-id="cj7exr640000997jxyplwl4e4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/29/hello-world/" data-id="cj9cl920x00064cjxy7bbohzj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-开发知识" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/09/15/web-开发知识/" class="article-date">
+  <time datetime="2017-09-15T12:51:41.000Z" itemprop="datePublished">2017-09-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/15/web-开发知识/">web-开发入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从现在开始，此时此刻写点<code>web开发</code>和<code>Django</code> 的知识，便于以后查阅学习。<br>廖雪峰老师的博客写得特别好，我也是摘抄参考其内容。<br><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000" target="_blank" rel="external">廖雪峰老师博客原文</a></p>
+<h2 id="一-HTTP协议简介"><a href="#一-HTTP协议简介" class="headerlink" title="一.   HTTP协议简介"></a>一.   HTTP协议简介</h2><h3 id="web历程"><a href="#web历程" class="headerlink" title="web历程"></a>web历程</h3><p>web开发经历几个阶段<br>1  静态页面: 直接由编辑器生成静态html<br>2  CGI:  交互与动态数据处理出现了CGI（common gateway interface）,由C/C++编写<br>3  脚本语言（ASP/JSP/PHP）: 脚本语言开发效率高，与html结合紧密<br>4  框架：mvc mtv mvvm</p>
+<h3 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h3><p>服务器把网页传给浏览器，实际上就是把网页的html代码发送给浏览器，让浏览器显示出来。而浏览器和服务器之间的传输协议就是HTTP</p>
+<p>HTML是一种用来定义网页的文本，会HTML就会编写网页<br>http是在网络上传输html的协议，用于浏览器和服务器的通信</p>
+<p>Elements显示网页的结构，Network显示浏览器和服务器的通信。我们点Network，确保第一个小红灯亮着，Chrome就会记录所有浏览器和服务器之间的通信。</p>
+<p>GET / HTTP/1.1： 注：1.1版本允许多个HTTP请求复用一个TCP连接，以加快传输速度<br>浏览器就是依靠Content-Type来判断响应的内容是网页还是图片，是视频还是音乐</p>
+<p>当浏览器读取到新浪首页的HTML源码后，它会解析HTML，显示页面，然后，根据HTML里面的各种链接，再发送HTTP请求给新浪服务器，拿到相应的图片、视频、Flash、JavaScript脚本、CSS等各种资源，最终显示出一个完整的页面。所以我们在Network下面能看到很多额外的HTTP请求。</p>
+<h3 id="HTTP请求流程"><a href="#HTTP请求流程" class="headerlink" title="HTTP请求流程"></a>HTTP请求流程</h3><p>步骤1：<br>浏览器向服务器发送http请求<br>    方法：GET仅请求资源 POST    会附带用户数据body部份<br>    路径; /full/url/path<br>    域名：</p>
+<p>步骤2：<br>服务器向浏览器返回HTTP响应<br>    响应代码：200表示成功 3<strong> 表示重定向  4</strong> 表示客户端发送的请求有错误 5** 表示服务器处理错误<br>    响应类型： 由Content-Type指定<br>    通常服务器的HTTP响应会携带内容，也就是有一个Body，包含响应的内容，网页的HTML源码就在Body中</p>
+<p>步骤3：如果浏览器还需要继续向服务器请求其他资源，比如图片，就再次发出HTTP请求，重复步骤1、2</p>
+<p>Web采用的HTTP协议采用了非常简单的请求-响应模式，从而大大简化了开发。当我们编写一个页面时，我们只需要在HTTP请求中把HTML发送出去，不需要考虑如何附带图片、视频等，浏览器如果需要请求图片和视频，它会发送另一个HTTP请求，因此，一个HTTP请求只处理一个资源</p>
+<p>HTTP协议同时具备极强的扩展性，虽然浏览器请求的是<a href="http://www.sina.com.cn/的首页，但是新浪在HTML中可以链入其他服务器的资源，比如`" target="_blank" rel="external">http://www.sina.com.cn/的首页，但是新浪在HTML中可以链入其他服务器的资源，比如`</a><img src="http://i1.sinaimg.cn/home/2013/1008/U8455P30DT20131008135420.png">`，从而将请求压力分散到各个服务器上，并且一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web，简称WWW。</p>
+<h2 id="二-HTML简介"><a href="#二-HTML简介" class="headerlink" title="二. HTML简介"></a>二. HTML简介</h2><p>HTML是一种用来定义网页的文本，会HTML就会编写网页 。<br>其它前端知识不在这里展开。略。。。</p>
+<h2 id="三-WSGI接口"><a href="#三-WSGI接口" class="headerlink" title="三 . WSGI接口"></a>三 . WSGI接口</h2><p>了解了HTTP协议和HTML文档，我们其实就明白了一个Web应用的本质就是：<br>浏览器发送一个HTTP请求；<br>服务器收到请求，生成一个HTML文档；<br>服务器把HTML文档作为HTTP响应的Body发送给浏览器；<br>浏览器收到HTTP响应，从HTTP Body取出HTML文档并显示。</p>
+<p>所以，最简单的Web应用就是先把HTML用文件保存好，用一个现成的HTTP服务器软件，接收用户请求，从文件中读取HTML，返回。Apache、Nginx、Lighttpd等这些常见的静态服务器就是干这件事情的。</p>
+<p>如果要动态生成HTML，就需要把上述步骤自己来实现。不过，接受HTTP请求、解析HTTP请求、发送HTTP响应都是苦力活，如果我们自己来写这些底层代码，还没开始写动态HTML呢，就得花个把月去读HTTP规范。</p>
+<p>正确的做法是底层代码由专门的服务器软件实现，我们用Python专注于生成HTML文档。因为我们不希望接触到TCP连接、HTTP原始请求和响应格式，所以，需要一个统一的接口，让我们专心用Python编写Web业务。</p>
+<p>这个接口就是WSGI：Web Server Gateway Interface。</p>
+<p>WSGI接口定义非常简单，它只要求Web开发者实现一个函数，就可以响应HTTP请求。我们来看一个最简单的Web版本的“Hello, web!”：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">def application(environ, start_response):</div><div class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div><div class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</div></pre></td></tr></table></figure></p>
+<p>上面的application()函数就是符合WSGI标准的一个HTTP处理函数，它接收两个参数：</p>
+<p>environ：一个包含所有HTTP请求信息的dict对象；<br>start_response：一个发送HTTP响应的函数。</p>
+<p>在application()函数中，调用：<br><code>start_response(&#39;200 OK&#39;, [(&#39;Content-Type&#39;, &#39;text/html&#39;)])</code><br>就发送了HTTP响应的Header，注意Header只能发送一次，也就是只能调用一次start_response()函数。start_response()函数接收两个参数，一个是HTTP响应码，一个是一组list表示的HTTP Header，每个Header用一个包含两个str的tuple表示。</p>
+<p>通常情况下，都应该把Content-Type头发送给浏览器。其他很多常用的HTTP Header也应该发送。<br>然后，函数的返回值<code>b&#39;&lt;h1&gt;Hello, web!&lt;/h1&gt;&#39;</code>将作为HTTP响应的Body发送给浏览器。</p>
+<p>有了WSGI，我们关心的就是如何从environ这个dict对象拿到HTTP请求信息，然后构造HTML，通过start_response()发送Header，最后返回Body。</p>
+<p>整个application()函数本身没有涉及到任何解析HTTP的部分，也就是说，底层代码不需要我们自己编写，我们只负责在更高层次上考虑如何响应请求就可以了。</p>
+<p>不过，等等，这个application()函数怎么调用？如果我们自己调用，两个参数environ和start_response我们没法提供，返回的bytes也没法发给浏览器。</p>
+<p>所以application()函数必须由WSGI服务器来调用。有很多符合WSGI规范的服务器，我们可以挑选一个来用。但是现在，我们只想尽快测试一下我们编写的application()函数真的可以把HTML输出到浏览器，所以，要赶紧找一个最简单的WSGI服务器，把我们的Web应用程序跑起来。</p>
+<p>好消息是Python内置了一个WSGI服务器，这个模块叫wsgiref，它是用纯Python编写的WSGI服务器的参考实现。所谓“参考实现”是指该实现完全符合WSGI标准，但是不考虑任何运行效率，仅供开发和测试使用。</p>
+<p>运行WSGI服务<br>我们先编写hello.py，实现Web应用程序的WSGI处理函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># hello.py</div><div class="line"></div><div class="line">def application(environ, start_response):</div><div class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div><div class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</div></pre></td></tr></table></figure></p>
+<p>然后，再编写一个server.py，负责启动WSGI服务器，加载application()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># server.py</div><div class="line"># 从wsgiref模块导入:</div><div class="line">from wsgiref.simple_server import make_server</div><div class="line"># 导入我们自己编写的application函数:</div><div class="line">from hello import application</div><div class="line"></div><div class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application:</div><div class="line">httpd = make_server(&apos;&apos;, 8000, application)</div><div class="line">print(&apos;Serving HTTP on port 8000...&apos;)</div><div class="line"># 开始监听HTTP请求:</div><div class="line">httpd.serve_forever()</div><div class="line">确保以上两个文件在同一个目录下，然后在命令行输入python server.py来启动WSGI服务器：</div><div class="line">python server.py 执行程序启动</div></pre></td></tr></table></figure></p>
+<p>##四　web 框架</p>
+<p>了解了WSGI框架，我们发现：其实一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。<br>但是如何处理HTTP请求不是问题，问题是如何处理100个不同的URL。方法是一个函数处理一个URL，  我们专注于写业务处理函数，URL和函数对应关系交给web框架完成，就是 web框架其中一个价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/09/15/web-开发知识/" data-id="cj9cl9239001e4cjx52v3t9gg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -158,7 +230,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj7exr63p000397jx944qpqvv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9cl920p00034cjxx4l0w6wi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -226,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj7exr643000c97jxlnp4vzuv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9cl9215000c4cjx7mfczskp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj7exr66p001l97jxgofy17ou" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9cl923m001o4cjxhw30zrek" class="article-share-link">Share</a>
       
       
     </footer>
@@ -345,7 +417,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj7exr648000f97jxhszv4gda" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9cl9218000f4cjxapdzjx0b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -393,7 +465,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj7exr66c001d97jxk77tkdai" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9cl923e001g4cjxf1yh17zf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -437,7 +509,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj7exr660001997jxbkt49u3q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9cl9237001c4cjxy86yftc1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -484,7 +556,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj7exr65t001597jxwng6j9b3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9cl922p00134cjxom3ls1hn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -528,64 +600,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj7exr65w001797jx7fgf77lu" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-08-01-面象对象高级编程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/15/python-08-01-面象对象高级编程/" class="article-date">
-  <time datetime="2017-03-15T14:28:41.000Z" itemprop="datePublished">2017-03-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/15/python-08-01-面象对象高级编程/">python-08-01-面象对象高级编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>staticmethod</li>
-<li>classmethod</li>
-</ul>
-<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><h2 id="staticmethod"><a href="#staticmethod" class="headerlink" title="staticmethod"></a>staticmethod</h2><p>几个魔法方法说明：</p>
-<p><code>@classmethod</code>   <code>@staticmethod</code><br>不依赖任何具体的对象来执行类当中是方法，这个方法要么是静态方法， 要么是类方法，要么是属性</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@classmethod</div><div class="line">def test_func(cls):   # 类方法传入cls参数（类本身）</div><div class="line">    pass</div><div class="line"></div><div class="line">@staticmethod</div><div class="line">def test_func():    # 静态方法时没有任何变量</div><div class="line">    pass</div><div class="line"></div><div class="line">def test_func(self):  # 普通实例方法时传入self参数（实例本身）</div><div class="line">    pass</div></pre></td></tr></table></figure>
-<p><code>staticmethod</code>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">In [4]: class Foo(object):</div><div class="line">   ...:     @staticmethod</div><div class="line">   ...:     def spam(x,y,z):   # 静态方法时方法定义不写self</div><div class="line">   ...:         print(x,y,z)</div><div class="line">       </div><div class="line">In [5]: </div><div class="line">In [5]: Foo.spam(1,2,3)      # 静态方法属于类的，用类名调用。虽然实例能调用，但不要那样混用,不规范</div><div class="line">1 2 3</div></pre></td></tr></table></figure></p>
-<p><code>staticmethod</code>用法场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">In [7]: import time</div><div class="line">In [6]: class Date(object):</div><div class="line">   ...:     def __init__(self,year,mon, day):</div><div class="line">   ...:         self.year = year</div><div class="line">   ...:         self.mon = mon</div><div class="line">   ...:         self.day = day</div><div class="line">   ...:     @staticmethod</div><div class="line">   ...:     def now():</div><div class="line">   ...:         t = time.localtime()</div><div class="line">   ...:         return Date(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line">   ...:     </div><div class="line"></div><div class="line">In [8]: d1 = Date(1989, 8,20)    # 获得一个对象</div><div class="line"></div><div class="line">In [9]: d2 = Date.now()   # 这里也能获得一个对象</div><div class="line"></div><div class="line">In [10]: d1.day</div><div class="line">Out[10]: 20</div><div class="line"></div><div class="line">In [11]: d2.day</div><div class="line">Out[11]: 12</div></pre></td></tr></table></figure></p>
-<h2 id="classmethod"><a href="#classmethod" class="headerlink" title="classmethod"></a>classmethod</h2><p><code>@classmethod</code>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">In [12]: class C1(object):</div><div class="line">   ....:     name = &apos;wxq&apos;</div><div class="line">   ....:     @classmethod</div><div class="line">   ....:     def test(cls):    # 这里需要传入cls, 谁调用谁就是cls</div><div class="line">   ....:         print(cls, cls.name)</div><div class="line">   ....:         </div><div class="line"></div><div class="line">In [14]: C1.test()     # 这里cls就是C1</div><div class="line">&lt;class &apos;__main__.C1&apos;&gt; wxq</div><div class="line"></div><div class="line">In [13]: c = C1()   # 正常实例化对象</div></pre></td></tr></table></figure></p>
-<p><code>@classmethod</code>用法场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">In [2]: import time</div><div class="line"></div><div class="line">In [3]: class Date(object):</div><div class="line">   ...:     def __init__(self, year, mon,day):</div><div class="line">   ...:         self.year = year</div><div class="line">   ...:         self.mon = mon</div><div class="line">   ...:         self.day = day</div><div class="line">   ...:     @classmethod</div><div class="line">   ...:     def now(cls):</div><div class="line">   ...:         t = time.localtime()</div><div class="line">   ...:         return cls(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line">   ...:     </div><div class="line"></div><div class="line">In [4]: d = Date.now()</div><div class="line"></div><div class="line">In [5]: print(d.year,d.mon, d.day)</div><div class="line">2017 3 12</div></pre></td></tr></table></figure></p>
-<p><code>staticmethod</code>与<code>classmethod</code>区别的牛逼之处<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat method.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">import time</div><div class="line">class Date(object):</div><div class="line">    def __init__(self, year,mon,day):</div><div class="line">        self.year = year</div><div class="line">        self.mon = mon</div><div class="line">        self.day = day</div><div class="line">    @staticmethod</div><div class="line">    def now():</div><div class="line">        t = time.localtime()</div><div class="line">        return Date(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line"></div><div class="line">class EuroDate(Date):</div><div class="line">     def __str__(self):</div><div class="line">       return &apos;year: %s mon:%s day:%s&apos; % (self.year, self.mon,self.day)</div><div class="line"></div><div class="line">e = EuroDate.now()</div><div class="line">print(e)</div><div class="line">root@ubuntu:~# python3 method.py </div><div class="line">&lt;__main__.Date object at 0x7f5514658940&gt;</div></pre></td></tr></table></figure></p>
-<p>上面并没有我们想要的结果<br>分析：<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。<br>也就是<code>return Date(t.tm_year, t.tm_mon, t.tm_mday)</code>, 实例print时调Date类的<code>__str__</code>方法，故打印<code>return Date(t.tm_year, t.tm_mon, t.tm_mday)</code>后的内存地址，不会打印<code>EuroDate</code>类中定义的<code>__str__</code>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat goodmethod.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">import time</div><div class="line">class Date(object):</div><div class="line">    def __init__(self, year,mon,day):</div><div class="line">        self.year = year</div><div class="line">        self.mon = mon</div><div class="line">        self.day = day</div><div class="line">    @classmethod</div><div class="line">    def now(cls):</div><div class="line">        t = time.localtime()</div><div class="line">        return cls(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line"></div><div class="line">class EuroDate(Date):</div><div class="line">     def __str__(self):</div><div class="line">       return &apos;year: %s mon:%s day:%s&apos; % (self.year, self.mon,self.day)</div><div class="line"></div><div class="line">e = EuroDate.now()</div><div class="line">print(e)</div><div class="line">root@ubuntu:~# python3 goodmethod.py </div><div class="line">year: 2017 mon:3 day:12</div></pre></td></tr></table></figure>
-<p>这样才是我们想要的结果，好象参悟了点什么<br>分析:<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。这一点和上面是一致的。但此时<code>return cls(t.tm_year, t.tm_mon, t.tm_mday)</code>中的cls不是Date,而是EuroDate,符合谁调谁就是cls的原则。这样实例化<code>e = EuroDate.now()</code>时print(e)就会去调EuroDate中的<code>__str__</code>方法，得到我们想要的结果</p>
-<p>小结：<br><code>staticmethod</code>与<code>classmethod</code>在一定场景中是有区别的。细节参照上面的例子练习</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj7exr65r001397jxu9wt3ioh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9cl9232001a4cjxk5yvayp9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -608,7 +623,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
     </div>
   </div>
 
@@ -623,7 +638,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -636,7 +651,11 @@
       <ul>
         
           <li>
-            <a href="/2017/09/11/hello-world/">Hello World</a>
+            <a href="/2017/10/29/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/09/15/web-开发知识/">web-开发入门</a>
           </li>
         
           <li>
@@ -649,10 +668,6 @@
         
           <li>
             <a href="/2017/07/01/基于CentOS7的PXE装机/">基于CentOS 7的PXE装机</a>
-          </li>
-        
-          <li>
-            <a href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
           </li>
         
       </ul>
