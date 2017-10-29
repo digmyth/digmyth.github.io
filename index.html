@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/10/29/hello-world/" class="article-date">
-  <time datetime="2017-10-29T10:04:07.424Z" itemprop="datePublished">2017-10-29</time>
+  <time datetime="2017-10-29T10:11:02.258Z" itemprop="datePublished">2017-10-29</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/29/hello-world/" data-id="cj9cl920x00064cjxy7bbohzj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/29/hello-world/" data-id="cj9clhy4200095gjxv6r557uo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -147,7 +147,7 @@
 <p>步骤2：<br>服务器向浏览器返回HTTP响应<br>    响应代码：200表示成功 3<strong> 表示重定向  4</strong> 表示客户端发送的请求有错误 5** 表示服务器处理错误<br>    响应类型： 由Content-Type指定<br>    通常服务器的HTTP响应会携带内容，也就是有一个Body，包含响应的内容，网页的HTML源码就在Body中</p>
 <p>步骤3：如果浏览器还需要继续向服务器请求其他资源，比如图片，就再次发出HTTP请求，重复步骤1、2</p>
 <p>Web采用的HTTP协议采用了非常简单的请求-响应模式，从而大大简化了开发。当我们编写一个页面时，我们只需要在HTTP请求中把HTML发送出去，不需要考虑如何附带图片、视频等，浏览器如果需要请求图片和视频，它会发送另一个HTTP请求，因此，一个HTTP请求只处理一个资源</p>
-<p>HTTP协议同时具备极强的扩展性，虽然浏览器请求的是<a href="http://www.sina.com.cn/的首页，但是新浪在HTML中可以链入其他服务器的资源，比如`" target="_blank" rel="external">http://www.sina.com.cn/的首页，但是新浪在HTML中可以链入其他服务器的资源，比如`</a><img src="http://i1.sinaimg.cn/home/2013/1008/U8455P30DT20131008135420.png">`，从而将请求压力分散到各个服务器上，并且一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web，简称WWW。</p>
+<p>HTTP协议同时具备极强的扩展性，虽然浏览器请求的是<a href="http://www.sina.com.cn/的首页，但是新浪在HTML中可以链入其他服务器的资源，比如" target="_blank" rel="external">http://www.sina.com.cn/的首页，但是新浪在HTML中可以链入其他服务器的资源，比如</a><img src="http://i1.sinaimg.cn/home/2013/1008/U8455P30DT20131008135420.png">，从而将请求压力分散到各个服务器上，并且一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web，简称WWW。</p>
 <h2 id="二-HTML简介"><a href="#二-HTML简介" class="headerlink" title="二. HTML简介"></a>二. HTML简介</h2><p>HTML是一种用来定义网页的文本，会HTML就会编写网页 。<br>其它前端知识不在这里展开。略。。。</p>
 <h2 id="三-WSGI接口"><a href="#三-WSGI接口" class="headerlink" title="三 . WSGI接口"></a>三 . WSGI接口</h2><p>了解了HTTP协议和HTML文档，我们其实就明白了一个Web应用的本质就是：<br>浏览器发送一个HTTP请求；<br>服务器收到请求，生成一个HTML文档；<br>服务器把HTML文档作为HTTP响应的Body发送给浏览器；<br>浏览器收到HTTP响应，从HTTP Body取出HTML文档并显示。</p>
 <p>所以，最简单的Web应用就是先把HTML用文件保存好，用一个现成的HTTP服务器软件，接收用户请求，从文件中读取HTML，返回。Apache、Nginx、Lighttpd等这些常见的静态服务器就是干这件事情的。</p>
@@ -166,13 +166,13 @@
 <p>好消息是Python内置了一个WSGI服务器，这个模块叫wsgiref，它是用纯Python编写的WSGI服务器的参考实现。所谓“参考实现”是指该实现完全符合WSGI标准，但是不考虑任何运行效率，仅供开发和测试使用。</p>
 <p>运行WSGI服务<br>我们先编写hello.py，实现Web应用程序的WSGI处理函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># hello.py</div><div class="line"></div><div class="line">def application(environ, start_response):</div><div class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div><div class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</div></pre></td></tr></table></figure></p>
 <p>然后，再编写一个server.py，负责启动WSGI服务器，加载application()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># server.py</div><div class="line"># 从wsgiref模块导入:</div><div class="line">from wsgiref.simple_server import make_server</div><div class="line"># 导入我们自己编写的application函数:</div><div class="line">from hello import application</div><div class="line"></div><div class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application:</div><div class="line">httpd = make_server(&apos;&apos;, 8000, application)</div><div class="line">print(&apos;Serving HTTP on port 8000...&apos;)</div><div class="line"># 开始监听HTTP请求:</div><div class="line">httpd.serve_forever()</div><div class="line">确保以上两个文件在同一个目录下，然后在命令行输入python server.py来启动WSGI服务器：</div><div class="line">python server.py 执行程序启动</div></pre></td></tr></table></figure></p>
-<p>##四　web 框架</p>
-<p>了解了WSGI框架，我们发现：其实一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。<br>但是如何处理HTTP请求不是问题，问题是如何处理100个不同的URL。方法是一个函数处理一个URL，  我们专注于写业务处理函数，URL和函数对应关系交给web框架完成，就是 web框架其中一个价值。</p>
+<h2 id="四-web-框架"><a href="#四-web-框架" class="headerlink" title="四　web 框架"></a>四　web 框架</h2><p>了解了WSGI框架，我们发现：其实一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。</p>
+<p>但是如何处理HTTP请求不是问题，问题是如何处理100个不同的URL。方法是一个函数处理一个URL, 我们专注于写业务处理函数，URL和函数对应关系交给web框架完成，就是 web框架其中一个价值。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-开发知识/" data-id="cj9cl9239001e4cjx52v3t9gg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-开发知识/" data-id="cj9clhy6a001j5gjxub6kck15" class="article-share-link">Share</a>
       
       
     </footer>
@@ -230,7 +230,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9cl920p00034cjxx4l0w6wi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9clhy3u00035gjxzoy77jcg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9cl9215000c4cjx7mfczskp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9clhy45000c5gjxqr51pqua" class="article-share-link">Share</a>
       
       
     </footer>
@@ -370,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9cl923m001o4cjxhw30zrek" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9clhy6i001o5gjx9nnk3xj1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -417,7 +417,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9cl9218000f4cjxapdzjx0b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9clhy49000f5gjx9vmo9crw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -465,7 +465,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9cl923e001g4cjxf1yh17zf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9clhy61001e5gjxer2qm5v7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -509,7 +509,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9cl9237001c4cjxy86yftc1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9clhy5u00195gjxp8q5kup1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -556,7 +556,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9cl922p00134cjxom3ls1hn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9clhy5o00155gjx0u0h5hul" class="article-share-link">Share</a>
       
       
     </footer>
@@ -600,7 +600,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9cl9232001a4cjxk5yvayp9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9clhy5q00175gjxig3mzwyj" class="article-share-link">Share</a>
       
       
     </footer>
