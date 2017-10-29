@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/10/29/hello-world/" class="article-date">
-  <time datetime="2017-10-29T13:35:45.330Z" itemprop="datePublished">2017-10-29</time>
+  <time datetime="2017-10-29T13:59:29.050Z" itemprop="datePublished">2017-10-29</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/29/hello-world/" data-id="cj9cst7sj0009znjx34s2mpr9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/29/hello-world/" data-id="cj9ctnqcb00095wjx4z995qvi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -169,14 +169,14 @@
 <h3 id="5-3-ORM操作"><a href="#5-3-ORM操作" class="headerlink" title="5.3 ORM操作"></a>5.3 ORM操作</h3><p>1 创建表</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class UserInfo(models.Model):</div><div class="line">    nid=models.AutoField(primary_key=True)</div><div class="line">    name=models.CharField(max_length=32)</div><div class="line">    pwd = models.CharField(max_length=32)</div></pre></td></tr></table></figure>
 <p>2  操作表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">q = models.UserInfo.objects.all()</div><div class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</div><div class="line">     </div><div class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</div><div class="line"></div><div class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</div><div class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</div><div class="line"></div><div class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</div><div class="line">q = models.UserInfo.objects..filter(name=&apos;wxq&apos;).first()   # 推荐</div></pre></td></tr></table></figure></p>
-<h3 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h3><p>1 基本方法</p>
+<h3 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h3><p>1 基本方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</div><div class="line">   x.html</div><div class="line">    &#123;&#123; k.2  &#125;&#125;</div><div class="line"></div><div class="line">   &#123;% for i in d %&#125;</div><div class="line">     &#123;&#123; i &#125;&#125;  --key</div><div class="line">   &#123;% endfor %&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">   &#123;% for k,v in d.items %&#125;</div><div class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</div><div class="line">   &#123;% endfor %&#125;</div></pre></td></tr></table></figure></p>
 <p>2  函数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Django 提供的函数:</div><div class="line">simple tag可以有多个参数</div><div class="line">filter 只能有2个参数，并且可以做条件语句的条件</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9cst7ul001jznjxfj6ou5xo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9ctnqf1001j5wjx2tvas1cc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -248,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-开发知识/" data-id="cj9cst7un001lznjxyhafjmwl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-开发知识/" data-id="cj9ctnqf2001l5wjx07zyriht" class="article-share-link">Share</a>
       
       
     </footer>
@@ -306,7 +306,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9cst7s90003znjxk324u0f0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9ctnqc400035wjxdhgd1jqf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -374,7 +374,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9cst7sn000cznjxqf2p5zc6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9ctnqcd000c5wjxi8eh1sa4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -446,7 +446,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9cst7us001qznjxt0079ix5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9ctnqf7001q5wjxaeolky5n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -493,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9cst7sr000fznjx0nyyz8pz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9ctnqch000f5wjxvgy1el2o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -541,7 +541,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9cst7u8001eznjx7z9dosyn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9ctnqev001e5wjxtd2pn8ap" class="article-share-link">Share</a>
       
       
     </footer>
@@ -585,7 +585,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9cst7ty0019znjx5i8jor4o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9ctnqeo00195wjx3v0w2ned" class="article-share-link">Share</a>
       
       
     </footer>
@@ -632,7 +632,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9cst7tr0015znjxkapuejiz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9ctnqek00155wjxoswebkgi" class="article-share-link">Share</a>
       
       
     </footer>
