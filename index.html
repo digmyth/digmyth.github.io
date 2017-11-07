@@ -95,9 +95,17 @@
 <h2 id="wsrep简介"><a href="#wsrep简介" class="headerlink" title="wsrep简介"></a>wsrep简介</h2><p><code>wsrep</code>是<code>writeset replication</code>的简称，是一种API，在底层调用各库实现数据库同步写.</p>
 <p>基于wsrep协议提供的一种底层复制机制，实现了<code>Galera cluster</code>数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，才能借住于wsrep协议实现复制机制.</p>
 <p>多个节点之上有了信息层，上层应用完成高可用，研发时调用信息层所提供的api去开发，并基于这个api去完成集群事务决策，不然就要自行加入中间层称资源管理器crm，如pacemaker</p>
-<p>galera cluster不是专为数据库提供的，只是一个工作在较为底层能够为你的服务提供数据复制功能的底层组件<br>mysql只有在研发时调用了galera cluster api写的mysql才能利用galera cluster完成复制,它的复制不再是让其它节点通过读取<br>主节点二进制日志文件在本地重放，而是你指明了复制哪个数据库文件，由galera cluster自己在底层完成同步，mysql本身不感知<br><code>percona-cluster 版本支持galera cluster
+<p>galera cluster不是专为数据库提供的，只是一个工作在较为底层能够为你的服务提供数据复制功能的底层组件.</p>
+<p>mysql只有在研发时调用了galera cluster api写的mysql才能利用galera cluster完成复制,它的复制不再是让其它节点通过读取主节点二进制日志文件在本地重放，而是你指明了复制哪个数据库文件，由galera cluster自己在底层完成同步，mysql本身不感知.</p>
+<p><code>percona-cluster 版本支持galera cluster
 MariaDB-cluster 版本支持galera cluster</code></p>
-<p>Galera Cluster: wsrep<br>    通过wsrep协议在全局实现复制： 任何一节点都可读写<br>复制的问题和解决方案:<br>     (1) 数据损坏或丢失：语句或行记录二进制日志，从而在从服务器上重放，重放机制也可能主从不一致的情况硬件故障、软件bug也会有数据损坏或丢失<br>    Master: MHA + semi replication(至少有一个从节点接收到了提交的binlog事件才返回成功，也是半同步复制)<br>    如果主节点数据损坏或丢失，就必须手动在从节点通过gtid来判断出己经提交的所有应用或事务，然后合并出一个较新的从节点提升为主节点<br>    Slave: 重新复制数据即可<br>    (2) 运维部署注意事项：<br>    关键业务监控<br>    重要数据要备份和冗余<br>    不能混合使用存储引警<br>    MyISM: 不支持事务<br>    InnoDB: 支持事务<br>    (3) 设置了不唯一的server ID<br>    不唯一，整个复制集群数据产生错乱，每一个服务节点都不会在本地重放由同一个server ID 所产生的事件<br>    会导致重新复制数据<br>        (4) 复制延迟<br>    需要额外监控工具的辅助<br>    自写一些脚本监控<br>    从节点有一个落后于主节点的时间判定，这个时间不为0时，尝试重启从节点服务<br>    对于从服务器延迟，主节点的事务是可以并发的，往二进制写入是单线程的，有先有后，从服务器重放也是单线程的，从服务器延迟落后也是必然的<br>    mysql5.6/mariadb 10以后引入了多线程复制机制，三节点集群可设置wsrep_slave_threads = 4</p>
+<p>Galera Cluster: wsrep<br>    通过wsrep协议在全局实现复制： 任何一节点都可读写<br>复制的问题和解决方案:<br>     (1) 数据损坏或丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">语句或行记录二进制日志，从而在从服务器上重放，重放机制也可能主从不一致的情况硬件故障、软件bug也会有数据损坏或丢失</div><div class="line">Master: MHA + semi replication(至少有一个从节点接收到了提交的binlog事件才返回成功，也是半同步复制)</div><div class="line">如果主节点数据损坏或丢失，就必须手动在从节点通过gtid来判断出己经提交的所有应用或事务，然后合并出一个较新的从节点提升为主节点</div><div class="line">Slave: 重新复制数据即可</div></pre></td></tr></table></figure></p>
+<pre><code>(2) 运维部署注意事项：
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">关键业务监控</div><div class="line">重要数据要备份和冗余</div><div class="line">不能混合使用存储引警</div><div class="line">MyISM: 不支持事务</div><div class="line">InnoDB: 支持事务</div></pre></td></tr></table></figure>
+<pre><code>(3) 设置了不唯一的server ID 
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">不唯一，整个复制集群数据产生错乱，每一个服务节点都不会在本地重放由同一个server ID 所产生的事件</div><div class="line">会导致重新复制数据</div></pre></td></tr></table></figure>
+<pre><code>(4) 复制延迟
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">需要额外监控工具的辅助</div><div class="line">自写一些脚本监控</div><div class="line">从节点有一个落后于主节点的时间判定，这个时间不为0时，尝试重启从节点服务</div><div class="line">对于从服务器延迟，主节点的事务是可以并发的，往二进制写入是单线程的，有先有后，从服务器重放也是单线程的，从服务器延迟落后也是必然的</div><div class="line">mysql5.6/mariadb 10以后引入了多线程复制机制，三节点集群可设置wsrep_slave_threads = 4</div></pre></td></tr></table></figure>
 <p>数据库服务衡量指标<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">qps : query per second 查询量</div><div class="line">tps: transaction per second 事务量</div></pre></td></tr></table></figure></p>
 <h2 id="Galera集群搭建"><a href="#Galera集群搭建" class="headerlink" title="Galera集群搭建"></a>Galera集群搭建</h2><p>最新文档请参考<a href="https://mariadb.com/kb/en/library/getting-started-with-mariadb-galera-cluster/#bootstrapping-a-new-cluster" target="_blank" rel="external">Galera 集群官方链接</a></p>
 <h3 id="一-准备工作"><a href="#一-准备工作" class="headerlink" title="一 准备工作"></a>一 准备工作</h3><p>1  关闭防火墙<br>2  关闭selinux<br>3  同步主机时间<br>4  设置hosts文件</p>
@@ -114,7 +122,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9plu7cr000cybjx7rcvhtek" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9pmwrvx000i00jxyn01ek7q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -127,7 +135,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/07/hello-world/" class="article-date">
-  <time datetime="2017-11-07T12:41:34.392Z" itemprop="datePublished">2017-11-07</time>
+  <time datetime="2017-11-07T13:11:33.920Z" itemprop="datePublished">2017-11-07</time>
 </a>
     
   <div class="article-category">
@@ -163,7 +171,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/07/hello-world/" data-id="cj9plu7co0009ybjx4f9e50y1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/07/hello-world/" data-id="cj9pmwrvl000900jxka716oiu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -210,7 +218,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cj9plu7g1001sybjxplc4t6tn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cj9pmwryu001l00jxbj6k1jls" class="article-share-link">Share</a>
       
       
     </footer>
@@ -286,7 +294,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9plu7ft001lybjxww1mbgop" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9pmwryz001p00jxzo18oq22" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +366,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-15-01-开发/" data-id="cj9plu7fx001qybjx29r7qeb1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-15-01-开发/" data-id="cj9pmwryw001n00jx6e2ysmzn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -416,7 +424,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9plu7cl0006ybjx0yhtapud" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9pmwrvb000300jxnmn74imo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -484,7 +492,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9plu7eb000hybjx9axff5ix" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9pmwrvp000c00jxpqgvk1mc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -556,7 +564,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9plu7g3001uybjxasby8utq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9pmwrz4001u00jxutqo5pgc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -603,7 +611,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9plu7ed000kybjxz8el664p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9pmwrvu000f00jxsep8v1cp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -651,7 +659,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9plu7fr001jybjx2syo76n6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9pmwryr001g00jx5iuezcl7" class="article-share-link">Share</a>
       
       
     </footer>
