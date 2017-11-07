@@ -9,9 +9,8 @@
 wsrep简介
 Galera集群搭建
 
-wsrep简介wsrep是writeset replication的简称，是一种API，在底层调用各库实现数据库同步写.
-基于wsrep协议提供的一种底层复制机制，实现了Galera cluster数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，才能借住于wsrep协议实现复制机制.
-多个节点之上有">
+wsrep简介wsrep是writeset replication的简称，是一种API，在底层调用各库实现数据库同步写.通过wsrep协议在全局实现复制,任何一节点都可读写.
+基于wsrep协议提供的一种底层复制机制，实现了Galera cluster数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql Galera集群搭建">
 <meta property="og:url" content="http://www.digmyth.com/2017/11/08/mysql-Galera/index.html">
@@ -20,19 +19,17 @@ wsrep简介wsrep是writeset replication的简称，是一种API，在底层调�
 wsrep简介
 Galera集群搭建
 
-wsrep简介wsrep是writeset replication的简称，是一种API，在底层调用各库实现数据库同步写.
-基于wsrep协议提供的一种底层复制机制，实现了Galera cluster数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，才能借住于wsrep协议实现复制机制.
-多个节点之上有">
-<meta property="og:updated_time" content="2017-11-07T13:19:21.000Z">
+wsrep简介wsrep是writeset replication的简称，是一种API，在底层调用各库实现数据库同步写.通过wsrep协议在全局实现复制,任何一节点都可读写.
+基于wsrep协议提供的一种底层复制机制，实现了Galera cluster数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，">
+<meta property="og:updated_time" content="2017-11-07T13:25:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql Galera集群搭建">
 <meta name="twitter:description" content="目录
 wsrep简介
 Galera集群搭建
 
-wsrep简介wsrep是writeset replication的简称，是一种API，在底层调用各库实现数据库同步写.
-基于wsrep协议提供的一种底层复制机制，实现了Galera cluster数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，才能借住于wsrep协议实现复制机制.
-多个节点之上有">
+wsrep简介wsrep是writeset replication的简称，是一种API，在底层调用各库实现数据库同步写.通过wsrep协议在全局实现复制,任何一节点都可读写.
+基于wsrep协议提供的一种底层复制机制，实现了Galera cluster数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -112,14 +109,13 @@ wsrep简介wsrep是writeset replication的简称，是一种API，在底层调�
 <li>wsrep简介</li>
 <li>Galera集群搭建</li>
 </ul>
-<h2 id="wsrep简介"><a href="#wsrep简介" class="headerlink" title="wsrep简介"></a>wsrep简介</h2><p><code>wsrep</code>是<code>writeset replication</code>的简称，是一种API，在底层调用各库实现数据库同步写.</p>
+<h2 id="wsrep简介"><a href="#wsrep简介" class="headerlink" title="wsrep简介"></a>wsrep简介</h2><p><code>wsrep</code>是<code>writeset replication</code>的简称，是一种API，在底层调用各库实现数据库同步写.通过wsrep协议在全局实现复制,任何一节点都可读写.</p>
 <p>基于wsrep协议提供的一种底层复制机制，实现了<code>Galera cluster</code>数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，才能借住于wsrep协议实现复制机制.</p>
 <p>多个节点之上有了信息层，上层应用完成高可用，研发时调用信息层所提供的api去开发，并基于这个api去完成集群事务决策，不然就要自行加入中间层称资源管理器crm，如pacemaker</p>
 <p>galera cluster不是专为数据库提供的，只是一个工作在较为底层能够为你的服务提供数据复制功能的底层组件.</p>
 <p>mysql只有在研发时调用了galera cluster api写的mysql才能利用galera cluster完成复制,它的复制不再是让其它节点通过读取主节点二进制日志文件在本地重放，而是你指明了复制哪个数据库文件，由galera cluster自己在底层完成同步，mysql本身不感知.</p>
-<p><code>percona-cluster 版本支持galera cluster
-MariaDB-cluster 版本支持galera cluster</code></p>
-<p>Galera Cluster: wsrep<br>    通过wsrep协议在全局实现复制： 任何一节点都可读写<br>复制的问题和解决方案:<br>(1) 数据损坏或丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">语句或行记录二进制日志，从而在从服务器上重放，重放机制也可能主从不一致的情况硬件故障、软件bug也会有数据损坏或丢失</div><div class="line">Master: MHA + semi replication(至少有一个从节点接收到了提交的binlog事件才返回成功，也是半同步复制)</div><div class="line">如果主节点数据损坏或丢失，就必须手动在从节点通过gtid来判断出己经提交的所有应用或事务，然后合并出一个较新的从节点提升为主节点</div><div class="line">Slave: 重新复制数据即可</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">percona-cluster 版本支持galera cluster</div><div class="line">MariaDB-cluster 版本支持galera cluster</div></pre></td></tr></table></figure>
+<p>复制的问题和解决方案:<br>(1) 数据损坏或丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">语句或行记录二进制日志，从而在从服务器上重放，重放机制也可能主从不一致的情况硬件故障、软件bug也会有数据损坏或丢失</div><div class="line">Master: MHA + semi replication(至少有一个从节点接收到了提交的binlog事件才返回成功，也是半同步复制)</div><div class="line">如果主节点数据损坏或丢失，就必须手动在从节点通过gtid来判断出己经提交的所有应用或事务，然后合并出一个较新的从节点提升为主节点</div><div class="line">Slave: 重新复制数据即可</div></pre></td></tr></table></figure></p>
 <p>(2) 运维部署注意事项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">关键业务监控</div><div class="line">重要数据要备份和冗余</div><div class="line">不能混合使用存储引警</div><div class="line">MyISM: 不支持事务</div><div class="line">InnoDB: 支持事务</div></pre></td></tr></table></figure></p>
 <p>(3) 设置了不唯一的server ID<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">不唯一，整个复制集群数据产生错乱，每一个服务节点都不会在本地重放由同一个server ID 所产生的事件</div><div class="line">会导致重新复制数据</div></pre></td></tr></table></figure></p>
 <p>(4) 复制延迟<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">需要额外监控工具的辅助</div><div class="line">自写一些脚本监控</div><div class="line">从节点有一个落后于主节点的时间判定，这个时间不为0时，尝试重启从节点服务</div><div class="line">对于从服务器延迟，主节点的事务是可以并发的，往二进制写入是单线程的，有先有后，从服务器重放也是单线程的，从服务器延迟落后也是必然的</div><div class="line">mysql5.6/mariadb 10以后引入了多线程复制机制，三节点集群可设置wsrep_slave_threads = 4</div></pre></td></tr></table></figure></p>
@@ -139,7 +135,7 @@ MariaDB-cluster 版本支持galera cluster</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9pn6x7a000i0pjx5hk3982e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9pneujy000i1mjxurxthwe3" class="article-share-link">Share</a>
       
       
     </footer>
