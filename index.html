@@ -120,7 +120,99 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cj9qtxgcz000927jx6tseoka4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cj9r6vlb3000e0vjxo3dco0iz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mysql-MGR" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/09/mysql-MGR/" class="article-date">
+  <time datetime="2017-11-08T22:41:54.000Z" itemprop="datePublished">2017-11-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>MGR简介</li>
+<li>MGR安装</li>
+<li></li>
+</ul>
+<p>数据库Galera集群的笔记做过了，今天来讲一讲MySQL Group Replication组复制技术。</p>
+<h2 id="一-MGR简介"><a href="#一-MGR简介" class="headerlink" title="一 MGR简介"></a>一 MGR简介</h2><p>MySQL当前存在的三种复制模式有：异步模式、半同步模式和组复制模式。<br>MySQL Group Replication（简称MGR）官方推出的高可用解决方案，    原生复制技术，基于插件的方式工作。</p>
+<p>分为以下两种</p>
+<ul>
+<li>single primary mode 单主模式只有一个读写，其余都是只读。</li>
+<li>multi primary mode多主模式全部可读写</li>
+</ul>
+<p>不管组复制单主还是多主的故障切换都无法让应用无感知，需要自主实现。</p>
+<p>包含以下特性：</p>
+<ul>
+<li>复制管理操作更为自动化。</li>
+<li>通过Paxos协议提供数据库集群节点数据强一致性保证。</li>
+<li>多主模式所有节点都可读写操作。</li>
+<li>解决网络分区导致的脑裂问题，提升复制数据的可靠性。</li>
+</ul>
+<p>官方引言<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Quite obviously, regardless the mode Group Replication is deployed, it does not handle client-side fail-over. That must be handled by the application itself, connector or a middleware framework such as a proxy or router.</div></pre></td></tr></table></figure></p>
+<p>意思就是说MGR内部没有提供一种机制来实现主节点故障切换对应用的无感知。应用的这种故障无感知需要借助外力实现。</p>
+<p>组复制存在以下局限性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">1. 所有涉及的数据都必须发生在InnoDB存储引擎的表内。</div><div class="line">2. 所有的表必须有明确的主键定义。</div><div class="line">3. 网络地址只支持IPv4。</div><div class="line">4. 需要低延迟，高带宽的网络。</div><div class="line">5. 目前集群限制最多允许9个节点。</div><div class="line">6. 必须启用binlog。</div><div class="line">7. binlog 格式必须是row格式。</div><div class="line">8. 必须打开gtid模式。</div><div class="line">9. 复制相关信息必须使用表存储。</div><div class="line">10.事务写集合（Transaction write set extraction）必须打开。（这个目前与savepoint冲突，这也是导致mysqldump无法备份GR实例的原因）</div><div class="line">11. log slave updates必须打开。</div><div class="line">12. binlog的checksum目前不支持。</div><div class="line">13. 由于事务写集合的干扰，无法使用savepoint。</div><div class="line">14. SERIALIZABLE 隔离级别目前不支持。</div><div class="line">15. 对同一个对象，在集群中不同的实例上，并行地执行DDL（哪怕是相互冲突的DDL）是可行的，但会导致数据一致性等方面的错误，目前阶段不支持在多节点同时执行同一对象的DDL。</div><div class="line">16. 外键的级联约束操作目前的实现并不完全支持，不推荐使用。</div></pre></td></tr></table></figure></p>
+<h2 id="二-MGR安装"><a href="#二-MGR安装" class="headerlink" title="二 MGR安装"></a>二 MGR安装</h2><h3 id="3-1-软件安装"><a href="#3-1-软件安装" class="headerlink" title="3.1 软件安装"></a>3.1 软件安装</h3><p><a href="https://dev.mysql.com/doc/refman/5.7/en/linux-installation-yum-repo.html" target="_blank" rel="external">官方单库安装</a><br><a href="https://dev.mysql.com/doc/refman/5.7/en/group-replication-deploying-in-single-primary-mode.html" target="_blank" rel="external">官方集群安装</a></p>
+<ul>
+<li>参考链接 :<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">https://dev.mysql.com/doc/refman/5.7/en/replace-third-party-yum.html  # 禁用第三方源或安装包</div><div class="line">https://dev.mysql.com/doc/refman/5.7/en/linux-installation.html   # 根据您的系统安装相应版本</div><div class="line">https://dev.mysql.com/doc/refman/5.7/en/linux-installation-yum-repo.html #CentOS7.3安装mysql 5.7</div><div class="line">https://dev.mysql.com/doc/refman/5.7/en/group-replication.html   # mysql Group Replication安装</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># rpm -ivh /opt/mysql57-community-release-el7-11.noarch.rpm</div><div class="line"># yum install mysql-community-server</div><div class="line"># systemctl  start mysqld</div></pre></td></tr></table></figure>
+<h3 id="3-2-内置策略说明"><a href="#3-2-内置策略说明" class="headerlink" title="3.2 内置策略说明"></a>3.2 内置策略说明</h3><p>mysql5.7启动服务后会生成一个随机密码用于临时登录，内置策略强制让你进入数据库后马上更改登录密码，并且有一套密码复杂度管理的策略。我们可以在数据库my.cnf中过滤掉复杂度策略或临时修改全局变量来忽略复杂度。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select @@validate_password_length;</div><div class="line">+----------------------------+</div><div class="line">| @@validate_password_length |</div><div class="line">+----------------------------+</div><div class="line">|                          8 |</div><div class="line">+----------------------------+</div><div class="line">1 row in set (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; SHOW VARIABLES LIKE &apos;validate_password%&apos;;</div><div class="line">+--------------------------------------+--------+</div><div class="line">| Variable_name                        | Value  |</div><div class="line">+--------------------------------------+--------+</div><div class="line">| validate_password_check_user_name    | OFF    |</div><div class="line">| validate_password_dictionary_file    |        |</div><div class="line">| validate_password_length             | 8      |</div><div class="line">| validate_password_mixed_case_count   | 1      |</div><div class="line">| validate_password_number_count       | 1      |</div><div class="line">| validate_password_policy             | MEDIUM |</div><div class="line">| validate_password_special_char_count | 1      |</div><div class="line">+--------------------------------------+--------+</div><div class="line">7 rows in set (0.01 sec)</div></pre></td></tr></table></figure></p>
+<p>或者/etc/my.cnf添加5行策略来忽略掉。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">validate_password_length = 0</div><div class="line">validate_password_mixed_case_count = 0</div><div class="line">validate_password_number_count = 0</div><div class="line">validate_password_policy =0</div><div class="line">validate_password_special_char_count =0</div></pre></td></tr></table></figure></p>
+<p>当然也可以类似以下命令临时全局修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set global validate_password_special_char_count =0; # 全部设置为0</div></pre></td></tr></table></figure></p>
+<p>查询临时密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># grep &apos;temporary password&apos; /var/log/mysqld.log</div></pre></td></tr></table></figure></p>
+<p>马上修改临时密码用以后续操作。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql&gt; ALTER USER &apos;root&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;MyNewPass4!&apos;;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line">#否则收到提示：ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.</div></pre></td></tr></table></figure></p>
+<h3 id="3-3-为复制授权"><a href="#3-3-为复制授权" class="headerlink" title="3.3 为复制授权"></a>3.3 为复制授权</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SET SQL_LOG_BIN=0;</div><div class="line">mysql&gt; CREATE USER rpl_user@&apos;%&apos; IDENTIFIED BY &apos;rpl_pass&apos;;</div><div class="line">mysql&gt; GRANT REPLICATION SLAVE ON *.* TO rpl_user@&apos;%&apos;;</div><div class="line">mysql&gt; FLUSH PRIVILEGES;</div><div class="line">mysql&gt; SET SQL_LOG_BIN=1;</div><div class="line"></div><div class="line">mysql&gt; CHANGE MASTER TO MASTER_USER=&apos;rpl_user&apos;, MASTER_PASSWORD=&apos;rpl_pass&apos;  FOR CHANNEL &apos;group_replication_recovery&apos;;</div></pre></td></tr></table></figure>
+<h3 id="3-4-启动组复制"><a href="#3-4-启动组复制" class="headerlink" title="3.4 启动组复制"></a>3.4 启动组复制</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mysql&gt; INSTALL PLUGIN group_replication SONAME &apos;group_replication.so&apos;; </div><div class="line">Query OK, 0 rows affected (0.02 sec)</div><div class="line"></div><div class="line">mysql&gt; show plugins;</div><div class="line">+----------------------------+----------+--------------------+----------------------+---------+</div><div class="line">| Name                       | Status   | Type               | Library              | License |</div><div class="line">+----------------------------+----------+--------------------+----------------------+---------+</div><div class="line">...</div><div class="line">| validate_password          | ACTIVE   | VALIDATE PASSWORD  | validate_password.so | GPL     |</div><div class="line">| group_replication          | ACTIVE   | GROUP REPLICATION  | group_replication.so | GPL     |</div><div class="line">+----------------------------+----------+--------------------+----------------------+---------+</div><div class="line">46 rows in set (0.01 sec)</div></pre></td></tr></table></figure>
+<p>启动复制通道<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SET GLOBAL group_replication_bootstrap_group=ON;</div><div class="line">START GROUP_REPLICATION;</div><div class="line">SET GLOBAL group_replication_bootstrap_group=OFF;</div></pre></td></tr></table></figure></p>
+<p>查看集群成员<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SELECT * FROM performance_schema.replication_group_members;</div><div class="line">+---------------------------+--------------------------------------+--------------+-------------+--------------+</div><div class="line">| CHANNEL_NAME              | MEMBER_ID                            | MEMBER_HOST  | MEMBER_PORT | MEMBER_STATE |</div><div class="line">+---------------------------+--------------------------------------+--------------+-------------+--------------+</div><div class="line">| group_replication_applier | f2d4456f-c48b-11e7-94f2-fa163e894684 | 172.18.23.34 |        3306 | ONLINE       |</div><div class="line">+---------------------------+--------------------------------------+--------------+-------------+--------------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+<p>创建测试同步数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mysql&gt; CREATE DATABASE test;</div><div class="line">mysql&gt; USE test;</div><div class="line">mysql&gt; CREATE TABLE t1 (c1 INT PRIMARY KEY, c2 TEXT NOT NULL);</div><div class="line">mysql&gt; INSERT INTO t1 VALUES (1, &apos;Luis&apos;);</div></pre></td></tr></table></figure></p>
+<p>检查同步数据和Binlog<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from t1;</div><div class="line">+----+------+</div><div class="line">| c1 | c2   |</div><div class="line">+----+------+</div><div class="line">|  1 | Luis |</div><div class="line">+----+------+</div><div class="line">1 row in set (0.01 sec)</div></pre></td></tr></table></figure></p>
+<p>mysql&gt; show binlog events;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">+---------------+-----+----------------+-----------+-------------+---------------------------------------+</div><div class="line">| Log_name      | Pos | Event_type     | Server_id | End_log_pos | Info                                  |</div><div class="line">+---------------+-----+----------------+-----------+-------------+---------------------------------------+</div><div class="line">| binlog.000001 |   4 | Format_desc    |         1 |         123 | Server ver: 5.7.20-log, Binlog ver: 4 |</div><div class="line">| binlog.000001 | 123 | Previous_gtids |         1 |         150 |                                       |</div><div class="line">| binlog.000001 | 150 | Stop           |         1 |         169 |                                       |</div><div class="line">+---------------+-----+----------------+-----------+-------------+---------------------------------------+</div><div class="line">3 rows in set (0.00 sec</div></pre></td></tr></table></figure></p>
+<h3 id="3-5-加入集群"><a href="#3-5-加入集群" class="headerlink" title="3.5 加入集群"></a>3.5 加入集群</h3><p>其余节点加入集群<br>1 先定义主配文件与主机hosts<br>2 建立通道授权</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">SET SQL_LOG_BIN=0;</div><div class="line">CREATE USER rpl_user@&apos;%&apos; IDENTIFIED BY &apos;rpl_pass&apos; ;</div><div class="line">GRANT REPLICATION SLAVE ON *.* TO rpl_user@&apos;%&apos; IDENTIFIED BY &apos;rpl_pass&apos;;</div><div class="line">SET SQL_LOG_BIN=1;</div><div class="line">CHANGE MASTER TO MASTER_USER=&apos;rpl_user&apos;, MASTER_PASSWORD=&apos;rpl_pass&apos; </div><div class="line">	FOR CHANNEL &apos;group_replication_recovery&apos;;</div></pre></td></tr></table></figure>
+<p>3 添加插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; INSTALL PLUGIN group_replication SONAME &apos;group_replication.so&apos;;</div></pre></td></tr></table></figure></p>
+<p>4 启动复制通道<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; START GROUP_REPLICATION;</div></pre></td></tr></table></figure></p>
+<p>如果有失败，尝试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; set global validate_password_policy=0; </div><div class="line">mysql&gt; set global group_replication_allow_local_disjoint_gtids_join=ON;</div></pre></td></tr></table></figure></p>
+<p>5 查看集群成员<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SELECT * FROM performance_schema.replication_group_members;</div><div class="line">+---------------------------+--------------------------------------+--------------+-------------+--------------+</div><div class="line">| CHANNEL_NAME              | MEMBER_ID                            | MEMBER_HOST  | MEMBER_PORT | MEMBER_STATE |</div><div class="line">+---------------------------+--------------------------------------+--------------+-------------+--------------+</div><div class="line">| group_replication_applier | 2863475f-c490-11e7-b93e-fa163ebc6e6c | 172.18.23.8  |        3306 | ONLINE       |</div><div class="line">| group_replication_applier | 9c1ded3e-c495-11e7-8c62-fa163ea91040 | 172.18.23.33 |        3306 | ONLINE       |</div><div class="line">| group_replication_applier | f2d4456f-c48b-11e7-94f2-fa163e894684 | 172.18.23.34 |        3306 | ONLINE       |</div><div class="line">+---------------------------+--------------------------------------+--------------+-------------+--------------+</div><div class="line">3 rows in set (0.01 sec)</div></pre></td></tr></table></figure></p>
+<p>6 查看集群中的主节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SELECT VARIABLE_VALUE FROM performance_schema.global_status WHERE VARIABLE_NAME= &apos;group_replication_primary_member&apos;;</div><div class="line">+--------------------------------------+</div><div class="line">| VARIABLE_VALUE                       |</div><div class="line">+--------------------------------------+</div><div class="line">| f2d4456f-c48b-11e7-94f2-fa163e894684 |</div><div class="line">+--------------------------------------+</div><div class="line">1 row in set (0.01 sec)</div></pre></td></tr></table></figure></p>
+<p>7  binlog<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show binlog events;</div><div class="line">+---------------+-----+----------------+-----------+-------------+---------------------------------------+</div><div class="line">| Log_name      | Pos | Event_type     | Server_id | End_log_pos | Info                                  |</div><div class="line">+---------------+-----+----------------+-----------+-------------+---------------------------------------+</div><div class="line">| binlog.000001 |   4 | Format_desc    |         3 |         123 | Server ver: 5.7.20-log, Binlog ver: 4 |</div><div class="line">| binlog.000001 | 123 | Previous_gtids |         3 |         150 |                                       |</div><div class="line">| binlog.000001 | 150 | Stop           |         3 |         169 |                                       |</div><div class="line">+---------------+-----+----------------+-----------+-------------+---------------------------------------+</div><div class="line">3 rows in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+<p>8  my.cnf优化项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">max_connections = 4096</div><div class="line">max_prepared_stmt_count=100000</div><div class="line">query_cache_type = 1</div><div class="line">query_cache_size = 10M</div></pre></td></tr></table></figure></p>
+<p>9 命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show full processlist;</div><div class="line">+----+-------------+-----------+------+---------+------+--------------------------------------------------------+-----------------------+</div><div class="line">| Id | User        | Host      | db   | Command | Time | State                                                  | Info                  |</div><div class="line">+----+-------------+-----------+------+---------+------+--------------------------------------------------------+-----------------------+</div><div class="line">|  3 | root        | localhost | test | Query   |    0 | starting                                               | show full processlist |</div><div class="line">| 11 | system user |           | NULL | Connect |  490 | executing                                              | NULL                  |</div><div class="line">| 14 | system user |           | NULL | Connect |  490 | Slave has read all relay log; waiting for more updates | NULL                  |</div><div class="line">+----+-------------+-----------+------+---------+------+--------------------------------------------------------+-----------------------+</div><div class="line">3 rows in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cj9r6vlb0000c0vjxrqcpjz5f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -133,7 +225,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/08/hello-world/" class="article-date">
-  <time datetime="2017-11-08T09:15:49.132Z" itemprop="datePublished">2017-11-08</time>
+  <time datetime="2017-11-08T15:18:17.238Z" itemprop="datePublished">2017-11-08</time>
 </a>
     
   <div class="article-category">
@@ -169,7 +261,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/hello-world/" data-id="cj9qtxgct000627jxzsa7rdue" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/hello-world/" data-id="cj9r6vlau00060vjxikpnlj39" class="article-share-link">Share</a>
       
       
     </footer>
@@ -236,7 +328,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9qtxgdc000h27jx497bst1r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9r6vlax00090vjxff0ehxdk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -283,7 +375,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cj9qtxggd001n27jx8huw4ol4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cj9r6vld5001n0vjx0pr021p1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -359,7 +451,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9qtxggl001r27jxr97472he" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9r6vlde001r0vjxrogeq0gj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -431,7 +523,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-15-01-开发/" data-id="cj9qtxggi001p27jxa2vrf1aj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-15-01-开发/" data-id="cj9r6vld8001p0vjxms1f9e8z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -490,7 +582,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9qtxgcc000027jx6roec9qu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9r6vla700000vjxg6v85mgr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -558,7 +650,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9qtxgd5000c27jx27vku83s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9r6vlb6000h0vjxwn6rrk02" class="article-share-link">Share</a>
       
       
     </footer>
@@ -630,54 +722,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9qtxggp001w27jxt1p6ckme" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
-  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
-<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</div></pre></td></tr></table></figure></p>
-<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</div><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</div></pre></td></tr></table></figure></p>
-<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</div><div class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9qtxgda000e27jxxrs1s5dg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9r6vldh001t0vjxogqzm38x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -690,7 +735,7 @@
 
 
   <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -732,6 +777,10 @@
           </li>
         
           <li>
+            <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
+          </li>
+        
+          <li>
             <a href="/2017/11/08/hello-world/">Hello World</a>
           </li>
         
@@ -741,10 +790,6 @@
         
           <li>
             <a href="/2017/10/31/ssh-01-反向代理/">ssh-01-反向代理</a>
-          </li>
-        
-          <li>
-            <a href="/2017/09/20/web-django-16-01-入门/">python-Django入门</a>
           </li>
         
       </ul>
