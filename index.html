@@ -61,6 +61,115 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-kolla-Pike-on-CentOS7.3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/" class="article-date">
+  <time datetime="2017-11-09T00:41:54.000Z" itemprop="datePublished">2017-11-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>openstack Pike发布很长一段时间了，一直没有时间整理一份在kolla on CentOS7.3 的文档<br><a href="http://www.chenshake.com/kolla-installation/" target="_blank" rel="external">参考：沙克老师单节点ocata安装</a></p>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum install epel-release  </div><div class="line">yum install axel vim git curl wget lrzsz ansible gcc  python-devel</div></pre></td></tr></table></figure>
+<h2 id="docker-ce-yum"><a href="#docker-ce-yum" class="headerlink" title="docker-ce yum"></a>docker-ce yum</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">add docker-ce yum:</div><div class="line">yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</div></pre></td></tr></table></figure>
+<h2 id="docker-ce-install"><a href="#docker-ce-install" class="headerlink" title="docker-ce install"></a>docker-ce install</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">install docker-ce</div><div class="line"># yum install docker-ce</div></pre></td></tr></table></figure>
+<h2 id="docker-ce-configuration"><a href="#docker-ce-configuration" class="headerlink" title="docker-ce configuration"></a>docker-ce configuration</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir  /etc/systemd/system/docker.service.d/</div><div class="line">tee /etc/systemd/system/docker.service.d/kolla.conf &lt;&lt; eof  </div><div class="line">[Service]</div><div class="line">MountFlags=shared</div><div class="line">eof</div></pre></td></tr></table></figure>
+<p>编辑 /usr/lib/systemd/system/docker.service<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ExecStart=/usr/bin/dockerd --insecure-registry 192.168.200.2:4000</div></pre></td></tr></table></figure></p>
+<h2 id="启动docker"><a href="#启动docker" class="headerlink" title="启动docker"></a>启动docker</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable docker</div><div class="line">systemctl restart docker</div><div class="line">systemctl status  docker</div></pre></td></tr></table></figure>
+<h2 id="kolla-ansible-install"><a href="#kolla-ansible-install" class="headerlink" title="kolla-ansible install"></a>kolla-ansible install</h2><p>安装pike版本 kolla-ansible，pip install 安装方式存在版本问题或非最新代码，这里直接git下载代码安装。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">cd /opt</div><div class="line">git clone https://github.com/openstack/kolla-ansible.git</div><div class="line">cd /opt/kolla-ansible</div><div class="line">git branch -av</div><div class="line">git  checkout remotes/origin/stable/pike</div><div class="line">cp -r /opt/kolla-ansible/etc/kolla/ /etc/</div><div class="line"></div><div class="line"># 安装相关依赖包</div><div class="line">cd /opt/kolla-ansible</div><div class="line">pip install  -r requirements.txt</div></pre></td></tr></table></figure></p>
+<p>生成密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /opt/kolla-ansible/tools</div><div class="line">python generate_passwords.py</div></pre></td></tr></table></figure></p>
+<h3 id="安装镜像仓库"><a href="#安装镜像仓库" class="headerlink" title="安装镜像仓库"></a>安装镜像仓库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># docker pull registry</div><div class="line"></div><div class="line">下载最新pike 容器镜像：</div><div class="line">http://tarballs.openstack.org/kolla/images/centos-source-registry-pike.tar.gz</div><div class="line">tar xf centos-source-registry-pike.tar.gz -C /opt/registry</div><div class="line">docker run -d -p 4000:5000 --restart=always --name registry -v /opt/registry/:/var/lib/registry registry</div></pre></td></tr></table></figure>
+<p>eg:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mkdir /registry</div><div class="line">tar -zxf /root/docker-registry.tar.gz -C /registry</div><div class="line">docker load &lt; /root/registry.tar</div><div class="line">docker run -d -p 4000:5000 --restart=always --name registry -v /opt/registry/:/var/lib/registry registry</div></pre></td></tr></table></figure></p>
+<p>check docker hub<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">curl http://192.168.200.2:4000/v2/_catalog</div><div class="line">[root@controller01 ~]# curl 192.168.200.2:4000/v2/99cloud/centos-source-memcached/tags/list</div><div class="line">&#123;&quot;name&quot;:&quot;99cloud/centos-source-memcached&quot;,&quot;tags&quot;:[&quot;4.0.1.1&quot;]&#125;</div><div class="line"></div><div class="line">docker pull 192.168.200.2:4000/99cloud/centos-source-memcached:4.0.1.1</div></pre></td></tr></table></figure></p>
+<h3 id="ceph-disk-set"><a href="#ceph-disk-set" class="headerlink" title="ceph disk set"></a>ceph disk set</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># for i in  vdb vdc vdd; do  parted /dev/$i  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1; done</div></pre></td></tr></table></figure>
+<h3 id="in-case-of-vm"><a href="#in-case-of-vm" class="headerlink" title="in case of vm"></a>in case of vm</h3><p>如果只是在虚机中实验搭建kolla，需要额外配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir -p /etc/kolla/config/nova</div><div class="line">vim /etc/kolla/config/nova/nova-compute.conf</div><div class="line">[libvirt]</div><div class="line">virt_type = qemu</div><div class="line">cpu_mode = none</div></pre></td></tr></table></figure></p>
+<p>创建 /etc/kolla/config/ceph.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">osd pool default size = 1</div><div class="line">osd pool default min size = 1</div></pre></td></tr></table></figure></p>
+<p>如果有需要，请手动调整副本数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd pool set rbd size 1</div></pre></td></tr></table></figure></p>
+<h3 id="edit-global-yml"><a href="#edit-global-yml" class="headerlink" title="edit global.yml"></a>edit global.yml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">edit /etc/kolla/global.yml</div><div class="line">此处略过。。。</div></pre></td></tr></table></figure>
+<h3 id="kolla-ansible-deploy"><a href="#kolla-ansible-deploy" class="headerlink" title="kolla-ansible deploy"></a>kolla-ansible deploy</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">kolla-ansible prechecks</div><div class="line">kolla-ansible pull</div><div class="line">kolla-ansible deploy</div><div class="line">kolla-ansible post-deploy</div></pre></td></tr></table></figure>
+<h3 id="cli-commands-install"><a href="#cli-commands-install" class="headerlink" title="cli-commands install"></a>cli-commands install</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum  install ceph-common </div><div class="line">pip python-openstackclient   python-neutronclient</div></pre></td></tr></table></figure>
+<h3 id="access-dashboard"><a href="#access-dashboard" class="headerlink" title="access dashboard"></a>access dashboard</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://openstack_VIP/horizon</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cj9qp1our000918jxgk021qmo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/08/hello-world/" class="article-date">
+  <time datetime="2017-11-08T06:59:08.695Z" itemprop="datePublished">2017-11-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/随笔/">随笔</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/08/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/08/hello-world/" data-id="cj9qp1ouv000c18jxfaa59y2m" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-mysql-Galera" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/08/mysql-Galera/" class="article-date">
@@ -118,56 +227,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9pneujy000i1mjxurxthwe3" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/07/hello-world/" class="article-date">
-  <time datetime="2017-11-07T13:25:37.183Z" itemprop="datePublished">2017-11-07</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/随笔/">随笔</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/07/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/07/hello-world/" data-id="cj9pneujk00091mjxailjtr4g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9qp1ov1000h18jxom597c9n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -214,7 +274,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cj9pneume001l1mjxzdy89mfk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cj9qp1oyk001u18jx695zqrqc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -290,7 +350,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9pneumj001p1mjx82abviht" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9qp1oye001p18jx8i2wk839" class="article-share-link">Share</a>
       
       
     </footer>
@@ -362,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-15-01-开发/" data-id="cj9pneumg001n1mjxps4h6tt0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-15-01-开发/" data-id="cj9qp1oyb001n18jxolbtfv0c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -420,7 +480,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9pneujb00031mjxmkezbilc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9qp1ouo000618jxh5iwx4yp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -488,7 +548,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9pneujn000c1mjxmcuua852" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9qp1ov0000f18jxfhi0pyy3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -560,7 +620,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9pneump001u1mjxjkot8twh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9qp1oym001w18jxodgvupcq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -607,55 +667,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9pneuju000f1mjx2k5wu4ef" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
-  <time datetime="2017-05-15T12:51:41.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/python加密解密加签验签/">python-加密解密加签验签</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="python加密解密，加签验签"><a href="#python加密解密，加签验签" class="headerlink" title="python加密解密，加签验签"></a>python加密解密，加签验签</h2><p>(转)<br>在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步</p>
-<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">import base64</div><div class="line">from Crypto.PublicKey import RSA</div><div class="line">from Crypto.Hash import SHA</div><div class="line">from Crypto.Cipher import PKCS1_v1_5</div><div class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</div><div class="line"></div><div class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</div><div class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</div></pre></td></tr></table></figure>
-<p>加密</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">def split_data(l, n):</div><div class="line">    for i in range(0, len(l), n):</div><div class="line">        yield l[i: i+n]</div><div class="line">        </div><div class="line">def encrypt(params):</div><div class="line">    raw = params.encode(&apos;utf-8&apos;)</div><div class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</div><div class="line">    ＃ 加密超长字节117个字节一加密</div><div class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</div><div class="line">    return base64.b64encode(content)</div></pre></td></tr></table></figure>
-<p>解密<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">def decrypt(data):</div><div class="line">    raw = data.encode(&apos;utf-8&apos;)</div><div class="line">    decrypt = PKCS1_v1_5.new(PRI_KEY).decrypt</div><div class="line">    # 解密超长字符128一解密</div><div class="line">    content = b&apos;&apos;.join(decrypt(x, object()) for x in chunks(raw, 128))</div><div class="line">    return content.decode()</div></pre></td></tr></table></figure></p>
-<p>加签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def signer(data):</div><div class="line">    signstr = data.encode(&apos;utf-8&apos;)</div><div class="line">    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))</div><div class="line">    return base64.b64encode(sign)</div></pre></td></tr></table></figure></p>
-<p>验签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def verify_sign(unsign, raw_sign):</div><div class="line">    # unsign: 签名</div><div class="line">    # raw_sign: 待验证签名</div><div class="line">    assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), raw_sign)</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9pneumb001g1mjxnzt00ocd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9qp1ov8000o18jx68g67vro" class="article-share-link">Share</a>
       
       
     </footer>
@@ -706,11 +718,15 @@
       <ul>
         
           <li>
-            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
+            <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
           </li>
         
           <li>
-            <a href="/2017/11/07/hello-world/">Hello World</a>
+            <a href="/2017/11/08/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
           </li>
         
           <li>
@@ -719,10 +735,6 @@
         
           <li>
             <a href="/2017/09/20/web-django-16-01-入门/">python-Django入门</a>
-          </li>
-        
-          <li>
-            <a href="/2017/09/15/web-15-01-开发/">web-开发入门</a>
           </li>
         
       </ul>
