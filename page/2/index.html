@@ -98,7 +98,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9to6iyk000myujxub3dv871" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9tobejk000hzxjx4hqxjt1z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +145,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">qps : query per second 查询量</div><div class="line">tps: transaction per second 事务量</div></pre></td></tr></table></figure>
 <h3 id="工具安装"><a href="#工具安装" class="headerlink" title="工具安装"></a>工具安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum install sysbench -y</div><div class="line">[root@mysql sysbench]# sysbench  --version</div><div class="line">sysbench 1.0.9</div></pre></td></tr></table></figure>
 <p>在<code>sysbench</code>压测时会调用内置<code>lua</code>脚本, 这些脚本为于<code>/etc/share/sysbench</code>目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/usr/share/sysbench</div><div class="line">[root@mysql sysbench]# ll</div><div class="line">total 64</div><div class="line">-rwxr-xr-x 1 root root  1452 Sep 18 12:29 bulk_insert.lua</div><div class="line">-rw-r--r-- 1 root root 13762 Sep 18 12:29 oltp_common.lua</div><div class="line">-rwxr-xr-x 1 root root  1290 Sep 18 12:29 oltp_delete.lua</div><div class="line">-rwxr-xr-x 1 root root  2018 Sep 18 12:29 oltp_insert.lua</div><div class="line">-rwxr-xr-x 1 root root  1265 Sep 18 12:29 oltp_point_select.lua</div><div class="line">-rwxr-xr-x 1 root root  1649 Sep 18 12:29 oltp_read_only.lua</div><div class="line">-rwxr-xr-x 1 root root  1824 Sep 18 12:29 oltp_read_write.lua</div><div class="line">-rwxr-xr-x 1 root root  1118 Sep 18 12:29 oltp_update_index.lua</div><div class="line">-rwxr-xr-x 1 root root  1127 Sep 18 12:29 oltp_update_non_index.lua</div><div class="line">-rwxr-xr-x 1 root root  1440 Sep 18 12:29 oltp_write_only.lua</div><div class="line">-rwxr-xr-x 1 root root  1919 Sep 18 12:29 select_random_points.lua</div><div class="line">-rwxr-xr-x 1 root root  2118 Sep 18 12:29 select_random_ranges.lua</div><div class="line">drwxr-xr-x 4 root root  4096 Nov 10 02:57 tests</div></pre></td></tr></table></figure></p>
-<h3 id="执行压测"><a href="#执行压测" class="headerlink" title="执行压测"></a>执行压测</h3><p>方便压测时找到内置<code>lua</code>脚本，以下命令都在<code>/etc/share/sysbench</code>目录下执行<br>生成压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/share/sysbench/</div><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  prepare</div></pre></td></tr></table></figure></p>
+<h3 id="执行压测"><a href="#执行压测" class="headerlink" title="执行压测"></a>执行压测</h3><p>方便压测时找到内置<code>lua</code>脚本，以下命令都在<code>/etc/share/sysbench</code>目录下执行</p>
+<p>在远端连接数据库时，授权<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grant all on test.* to root@&apos;%&apos; identified by &apos;123&apos;;</div></pre></td></tr></table></figure></p>
+<p>生成压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/share/sysbench/</div><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  prepare</div></pre></td></tr></table></figure></p>
 <p>执行压测<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  run</div></pre></td></tr></table></figure></p>
 <p>清理压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  cleanup</div></pre></td></tr></table></figure></p>
 <h3 id="优化数据库"><a href="#优化数据库" class="headerlink" title="优化数据库"></a>优化数据库</h3><p>在压测过程中可能出现一些错误，连接数不够，max_prepared_stmt_count不够，可优化/etc/my.cnf 做适当调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">max_connections = 4096</div><div class="line">max_prepared_stmt_count=100000      # 默认16384压测时需调大</div><div class="line">query_cache_type = 1</div><div class="line">query_cache_size = 10M</div><div class="line"></div><div class="line">wsrep_slave_threads = 4</div><div class="line">#wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh</div><div class="line">max_connections = 10000</div><div class="line">key_buffer_size = 64M</div><div class="line">max_heap_table_size = 64M</div><div class="line">tmp_table_size = 64M</div><div class="line">innodb_buffer_pool_size = 8192M</div></pre></td></tr></table></figure></p>
@@ -154,7 +156,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cj9to6iyh000kyujx8h0bdrb6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cj9tobeln000pzxjxpqagbu3i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -202,7 +204,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9to6j01001myujxd96yurs2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9tobemz001mzxjxq2j7ixr4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -246,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9to6izx001hyujxlwsxgw7d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9tobemt001hzxjxn8q3onij" class="article-share-link">Share</a>
       
       
     </footer>
@@ -293,7 +295,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9to6izp001byujxvdbrsu54" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9tobemo001dzxjxz78kjlcd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -337,7 +339,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9to6izu001fyujxn6ozpn7x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9tobemq001fzxjxbwn2ql9q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -394,7 +396,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj9to6izh0017yujxr1hohvw8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj9tobemk001bzxjxhdb2z6tn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -463,7 +465,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cj9to6ize0015yujxjvz0i7ae" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cj9tobeme0017zxjxe0dxcofm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -511,7 +513,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cj9to6izl0019yujxxonyfu6j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cj9tobemh0019zxjxom03t1pt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -716,7 +718,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cj9to6izs001dyujxe3awg6i6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cj9tobemc0015zxjxhldchg31" class="article-share-link">Share</a>
       
       
     </footer>
