@@ -61,6 +61,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
+<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</div></pre></td></tr></table></figure></p>
+<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</div><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</div></pre></td></tr></table></figure></p>
+<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</div><div class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9wscpjw000km2jxd70pbqup" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-mysql-sysbench" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/10/mysql-sysbench/" class="article-date">
@@ -109,7 +156,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cj9wngr2y000r57jx97fvtw6n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cj9wscpoa000rm2jx039t9i5l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -156,7 +203,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-17-sql/" data-id="cj9wngr4z002357jx7jw0idq4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-17-sql/" data-id="cj9wscq0b0025m2jxew9t8f87" class="article-share-link">Share</a>
       
       
     </footer>
@@ -198,7 +245,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-02-分页示例/" data-id="cj9wngr4s001z57jxoo2zt9kp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-02-分页示例/" data-id="cj9wscpzz001zm2jxftudhtcz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -246,7 +293,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9wngr4c001o57jxtp6aq45e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9wscpvy001om2jxb9o4usva" class="article-share-link">Share</a>
       
       
     </footer>
@@ -300,7 +347,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-01示例/" data-id="cj9wngr4p001x57jx27jab5bq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-01示例/" data-id="cj9wscpy6001xm2jxxecsi0ty" class="article-share-link">Share</a>
       
       
     </footer>
@@ -344,7 +391,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9wngr46001j57jxgi9kunmd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9wscpvn001jm2jxsv1932a0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -391,7 +438,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9wngr40001f57jxes0vhelv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9wscpvb001fm2jxc0j92ypr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -435,7 +482,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9wngr44001h57jxva1dyslv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9wscpve001hm2jxqbeo8zkt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -509,74 +556,15 @@
 <li>最终：orm翻译成pymsql,pymysql再翻译成sql语句</li>
 </ul>
 <p>Django 数据库操作具体语法介绍<a href="http://www.digmyth.com/2017/05/20/web-django-17-sql/">请参考</a></p>
-<h2 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h2><p>Django对template中html的渲染有着一套语法，</p>
+<h2 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h2><p>Django对template中html的渲染有着一套语法,我有专门一篇博客讲解模板渲染语法<br><a href="">渲染语法博客参考</a></p>
 <p>1 基本方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</div><div class="line">   x.html</div><div class="line">    &#123;&#123; k.2  &#125;&#125;</div><div class="line"></div><div class="line">   &#123;% for i in d %&#125;</div><div class="line">     &#123;&#123; i &#125;&#125;  --key</div><div class="line">   &#123;% endfor %&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">   &#123;% for k,v in d.items %&#125;</div><div class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</div><div class="line">   &#123;% endfor %&#125;</div></pre></td></tr></table></figure></p>
 <p>2  函数</p>
-<p>Django 提供的函数:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">simple tag可以有多个参数</div><div class="line">filter 只能有2个参数，并且可以做条件语句的条件</div></pre></td></tr></table></figure></p>
-<p>1 app01<br>2 创建templatetags<br>3 templates/html里<code>load mytag</code><br>4 restart django<br>@register.filter自定义过滤器<br>@register.simple_tag自定义标签</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from django import  template</div><div class="line">from django.utils.safestring import mark_safe</div><div class="line">register = template.Library()   # register变量名是固定的，不可以改变</div><div class="line"></div><div class="line">@register.filter</div><div class="line">def multip(x,y):</div><div class="line">    return x*y</div></pre></td></tr></table></figure>
+<p>Django 提供的函数:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">simple_tag 可以有多个参数</div><div class="line">filter     只能有2个参数，并且可以做条件语句的条件</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-16-01-入门/" data-id="cj9wngr4x002157jxs9ota6pq" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-08-01-面象对象高级编程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/15/python-08-01-面象对象高级编程/" class="article-date">
-  <time datetime="2017-03-15T14:28:41.000Z" itemprop="datePublished">2017-03-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/15/python-08-01-面象对象高级编程/">python-08-01-面象对象高级编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>staticmethod</li>
-<li>classmethod</li>
-</ul>
-<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><h2 id="staticmethod"><a href="#staticmethod" class="headerlink" title="staticmethod"></a>staticmethod</h2><p>几个魔法方法说明：</p>
-<p><code>@classmethod</code>   <code>@staticmethod</code><br>不依赖任何具体的对象来执行类当中是方法，这个方法要么是静态方法， 要么是类方法，要么是属性</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@classmethod</div><div class="line">def test_func(cls):   # 类方法传入cls参数（类本身）</div><div class="line">    pass</div><div class="line"></div><div class="line">@staticmethod</div><div class="line">def test_func():    # 静态方法时没有任何变量</div><div class="line">    pass</div><div class="line"></div><div class="line">def test_func(self):  # 普通实例方法时传入self参数（实例本身）</div><div class="line">    pass</div></pre></td></tr></table></figure>
-<p><code>staticmethod</code>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">In [4]: class Foo(object):</div><div class="line">   ...:     @staticmethod</div><div class="line">   ...:     def spam(x,y,z):   # 静态方法时方法定义不写self</div><div class="line">   ...:         print(x,y,z)</div><div class="line">       </div><div class="line">In [5]: </div><div class="line">In [5]: Foo.spam(1,2,3)      # 静态方法属于类的，用类名调用。虽然实例能调用，但不要那样混用,不规范</div><div class="line">1 2 3</div></pre></td></tr></table></figure></p>
-<p><code>staticmethod</code>用法场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">In [7]: import time</div><div class="line">In [6]: class Date(object):</div><div class="line">   ...:     def __init__(self,year,mon, day):</div><div class="line">   ...:         self.year = year</div><div class="line">   ...:         self.mon = mon</div><div class="line">   ...:         self.day = day</div><div class="line">   ...:     @staticmethod</div><div class="line">   ...:     def now():</div><div class="line">   ...:         t = time.localtime()</div><div class="line">   ...:         return Date(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line">   ...:     </div><div class="line"></div><div class="line">In [8]: d1 = Date(1989, 8,20)    # 获得一个对象</div><div class="line"></div><div class="line">In [9]: d2 = Date.now()   # 这里也能获得一个对象</div><div class="line"></div><div class="line">In [10]: d1.day</div><div class="line">Out[10]: 20</div><div class="line"></div><div class="line">In [11]: d2.day</div><div class="line">Out[11]: 12</div></pre></td></tr></table></figure></p>
-<h2 id="classmethod"><a href="#classmethod" class="headerlink" title="classmethod"></a>classmethod</h2><p><code>@classmethod</code>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">In [12]: class C1(object):</div><div class="line">   ....:     name = &apos;wxq&apos;</div><div class="line">   ....:     @classmethod</div><div class="line">   ....:     def test(cls):    # 这里需要传入cls, 谁调用谁就是cls</div><div class="line">   ....:         print(cls, cls.name)</div><div class="line">   ....:         </div><div class="line"></div><div class="line">In [14]: C1.test()     # 这里cls就是C1</div><div class="line">&lt;class &apos;__main__.C1&apos;&gt; wxq</div><div class="line"></div><div class="line">In [13]: c = C1()   # 正常实例化对象</div></pre></td></tr></table></figure></p>
-<p><code>@classmethod</code>用法场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">In [2]: import time</div><div class="line"></div><div class="line">In [3]: class Date(object):</div><div class="line">   ...:     def __init__(self, year, mon,day):</div><div class="line">   ...:         self.year = year</div><div class="line">   ...:         self.mon = mon</div><div class="line">   ...:         self.day = day</div><div class="line">   ...:     @classmethod</div><div class="line">   ...:     def now(cls):</div><div class="line">   ...:         t = time.localtime()</div><div class="line">   ...:         return cls(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line">   ...:     </div><div class="line"></div><div class="line">In [4]: d = Date.now()</div><div class="line"></div><div class="line">In [5]: print(d.year,d.mon, d.day)</div><div class="line">2017 3 12</div></pre></td></tr></table></figure></p>
-<p><code>staticmethod</code>与<code>classmethod</code>区别的牛逼之处<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat method.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">import time</div><div class="line">class Date(object):</div><div class="line">    def __init__(self, year,mon,day):</div><div class="line">        self.year = year</div><div class="line">        self.mon = mon</div><div class="line">        self.day = day</div><div class="line">    @staticmethod</div><div class="line">    def now():</div><div class="line">        t = time.localtime()</div><div class="line">        return Date(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line"></div><div class="line">class EuroDate(Date):</div><div class="line">     def __str__(self):</div><div class="line">       return &apos;year: %s mon:%s day:%s&apos; % (self.year, self.mon,self.day)</div><div class="line"></div><div class="line">e = EuroDate.now()</div><div class="line">print(e)</div><div class="line">root@ubuntu:~# python3 method.py </div><div class="line">&lt;__main__.Date object at 0x7f5514658940&gt;</div></pre></td></tr></table></figure></p>
-<p>上面并没有我们想要的结果<br>分析：<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。<br>也就是<code>return Date(t.tm_year, t.tm_mon, t.tm_mday)</code>, 实例print时调Date类的<code>__str__</code>方法，故打印<code>return Date(t.tm_year, t.tm_mon, t.tm_mday)</code>后的内存地址，不会打印<code>EuroDate</code>类中定义的<code>__str__</code>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat goodmethod.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">import time</div><div class="line">class Date(object):</div><div class="line">    def __init__(self, year,mon,day):</div><div class="line">        self.year = year</div><div class="line">        self.mon = mon</div><div class="line">        self.day = day</div><div class="line">    @classmethod</div><div class="line">    def now(cls):</div><div class="line">        t = time.localtime()</div><div class="line">        return cls(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line"></div><div class="line">class EuroDate(Date):</div><div class="line">     def __str__(self):</div><div class="line">       return &apos;year: %s mon:%s day:%s&apos; % (self.year, self.mon,self.day)</div><div class="line"></div><div class="line">e = EuroDate.now()</div><div class="line">print(e)</div><div class="line">root@ubuntu:~# python3 goodmethod.py </div><div class="line">year: 2017 mon:3 day:12</div></pre></td></tr></table></figure>
-<p>这样才是我们想要的结果，好象参悟了点什么<br>分析:<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。这一点和上面是一致的。但此时<code>return cls(t.tm_year, t.tm_mon, t.tm_mday)</code>中的cls不是Date,而是EuroDate,符合谁调谁就是cls的原则。这样实例化<code>e = EuroDate.now()</code>时print(e)就会去调EuroDate中的<code>__str__</code>方法，得到我们想要的结果</p>
-<p>小结：<br><code>staticmethod</code>与<code>classmethod</code>在一定场景中是有区别的。细节参照上面的例子练习</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cj9wngr3z001d57jxgthnfemd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-16-01-入门/" data-id="cj9wscq050021m2jx761ufeys" class="article-share-link">Share</a>
       
       
     </footer>
