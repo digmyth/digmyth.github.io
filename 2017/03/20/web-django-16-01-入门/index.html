@@ -28,7 +28,7 @@ Django安装
 接收用户请求，解析用户请求，响应用户请求这些封装为WSGI接口简化开发。
 定义w">
 <meta property="og:image" content="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150927926423.png">
-<meta property="og:updated_time" content="2017-11-12T10:38:25.000Z">
+<meta property="og:updated_time" content="2017-11-12T11:12:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-Django-入门">
 <meta name="twitter:description" content="目录
@@ -152,16 +152,18 @@ Django安装
 <li>第三层封装: orm操作是最高级封装，pymsql之上的一层封装</li>
 <li>最终：orm翻译成pymsql,pymysql再翻译成sql语句</li>
 </ul>
-<p>Django 数据库操作具体语法介绍<a href="">请参考</a></p>
+<p>Django 数据库操作具体语法介绍<a href="http://www.digmyth.com/2017/05/20/web-django-17-sql/">请参考</a></p>
 <h2 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h2><p>Django对template中html的渲染有着一套语法，</p>
 <p>1 基本方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</div><div class="line">   x.html</div><div class="line">    &#123;&#123; k.2  &#125;&#125;</div><div class="line"></div><div class="line">   &#123;% for i in d %&#125;</div><div class="line">     &#123;&#123; i &#125;&#125;  --key</div><div class="line">   &#123;% endfor %&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">   &#123;% for k,v in d.items %&#125;</div><div class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</div><div class="line">   &#123;% endfor %&#125;</div></pre></td></tr></table></figure></p>
 <p>2  函数</p>
 <p>Django 提供的函数:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">simple tag可以有多个参数</div><div class="line">filter 只能有2个参数，并且可以做条件语句的条件</div></pre></td></tr></table></figure></p>
+<p>1 app01<br>2 创建templatetags<br>3 templates/html里<code>load mytag</code><br>4 restart django<br>@register.filter自定义过滤器<br>@register.simple_tag自定义标签</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from django import  template</div><div class="line">from django.utils.safestring import mark_safe</div><div class="line">register = template.Library()   # register变量名是固定的，不可以改变</div><div class="line"></div><div class="line">@register.filter</div><div class="line">def multip(x,y):</div><div class="line">    return x*y</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-16-01-入门/" data-id="cj9wmnk4f001v2ljxnkf51wqn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-16-01-入门/" data-id="cj9wngr4x002157jxs9ota6pq" class="article-share-link">Share</a>
       
       
     </footer>
