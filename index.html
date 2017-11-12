@@ -61,64 +61,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-web-django-01示例" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/20/web-django-01示例/" class="article-date">
-  <time datetime="2017-11-20T12:26:37.000Z" itemprop="datePublished">2017-11-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/20/web-django-01示例/">Django示例 1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-django安装"><a href="#1-django安装" class="headerlink" title="1 django安装"></a>1 django安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install django pymysql</div></pre></td></tr></table></figure>
-<h3 id="2-新建django-project"><a href="#2-新建django-project" class="headerlink" title="2 新建django project"></a>2 新建django project</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">django-admin.py startproject mysite  或用pycharm新建一个项目</div></pre></td></tr></table></figure>
-<h3 id="3-该项目下创建一个应用"><a href="#3-该项目下创建一个应用" class="headerlink" title="3 该项目下创建一个应用"></a>3 该项目下创建一个应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd mysite &amp;&amp; python manager.py startapp  app01</div></pre></td></tr></table></figure>
-<h3 id="4-配置Django"><a href="#4-配置Django" class="headerlink" title="4 配置Django"></a>4 配置Django</h3><p>settings.py文件确保有下面代码，用于在static目录放置静态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">STATIC_URL = &apos;/static/&apos;</div><div class="line">STATICFILES_DIRS= (</div><div class="line">    os.path.join(BASE_DIR, &apos;static&apos;),</div><div class="line">)</div></pre></td></tr></table></figure></p>
-<p>确保INSTALLED_APPS = []有app01,应用</p>
-<h3 id="5-Django-mysql配置"><a href="#5-Django-mysql配置" class="headerlink" title="5 Django mysql配置"></a>5 Django mysql配置</h3><p>settings.py文件确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">    &apos;default&apos;: &#123;</div><div class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">        &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">        &apos;USER&apos;: &apos;root&apos;,</div><div class="line">        &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">        &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">        &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>app01下 <strong>init</strong>.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div></pre></td></tr></table></figure></p>
-<h3 id="5-django生成数据"><a href="#5-django生成数据" class="headerlink" title="5 django生成数据"></a>5 django生成数据</h3><p>models.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username = models.CharField(max_length=32)</div><div class="line">    password = models.CharField(max_length=32)</div><div class="line">    email = models.CharField(max_length=32)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manager.py makemigrations</div><div class="line">python manager.py migrate</div></pre></td></tr></table></figure>
-<h3 id="6-urls-py定义"><a href="#6-urls-py定义" class="headerlink" title="6  urls.py定义"></a>6  urls.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from app01 import views</div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</div><div class="line">    url(r&apos;^users/$&apos;, views.users),</div><div class="line">    # url(r&apos;^create_data/&apos;, views.create_data),</div><div class="line">]</div></pre></td></tr></table></figure>
-<h3 id="7-views-py定义"><a href="#7-views-py定义" class="headerlink" title="7 views.py定义"></a>7 views.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render,HttpResponse, redirect</div><div class="line">from app01 import models</div><div class="line"></div><div class="line">def create_data(request):</div><div class="line">    for i in range(1,104):</div><div class="line">        models.UserInfo.objects.create(</div><div class="line">            username = &quot;root%s&quot; %i,</div><div class="line">            password = &quot;123&quot;,</div><div class="line">            email = &quot;root%s@qq.com&quot; %i,</div><div class="line">    )</div><div class="line">    return HttpResponse(&quot;data generate...&quot;)</div><div class="line"></div><div class="line">def users(request):</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;user_list &apos;:user_list &#125;)</div></pre></td></tr></table></figure>
-<h3 id="8-templates-users-html定义"><a href="#8-templates-users-html定义" class="headerlink" title="8 templates/users.html定义"></a>8 templates/users.html定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html lang=&quot;en&quot;&gt;</div><div class="line">&lt;head&gt;</div><div class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</div><div class="line">    &lt;title&gt;Title&lt;/title&gt;</div><div class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/static/bootstrap-3.3.7-dist/css/bootstrap.css&quot;&gt;</div><div class="line"></div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">    &lt;div style=&quot;width: 700px; margin: 10px     auto&quot;&gt;</div><div class="line">    &lt;h1&gt;用户列表&lt;/h1&gt;</div><div class="line">    &lt;table class=&quot;table table-hover table-bordered&quot;&gt;</div><div class="line">        &lt;thead&gt;</div><div class="line">            &lt;tr&gt;</div><div class="line">                &lt;th&gt; 用户名&lt;/th&gt;</div><div class="line">                &lt;th&gt; 密码&lt;/th&gt;</div><div class="line">                &lt;th&gt;邮箱&lt;/th&gt;</div><div class="line">            &lt;/tr&gt;</div><div class="line">        &lt;/thead&gt;</div><div class="line">    </div><div class="line">        &lt;tbody&gt;</div><div class="line">            &#123;% for user in page_obj.object_list  %&#125;</div><div class="line">                &lt;tr&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.username &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.password &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.email &#125;&#125;&lt;/td&gt;</div><div class="line">                &lt;/tr&gt;</div><div class="line">            &#123;% endfor %&#125;</div><div class="line">    </div><div class="line">        &lt;/tbody&gt;</div><div class="line">    &lt;/table&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
-<h3 id="9-注意bootstrap应用"><a href="#9-注意bootstrap应用" class="headerlink" title="9 注意bootstrap应用"></a>9 注意bootstrap应用</h3><p><a href="http://v3.bootcss.com/getting-started/#download" target="_blank" rel="external">bootstrap下载链接</a></p>
-<h3 id="10-启动项目"><a href="#10-启动项目" class="headerlink" title="10 启动项目"></a>10 启动项目</h3><p>运行项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manager.py runserver 127.0.0.1:8000</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-01示例/" data-id="cj9wflz3g001r4ljxsikykhng" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/12/hello-world/" class="article-date">
-  <time datetime="2017-11-12T07:21:35.843Z" itemprop="datePublished">2017-11-12</time>
+  <time datetime="2017-11-12T08:32:24.452Z" itemprop="datePublished">2017-11-12</time>
 </a>
     
   <div class="article-category">
@@ -154,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/hello-world/" data-id="cj9wflyzo000c4ljxqj0jcr8d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/hello-world/" data-id="cj9wi518n000c78jx5jiqsirl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -207,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cj9wflyzb00034ljxkct3gfoh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cj9wi5184000978jxn5aadefd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -276,7 +222,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cj9wflyzt000f4ljx4r730pze" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cj9wi5199000f78jx4v6fl44e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -368,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cj9wflz04000p4ljxnwj23l2k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cj9wi51ks000p78jx4q0rs828" class="article-share-link">Share</a>
       
       
     </footer>
@@ -435,7 +381,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9wflz01000m4ljxtf1avyba" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cj9wi51a3000m78jx787lgags" class="article-share-link">Share</a>
       
       
     </footer>
@@ -482,155 +428,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cj9wflz3m001x4ljx74oep0nr" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-16-01-入门" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/09/20/web-django-16-01-入门/" class="article-date">
-  <time datetime="2017-09-20T12:26:37.000Z" itemprop="datePublished">2017-09-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/20/web-django-16-01-入门/">python-Django入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>什么是WSGI</li>
-<li>什么是mvc/mtv模型</li>
-<li>orm如何工作</li>
-<li>Django安装</li>
-</ul>
-<h2 id="一、什么是WSGI"><a href="#一、什么是WSGI" class="headerlink" title="一、什么是WSGI"></a>一、什么是WSGI</h2><p>对浏览器而言，远端是服务器程序和应用程序，而服务器程序就是socket Server,用于接收用户请求，解析用户请求，响应用户请求，这部份工作永远不变的。<br>可变的是应用程序，那么服务器程序与应用程序解耦偶就有了必要。</p>
-<p>接收用户请求，解析用户请求，响应用户请求这些封装为WSGI接口简化开发。</p>
-<p>定义web app与web server之间接口解耦规则就是WSGI.</p>
-<p>Python标准库提供的独立wsgi服务器称为wsgiref</p>
-<h2 id="二、什么是mvc-mtv模型"><a href="#二、什么是mvc-mtv模型" class="headerlink" title="二、什么是mvc/mtv模型"></a>二、什么是mvc/mtv模型</h2><p>init.py: 告诉python它不是一个目录文件夹而是一个包</p>
-<p>mvc:  model(数据库交互) view(模板)  control (业务处理逻辑)</p>
-<p>mtv:  model（数据库交互）view(视图，业务逻辑处理)  templates(模板）</p>
-<p>注： templates模板可以放在项目下或各个app下</p>
-<h2 id="三、orm如何工作"><a href="#三、orm如何工作" class="headerlink" title="三、orm如何工作"></a>三、orm如何工作</h2><p>一个类对应一张表<br>一个类对象对应一行表记录<br>一个类属性对应记录字段值</p>
-<p>自动路由： 反射应用，自定义扩展</p>
-<h2 id="四、Django安装"><a href="#四、Django安装" class="headerlink" title="四、Django安装"></a>四、Django安装</h2><p>安装Django<br>pip3 install django  pika  pymysql</p>
-<p>查看安装<br>pip3 list</p>
-<p>创建一个Django项目<br>cd /opt<br>mkdir /opt/templates   # 用于整个项目存放模板文件<br>django-admin startproject Mysite  #创建一个项目</p>
-<p>生成目录结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">/opt/Mysite</div><div class="line">    - Mysite        # 还有一个与项目同名的文件夹/opt/Mysite/Mysite，对整个程序进行配置</div><div class="line">        - __init__.py</div><div class="line">        - settings.py  # 配置文件</div><div class="line">        - urls.py      # URL对应关系</div><div class="line">        - wsgi.py      # 遵循WSGI规范，一般使用 uwsgi + nginx</div><div class="line">    - manage.py        # /opt/Mysite/manage.py管理Django程序：如下</div><div class="line">              - python manage.py  runserver # 运行程序</div><div class="line">              - python manage.py startapp xx  # 创建app</div><div class="line">              # Django的orm框架</div><div class="line">              - python manage.py makemigrations  </div><div class="line">              - python manage.py migrate</div></pre></td></tr></table></figure></p>
-<p>创建一个应用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">cd /opt/Mysite</div><div class="line">python manage.py startapp app01</div><div class="line">生成/opt/Mysite/app01目录结构如下：</div><div class="line">/opt/Mysite/app01/__init__.py # 说明app01是一个包</div><div class="line">/opt/Mysite/app01/migrations  # django orm框架，修改表结构的操作记录（差异化）</div><div class="line">/opt/Mysite/app01/admin.py    # Django提供的后台管理程序</div><div class="line">/opt/Mysite/app01/apps.py     # 配置当前app</div><div class="line">/opt/Mysite/app01/models.py   # 数据库交互：orm-写指定的类，通过命令可以创建数据库结构</div><div class="line">/opt/Mysite/app01/views.py    # 视图函数，业务逻辑处理</div><div class="line">/opt/Mysite/app01/test.py     # 单元测试</div></pre></td></tr></table></figure></p>
-<p>初始练习：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Mysite/Mysite/urls.py (导入from blog import views及编写业务逻辑url(r&apos;^index&apos;,views.index)</div><div class="line">) ---&gt; 练习各种例子。。。</div></pre></td></tr></table></figure></p>
-<p>URLS别名用法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^/login$&apos;, views.login, name=&quot;LOGIN&quot;)</div><div class="line"></div><div class="line">那么前端templates中的html代码需要用别名方式，语法如下：</div><div class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt; 改为</div><div class="line">&lt;form action=&quot;&#123;% url &apos;LOGIN&apos; %&#125;&quot; mothod=&quot;post&quot;&gt;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">urls</div><div class="line">	url(正则表达式 视图函数，参数，别名）</div><div class="line"></div><div class="line">正则这里匹配到的或者说捕获到的数据都是字符串类型，</div><div class="line">post提交的数据</div><div class="line"></div><div class="line">get post都可以向server端发送数据，区别是提交数据的方式不同：格式如下</div><div class="line">get ?id=2&amp;page=3</div><div class="line">post 数据在body里</div><div class="line"></div><div class="line"></div><div class="line">无命名分组   位置参数</div><div class="line"></div><div class="line">有命名分组   关键字参数--在函数定义时，只能用命名的key，这一点是要注意的</div><div class="line"></div><div class="line"></div><div class="line">获取登录首页是以GET方法提交              -----GET</div><div class="line">用户名，密码表单submit时是以POST方式提交 -----POST</div><div class="line"></div><div class="line">时间表达：</div><div class="line">1 时间戳</div><div class="line">2 字符串</div><div class="line">3 结构化时间</div></pre></td></tr></table></figure>
-<h2 id="五、Django生命周期"><a href="#五、Django生命周期" class="headerlink" title="五、Django生命周期"></a>五、Django生命周期</h2><p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150927926423.png" alt="Django生命周期"></p>
-<h3 id="5-1-路由系统URLS"><a href="#5-1-路由系统URLS" class="headerlink" title="5.1 路由系统URLS"></a>5.1 路由系统URLS</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1  /index/                     -&gt; def index(request)</div><div class="line">2  /detail-(\d+)/               -&gt; def detail(request, nid)</div><div class="line">  /detail-(?P&lt;nid&gt;\d+)/        -&gt; def detail(request,nid)</div><div class="line"></div><div class="line">3 </div><div class="line">    /index/          -&gt; def index(request)   name=n1</div><div class="line">    </div><div class="line">    使用别名生成URL：</div><div class="line">        模板语言：     &#123;% url  n1 %&#125;   -&gt; /index/</div><div class="line">        </div><div class="line">        视图函数：（需要导入reverse模块）    reverse(name=&quot;n1&quot;)  --&gt; /index/</div><div class="line"></div><div class="line"> 4  /web/   include(&quot;app01.urls&quot;)</div></pre></td></tr></table></figure>
-<h3 id="5-2-视图函数"><a href="#5-2-视图函数" class="headerlink" title="5.2 视图函数"></a>5.2 视图函数</h3><p>1 函数至少一个参数 request<br>2 request<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">request.method     # 请求方法</div><div class="line">request.GET        # 请求方法为GET的数据</div><div class="line">request.POST       # 请求方法为POST的数据</div><div class="line">    注：      如何获取request.post数据的呢，如果有请求头</div><div class="line">             （Content-Type:application/x-www-form-urlencoded; charset=UTF-8），</div><div class="line">              则从request.body里取出post数据</div><div class="line">request.body       #   请求时发送的所有数据</div><div class="line">request.FILES      #   请求时发送的文件数据</div></pre></td></tr></table></figure></p>
-<p>注意:<br>form表单提交方法只能是get或post<br>当提交文件时特别注明<code>enctype=&quot;multipart/form-data&quot;</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;&quot;  method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</div><div class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;</div><div class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;&gt;</div><div class="line">    &lt;input type=&quot;file&quot; name=&quot;filename&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<p>3 返回方式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">HttpResponse()</div><div class="line">render(request,)</div><div class="line">redirect()</div></pre></td></tr></table></figure></p>
-<h3 id="5-3-ORM操作"><a href="#5-3-ORM操作" class="headerlink" title="5.3 ORM操作"></a>5.3 ORM操作</h3><p>1 创建表</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class UserInfo(models.Model):</div><div class="line">    nid=models.AutoField(primary_key=True)</div><div class="line">    name=models.CharField(max_length=32)</div><div class="line">    pwd = models.CharField(max_length=32)</div></pre></td></tr></table></figure>
-<p>2  操作表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">q = models.UserInfo.objects.all()</div><div class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</div><div class="line">     </div><div class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</div><div class="line"></div><div class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</div><div class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</div><div class="line"></div><div class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</div><div class="line">q = models.UserInfo.objects..filter(name=&apos;wxq&apos;).first()   # 推荐</div></pre></td></tr></table></figure></p>
-<h3 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h3><p>1 基本方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</div><div class="line">   x.html</div><div class="line">    &#123;&#123; k.2  &#125;&#125;</div><div class="line"></div><div class="line">   &#123;% for i in d %&#125;</div><div class="line">     &#123;&#123; i &#125;&#125;  --key</div><div class="line">   &#123;% endfor %&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">   &#123;% for k,v in d.items %&#125;</div><div class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</div><div class="line">   &#123;% endfor %&#125;</div></pre></td></tr></table></figure></p>
-<p>2  函数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Django 提供的函数:</div><div class="line">simple tag可以有多个参数</div><div class="line">filter 只能有2个参数，并且可以做条件语句的条件</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/20/web-django-16-01-入门/" data-id="cj9wflz3h001t4ljxh1a6j9vp" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-15-01-开发" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/09/15/web-15-01-开发/" class="article-date">
-  <time datetime="2017-09-15T12:51:41.000Z" itemprop="datePublished">2017-09-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/15/web-15-01-开发/">web-开发入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从现在开始，此时此刻写点<code>web开发</code>和<code>Django</code> 的知识，便于以后查阅学习。<br>廖雪峰老师的博客写得特别好，我也是摘抄参考其内容。<br><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000" target="_blank" rel="external">廖雪峰老师博客原文</a></p>
-<h2 id="一-HTTP协议简介"><a href="#一-HTTP协议简介" class="headerlink" title="一.   HTTP协议简介"></a>一.   HTTP协议简介</h2><h3 id="web历程"><a href="#web历程" class="headerlink" title="web历程"></a>web历程</h3><p>web开发经历几个阶段<br>1  静态页面: 直接由编辑器生成静态html<br>2  CGI:  交互与动态数据处理出现了CGI（common gateway interface）,由C/C++编写<br>3  脚本语言（ASP/JSP/PHP）: 脚本语言开发效率高，与html结合紧密<br>4  框架：mvc mtv mvvm</p>
-<h3 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h3><p>服务器把网页传给浏览器，实际上就是把网页的html代码发送给浏览器，让浏览器显示出来。而浏览器和服务器之间的传输协议就是HTTP</p>
-<p>HTML是一种用来定义网页的文本，会HTML就会编写网页<br>http是在网络上传输html的协议，用于浏览器和服务器的通信</p>
-<p>Elements显示网页的结构，Network显示浏览器和服务器的通信。我们点Network，确保第一个小红灯亮着，Chrome就会记录所有浏览器和服务器之间的通信。</p>
-<p>GET / HTTP/1.1： 注：1.1版本允许多个HTTP请求复用一个TCP连接，以加快传输速度<br>浏览器就是依靠Content-Type来判断响应的内容是网页还是图片，是视频还是音乐</p>
-<p>当浏览器读取到新浪首页的HTML源码后，它会解析HTML，显示页面，然后，根据HTML里面的各种链接，再发送HTTP请求给新浪服务器，拿到相应的图片、视频、Flash、JavaScript脚本、CSS等各种资源，最终显示出一个完整的页面。所以我们在Network下面能看到很多额外的HTTP请求。</p>
-<h3 id="HTTP请求流程"><a href="#HTTP请求流程" class="headerlink" title="HTTP请求流程"></a>HTTP请求流程</h3><p>步骤1：<br>浏览器向服务器发送http请求<br>    方法：GET仅请求资源 POST    会附带用户数据body部份<br>    路径; /full/url/path<br>    域名：</p>
-<p>步骤2：<br>服务器向浏览器返回HTTP响应<br>    响应代码：<code>200</code>表示成功 <code>3**</code> 表示重定向  <code>4**</code> 表示客户端发送的请求有错误 <code>5**</code> 表示服务器处理错误<br>    响应类型： 由Content-Type指定<br>    通常服务器的HTTP响应会携带内容，也就是有一个Body，包含响应的内容，网页的HTML源码就在Body中</p>
-<p>步骤3：如果浏览器还需要继续向服务器请求其他资源，比如图片，就再次发出HTTP请求，重复步骤1、2</p>
-<p>Web采用的HTTP协议采用了非常简单的请求-响应模式，从而大大简化了开发。当我们编写一个页面时，我们只需要在HTTP请求中把HTML发送出去，不需要考虑如何附带图片、视频等，浏览器如果需要请求图片和视频，它会发送另一个HTTP请求，因此，一个HTTP请求只处理一个资源</p>
-<p>HTTP协议同时具备极强的扩展性，虽然浏览器请求的是<code>http://www.sina.com.cn/</code>的首页，但是新浪在HTML中可以链入其他服务器的资源，比如<code>&lt;img src=&quot;#url&quot;/&gt;</code>，从而将请求压力分散到各个服务器上，并且一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web，简称WWW。</p>
-<h2 id="二-HTML简介"><a href="#二-HTML简介" class="headerlink" title="二. HTML简介"></a>二. HTML简介</h2><p>HTML是一种用来定义网页的文本，会HTML就会编写网页 。<br>其它前端知识不在这里展开。略。。。</p>
-<h2 id="三-WSGI接口"><a href="#三-WSGI接口" class="headerlink" title="三 . WSGI接口"></a>三 . WSGI接口</h2><p>了解了HTTP协议和HTML文档，我们其实就明白了一个Web应用的本质就是：<br>浏览器发送一个HTTP请求；<br>服务器收到请求，生成一个HTML文档；<br>服务器把HTML文档作为HTTP响应的Body发送给浏览器；<br>浏览器收到HTTP响应，从HTTP Body取出HTML文档并显示。</p>
-<p>所以，最简单的Web应用就是先把HTML用文件保存好，用一个现成的HTTP服务器软件，接收用户请求，从文件中读取HTML，返回。Apache、Nginx、Lighttpd等这些常见的静态服务器就是干这件事情的。</p>
-<p>如果要动态生成HTML，就需要把上述步骤自己来实现。不过，接受HTTP请求、解析HTTP请求、发送HTTP响应都是苦力活，如果我们自己来写这些底层代码，还没开始写动态HTML呢，就得花个把月去读HTTP规范。</p>
-<p>正确的做法是底层代码由专门的服务器软件实现，我们用Python专注于生成HTML文档。因为我们不希望接触到TCP连接、HTTP原始请求和响应格式，所以，需要一个统一的接口，让我们专心用Python编写Web业务。</p>
-<p>这个接口就是WSGI：Web Server Gateway Interface。</p>
-<p>WSGI接口定义非常简单，它只要求Web开发者实现一个函数，就可以响应HTTP请求。我们来看一个最简单的Web版本的“Hello, web!”：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">def application(environ, start_response):</div><div class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div><div class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</div></pre></td></tr></table></figure></p>
-<p>上面的application()函数就是符合WSGI标准的一个HTTP处理函数，它接收两个参数：</p>
-<p>environ：一个包含所有HTTP请求信息的dict对象；<br>start_response：一个发送HTTP响应的函数。</p>
-<p>在application()函数中，调用：<br><code>start_response(&#39;200 OK&#39;, [(&#39;Content-Type&#39;, &#39;text/html&#39;)])</code><br>就发送了HTTP响应的Header，注意Header只能发送一次，也就是只能调用一次start_response()函数。start_response()函数接收两个参数，一个是HTTP响应码，一个是一组list表示的HTTP Header，每个Header用一个包含两个str的tuple表示。</p>
-<p>通常情况下，都应该把Content-Type头发送给浏览器。其他很多常用的HTTP Header也应该发送。<br>然后，函数的返回值<code>b&#39;&lt;h1&gt;Hello, web!&lt;/h1&gt;&#39;</code>将作为HTTP响应的Body发送给浏览器。</p>
-<p>有了WSGI，我们关心的就是如何从environ这个dict对象拿到HTTP请求信息，然后构造HTML，通过start_response()发送Header，最后返回Body。</p>
-<p>整个application()函数本身没有涉及到任何解析HTTP的部分，也就是说，底层代码不需要我们自己编写，我们只负责在更高层次上考虑如何响应请求就可以了。</p>
-<p>不过，等等，这个application()函数怎么调用？如果我们自己调用，两个参数environ和start_response我们没法提供，返回的bytes也没法发给浏览器。</p>
-<p>所以application()函数必须由WSGI服务器来调用。有很多符合WSGI规范的服务器，我们可以挑选一个来用。但是现在，我们只想尽快测试一下我们编写的application()函数真的可以把HTML输出到浏览器，所以，要赶紧找一个最简单的WSGI服务器，把我们的Web应用程序跑起来。</p>
-<p>好消息是Python内置了一个WSGI服务器，这个模块叫wsgiref，它是用纯Python编写的WSGI服务器的参考实现。所谓“参考实现”是指该实现完全符合WSGI标准，但是不考虑任何运行效率，仅供开发和测试使用。</p>
-<p>运行WSGI服务<br>我们先编写hello.py，实现Web应用程序的WSGI处理函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># hello.py</div><div class="line"></div><div class="line">def application(environ, start_response):</div><div class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</div><div class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</div></pre></td></tr></table></figure></p>
-<p>然后，再编写一个server.py，负责启动WSGI服务器，加载application()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># server.py</div><div class="line"># 从wsgiref模块导入:</div><div class="line">from wsgiref.simple_server import make_server</div><div class="line"># 导入我们自己编写的application函数:</div><div class="line">from hello import application</div><div class="line"></div><div class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application:</div><div class="line">httpd = make_server(&apos;&apos;, 8000, application)</div><div class="line">print(&apos;Serving HTTP on port 8000...&apos;)</div><div class="line"># 开始监听HTTP请求:</div><div class="line">httpd.serve_forever()</div><div class="line">确保以上两个文件在同一个目录下，然后在命令行输入python server.py来启动WSGI服务器：</div><div class="line">python server.py 执行程序启动</div></pre></td></tr></table></figure></p>
-<h2 id="四-web-框架"><a href="#四-web-框架" class="headerlink" title="四　web 框架"></a>四　web 框架</h2><p>了解了WSGI框架，我们发现：其实一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。</p>
-<p>但是如何处理HTTP请求不是问题，问题是如何处理100个不同的URL。方法是一个函数处理一个URL, 我们专注于写业务处理函数，URL和函数对应关系交给web框架完成，这就是 web框架其中一个价值。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-15-01-开发/" data-id="cj9wflz3c001o4ljxgvqd0fn0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cj9wi51pg001t78jxzanfgqju" class="article-share-link">Share</a>
       
       
     </footer>
@@ -689,7 +487,194 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9wflyz000004ljxwaip5r8j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cj9wi5173000378jxwec16pvu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-kolla-on-redhat7.2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/08/kolla-on-redhat7.2/" class="article-date">
+  <time datetime="2017-08-08T01:41:54.000Z" itemprop="datePublished">2017-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/08/kolla-on-redhat7.2/">kolla on redhat 7.2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在一次项目中客户要求在redhat 7.2系统安装部署kolla ocata版本，在这种特定要求下还是实践一把的，在此把详细文档做个记录。</p>
+<h1 id="1-install-wget"><a href="#1-install-wget" class="headerlink" title="1. install wget"></a>1. install wget</h1><p>最小化安装，系统很干净<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rpm -ivh ftp://195.220.108.108/linux/centos/7.3.1611/os/x86_64/Packages/wget-1.14-13.el7.x86_64.rpm</div></pre></td></tr></table></figure></p>
+<h1 id="2-remove-yum-of-redhat"><a href="#2-remove-yum-of-redhat" class="headerlink" title="2. remove yum of redhat"></a>2. remove yum of redhat</h1><p> 首先删除redhat原有的yum ，因为redhat 原本的yum 没有注册为redhat用户是用不了的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rpm -aq|grep yum|xargs rpm -e --nodeps </div><div class="line">rpm -aq|grep python-iniparse|xargs rpm -e --nodeps</div></pre></td></tr></table></figure></p>
+<h1 id="3-install-new-yum"><a href="#3-install-new-yum" class="headerlink" title="3. install new yum"></a>3. install new yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-3.4.3-132.el7.centos.0.1.noarch.rpm</div><div class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/python-iniparse-0.4-9.el7.noarch.rpm   </div><div class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm </div><div class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm </div><div class="line"></div><div class="line">rpm ivh *.rpm</div></pre></td></tr></table></figure>
+<h1 id="4-yum-sourece-configure"><a href="#4-yum-sourece-configure" class="headerlink" title="4.  yum sourece configure"></a>4.  yum sourece configure</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">edit  /etc/yum.repos.d/Centos72.repo</div><div class="line">[base]</div><div class="line">name=CentOS-$releasever - Base</div><div class="line">baseurl=http://vault.centos.org/7.2.1511/os/$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"></div><div class="line">#released updates</div><div class="line">[updates]</div><div class="line">name=CentOS-$releasever - Updates</div><div class="line">baseurl=http://vault.centos.org/7.2.1511/updates/$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"></div><div class="line">[extras]</div><div class="line">name=CentOS-$releasever - Extras</div><div class="line">baseurl=http://vault.centos.org/7.2.1511/extras//$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line">[centosplus]</div><div class="line">name=CentOS-$releasever - Plus</div><div class="line">baseurl=http://vault.centos.org/7.2.1511/centosplus//$basearch/</div><div class="line">gpgcheck=1</div><div class="line">enabled=0</div></pre></td></tr></table></figure>
+<h1 id="5-update-yum"><a href="#5-update-yum" class="headerlink" title="5. update yum"></a>5. update yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum clean all</div><div class="line">yum update</div><div class="line">yum install epel-release axel vim git curl wget   net-tools git gcc lrzsz python-devel vsftpd createrepo</div></pre></td></tr></table></figure>
+<h1 id="6-optimization-system"><a href="#6-optimization-system" class="headerlink" title="6. optimization system"></a>6. optimization system</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">close selinux</div><div class="line">close NetworkManager</div><div class="line">close firewalld</div></pre></td></tr></table></figure>
+<h1 id="7-add-docker-yum"><a href="#7-add-docker-yum" class="headerlink" title="7.  add docker yum"></a>7.  add docker yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">tee /etc/yum.repos.d/docker.repo &lt;&lt; &apos;EOF&apos;</div><div class="line">[dockerrepo]</div><div class="line">name=Docker Repository</div><div class="line">baseurl=https://yum.dockerproject.org/repo/main/centos/7/</div><div class="line">enabled=1</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=https://yum.dockerproject.org/gpg</div><div class="line">EOF</div></pre></td></tr></table></figure>
+<h1 id="8-install-docker"><a href="#8-install-docker" class="headerlink" title="8. install docker"></a>8. install docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</div></pre></td></tr></table></figure>
+<p>如果安装很慢，可以挂载ocata_20170420.iso光盘进入目录Packages/d 下面有相应软件包，执行下面命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum localinstall docker-engine-selinux-1.12.6-1.el7.centos.noarch.rpm docker-engine-1.12.6-1.el7.centos.x86_64.rpm</div></pre></td></tr></table></figure></p>
+<p>再执行完成安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</div></pre></td></tr></table></figure></p>
+<h1 id="9-配置docker"><a href="#9-配置docker" class="headerlink" title="9. 配置docker"></a>9. 配置docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir  /etc/systemd/system/docker.service.d/</div><div class="line">tee /etc/systemd/system/docker.service.d/kolla.conf &lt;&lt; eof  </div><div class="line">[Service]</div><div class="line">MountFlags=shared</div><div class="line">eof</div></pre></td></tr></table></figure>
+<p>edit  /usr/lib/systemd/system/docker.service<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ExecStart=/usr/bin/dockerd --insecure-registry 192.168.200.2:4000</div></pre></td></tr></table></figure></p>
+<p>启动docker:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable docker</div><div class="line">systemctl restart docker</div><div class="line">systemctl status  docker</div></pre></td></tr></table></figure></p>
+<h1 id="10-install-pip"><a href="#10-install-pip" class="headerlink" title="10. install pip"></a>10. install pip</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum install python-pip</div><div class="line">pip install -U pip</div><div class="line">#easy_install -U pip    # 或者easy_install工具安装</div><div class="line">pip install docker-py</div></pre></td></tr></table></figure>
+<h1 id="11-install-kolla-ansible"><a href="#11-install-kolla-ansible" class="headerlink" title="11. install kolla-ansible"></a>11. install kolla-ansible</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># yum install gcc libffi-devel python-devel openssl-devel</div><div class="line"># pip install kolla-ansible</div><div class="line">#cp -rf /usr/share/kolla-ansible/etc_examples/kolla/ /etc/</div><div class="line"># kolla-genpwd</div></pre></td></tr></table></figure>
+<h1 id="12-install-docker-registry"><a href="#12-install-docker-registry" class="headerlink" title="12. install docker registry"></a>12. install docker registry</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mount /dev/sr0 /mnt</div><div class="line">docker load &lt; registry.tar</div><div class="line"></div><div class="line">mkdir /opt/registry</div><div class="line">tar -zxf docker-registry.tar.gz -C /opt/registry</div><div class="line">docker run -d -p 4000:5000 --restart=always --name registry -v /opt/registry/:/var/lib/registry registry</div><div class="line"># curl http://172.16.100.100:4000/v2/_catalog</div><div class="line"># curl http://172.16.100.100:4000/v2/kolla/centos-source-nova-api/tags/list</div><div class="line">&#123;&quot;name&quot;:&quot;kolla/centos-source-nova-api&quot;,&quot;tags&quot;:[&quot;4.0.0.3&quot;]&#125;</div></pre></td></tr></table></figure>
+<h1 id="13-ceph-disk-set"><a href="#13-ceph-disk-set" class="headerlink" title="13.  ceph disk set"></a>13.  ceph disk set</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">parted /dev/sdb  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div><div class="line">parted /dev/sdc  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div><div class="line">parted /dev/sdd  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div></pre></td></tr></table></figure>
+<h1 id="14-in-case-of-vm"><a href="#14-in-case-of-vm" class="headerlink" title="14.   in case of vm"></a>14.   in case of vm</h1><p>如果只是在虚机中实验搭建kolla，需要额外配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir -p /etc/kolla/config/nova</div><div class="line">vim /etc/kolla/config/nova/nova-compute.conf</div><div class="line">[libvirt]</div><div class="line">virt_type = qemu</div><div class="line">cpu_mode = none</div></pre></td></tr></table></figure></p>
+<p>创建 /etc/kolla/config/ceph.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">osd pool default size = 1</div><div class="line">osd pool default min size = 1</div></pre></td></tr></table></figure></p>
+<p>如果有需要，请手动调整副本数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd pool set rbd size 1</div></pre></td></tr></table></figure></p>
+<h1 id="15-edit-global-yml"><a href="#15-edit-global-yml" class="headerlink" title="15.  edit global.yml"></a>15.  edit global.yml</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">edit /etc/kolla/global.yml</div><div class="line">此处略过。。。</div></pre></td></tr></table></figure>
+<h1 id="16-kolla-ansible-deploy"><a href="#16-kolla-ansible-deploy" class="headerlink" title="16. kolla-ansible deploy"></a>16. kolla-ansible deploy</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">kolla-ansible prechecks</div><div class="line">kolla-ansible pull</div><div class="line">kolla-ansible deploy</div><div class="line">kolla-ansible post-deploy</div></pre></td></tr></table></figure>
+<h1 id="17-cli-commands-install"><a href="#17-cli-commands-install" class="headerlink" title="17. cli-commands install"></a>17. cli-commands install</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum  install ceph-common </div><div class="line">pip python-openstackclient   python-neutronclient</div></pre></td></tr></table></figure>
+<h1 id="18-access-dashboard"><a href="#18-access-dashboard" class="headerlink" title="18. access dashboard"></a>18. access dashboard</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://172.16.100.100/horizon</div></pre></td></tr></table></figure>
+<p>如果在openstack平台虚机中搭建kolla情况下，让其能通过浮动地址访问内部地址的dashboard<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -d 172.18.128.244 -p tcp --dport 80 -j DNAT --to 172.16.100.100</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">成功访问：http://172.18.128.244</div></pre></td></tr></table></figure>
+<p>《成功》。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cj9wi519k000i78jx8xpoxvb0" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
+  <time datetime="2017-07-01T01:41:54.000Z" itemprop="datePublished">2017-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/01/基于CentOS7的PXE装机/">基于CentOS 7的PXE装机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>网上各种贴子各种飞总说不到重点，本人表示不喜欢。</code></p>
+<h3 id="基于Centos7PXE装机"><a href="#基于Centos7PXE装机" class="headerlink" title="基于Centos7PXE装机"></a>基于Centos7PXE装机</h3><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>pxe装机依赖几个服务： dhcp/tftp/fileserver</li>
+<li>dhcp:  为装机分配地址及指明tftp server服务器是谁，下载什么文件</li>
+<li>tftp:   提供网络引导文件pxelinux.0及内核文件vmlinuz、initrd.img<ul>
+<li>(具体文件： boot.msg  initrd.img  pxelinux.0  pxelinux.cfg  splash.png  vesamenu.c32  vmlinuz)</li>
+</ul>
+</li>
+<li>fileserver: 提供安装树输出，一般指yum repository (yum 仓库或yum源)</li>
+<li>syslinux:   网络引导文件pxelinux.0由syslinux软件包提供</li>
+</ul>
+<h2 id="dhcp服务"><a href="#dhcp服务" class="headerlink" title="dhcp服务"></a>dhcp服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum  -y install  dhcp</div><div class="line">rpm -ql dhcp</div><div class="line">/etc/dhcp/dhcpd.conf      # 主配置文件</div><div class="line">/var/lib/dhcpd/dhcpd.leases  # 租约文件</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# cat /etc/dhcp/dhcpd.conf  | grep -v ^# | grep -v ^$</div><div class="line">option domain-name &quot;digmyth.com&quot;;</div><div class="line">option domain-name-servers 114.114.114.114;</div><div class="line">default-lease-time 600;</div><div class="line">max-lease-time 7200;</div><div class="line">log-facility local7;</div><div class="line">subnet 172.16.10.0 netmask 255.255.255.0 &#123;</div><div class="line">  range 172.16.10.20 172.16.10.30;</div><div class="line">  option domain-name-servers 172.16.10.1;</div><div class="line">  option domain-name &quot;digmyth.com&quot;;</div><div class="line">  option routers 172.16.10.254;</div><div class="line">  default-lease-time 600;</div><div class="line">  max-lease-time 7200;</div><div class="line">&#125;</div><div class="line">filename &quot;pxelinux.0&quot;;     # 定义网络引导文件名</div><div class="line">next-server 172.16.10.1;   # 定义tftp server地址</div></pre></td></tr></table></figure>
+<p>启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># systemctl  start dhcpd</div><div class="line">[root@master ~]# netstat -unlp | grep 67</div><div class="line">udp        0      0 0.0.0.0:67              0.0.0.0:*                           995/dhcpd</div></pre></td></tr></table></figure></p>
+<h2 id="syslinux提供引导文件"><a href="#syslinux提供引导文件" class="headerlink" title="syslinux提供引导文件"></a>syslinux提供引导文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">准备网络引导文件pxelinux.0  相当于bootloader</div><div class="line"># yum -y install syslinux</div><div class="line">[root@master tftpboot]# ll /usr/share/syslinux/pxelinux.0 </div><div class="line">-rw-r--r--. 1 root root 26764 Nov  6  2016 /usr/share/syslinux/pxelinux.0</div></pre></td></tr></table></figure>
+<h2 id="tftp-server"><a href="#tftp-server" class="headerlink" title="tftp server"></a>tftp server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install tftp tftp-server</div><div class="line">[root@master ~]# rpm -ql tftp-server</div><div class="line">/etc/xinetd.d/tftp   # 启动文件</div><div class="line">/usr/sbin/in.tftpd</div><div class="line">/var/lib/tftpboot   # 服务根目录</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># cat /etc/xinetd.d/tftp</div><div class="line">service tftp</div><div class="line">&#123;</div><div class="line">	socket_type		= dgram</div><div class="line">	protocol		= udp</div><div class="line">	wait			= yes</div><div class="line">	user			= root</div><div class="line">	server			= /usr/sbin/in.tftpd</div><div class="line">	server_args		= -s /var/lib/tftpboot</div><div class="line">    disable			= no  #改为no</div><div class="line">	per_source		= 11</div><div class="line">	cps			= 100 2</div><div class="line">	flags			= IPv4</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>启动tftp服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># cp  /usr/share/syslinux/pxelinux.0  /var/lit/tftpboot</div><div class="line"># systemctl  start tftp</div><div class="line"># tftp localhost</div><div class="line">&gt; get pxelinux.0   # 测试成功</div></pre></td></tr></table></figure></p>
+<h2 id="准备内核及其它相关文件"><a href="#准备内核及其它相关文件" class="headerlink" title="准备内核及其它相关文件"></a>准备内核及其它相关文件</h2><p>   此时<code>pxe</code>己经能够获得地址并下载<code>pxelinux.0</code>进行网络引导，接下来是下载内核文件<code>vmlinuz</code>、<code>initrd.img</code>继续完成装机。<br> 这里我拿<code>CentOS7.2</code>为例：<code>CentOS-7-x86_64-DVD-1511.iso</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# mount -o loop CentOS-7-x86_64-DVD-1511.iso  /mnt</div><div class="line">mount: /dev/loop0 is write-protected, mounting read-only</div><div class="line">[root@master pxeboot]# cd /mnt/images/pxeboot/</div><div class="line">[root@master pxeboot]# cp vmlinuz /var/lib/tftpboot/</div><div class="line">[root@master pxeboot]# cp initrd.img  /var/lib/tftpboot/</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">mkdir /var/lib/tftpboot/pxelinux.cfg</div><div class="line">cp /mnt/isolinux/isolinux.cfg  /var/lib/tftpboot/pxelinux.cfg /default </div><div class="line">[root@master pxelinux.cfg]# cat default </div><div class="line">default vesamenu.c32</div><div class="line">#default linux   # 这里是一个标签，对找后面相应的label</div><div class="line">timeout 600</div><div class="line"></div><div class="line">menu title CentOS 7 wxq    # 此处定义title</div><div class="line">label linux</div><div class="line">  menu label ^Install CentOS 7  # 此处定义系统安装时显示版本</div><div class="line">  kernel vmlinuz</div><div class="line">  append initrd=initrd.img method=http://172.16.10.1/pub/ ks=http://172.16.10.1/pxe/CentOS72.ks</div><div class="line"># 注意： 如果此处只定义method,那么装机过程将全手动。</div></pre></td></tr></table></figure>
+<p>此外还有一些额外文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# ls /mnt/isolinux/</div><div class="line">boot.cat  grub.conf   isolinux.bin  memtest     TRANS.TBL    vesamenu.c32</div><div class="line">boot.msg  initrd.img  isolinux.cfg  splash.png  upgrade.img  vmlinuz</div><div class="line">[root@master ~]# ll /var/lib/tftpboot/</div><div class="line">boot.msg  initrd.img  pxelinux.0   splash.png  vesamenu.c32  vmlinuz</div></pre></td></tr></table></figure></p>
+<h2 id="定义安装树"><a href="#定义安装树" class="headerlink" title="定义安装树"></a>定义安装树</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install httpd</div><div class="line"># mkdir /var/www/html/pxe</div><div class="line"># mkdir /var/www/html/pub</div><div class="line"># mount --bind /mnt /var/www/html/pub/ </div><div class="line"># systemctl  start httpd</div></pre></td></tr></table></figure>
+<h2 id="定义ks文件"><a href="#定义ks文件" class="headerlink" title="定义ks文件"></a>定义ks文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">/pxe/CentOS72.ks</div><div class="line">[root@master pxe]# cat CentOS72.ks</div><div class="line">#version=DEVEL</div><div class="line"># System authorization information</div><div class="line"></div><div class="line">install</div><div class="line"># Keyboard layouts</div><div class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</div><div class="line">auth --enableshadow --passalgo=sha512</div><div class="line"></div><div class="line"># Use CDROM installation media</div><div class="line"># Run the Setup Agent on first boot</div><div class="line">#firstboot --enable</div><div class="line"># System language</div><div class="line">lang en_US.UTF-8</div><div class="line"></div><div class="line">url --url=http://172.16.10.1/pub/</div><div class="line"># Use graphical install</div><div class="line">graphical</div><div class="line">#text</div><div class="line"></div><div class="line">selinux --disabled</div><div class="line">skipx</div><div class="line"></div><div class="line">reboot</div><div class="line"></div><div class="line"># Network information</div><div class="line">#network  --bootproto=static --device=ens33 --gateway=172.16.10.254 --ip=172.16.10.30 --nameserver=114.114.114.114 --netmask=255.255.255.0 --onboot=on --ipv6=auto --activate</div><div class="line">network  --bootproto=dhcp --device=ens33 --onboot=yes --ipv6=auto --activate</div><div class="line">network  --hostname=digmyth</div><div class="line"></div><div class="line"># Root password=123456</div><div class="line">rootpw --iscrypted $6$6ErC1johQ5LVAYwQ$cGGxb6Q6./SpvXCZs.K39d9LpV/IeFnspUT6mHmsVsARzToRCSsZ4fLxcOh0tYWpt38Yh6JoMzmSEkEtCtMlS/</div><div class="line"># System services</div><div class="line">services --disabled=&quot;chronyd&quot;</div><div class="line"></div><div class="line"># System timezone</div><div class="line">timezone Asia/Shanghai --isUtc --nontp</div><div class="line"># System bootloader configuration</div><div class="line">clearpart --all --initlabel</div><div class="line">bootloader --append=&quot; crashkernel=auto&quot; --location=mbr --boot-drive=sda</div><div class="line"># Partition clearing information</div><div class="line"></div><div class="line">#clearpart --drives=sda --initlabel</div><div class="line">#clearpart --none --initlabel</div><div class="line"># Disk partitioning information</div><div class="line"></div><div class="line">#ignoredisk --only-use=sda</div><div class="line">#part pv.735 --fstype=&quot;lvmpv&quot; --ondisk=sda --size=19979</div><div class="line">#volgroup vg --pesize=4096 pv.735</div><div class="line">#logvol /boot --fstype=&quot;xfs&quot; --size=500 --name=boot --vgname=vg</div><div class="line">#logvol /  --fstype=&quot;xfs&quot; --size=16000 --name=root --vgname=vg</div><div class="line">#logvol /data  --fstype=&quot;xfs&quot; --size=3000 --name=data --vgname=vg</div><div class="line">#logvol swap --fstype=&quot;swap&quot; --grow --size=1</div><div class="line"></div><div class="line"></div><div class="line">%packages</div><div class="line">@^minimal</div><div class="line">@core</div><div class="line">kexec-tools</div><div class="line">vim</div><div class="line">net-tools</div><div class="line">sysstat</div><div class="line"></div><div class="line">%end</div><div class="line"></div><div class="line">%post</div><div class="line">touch /root/wxq.txt</div><div class="line">%end</div><div class="line"></div><div class="line">%addon com_redhat_kdump --enable --reserve-mb=&apos;auto&apos;</div><div class="line">%end</div></pre></td></tr></table></figure>
+<p>上面的装机将进入图形界面手动分区安装    </p>
+<p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466910816.jpg" alt="pxeboot"></p>
+<p>到此完结，可以结合cobbler实现多pxe环境并存。</p>
+<ul>
+<li>cobbler 一些概念：</li>
+<li>distro发行版： 其实就是pxe所说的相应内核文件</li>
+<li>profile:  提供pxeboot引导文件、KS文件、安装树（用现有iso镜像mirror/import方式）</li>
+</ul>
+<h5 id="是不是很完美-。。。"><a href="#是不是很完美-。。。" class="headerlink" title="是不是很完美 。。。"></a>是不是很完美 。。。</h5>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cj9wi51s3002678jxono67iub" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
+<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</div></pre></td></tr></table></figure></p>
+<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</div><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</div></pre></td></tr></table></figure></p>
+<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</div><div class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9wi519t000k78jx5yt83cm7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -727,7 +712,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -738,10 +723,6 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2017/11/20/web-django-01示例/">Django示例 1</a>
-          </li>
         
           <li>
             <a href="/2017/11/12/hello-world/">Hello World</a>
@@ -757,6 +738,10 @@
         
           <li>
             <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
           </li>
         
       </ul>
