@@ -23,7 +23,7 @@ Django对template中html的渲染有着一套语法,
 
 Django对template中html的渲染有着一套语法,
 基本方法1234567891011return render(request, &amp;quot;x.html&amp;quot;, &amp;#123;&amp;apos;k&amp;apos;:[1,2,3,4], &amp;quot;d&amp;quot;:&amp;#123;&amp;quot;k1&amp;quot;:&amp;quot;v1&amp;quot;,&amp;quot;k2&amp;qu">
-<meta property="og:updated_time" content="2017-11-12T13:41:51.000Z">
+<meta property="og:updated_time" content="2017-11-12T13:42:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-Django-17-1模板渲染">
 <meta name="twitter:description" content="目录
@@ -129,12 +129,13 @@ Django对template中html的渲染有着一套语法,
 <p>如my_tag.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/env python3</div><div class="line">__author__ = &quot;wxq&quot;</div><div class="line"></div><div class="line">from django import  template</div><div class="line">from django.utils.safestring import mark_safe</div><div class="line">register = template.Library()</div><div class="line"># register变量名是固定的，不可以改变</div><div class="line"></div><div class="line">@register.filter       # 自定义过滤器</div><div class="line">def multip(x,y):</div><div class="line">    return x*y</div><div class="line"></div><div class="line"></div><div class="line">@register.simple_tag   # 自定义标签</div><div class="line">def multi_tag(x,y,z):</div><div class="line">    return x*y*z</div></pre></td></tr></table></figure></p>
 <p>3 使用自定义simple_tag和filter的html文件中导入之前创建的 my_tag.py </p>
 <p>4 使用定义的simple_tag和filter<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># html首行添加</div><div class="line">&lt;body&gt;</div><div class="line">    &lt;p&gt;&#123;&#123; 10 |add:6 &#125;&#125;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&#123;&#123;  n | multip:6 &#125;&#125;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&#123;%  multi_tag 10 320 30 %&#125;&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="模板继承"><a href="#模板继承" class="headerlink" title="模板继承"></a>模板继承</h2><p>总结：<br>后端是字典如[“key”]取值，模板里都用.key<br>后端是元组或列表如[0]取值，模板里都用.0<br>后端是函数或类方法用跨号()调用，模板里不加跨号，切记</p>
+<h2 id="模板继承"><a href="#模板继承" class="headerlink" title="模板继承"></a>模板继承</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;% block content %&#125;</div><div class="line">...</div><div class="line">&#123;% endblock %&#125;</div><div class="line"></div><div class="line">使用模板标签： &#123;% block %&#125; 。 所有的 &#123;% block %&#125; 标签告诉模板引擎，子模板可以重载这些部分。</div><div class="line">每个&#123;% block %&#125;标签所要做的是告诉模板引擎，该模板下的这一块内容将有可能被子模板覆盖。</div></pre></td></tr></table></figure>
+<p>总结：<br>后端是字典如[“key”]取值，模板里都用.key<br>后端是元组或列表如[0]取值，模板里都用.0<br>后端是函数或类方法用跨号()调用，模板里不加跨号，切记</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-17-1模板渲染/" data-id="cj9wt532a0023nvjxljtt1g11" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-17-1模板渲染/" data-id="cj9wt8eg70023oujx7h0gz9jc" class="article-share-link">Share</a>
       
       
     </footer>
