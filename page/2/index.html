@@ -98,7 +98,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9zf9518000jzdjx1hs7gz7f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9zfkq0t000m0jjx7par6xrl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -156,7 +156,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cj9zf951i000tzdjxnof0xmqv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cj9zfkq0y000r0jjx1z1v29zu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -223,13 +223,13 @@
 <p>  其中<code>Access_Key_Id</code> <code>Secret_Access_Key</code>部份在ceph-rgw中读取<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">  (ceph-mon)[root@pike-vm /]# radosgw-admin user info --uid=admin</div><div class="line">&#123;</div><div class="line">    &quot;user_id&quot;: &quot;admin&quot;,</div><div class="line">    &quot;display_name&quot;: &quot;admin&quot;,</div><div class="line">    &quot;email&quot;: &quot;&quot;,</div><div class="line">    &quot;suspended&quot;: 0,</div><div class="line">    &quot;max_buckets&quot;: 1000,</div><div class="line">    &quot;auid&quot;: 0,</div><div class="line">    &quot;subusers&quot;: [],</div><div class="line">    &quot;keys&quot;: [</div><div class="line">        &#123;</div><div class="line">            &quot;user&quot;: &quot;admin&quot;,</div><div class="line">            &quot;access_key&quot;: &quot;RDS4VW60OA48ZW1HSU61&quot;,</div><div class="line">            &quot;secret_key&quot;: &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;</div><div class="line">...</div></pre></td></tr></table></figure></p>
 <h2 id="启动nfs-ganesha"><a href="#启动nfs-ganesha" class="headerlink" title="启动nfs-ganesha"></a>启动nfs-ganesha</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ganesha.nfsd -L /var/log/ganesha.log</div></pre></td></tr></table></figure>
 <h2 id="挂载使用"><a href="#挂载使用" class="headerlink" title="挂载使用"></a>挂载使用</h2><p>在客户端进行挂载使用：<br>1  安装<code>ceph-common</code> <code>ceph-fuse</code> <code>libcephfs1-devel</code> <code>librgw2-devel</code><br>2 拷贝ceph.conf配置文件及keyring文件至/etc/ceph<br>3 挂载：<code>mount -t nfs4 {$ganesha-server-ip}:/  /mnt</code><br>如果出现I/O error,请ceph-fuse  -m 172.18.23.17:6789 /mnt 挂载一遍，就是这么神奇，不要问我为什么。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@-3 mnt]# ls</div><div class="line">ls: reading directory .: Remote I/O error</div></pre></td></tr></table></figure></p>
-<p>成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@-3 cephfs]# ll /mnt/</div><div class="line">total 1</div><div class="line">drwxrwxrwx 1 root root 33 Nov 14 08:31 cephfs</div><div class="line">[root@-3 cephfs]# echo &quot;99cloud new data...&quot; &gt; cephfs.txt </div><div class="line">[root@-3 cephfs]# cat cephfs.txt </div><div class="line">99cloud new data...</div></pre></td></tr></table></figure></p>
-<p>在cephfs集群中我们可以看到客户端写入的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@-3 ~]# ceph-fuse  -m 172.18.23.17:6789 /data/</div><div class="line">ceph-fuse[4579]: starting ceph client</div><div class="line">ceph-fuse[4579]: starting fuse</div><div class="line">[root@-3 ~]# cd /data/</div><div class="line">[root@-3 data]# ls</div><div class="line">cephfs.txt</div><div class="line">[root@3 data]# cat cephfs.txt </div><div class="line">99cloud new data...</div></pre></td></tr></table></figure></p>
+<p>成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@-3 cephfs]# ll /mnt/</div><div class="line">total 1</div><div class="line">drwxrwxrwx 1 root root 33 Nov 14 08:31 cephfs</div><div class="line">[root@-3 cephfs]# echo &quot;99cloud new data...&quot; &gt; cephfs.txt </div><div class="line">[root@-3 cephfs]# cat cephfs.txt </div><div class="line">cephfs data...</div></pre></td></tr></table></figure></p>
+<p>在cephfs集群中我们可以看到客户端写入的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@-3 ~]# ceph-fuse  -m 172.18.23.17:6789 /data/</div><div class="line">ceph-fuse[4579]: starting ceph client</div><div class="line">ceph-fuse[4579]: starting fuse</div><div class="line">[root@-3 ~]# cd /data/</div><div class="line">[root@-3 data]# ls</div><div class="line">cephfs.txt</div><div class="line">[root@3 data]# cat cephfs.txt </div><div class="line">cephfs data...</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cj9zf94zp0000zdjx56rggjgv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cj9zfkpym00030jjx2riz12oq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -276,7 +276,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-17-sql/" data-id="cj9zf953y0027zdjxxsvg3s4b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-17-sql/" data-id="cj9zfkq3500270jjx08rxn8w1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -318,7 +318,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-02-分页示例/" data-id="cj9zf953p0021zdjxjjtgooc0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-02-分页示例/" data-id="cj9zfkq2x00210jjx9ogkxta4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -366,7 +366,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9zf9539001qzdjxjyuo0d9h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9zfkq2h001q0jjx9grnj4q7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -420,7 +420,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-01示例/" data-id="cj9zf953h001xzdjxs1gqzgds" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-01示例/" data-id="cj9zfkq2t001z0jjxhres4gmu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -464,7 +464,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9zf952z001lzdjxk56qrsoc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9zfkq2a001l0jjxo9kkdjp7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -511,7 +511,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9zf952s001hzdjxbtaiwroj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9zfkq26001h0jjx4capacn5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -555,7 +555,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9zf952w001jzdjxq01nza2u" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9zfkq27001j0jjxpcfpzzoy" class="article-share-link">Share</a>
       
       
     </footer>
