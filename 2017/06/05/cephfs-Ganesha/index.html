@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>cephfs-Ganesha | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="nfs-ganesha简介因工作需要调研了cephfs 导为nfs,目前有两种方法：
+
+方法一：内核mount挂载或 ceph-fuse 挂载至NFS server，如/data再正常搭建NFS-server即可。
+方法二 :   借用nfs-ganesha协议转换间接存储在cephfs集群中。
+
+nfs-ganesha不仅可以导 cephfs,也可以导RGW.ceph RGW理解:   相当于协">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cephfs-Ganesha">
+<meta property="og:url" content="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="nfs-ganesha简介因工作需要调研了cephfs 导为nfs,目前有两种方法：
+
+方法一：内核mount挂载或 ceph-fuse 挂载至NFS server，如/data再正常搭建NFS-server即可。
+方法二 :   借用nfs-ganesha协议转换间接存储在cephfs集群中。
+
+nfs-ganesha不仅可以导 cephfs,也可以导RGW.ceph RGW理解:   相当于协">
+<meta property="og:updated_time" content="2017-11-14T09:34:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cephfs-Ganesha">
+<meta name="twitter:description" content="nfs-ganesha简介因工作需要调研了cephfs 导为nfs,目前有两种方法：
+
+方法一：内核mount挂载或 ceph-fuse 挂载至NFS server，如/data再正常搭建NFS-server即可。
+方法二 :   借用nfs-ganesha协议转换间接存储在cephfs集群中。
+
+nfs-ganesha不仅可以导 cephfs,也可以导RGW.ceph RGW理解:   相当于协">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cephfs-Ganesha" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/05/cephfs-Ganesha/" class="article-date">
+  <time datetime="2017-06-05T01:41:54.000Z" itemprop="datePublished">2017-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cephfs-Ganesha
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="nfs-ganesha简介"><a href="#nfs-ganesha简介" class="headerlink" title="nfs-ganesha简介"></a>nfs-ganesha简介</h2><p>因工作需要调研了cephfs 导为nfs,目前有两种方法：</p>
+<ul>
+<li>方法一：内核mount挂载或 ceph-fuse 挂载至NFS server，如/data再正常搭建NFS-server即可。</li>
+<li>方法二 :   借用nfs-ganesha协议转换间接存储在cephfs集群中。</li>
+</ul>
+<p>nfs-ganesha不仅可以导 cephfs,也可以导RGW.<br>ceph RGW理解:   相当于协议转换层，把符合S3和swift协议的 restFul API 请求转换为rados存储在ceph对象存储中.</p>
+<p>换一种说法： Ceph 导出为 NFS，一种通过 RGW，一种通过 CephFS，通过 FSAL 模块 连接到 RGW 或者 CephFS</p>
+<ul>
+<li>FSAL_RGW 调用 librgw2 将 NFS 协议转义为 S3 协议再通过 RGW 存入到 Ceph 中.</li>
+<li>FSAL_CEPH 调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</li>
+</ul>
+<p>FSAL： File System Abstraction Layer  文件系统抽像层</p>
+<p>题外话，openstack项目manila后端存储驱动，其中一种就是Ganesha Driver<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">## manila 4驱动</div><div class="line">Default Driver: 使用 RBD 作为 Manila Service VM 的后端，在 VM 上启动 NFS 实例提供服务</div><div class="line">Ganesha Driver: 使用 Ganesha 将 CephFS 重新 Reexport 出去</div><div class="line">Native CephFS Driver: 在 Guest VM 上直接使用原生 CephFS Module 访问</div><div class="line">VirtFS Driver: 将 CephFS 挂载在 Host 端，VM 通过 VirtFS 访问</div></pre></td></tr></table></figure></p>
+<h2 id="nfs-ganesha安装"><a href="#nfs-ganesha安装" class="headerlink" title="nfs-ganesha安装"></a>nfs-ganesha安装</h2><p>在CentOS7系统中有nfs-ganesha rpm软件包，但没有ceph相关模块，所以我这里是编译安装，把FSAL_RGW 模块/FSAL_CEPH 模块编译进去。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone -b V2.4-stable https://github.com/nfs-ganesha/nfs-ganesha.git --recursive</div></pre></td></tr></table></figure>
+<p>由于ceph-jewel版本才有libcephfs1-devel软件包，所以这里ganesha客户端 ceph用 jewel版本，服务器ceph版本Luminous<br>ceph-jewel源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@ ganesha]# cat  /etc/yum.repos.d/ceph.repo </div><div class="line">[ceph]</div><div class="line">name=ceph</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/x86_64/</div><div class="line">gpgcheck=0</div><div class="line">[ceph-noarch]</div><div class="line">name=cephnoarch</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/noarch/</div><div class="line">gpgcheck=0</div></pre></td></tr></table></figure></p>
+<p>软件安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</div><div class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</div><div class="line">yum install librgw2-devel -y </div><div class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</div><div class="line">yum install libcephfs1-devel -y</div></pre></td></tr></table></figure></p>
+<ul>
+<li>如果需要生成 FSAL_RGW 模块，则在编译选项中添加： -DUSE_FSAL_RGW=ON</li>
+<li>如果需要生成 FSAL_CEPH 模块，则在编译选项中添加： -DUSE_FSAL_CEPH=ON</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir /opt/build/</div><div class="line">cd /opt/build/</div><div class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure>
+<p>在cmake输出中确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">-- USE_FSAL_CEPH = ON</div><div class="line">-- USE_FSAL_CEPH_MKNOD = OFF</div><div class="line">-- USE_FSAL_CEPH_SETLK = OFF</div><div class="line">-- USE_FSAL_CEPH_LL_LOOKUP_ROOT = ON</div><div class="line">-- USE_FSAL_RGW = ON</div></pre></td></tr></table></figure></p>
+<p>确保： – USE_FSAL_CEPH 为 ON,以及 – USE_FSAL_RGW 为 ON。</p>
+<p>如果过程中出错，请删除/tmp/build/* 及/tmp/build/CMakeCache.txt重新编译</p>
+<p>make install成功输出中有:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/rgw.conf</div><div class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/ceph.conf</div></pre></td></tr></table></figure></p>
+<p>这两个文件就是配置将 RGW 和 CephFS 配置为 nfs-ganesha的配置模板。</p>
+<h2 id="nfs-ganesha-配置"><a href="#nfs-ganesha-配置" class="headerlink" title="nfs-ganesha 配置"></a>nfs-ganesha 配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">cat /etc/ganesha/ganesha.conf</div><div class="line">EXPORT</div><div class="line">&#123;</div><div class="line">        Export_ID=1;</div><div class="line">        Path = /;</div><div class="line">        Pseudo = /cephfs;</div><div class="line">        Access_Type = RW;</div><div class="line">        NFS_Protocols = 4;</div><div class="line">        Transport_Protocols = TCP;</div><div class="line">        Squash = No_Root_Squash;</div><div class="line">        FSAL &#123;</div><div class="line">                Name = CEPH;</div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line">EXPORT</div><div class="line">&#123;</div><div class="line">        Export_ID=2;</div><div class="line">        Path = /;</div><div class="line">        Pseudo = /rgw;</div><div class="line">        Access_Type = RW;</div><div class="line">        Squash = No_root_squash;</div><div class="line">        NFS_Protocols = 4;</div><div class="line">        Transport_Protocols = TCP;</div><div class="line">        FSAL &#123;</div><div class="line">                Name = RGW;</div><div class="line">                User_Id = &quot;admin&quot;;</div><div class="line">                Access_Key_Id =&quot;RDS4VW60OA48ZW1HSU61&quot;;</div><div class="line">                Secret_Access_Key = &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;;</div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line">RGW &#123;</div><div class="line">    ceph_conf = &quot;/etc/ceph/ceph.conf&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  其中<code>Access_Key_Id</code> <code>Secret_Access_Key</code>部份在ceph-rgw中读取<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">  (ceph-mon)[root@pike-vm /]# radosgw-admin user info --uid=admin</div><div class="line">&#123;</div><div class="line">    &quot;user_id&quot;: &quot;admin&quot;,</div><div class="line">    &quot;display_name&quot;: &quot;admin&quot;,</div><div class="line">    &quot;email&quot;: &quot;&quot;,</div><div class="line">    &quot;suspended&quot;: 0,</div><div class="line">    &quot;max_buckets&quot;: 1000,</div><div class="line">    &quot;auid&quot;: 0,</div><div class="line">    &quot;subusers&quot;: [],</div><div class="line">    &quot;keys&quot;: [</div><div class="line">        &#123;</div><div class="line">            &quot;user&quot;: &quot;admin&quot;,</div><div class="line">            &quot;access_key&quot;: &quot;RDS4VW60OA48ZW1HSU61&quot;,</div><div class="line">            &quot;secret_key&quot;: &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<h2 id="启动nfs-ganesha"><a href="#启动nfs-ganesha" class="headerlink" title="启动nfs-ganesha"></a>启动nfs-ganesha</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ganesha.nfsd -L /var/log/ganesha.log</div></pre></td></tr></table></figure>
+<h2 id="挂载使用"><a href="#挂载使用" class="headerlink" title="挂载使用"></a>挂载使用</h2><p>在客户端进行挂载使用：<br>1  安装<code>ceph-common</code> <code>ceph-fuse</code> <code>libcephfs1-devel</code> <code>librgw2-devel</code><br>2 拷贝ceph.conf配置文件及keyring文件至/etc/ceph<br>3 挂载：<code>mount -t nfs4 {$ganesha-server-ip}:/  /mnt</code><br>如果出现I/O error,请ceph-fuse  -m 172.18.23.17:6789 /mnt 挂载一遍，就是这么神奇，不要问我为什么。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@-3 mnt]# ls</div><div class="line">ls: reading directory .: Remote I/O error</div></pre></td></tr></table></figure></p>
+<p>成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@-3 cephfs]# ll /mnt/</div><div class="line">total 1</div><div class="line">drwxrwxrwx 1 root root 33 Nov 14 08:31 cephfs</div><div class="line">[root@-3 cephfs]# echo &quot;99cloud new data...&quot; &gt; cephfs.txt </div><div class="line">[root@-3 cephfs]# cat cephfs.txt </div><div class="line">99cloud new data...</div></pre></td></tr></table></figure></p>
+<p>在cephfs集群中我们可以看到客户端写入的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@-3 ~]# ceph-fuse  -m 172.18.23.17:6789 /data/</div><div class="line">ceph-fuse[4579]: starting ceph client</div><div class="line">ceph-fuse[4579]: starting fuse</div><div class="line">[root@-3 ~]# cd /data/</div><div class="line">[root@-3 data]# ls</div><div class="line">cephfs.txt</div><div class="line">[root@3 data]# cat cephfs.txt </div><div class="line">99cloud new data...</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cj9zf94zp0000zdjx56rggjgv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/06/10/mysql-sysbench/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Mysql sysbench 压测
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/05/20/web-django-17-sql/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">web-Django-17-sql</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
