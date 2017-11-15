@@ -61,6 +61,70 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-17-1模板渲染" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/20/web-django-17-1模板渲染/" class="article-date">
+  <time datetime="2017-06-20T12:26:37.000Z" itemprop="datePublished">2017-06-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/20/web-django-17-1模板渲染/">web-Django-17-1模板渲染</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>基本方法</li>
+<li>过滤器</li>
+<li>标签</li>
+</ul>
+<p>Django对template中html的渲染有着一套语法,</p>
+<h2 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</div><div class="line">   x.html</div><div class="line">    &#123;&#123; k.2  &#125;&#125;</div><div class="line"></div><div class="line">   &#123;% for i in d %&#125;</div><div class="line">     &#123;&#123; i &#125;&#125;  --key</div><div class="line">   &#123;% endfor %&#125;</div><div class="line"></div><div class="line">   &#123;% for k,v in d.items %&#125;</div><div class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</div><div class="line">   &#123;% endfor %&#125;</div></pre></td></tr></table></figure>
+<h2 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h2><p>filter内置一些方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"># 1  add          ：   给变量加上相应的值</div><div class="line">   #</div><div class="line">   # 2  addslashes   :    给变量中的引号前加上斜线</div><div class="line">   #</div><div class="line">   # 3  capfirst     :    首字母大写</div><div class="line">   #</div><div class="line">   # 4  cut          ：   从字符串中移除指定的字符</div><div class="line">   #</div><div class="line">   # 5  date         ：   格式化日期字符串</div><div class="line">   #</div><div class="line">   # 6  default      ：   如果值是False,就替换成设置的默认值，否则就是用本来的值</div><div class="line">   #</div><div class="line">   # 7  default_if_none:  如果值是None，就替换成设置的默认值，否则就使用本来的值</div><div class="line"></div><div class="line">#value1=&quot;aBcDe&quot;</div><div class="line">&#123;&#123; value1|upper &#125;&#125;&lt;br&gt;</div><div class="line"></div><div class="line">#value2=5</div><div class="line">&#123;&#123; value2|add:3 &#125;&#125;&lt;br&gt;</div><div class="line"></div><div class="line">#value3=&apos;he  llo wo r ld&apos;</div><div class="line">&#123;&#123; value3|cut:&apos; &apos; &#125;&#125;&lt;br&gt;</div><div class="line"></div><div class="line">#import datetime</div><div class="line">#value4=datetime.datetime.now()</div><div class="line">&#123;&#123; value4|date:&apos;Y-m-d&apos; &#125;&#125;&lt;br&gt;</div><div class="line"></div><div class="line">#value5=[]</div><div class="line">&#123;&#123; value5|default:&apos;空的&apos; &#125;&#125;&lt;br&gt;</div><div class="line"></div><div class="line">#value6=&apos;&lt;a href=&quot;#&quot;&gt;跳转&lt;/a&gt;&apos;</div><div class="line"></div><div class="line">&#123;&#123; value6 &#125;&#125;</div><div class="line"></div><div class="line">&#123;% autoescape off %&#125;</div><div class="line">  &#123;&#123; value6 &#125;&#125;</div><div class="line">&#123;% endautoescape %&#125;</div><div class="line"></div><div class="line">&#123;&#123; value6|safe &#125;&#125;&lt;br&gt;</div><div class="line"></div><div class="line">&#123;&#123; value6|striptags &#125;&#125;</div><div class="line"></div><div class="line">#value7=&apos;1234&apos;</div><div class="line">&#123;&#123; value7|filesizeformat &#125;&#125;&lt;br&gt;</div><div class="line">&#123;&#123; value7|first &#125;&#125;&lt;br&gt;</div><div class="line">&#123;&#123; value7|length &#125;&#125;&lt;br&gt;</div><div class="line">&#123;&#123; value7|slice:&quot;:-1&quot; &#125;&#125;&lt;br&gt;</div><div class="line"></div><div class="line">#value8=&apos;http://www.baidu.com/?a=1&amp;b=2&apos;</div><div class="line">&#123;&#123; value8|urlencode &#125;&#125;&lt;br&gt;</div><div class="line">    value9=&apos;hello I am pythoner&apos;</div></pre></td></tr></table></figure></p>
+<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>Django 提供的函数:</p>
+<ul>
+<li>simple_tag 可以有多个参数</li>
+<li>filter     只能有2个参数，并且可以做条件语句的条件</li>
+<li>自定义过滤器、自定义标签 </li>
+</ul>
+<h3 id="形如for-if"><a href="#形如for-if" class="headerlink" title="形如for/if"></a>形如for/if</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;% for item in todo_list %&#125;</div><div class="line">    &lt;p&gt;&#123;&#123; forloop.counter &#125;&#125;: &#123;&#123; item &#125;&#125;&lt;/p&gt;</div><div class="line">&#123;% endfor %&#125;</div></pre></td></tr></table></figure>
+<h3 id="自定义标签"><a href="#自定义标签" class="headerlink" title="自定义标签"></a>自定义标签</h3><p>当内置函数不满足需求时，可自定义filter/simple_tag</p>
+<p>1 在Django app中创建目录名心须为templatetags的目录</p>
+<p>2 在templatetags下随意定义.py 文件</p>
+<p>如my_tag.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/env python3</div><div class="line">__author__ = &quot;wxq&quot;</div><div class="line"></div><div class="line">from django import  template</div><div class="line">from django.utils.safestring import mark_safe</div><div class="line">register = template.Library()</div><div class="line"># register变量名是固定的，不可以改变</div><div class="line"></div><div class="line">@register.filter       # 自定义过滤器</div><div class="line">def multip(x,y):</div><div class="line">    return x*y</div><div class="line"></div><div class="line"></div><div class="line">@register.simple_tag   # 自定义标签</div><div class="line">def multi_tag(x,y,z):</div><div class="line">    return x*y*z</div></pre></td></tr></table></figure></p>
+<p>3 使用自定义simple_tag和filter的html文件中导入之前创建的 my_tag.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">load my_tag</div></pre></td></tr></table></figure></p>
+<p>4 使用定义的simple_tag和filter<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># html首行导入load my_tag</div><div class="line">&lt;body&gt;</div><div class="line">    &lt;p&gt;&#123;&#123; 10 |add:6 &#125;&#125;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&#123;&#123;  n | multip:6 &#125;&#125;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&#123;%  multi_tag 10 320 30 %&#125;&lt;/p&gt;</div><div class="line">&lt;/body&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="模板继承"><a href="#模板继承" class="headerlink" title="模板继承"></a>模板继承</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;% block content %&#125;</div><div class="line">...</div><div class="line">&#123;% endblock %&#125;</div><div class="line"></div><div class="line">使用模板标签： &#123;% block %&#125; 。 所有的 &#123;% block %&#125; 标签告诉模板引擎，子模板可以重载这些部分。</div><div class="line">每个&#123;% block %&#125;标签所要做的是告诉模板引擎，该模板下的这一块内容将有可能被子模板覆盖。</div></pre></td></tr></table></figure>
+<p>总结：<br>后端是字典如[“key”]取值，模板里都用.key<br>后端是元组或列表如[0]取值，模板里都用.0<br>后端是函数或类方法用跨号()调用，模板里不加跨号，切记</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-17-1模板渲染/" data-id="cja0wy12c0027zhjxjfzv5zoy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/15/linux-iptables应用/" class="article-date">
@@ -98,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cj9zfkq0t000m0jjx7par6xrl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cja0wy0zq000rzhjx8j49cgau" class="article-share-link">Share</a>
       
       
     </footer>
@@ -156,7 +220,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cj9zfkq0y000r0jjx1z1v29zu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cja0wy10c000xzhjx2hbht5ku" class="article-share-link">Share</a>
       
       
     </footer>
@@ -229,7 +293,49 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cj9zfkpym00030jjx2riz12oq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cja0wy0xq0000zhjxof4vyj71" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-django-02-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/20/web-django-02-分页示例/" class="article-date">
+  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/20/web-django-02-分页示例/">Django-02-分页示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-django-分页功能"><a href="#1-django-分页功能" class="headerlink" title="1 django 分页功能"></a>1 django 分页功能</h3><p>app01/views.py Paginator模块的使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">def users(request):</div><div class="line">    from django.core.paginator import  Paginator,EmptyPage,PageNotAnInteger</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    paginator = Paginator(user_list,10)</div><div class="line">    # paginator.per_page         每页显示条目数量</div><div class="line">    # paginator.count            数据总个数  </div><div class="line">    # paginator.num_pages        总页数</div><div class="line">    # paginator.page_range       总页数的索引范围，如(1,10),(1,20)</div><div class="line">    current_page = request.GET.get(&apos;p&apos;)</div><div class="line">    try:</div><div class="line">        page_obj=paginator.page(current_page)</div><div class="line">    except EmptyPage  as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    except PageNotAnInteger as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    # page_obj.has_next()                 是否有下一页</div><div class="line">    # page_obj.next_page_number()         下一页页码</div><div class="line">    # page_obj.has_previous()             是否有上一页</div><div class="line">    # page_obj.previous_page_number()     上一页页码</div><div class="line">    # page_obj.object_list                分页之后的数据列表</div><div class="line">    # page_obj.number                     当前页</div><div class="line">    # page_obj.paginator                  paginator对象</div><div class="line"></div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;page_obj&apos;:page_obj&#125;)</div></pre></td></tr></table></figure></p>
+<p>templates/users.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&#123;% if page_obj.has_previous %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.previous_page_number &#125;&#125;&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line"></div><div class="line">&#123;% for i in page_obj.paginator.page_range %&#125;</div><div class="line">     &lt;a href=&quot;/users?p=i&quot;&gt;&#123;&#123; i &#125;&#125;&lt;/a&gt;</div><div class="line">&#123;% endfor %&#125;</div><div class="line"></div><div class="line">&#123;% if page_obj.has_next %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.next_page_number &#125;&#125;&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line">&lt;span&gt;</div><div class="line">    &lt;a&gt;&#123;&#123;  page_obj.number &#125;&#125;/&#123;&#123; page_obj.paginator.num_pages &#125;&#125;&lt;/a&gt;</div><div class="line">&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-02-分页示例/" data-id="cja0wy1250023zhjx919zyyiz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -276,49 +382,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-17-sql/" data-id="cj9zfkq3500270jjx08rxn8w1" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-02-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/20/web-django-02-分页示例/" class="article-date">
-  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/20/web-django-02-分页示例/">Django-02-分页示例</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-django-分页功能"><a href="#1-django-分页功能" class="headerlink" title="1 django 分页功能"></a>1 django 分页功能</h3><p>app01/views.py Paginator模块的使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">def users(request):</div><div class="line">    from django.core.paginator import  Paginator,EmptyPage,PageNotAnInteger</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    paginator = Paginator(user_list,10)</div><div class="line">    # paginator.per_page         每页显示条目数量</div><div class="line">    # paginator.count            数据总个数  </div><div class="line">    # paginator.num_pages        总页数</div><div class="line">    # paginator.page_range       总页数的索引范围，如(1,10),(1,20)</div><div class="line">    current_page = request.GET.get(&apos;p&apos;)</div><div class="line">    try:</div><div class="line">        page_obj=paginator.page(current_page)</div><div class="line">    except EmptyPage  as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    except PageNotAnInteger as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    # page_obj.has_next()                 是否有下一页</div><div class="line">    # page_obj.next_page_number()         下一页页码</div><div class="line">    # page_obj.has_previous()             是否有上一页</div><div class="line">    # page_obj.previous_page_number()     上一页页码</div><div class="line">    # page_obj.object_list                分页之后的数据列表</div><div class="line">    # page_obj.number                     当前页</div><div class="line">    # page_obj.paginator                  paginator对象</div><div class="line"></div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;page_obj&apos;:page_obj&#125;)</div></pre></td></tr></table></figure></p>
-<p>templates/users.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&#123;% if page_obj.has_previous %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.previous_page_number &#125;&#125;&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line"></div><div class="line">&#123;% for i in page_obj.paginator.page_range %&#125;</div><div class="line">     &lt;a href=&quot;/users?p=i&quot;&gt;&#123;&#123; i &#125;&#125;&lt;/a&gt;</div><div class="line">&#123;% endfor %&#125;</div><div class="line"></div><div class="line">&#123;% if page_obj.has_next %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.next_page_number &#125;&#125;&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line">&lt;span&gt;</div><div class="line">    &lt;a&gt;&#123;&#123;  page_obj.number &#125;&#125;/&#123;&#123; page_obj.paginator.num_pages &#125;&#125;&lt;/a&gt;</div><div class="line">&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-02-分页示例/" data-id="cj9zfkq2x00210jjx9ogkxta4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-17-sql/" data-id="cja0wy12f0029zhjxeetfqtx9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -366,7 +430,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cj9zfkq2h001q0jjx9grnj4q7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cja0wy11q001vzhjxejzmkcze" class="article-share-link">Share</a>
       
       
     </footer>
@@ -420,7 +484,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-01示例/" data-id="cj9zfkq2t001z0jjxhres4gmu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-01示例/" data-id="cja0wy1220021zhjx4vl3hhej" class="article-share-link">Share</a>
       
       
     </footer>
@@ -464,7 +528,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cj9zfkq2a001l0jjxo9kkdjp7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cja0wy11d001lzhjxe8wbqtrq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -511,51 +575,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cj9zfkq26001h0jjx4capacn5" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-09-01-进程和线程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/20/python-09-01-进程和线程/" class="article-date">
-  <time datetime="2017-03-20T14:26:37.000Z" itemprop="datePublished">2017-03-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/20/python-09-01-进程和线程/">python-09-01-进程和线程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cj9zfkq27001j0jjxpcfpzzoy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cja0wy11a001jzhjx70nc95gq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -606,7 +626,7 @@
       <ul>
         
           <li>
-            <a href="/2017/11/14/hello-world/">Hello World</a>
+            <a href="/2017/11/15/hello-world/">Hello World</a>
           </li>
         
           <li>

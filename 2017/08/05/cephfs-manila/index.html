@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>cephfs-ganesha-manila | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="openstack manila项目最近很活跃，ceph刚好发布luminous版,具说cephfs性能得到很大提升，那么manila 后端存储cephfs找到了着力点，得到在大力发展。这里对manila cephfs实验做下记录。官网链接参考
+驱动简介manila cephfs驱动分为两种：一种：  cephfs native share相当于租户虚机直接连接cephfs集群，存在安全问题，生产">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cephfs-ganesha-manila">
+<meta property="og:url" content="http://www.digmyth.com/2017/08/05/cephfs-manila/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="openstack manila项目最近很活跃，ceph刚好发布luminous版,具说cephfs性能得到很大提升，那么manila 后端存储cephfs找到了着力点，得到在大力发展。这里对manila cephfs实验做下记录。官网链接参考
+驱动简介manila cephfs驱动分为两种：一种：  cephfs native share相当于租户虚机直接连接cephfs集群，存在安全问题，生产">
+<meta property="og:updated_time" content="2017-11-15T10:21:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cephfs-ganesha-manila">
+<meta name="twitter:description" content="openstack manila项目最近很活跃，ceph刚好发布luminous版,具说cephfs性能得到很大提升，那么manila 后端存储cephfs找到了着力点，得到在大力发展。这里对manila cephfs实验做下记录。官网链接参考
+驱动简介manila cephfs驱动分为两种：一种：  cephfs native share相当于租户虚机直接连接cephfs集群，存在安全问题，生产">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cephfs-manila" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/05/cephfs-manila/" class="article-date">
+  <time datetime="2017-08-05T01:41:54.000Z" itemprop="datePublished">2017-08-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cephfs-ganesha-manila
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>openstack manila项目最近很活跃，ceph刚好发布luminous版,具说cephfs性能得到很大提升，那么manila 后端存储cephfs找到了着力点，得到在大力发展。这里对manila cephfs实验做下记录。<a href="https://docs.openstack.org/manila/pike/contributor/cephfs_driver.html#authorize-ceph-driver" target="_blank" rel="external">官网链接参考</a></p>
+<h2 id="驱动简介"><a href="#驱动简介" class="headerlink" title="驱动简介"></a>驱动简介</h2><p>manila cephfs驱动分为两种：<br>一种：  cephfs native share<br>相当于租户虚机直接连接cephfs集群，存在安全问题，生产环境中很难推行。</p>
+<p>1  <code>ceph-common</code>包安装在<code>manila-share</code>中<br>2  ceph-common/ceph-fuse 软件安装在租户虚机Guest里<br>3  ceph集群与manila-share网络打通<br>4  ceph集群与租户虚机网络打通</p>
+<p>二种： cephfs nfs share<br>官网说明<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">1 Pike or later versions of manila.</div><div class="line">2 Kraken or later versions of Ceph.</div><div class="line">3 2.5 or later versions of NFS-Ganesha.</div><div class="line">4 A Ceph cluster with a filesystem configured</div><div class="line">5 ceph-common package installed in the servers running the manila-share service.</div><div class="line">6 NFS client installed in the guest.</div><div class="line">7 Network connectivity between your Ceph cluster’s public network and the servers running the manila-share service.</div><div class="line">8 Network connectivity between your Ceph cluster’s public network and NFS-Ganesha server.</div><div class="line">9 Network connectivity between your NFS-Ganesha server and the manila guest.</div></pre></td></tr></table></figure></p>
+<p>在cephfs nfs share驱动，借住nfs-Ganesha解决了网络安全性问题，避免ceph public网直接暴露。<br>直观的理解就是Ganesha为协议转换层，FSAL_CEPH把guest vm的NFS协议调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</p>
+<h2 id="安装openstack-ceph"><a href="#安装openstack-ceph" class="headerlink" title="安装openstack+ceph"></a>安装openstack+ceph</h2><p>跟据官网所说准备一套openstack pike + ceph  luminous 环境，安装过程略。。。。</p>
+<p>ceph  luminous 源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[ceph]</div><div class="line">name=ceph</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/x86_64/</div><div class="line">gpgcheck=0</div><div class="line">[ceph-noarch]</div><div class="line">name=cephnoarch</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/noarch/</div><div class="line">gpgcheck=0</div></pre></td></tr></table></figure></p>
+<h2 id="安装nfs-ganesha"><a href="#安装nfs-ganesha" class="headerlink" title="安装nfs-ganesha"></a>安装nfs-ganesha</h2><p> 需要nfs-ganesha 版本为2.5以上，只能编译安装了,具体[请参考(<a href="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/">http://www.digmyth.com/2017/06/05/cephfs-Ganesha/</a>)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</div><div class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</div><div class="line">yum install librgw2-devel -y </div><div class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</div><div class="line">yum install libcephfs1-devel -y</div><div class="line">cd /opt</div><div class="line">git clone --recursive git://github.com/nfs-ganesha/nfs-ganesha.git</div><div class="line">mkdir /opt/build &amp;&amp; cd /opt/build</div><div class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure></p>
+<h2 id="配置manila-share"><a href="#配置manila-share" class="headerlink" title="配置manila-share"></a>配置manila-share</h2><p>必要客户端安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">yum instal ceph ceph-fuse ceph-common libcephfs1-devel librgw2-devel</div><div class="line">scp ceph_mon:/etc/ceph/* /etc/ceph    # 复制相关配置文件</div><div class="line">``` </div><div class="line"></div><div class="line">## ceph授权</div><div class="line"> 如下命令会生成`manila.keyring`文件，一并复制到 manila-share的/etc/ceph目录下</div></pre></td></tr></table></figure></p>
+<p>read -d ‘’ MON_CAPS &lt;&lt; EOF<br>allow r,<br>allow command “auth del”,<br>allow command “auth caps”,<br>allow command “auth get”,<br>allow command “auth get-or-create”<br>EOF</p>
+<p>ceph auth get-or-create client.manila -o manila.keyring \<br>mds ‘allow *’ \<br>osd ‘allow rw’ \<br>mon “$MON_CAPS”<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">编辑manila-share的/etc/ceph/ceph.conf 添加如下配置</div></pre></td></tr></table></figure></p>
+<p>…<br>[client.manila]<br>client mount uid = 0<br>client mount gid = 0<br>log file = /var/logs/ceph-client.manila.log<br>admin socket = /run/ceph/ceph-mon.172.18.23.17.asok<br>keyring = /etc/ceph/manila.keyring<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">允许快照支持</div></pre></td></tr></table></figure></p>
+<p>ceph mds set allow_new_snaps true –yes-i-really-mean-it<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">编辑manila-share的/etc/manila/manila.conf 添加如下配置</div></pre></td></tr></table></figure></p>
+<p>[DEFAULT]<br>…<br>enabled_share_backends = generic, cephfsnfs1<br>default_share_type = default_share_type<br>enabled_share_protocols = NFS,CIFS,CEPHFS<br>[cephfsnfs1]<br>driver_handles_share_servers = False<br>share_backend_name = CEPHFSNFS1<br>share_driver = manila.share.drivers.cephfs.driver.CephFSDriver<br>cephfs_protocol_helper_type = NFS<br>cephfs_conf_path = /etc/ceph/ceph.conf<br>cephfs_auth_id = manila<br>cephfs_cluster_name = ceph<br>cephfs_enable_snapshots = False<br>cephfs_ganesha_server_is_remote= False<br>cephfs_ganesha_server_ip = 172.18.23.17   # 指明nfs-ganesha服务器位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 验证</div><div class="line">服务验证</div></pre></td></tr></table></figure></p>
+<p>(manila-share)[root@pike-vm /]# manila service-list</p>
+<p>+—-+——————+——————–+——+———+——-+—————————-+<br>| Id | Binary           | Host               | Zone | Status  | State | Updated_at                 |<br>+—-+——————+——————–+——+———+——-+—————————-+<br>| 1  | manila-data      | pike-vm            | nova | enabled | up    | 2017-11-15T10:14:37.000000 |<br>| 2  | manila-scheduler | pike-vm            | nova | enabled | up    | 2017-11-15T10:14:38.000000 |<br>| 3  | manila-share     | pike-vm@generic    | nova | enabled | up    | 2017-11-15T10:14:40.000000 |<br>| 4  | manila-share     | pike-vm@cephfsnfs1 | nova | enabled | up    | 2017-11-15T10:14:40.000000 |<br>+—-+——————+——————–+——+———+——-+—————————-+</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">创建manila实例</div></pre></td></tr></table></figure>
+<p>manila type-create cephfsnfstype false<br>manila type-key cephfsnfstype set vendor_name=Ceph storage_protocol=NFS<br>manila create –share-type cephfsnfstype –name cephnfsshare1 nfs 1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">查看共享路径</div></pre></td></tr></table></figure></p>
+<p>(manila-share)[root@pike-vm /]# manila share-export-location-list cephnfsshare1<br>+————————————–+———————————————————————+———–+<br>| ID                                   | Path                                                                | Preferred |<br>+————————————–+———————————————————————+———–+<br>| 18cf503a-9357-40e2-925a-53333031a3e6 | 172.18.23.17:/volumes/_nogroup/7f53c663-57c5-4740-977b-039e4df7fc86 | False     |<br>+————————————–+———————————————————————+———–+<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">权限管理</div></pre></td></tr></table></figure></p>
+<p>manila access-allow cephnfsshare1 ip 172.24.4.225<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## guest vm 挂载</div></pre></td></tr></table></figure></p>
+<p> mount -t nfs 172.18.23.17:/volumes/_nogroup/7f53c663-57c5-4740-977b-039e4df7fc86 /mnt/nfs/<br>```</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cja0wy0y80003zhjxa7pv9z47" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/08/08/kolla-on-redhat7.2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          kolla on redhat 7.2
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/01/基于CentOS7的PXE装机/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">基于CentOS 7的PXE装机</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/15/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
