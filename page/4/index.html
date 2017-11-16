@@ -61,14 +61,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-mysql-基础篇" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+    <a href="/2017/01/29/mysql-基础篇/" class="article-date">
   <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
   </div>
 
   </div>
@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
+      <a class="article-title" href="/2017/01/29/mysql-基础篇/">Mysql 基础篇</a>
     </h1>
   
 
@@ -87,15 +87,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
+        <p>mysql几种命令用法</p>
+<p>用法一：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]# mysql -p123 -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</div><div class="line">+---------------+-------+</div><div class="line">| Variable_name | Value |</div><div class="line">+---------------+-------+</div><div class="line">| Uptime        | 8025  |</div><div class="line">+---------------+-------+</div></pre></td></tr></table></figure></p>
+<p>用法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]# mysql -p123 -N -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</div><div class="line">+--------+------+</div><div class="line">| Uptime | 8029 |</div><div class="line">+--------+------+</div></pre></td></tr></table></figure></p>
+<p>用法三：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]# mysql -p123 -s -N -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</div><div class="line">Uptime	8037</div></pre></td></tr></table></figure></p>
+<p>用法四：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]# echo &quot;show global status where variable_name=&apos;uptime&apos;;&quot; | mysql -N -p123</div><div class="line">Uptime	8072</div></pre></td></tr></table></figure></p>
+<p> 以后总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">use  glance;</div><div class="line">show variables like &apos;%char%&apos;;       查看整个mysql字符集</div><div class="line">show create table migrate_version;  查看表字符集</div><div class="line">alter table migrate_version character set utf8;  设置表字符集或者如下条：</div><div class="line">alter table migrate_version default character set utf8 collate utf8_general_ci;</div><div class="line">curl http://localhost</div><div class="line">elinks -dump http://localhost</div><div class="line">tcpdump -nn -i eth1 tcp port 80</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cja1wy93s001s2zjx3l14gn30" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cja1x1n35000x3sjxx88e1fyx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -346,7 +348,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cja1wy930001b2zjxnvlhfj9k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cja1x1n3d00153sjxgu68gwnz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -414,7 +416,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cja1wy925000z2zjxis5r7dkz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cja1x1n3b00133sjx2foti8xt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -455,7 +457,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="cja1wy93o001p2zjxtt07b4k1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-orm-原理篇/" data-id="cja1x1n46001p3sjx64mmplfh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -519,7 +521,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cja1wy92f00132zjx7n8lm0qs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cja1x1n3a00113sjx8yx5pkf6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -671,7 +673,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="cja1wy921000x2zjx74x2c75n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="cja1x1n37000z3sjxaronu8f6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -713,7 +715,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cja1wy90n00052zjxlb8zb2wu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cja1x1mzf00003sjxlwibv8if" class="article-share-link">Share</a>
       
       
     </footer>
@@ -757,7 +759,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cja1wy90x000a2zjxj9w8tvsf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cja1x1n13000a3sjx5t0mzcq3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -806,7 +808,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cja1wy94r002b2zjxooaslh0g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cja1x1n4v002b3sjxagc10w4f" class="article-share-link">Share</a>
       
       
     </footer>
