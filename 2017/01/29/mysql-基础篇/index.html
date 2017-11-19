@@ -5,31 +5,61 @@
   
   <title>Mysql 基础篇 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="mysql语句总结数据库操作无非就是insert``delete update``selete,这篇博客对mysql数据库语句做个总结记录便于学习
+  <meta name="description" content="目录
+知识扫盲
+基础语句
+主键、外键
+修改表
+分组与聚合
+连表查询
+其它查询
+shell终端获取数据
+
+数据库操作无非就是insert``delete update``selete,这篇博客对mysql数据库语句做个总结记录便于学习
 
 知识扫盲 
 
 什么是事务： 原子性操作(不可拆分)就是要么全成功，要么全失败。
-mysql语句的注释符是  --，在SQL注入或别的场景中语句形如：username=”root” and  1 =1 –  and password=’123’很明显">
+mysql语句的注释符是  --，在SQL注入或别的场景中语句形如：usernam">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql 基础篇">
 <meta property="og:url" content="http://www.digmyth.com/2017/01/29/mysql-基础篇/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="mysql语句总结数据库操作无非就是insert``delete update``selete,这篇博客对mysql数据库语句做个总结记录便于学习
+<meta property="og:description" content="目录
+知识扫盲
+基础语句
+主键、外键
+修改表
+分组与聚合
+连表查询
+其它查询
+shell终端获取数据
+
+数据库操作无非就是insert``delete update``selete,这篇博客对mysql数据库语句做个总结记录便于学习
 
 知识扫盲 
 
 什么是事务： 原子性操作(不可拆分)就是要么全成功，要么全失败。
-mysql语句的注释符是  --，在SQL注入或别的场景中语句形如：username=”root” and  1 =1 –  and password=’123’很明显">
-<meta property="og:updated_time" content="2017-11-19T09:55:06.000Z">
+mysql语句的注释符是  --，在SQL注入或别的场景中语句形如：usernam">
+<meta property="og:updated_time" content="2017-11-19T10:00:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql 基础篇">
-<meta name="twitter:description" content="mysql语句总结数据库操作无非就是insert``delete update``selete,这篇博客对mysql数据库语句做个总结记录便于学习
+<meta name="twitter:description" content="目录
+知识扫盲
+基础语句
+主键、外键
+修改表
+分组与聚合
+连表查询
+其它查询
+shell终端获取数据
+
+数据库操作无非就是insert``delete update``selete,这篇博客对mysql数据库语句做个总结记录便于学习
 
 知识扫盲 
 
 什么是事务： 原子性操作(不可拆分)就是要么全成功，要么全失败。
-mysql语句的注释符是  --，在SQL注入或别的场景中语句形如：username=”root” and  1 =1 –  and password=’123’很明显">
+mysql语句的注释符是  --，在SQL注入或别的场景中语句形如：usernam">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -104,7 +134,18 @@ mysql语句的注释符是  --，在SQL注入或别的场景中语句形如：us
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="mysql语句总结"><a href="#mysql语句总结" class="headerlink" title="mysql语句总结"></a>mysql语句总结</h2><p>数据库操作无非就是<code>insert``delete</code> <code>update``selete</code>,这篇博客对<code>mysql</code>数据库语句做个总结记录便于学习</p>
+        <ul>
+<li>目录</li>
+<li>知识扫盲</li>
+<li>基础语句</li>
+<li>主键、外键</li>
+<li>修改表</li>
+<li>分组与聚合</li>
+<li>连表查询</li>
+<li>其它查询</li>
+<li>shell终端获取数据</li>
+</ul>
+<p>数据库操作无非就是<code>insert``delete</code> <code>update``selete</code>,这篇博客对<code>mysql</code>数据库语句做个总结记录便于学习</p>
 <ul>
 <li>知识扫盲 </li>
 </ul>
@@ -137,18 +178,18 @@ mysql语句的注释符是  --，在SQL注入或别的场景中语句形如：us
 <li>inner join 表名 on  不会出现NULL数据，没有关联的数据将不会显示</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">连表</div><div class="line">    无对应关系则不显示</div><div class="line">    select A.num, A.name, B.name</div><div class="line">    from A,B</div><div class="line">    Where A.nid = B.nid</div><div class="line"> </div><div class="line">    无对应关系则不显示</div><div class="line">    select A.num, A.name, B.name</div><div class="line">    from A inner join B</div><div class="line">    on A.nid = B.nid</div><div class="line"> </div><div class="line">    A表所有显示，如果B中无对应关系，则值为null</div><div class="line">    select A.num, A.name, B.name</div><div class="line">    from A left join B</div><div class="line">    on A.nid = B.nid</div><div class="line"> </div><div class="line">    B表所有显示，如果B中无对应关系，则值为null</div><div class="line">    select A.num, A.name, B.name</div><div class="line">    from A right join B</div><div class="line">    on A.nid = B.nid</div></pre></td></tr></table></figure>
-<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">a、条件</div><div class="line">    select * from 表 where id &gt; 1 and name != &apos;wxq&apos; and num = 12;</div><div class="line"> </div><div class="line">    select * from 表 where id between 5 and 16;</div><div class="line"> </div><div class="line">    select * from 表 where id in (11,22,33)</div><div class="line">    select * from 表 where id not in (11,22,33)</div><div class="line">    select distinct name from 表 where id in (select nid from 表)  # distinct重复数所将只显示一条</div><div class="line"> </div><div class="line">b、通配符</div><div class="line">    select * from 表 where name like &apos;wxq%&apos;  - wxq开头的所有（多个字符串）</div><div class="line">    select * from 表 where name like &apos;wx_&apos;  - wx开头的所有（一个字符）</div><div class="line"> </div><div class="line">c、限制</div><div class="line">    select * from 表 limit 5;            - 前5行</div><div class="line">    select * from 表 limit 4,5;          - 从第4行开始的5行</div><div class="line">    select * from 表 limit 5 offset 4    - 从第4行开始的5行</div><div class="line"> </div><div class="line">d、排序</div><div class="line">    select * from 表 order by 列 asc              - 根据 “列” 从小到大排列</div><div class="line">    select * from 表 order by 列 desc             - 根据 “列” 从大到小排列</div><div class="line">    select * from 表 order by 列1 desc,列2 asc    - 根据 “列1” 从大到小排列，如果相同则按列2从小到大排序</div><div class="line"> </div><div class="line">e、组合</div><div class="line">    组合，自动处理重合</div><div class="line">    select nickname</div><div class="line">    from A</div><div class="line">    union</div><div class="line">    select name</div><div class="line">    from B</div><div class="line"> </div><div class="line">    组合，不处理重合</div><div class="line">    select nickname</div><div class="line">    from A</div><div class="line">    union all</div><div class="line">    select name</div><div class="line">    from B</div></pre></td></tr></table></figure>
+<h2 id="其它查询"><a href="#其它查询" class="headerlink" title="其它查询"></a>其它查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">a、条件</div><div class="line">    select * from 表 where id &gt; 1 and name != &apos;wxq&apos; and num = 12;</div><div class="line"> </div><div class="line">    select * from 表 where id between 5 and 16;</div><div class="line"> </div><div class="line">    select * from 表 where id in (11,22,33)</div><div class="line">    select * from 表 where id not in (11,22,33)</div><div class="line">    select distinct name from 表 where id in (select nid from 表)  # distinct重复数所将只显示一条</div><div class="line"> </div><div class="line">b、通配符</div><div class="line">    select * from 表 where name like &apos;wxq%&apos;  - wxq开头的所有（多个字符串）</div><div class="line">    select * from 表 where name like &apos;wx_&apos;  - wx开头的所有（一个字符）</div><div class="line"> </div><div class="line">c、限制</div><div class="line">    select * from 表 limit 5;            - 前5行</div><div class="line">    select * from 表 limit 4,5;          - 从第4行开始的5行</div><div class="line">    select * from 表 limit 5 offset 4    - 从第4行开始的5行</div><div class="line"> </div><div class="line">d、排序</div><div class="line">    select * from 表 order by 列 asc              - 根据 “列” 从小到大排列</div><div class="line">    select * from 表 order by 列 desc             - 根据 “列” 从大到小排列</div><div class="line">    select * from 表 order by 列1 desc,列2 asc    - 根据 “列1” 从大到小排列，如果相同则按列2从小到大排序</div><div class="line"> </div><div class="line">e、组合</div><div class="line">    组合，自动处理重合</div><div class="line">    select nickname</div><div class="line">    from A</div><div class="line">    union</div><div class="line">    select name</div><div class="line">    from B</div><div class="line"> </div><div class="line">    组合，不处理重合</div><div class="line">    select nickname</div><div class="line">    from A</div><div class="line">    union all</div><div class="line">    select name</div><div class="line">    from B</div></pre></td></tr></table></figure>
 <h2 id="shell终端获取数据"><a href="#shell终端获取数据" class="headerlink" title="shell终端获取数据"></a>shell终端获取数据</h2><p>下面介绍在<code>shell</code>终端获取<code>mysql</code>的几种方法</p>
 <p>用法一：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]# mysql -p123 -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</div><div class="line">+---------------+-------+</div><div class="line">| Variable_name | Value |</div><div class="line">+---------------+-------+</div><div class="line">| Uptime        | 8025  |</div><div class="line">+---------------+-------+</div></pre></td></tr></table></figure></p>
 <p>用法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]# mysql -p123 -N -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</div><div class="line">+--------+------+</div><div class="line">| Uptime | 8029 |</div><div class="line">+--------+------+</div></pre></td></tr></table></figure></p>
 <p>用法三：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]# mysql -p123 -s -N -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</div><div class="line">Uptime	8037</div></pre></td></tr></table></figure></p>
 <p>用法四：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]# echo &quot;show global status where variable_name=&apos;uptime&apos;;&quot; | mysql -N -p123</div><div class="line">Uptime	8072</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># echo  &quot;show databases;&quot; | mysql -h 127.0.0.1 -uroot -A -p123 | tail -n +2  | head -n 2</div><div class="line">	-A  表示不自动rehash</div><div class="line">	tail -n +2 表示从第二行开始打印</div><div class="line">	head -n 2表示打印前2行</div><div class="line"></div><div class="line"># echo &quot;use nova01 ; show tables;&quot; | mysql -uroot -padmin</div><div class="line"># mysql -uroot -padmin -S /var/run/mysqld/mysqld.sock  -e &quot;use nova01;show tables;&quot;</div><div class="line"># mysql -uroot -padmin -S /var/run/mysqld/mysqld.sock -e &quot;grant all on *.* to user1@&apos;localhost&apos; identified by \&quot;user1\&quot;;&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># echo  &quot;show databases;&quot; | mysql -h 127.0.0.1 -uroot -A -p123 | tail -n +2  | head -n 2</div><div class="line">	-A  表示不自动rehash</div><div class="line">	tail -n +2 表示从第二行开始打印</div><div class="line">	head -n 2表示打印前2行</div><div class="line"></div><div class="line"># echo &quot;use nova01 ; show tables;&quot; | mysql -uroot -padmin</div><div class="line"># mysql -uroot -padmin -S /var/run/mysqld/mysqld.sock  -e &quot;use nova01;show tables;&quot;</div><div class="line"># mysql -uroot -padmin -S /var/run/mysqld/mysqld.sock \</div><div class="line">    -e &quot;grant all on *.* to user1@&apos;localhost&apos; identified by \&quot;user1\&quot;;&quot;</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cja6l6h7j000zi0jxsipeeghq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cja6ld3af000ziojxis3okml6" class="article-share-link">Share</a>
       
       
     </footer>
