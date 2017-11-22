@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/22/hello-world/" class="article-date">
-  <time datetime="2017-11-22T08:05:52.330Z" itemprop="datePublished">2017-11-22</time>
+  <time datetime="2017-11-22T08:08:41.178Z" itemprop="datePublished">2017-11-22</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/22/hello-world/" data-id="cjaarlfez000i0jjxo24ub3p0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/22/hello-world/" data-id="cjaarp1p7000i1ojx619qkywm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -153,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjaarlfd8000f0jjxrqxjzosg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjaarp1p3000f1ojxf7gkxcfu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -222,7 +222,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjaarlff1000l0jjx8a67kfqg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjaarp1pa000l1ojxjutb7ojg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -314,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjaarlffj000v0jjxv7xjwubi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjaarp1pp000v1ojxh95ehjfn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -381,7 +381,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjaarlffb000s0jjxd50dz8ol" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjaarp1pi000s1ojx97lkdb03" class="article-share-link">Share</a>
       
       
     </footer>
@@ -418,12 +418,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>待整理ceph运维笔记</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd set noout</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ceph osd set noout</div><div class="line">ceph osd unset noout</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rbd create wxq --size 1</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# rbd info rbd/wxq</div><div class="line">rbd image &apos;wxq&apos;:</div><div class="line">	size 1024 kB in 1 objects</div><div class="line">	order 22 (4096 kB objects)</div><div class="line">	block_name_prefix: rbd_data.498102ae8944a</div><div class="line">	format: 2</div><div class="line">	features: layering, exclusive-lock, object-map, fast-diff, deep-flatten</div><div class="line">	flags:</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph osd map rbd rbd_data.498102ae8944a</div><div class="line">osdmap e183 pool &apos;rbd&apos; (0) object &apos;rbd_data.498102ae8944a&apos; -&gt; pg 0.455bea7d (0.3d) -&gt; up ([1], p1) acting ([1], p1)</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@lab8106 ]#ceph-objectstore-tool  \</div><div class="line"> --data-path /var/lib/ceph/osd/ceph-1/   \</div><div class="line"> --journal-path /var/lib/ceph/osd/ceph-1/journal  \</div><div class="line"> --pgid 0.3d    \</div><div class="line"> rbd_data.498102ae8944a </div><div class="line"> remove</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd unset noout</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg map 8.7d </div><div class="line">osdmap e183 pg 8.7d (8.7d) -&gt; up [2] acting [2]</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg 8.7d query</div><div class="line">&#123;</div><div class="line">    &quot;state&quot;: &quot;active+clean&quot;,</div><div class="line">    &quot;snap_trimq&quot;: &quot;[]&quot;,</div><div class="line">...</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ceph  pg dump</div><div class="line">ceph  osd dump</div><div class="line">ceph pg map 8.7d</div><div class="line">ceph pg 8.7d list_missing</div></pre></td></tr></table></figure>
@@ -433,7 +432,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjaarlfci00030jjx1v51wj7c" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjaarp1nb00031ojxkpqzyjc6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -480,7 +479,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjaarlfgs00210jjxzmou6lfg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjaarp1ro00211ojxh8jrkouq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -541,7 +540,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjaarlfcp00060jjxgb6133bt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjaarp1ng00061ojxvaiiht7t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -609,7 +608,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjaarlff5000o0jjxroh7sakr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjaarp1pc000o1ojxjifdgrzi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -669,7 +668,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjaarlfcy000a0jjxss9e8aok" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjaarp1ow000a1ojx7l7suro8" class="article-share-link">Share</a>
       
       
     </footer>
