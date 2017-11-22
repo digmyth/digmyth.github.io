@@ -3,33 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>ssh-01-反向代理 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>ceph-01-运维那事 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。
-
-解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？
-
-
-实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892那么在221">
+  <meta name="description" content="待整理ceph运维笔记
+1ceph osd set noout
+1rbd create wxq --size 1
+12345678(ceph-mon)[root@pike-vm /]# rbd info rbd/wxqrbd image &amp;apos;wxq&amp;apos;:	size 1024 kB in 1 objects	order 22 (4096 kB objects)	block_name_">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ssh-01-反向代理">
-<meta property="og:url" content="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/index.html">
+<meta property="og:title" content="ceph-01-运维那事">
+<meta property="og:url" content="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。
-
-解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？
-
-
-实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892那么在221">
-<meta property="og:updated_time" content="2017-11-01T04:15:10.000Z">
+<meta property="og:description" content="待整理ceph运维笔记
+1ceph osd set noout
+1rbd create wxq --size 1
+12345678(ceph-mon)[root@pike-vm /]# rbd info rbd/wxqrbd image &amp;apos;wxq&amp;apos;:	size 1024 kB in 1 objects	order 22 (4096 kB objects)	block_name_">
+<meta property="og:updated_time" content="2017-11-22T08:01:19.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ssh-01-反向代理">
-<meta name="twitter:description" content="疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。
-
-解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？
-
-
-实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892那么在221">
+<meta name="twitter:title" content="ceph-01-运维那事">
+<meta name="twitter:description" content="待整理ceph运维笔记
+1ceph osd set noout
+1rbd create wxq --size 1
+12345678(ceph-mon)[root@pike-vm /]# rbd info rbd/wxqrbd image &amp;apos;wxq&amp;apos;:	size 1024 kB in 1 objects	order 22 (4096 kB objects)	block_name_">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -78,14 +72,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-ssh-01-反向代理" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-ceph-01-运维那事" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/10/31/ssh-01-反向代理/" class="article-date">
-  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
+    <a href="/2017/11/05/ceph-01-运维那事/" class="article-date">
+  <time datetime="2017-11-05T01:41:54.000Z" itemprop="datePublished">2017-11-05</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
   </div>
 
   </div>
@@ -96,7 +90,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      ssh-01-反向代理
+      ceph-01-运维那事
     </h1>
   
 
@@ -104,18 +98,22 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li><p><strong>疑惑</strong>: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。</p>
-</li>
-<li><p><strong>解惑</strong>: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？</p>
-</li>
-</ul>
-<p>实战<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">内部A主机执行下面命令</div><div class="line">ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892</div><div class="line"></div><div class="line">那么在221.152.61.84的127.0.0.1:2222就转到了内部主机的127.0.0.1:22 ，很实用的功能。</div><div class="line">此时只需要C主机ssh 127.0.0.1 -p 2222即可连接到内网主机A</div></pre></td></tr></table></figure></p>
+        <p>待整理ceph运维笔记</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd set noout</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rbd create wxq --size 1</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# rbd info rbd/wxq</div><div class="line">rbd image &apos;wxq&apos;:</div><div class="line">	size 1024 kB in 1 objects</div><div class="line">	order 22 (4096 kB objects)</div><div class="line">	block_name_prefix: rbd_data.498102ae8944a</div><div class="line">	format: 2</div><div class="line">	features: layering, exclusive-lock, object-map, fast-diff, deep-flatten</div><div class="line">	flags:</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph osd map rbd rbd_data.498102ae8944a</div><div class="line">osdmap e183 pool &apos;rbd&apos; (0) object &apos;rbd_data.498102ae8944a&apos; -&gt; pg 0.455bea7d (0.3d) -&gt; up ([1], p1) acting ([1], p1)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@lab8106 ]#ceph-objectstore-tool  \</div><div class="line"> --data-path /var/lib/ceph/osd/ceph-1/   \</div><div class="line"> --journal-path /var/lib/ceph/osd/ceph-1/journal  \</div><div class="line"> --pgid 0.3d    \</div><div class="line"> rbd_data.498102ae8944a </div><div class="line"> remove</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd unset noout</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg map 8.7d </div><div class="line">osdmap e183 pg 8.7d (8.7d) -&gt; up [2] acting [2]</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg 8.7d query</div><div class="line">&#123;</div><div class="line">    &quot;state&quot;: &quot;active+clean&quot;,</div><div class="line">    &quot;snap_trimq&quot;: &quot;[]&quot;,</div><div class="line">...</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ceph  pg dump</div><div class="line">ceph  osd dump</div><div class="line">ceph pg map 8.7d</div><div class="line">ceph pg 8.7d list_missing</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ceph pg 4.438 mark_unfound_lost revert</div><div class="line">ceph pg 4.438 mark_unfound_lost delete</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjaarfrbd0021zijxlqxvt5w4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjaarfr7d0000zijxujopacsm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -124,19 +122,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2017/11/05/ceph-01-运维那事/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/11/08/mysql-Galera/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          ceph-01-运维那事
+          Mysql Galera集群搭建
         
       </div>
     </a>
   
   
-    <a href="/2017/09/05/ceph-luminous安装/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/10/31/ssh-01-反向代理/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">ceph-luminous安装</div>
+      <div class="article-nav-title">ssh-01-反向代理</div>
     </a>
   
 </nav>

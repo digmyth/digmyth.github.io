@@ -63,8 +63,8 @@
   
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/11/19/hello-world/" class="article-date">
-  <time datetime="2017-11-19T10:00:20.936Z" itemprop="datePublished">2017-11-19</time>
+    <a href="/2017/11/22/hello-world/" class="article-date">
+  <time datetime="2017-11-22T08:01:27.724Z" itemprop="datePublished">2017-11-22</time>
 </a>
     
   <div class="article-category">
@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/19/hello-world/">Hello World</a>
+      <a class="article-title" href="/2017/11/22/hello-world/">Hello World</a>
     </h1>
   
 
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/19/hello-world/" data-id="cja6ld39l000giojxpovg61ci" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/22/hello-world/" data-id="cjaarfr8t000fzijxvf06ct12" class="article-share-link">Share</a>
       
       
     </footer>
@@ -153,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cja6ld39g000diojxspyv55rx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjaarfr90000lzijx1be0wpkg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -222,7 +222,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cja6ld39o000jiojxalpfb9fh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjaarfr8w000izijx196gg902" class="article-share-link">Share</a>
       
       
     </footer>
@@ -314,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cja6ld3a3000tiojx7su4suhu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjaarfr95000qzijxw43prpzw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -381,7 +381,58 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cja6ld39y000qiojx20dvmmu0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjaarfr9c000tzijxuj5iti0o" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ceph-01-运维那事" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/05/ceph-01-运维那事/" class="article-date">
+  <time datetime="2017-11-05T01:41:54.000Z" itemprop="datePublished">2017-11-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/05/ceph-01-运维那事/">ceph-01-运维那事</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>待整理ceph运维笔记</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd set noout</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rbd create wxq --size 1</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# rbd info rbd/wxq</div><div class="line">rbd image &apos;wxq&apos;:</div><div class="line">	size 1024 kB in 1 objects</div><div class="line">	order 22 (4096 kB objects)</div><div class="line">	block_name_prefix: rbd_data.498102ae8944a</div><div class="line">	format: 2</div><div class="line">	features: layering, exclusive-lock, object-map, fast-diff, deep-flatten</div><div class="line">	flags:</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph osd map rbd rbd_data.498102ae8944a</div><div class="line">osdmap e183 pool &apos;rbd&apos; (0) object &apos;rbd_data.498102ae8944a&apos; -&gt; pg 0.455bea7d (0.3d) -&gt; up ([1], p1) acting ([1], p1)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@lab8106 ]#ceph-objectstore-tool  \</div><div class="line"> --data-path /var/lib/ceph/osd/ceph-1/   \</div><div class="line"> --journal-path /var/lib/ceph/osd/ceph-1/journal  \</div><div class="line"> --pgid 0.3d    \</div><div class="line"> rbd_data.498102ae8944a </div><div class="line"> remove</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd unset noout</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg map 8.7d </div><div class="line">osdmap e183 pg 8.7d (8.7d) -&gt; up [2] acting [2]</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg 8.7d query</div><div class="line">&#123;</div><div class="line">    &quot;state&quot;: &quot;active+clean&quot;,</div><div class="line">    &quot;snap_trimq&quot;: &quot;[]&quot;,</div><div class="line">...</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ceph  pg dump</div><div class="line">ceph  osd dump</div><div class="line">ceph pg map 8.7d</div><div class="line">ceph pg 8.7d list_missing</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ceph pg 4.438 mark_unfound_lost revert</div><div class="line">ceph pg 4.438 mark_unfound_lost delete</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjaarfr7d0000zijxujopacsm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -428,7 +479,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cja6ld3e0001ziojx492ga4lo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjaarfrbd0021zijxlqxvt5w4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -489,7 +540,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cja6ld3910003iojx87a2wnkr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjaarfr7u0003zijxgpvdtz4u" class="article-share-link">Share</a>
       
       
     </footer>
@@ -557,7 +608,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cja6ld39t000miojxlt7zsblg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjaarfr9q000zzijxg0o9kqjw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -617,79 +668,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cja6ld3990008iojxr18vmydq" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
-  <time datetime="2017-07-01T01:41:54.000Z" itemprop="datePublished">2017-07-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/01/基于CentOS7的PXE装机/">基于CentOS 7的PXE装机</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><code>网上各种贴子各种飞总说不到重点，本人表示不喜欢。</code></p>
-<h3 id="基于Centos7PXE装机"><a href="#基于Centos7PXE装机" class="headerlink" title="基于Centos7PXE装机"></a>基于Centos7PXE装机</h3><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li>pxe装机依赖几个服务： dhcp/tftp/fileserver</li>
-<li>dhcp:  为装机分配地址及指明tftp server服务器是谁，下载什么文件</li>
-<li>tftp:   提供网络引导文件pxelinux.0及内核文件vmlinuz、initrd.img<ul>
-<li>(具体文件： boot.msg  initrd.img  pxelinux.0  pxelinux.cfg  splash.png  vesamenu.c32  vmlinuz)</li>
-</ul>
-</li>
-<li>fileserver: 提供安装树输出，一般指yum repository (yum 仓库或yum源)</li>
-<li>syslinux:   网络引导文件pxelinux.0由syslinux软件包提供</li>
-</ul>
-<h2 id="dhcp服务"><a href="#dhcp服务" class="headerlink" title="dhcp服务"></a>dhcp服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum  -y install  dhcp</div><div class="line">rpm -ql dhcp</div><div class="line">/etc/dhcp/dhcpd.conf      # 主配置文件</div><div class="line">/var/lib/dhcpd/dhcpd.leases  # 租约文件</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# cat /etc/dhcp/dhcpd.conf  | grep -v ^# | grep -v ^$</div><div class="line">option domain-name &quot;digmyth.com&quot;;</div><div class="line">option domain-name-servers 114.114.114.114;</div><div class="line">default-lease-time 600;</div><div class="line">max-lease-time 7200;</div><div class="line">log-facility local7;</div><div class="line">subnet 172.16.10.0 netmask 255.255.255.0 &#123;</div><div class="line">  range 172.16.10.20 172.16.10.30;</div><div class="line">  option domain-name-servers 172.16.10.1;</div><div class="line">  option domain-name &quot;digmyth.com&quot;;</div><div class="line">  option routers 172.16.10.254;</div><div class="line">  default-lease-time 600;</div><div class="line">  max-lease-time 7200;</div><div class="line">&#125;</div><div class="line">filename &quot;pxelinux.0&quot;;     # 定义网络引导文件名</div><div class="line">next-server 172.16.10.1;   # 定义tftp server地址</div></pre></td></tr></table></figure>
-<p>启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># systemctl  start dhcpd</div><div class="line">[root@master ~]# netstat -unlp | grep 67</div><div class="line">udp        0      0 0.0.0.0:67              0.0.0.0:*                           995/dhcpd</div></pre></td></tr></table></figure></p>
-<h2 id="syslinux提供引导文件"><a href="#syslinux提供引导文件" class="headerlink" title="syslinux提供引导文件"></a>syslinux提供引导文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">准备网络引导文件pxelinux.0  相当于bootloader</div><div class="line"># yum -y install syslinux</div><div class="line">[root@master tftpboot]# ll /usr/share/syslinux/pxelinux.0 </div><div class="line">-rw-r--r--. 1 root root 26764 Nov  6  2016 /usr/share/syslinux/pxelinux.0</div></pre></td></tr></table></figure>
-<h2 id="tftp-server"><a href="#tftp-server" class="headerlink" title="tftp server"></a>tftp server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install tftp tftp-server</div><div class="line">[root@master ~]# rpm -ql tftp-server</div><div class="line">/etc/xinetd.d/tftp   # 启动文件</div><div class="line">/usr/sbin/in.tftpd</div><div class="line">/var/lib/tftpboot   # 服务根目录</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># cat /etc/xinetd.d/tftp</div><div class="line">service tftp</div><div class="line">&#123;</div><div class="line">	socket_type		= dgram</div><div class="line">	protocol		= udp</div><div class="line">	wait			= yes</div><div class="line">	user			= root</div><div class="line">	server			= /usr/sbin/in.tftpd</div><div class="line">	server_args		= -s /var/lib/tftpboot</div><div class="line">    disable			= no  #改为no</div><div class="line">	per_source		= 11</div><div class="line">	cps			= 100 2</div><div class="line">	flags			= IPv4</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>启动tftp服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># cp  /usr/share/syslinux/pxelinux.0  /var/lit/tftpboot</div><div class="line"># systemctl  start tftp</div><div class="line"># tftp localhost</div><div class="line">&gt; get pxelinux.0   # 测试成功</div></pre></td></tr></table></figure></p>
-<h2 id="准备内核及其它相关文件"><a href="#准备内核及其它相关文件" class="headerlink" title="准备内核及其它相关文件"></a>准备内核及其它相关文件</h2><p>   此时<code>pxe</code>己经能够获得地址并下载<code>pxelinux.0</code>进行网络引导，接下来是下载内核文件<code>vmlinuz</code>、<code>initrd.img</code>继续完成装机。<br> 这里我拿<code>CentOS7.2</code>为例：<code>CentOS-7-x86_64-DVD-1511.iso</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# mount -o loop CentOS-7-x86_64-DVD-1511.iso  /mnt</div><div class="line">mount: /dev/loop0 is write-protected, mounting read-only</div><div class="line">[root@master pxeboot]# cd /mnt/images/pxeboot/</div><div class="line">[root@master pxeboot]# cp vmlinuz /var/lib/tftpboot/</div><div class="line">[root@master pxeboot]# cp initrd.img  /var/lib/tftpboot/</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">mkdir /var/lib/tftpboot/pxelinux.cfg</div><div class="line">cp /mnt/isolinux/isolinux.cfg  /var/lib/tftpboot/pxelinux.cfg /default </div><div class="line">[root@master pxelinux.cfg]# cat default </div><div class="line">default vesamenu.c32</div><div class="line">#default linux   # 这里是一个标签，对找后面相应的label</div><div class="line">timeout 600</div><div class="line"></div><div class="line">menu title CentOS 7 wxq    # 此处定义title</div><div class="line">label linux</div><div class="line">  menu label ^Install CentOS 7  # 此处定义系统安装时显示版本</div><div class="line">  kernel vmlinuz</div><div class="line">  append initrd=initrd.img method=http://172.16.10.1/pub/ ks=http://172.16.10.1/pxe/CentOS72.ks</div><div class="line"># 注意： 如果此处只定义method,那么装机过程将全手动。</div></pre></td></tr></table></figure>
-<p>此外还有一些额外文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# ls /mnt/isolinux/</div><div class="line">boot.cat  grub.conf   isolinux.bin  memtest     TRANS.TBL    vesamenu.c32</div><div class="line">boot.msg  initrd.img  isolinux.cfg  splash.png  upgrade.img  vmlinuz</div><div class="line">[root@master ~]# ll /var/lib/tftpboot/</div><div class="line">boot.msg  initrd.img  pxelinux.0   splash.png  vesamenu.c32  vmlinuz</div></pre></td></tr></table></figure></p>
-<h2 id="定义安装树"><a href="#定义安装树" class="headerlink" title="定义安装树"></a>定义安装树</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install httpd</div><div class="line"># mkdir /var/www/html/pxe</div><div class="line"># mkdir /var/www/html/pub</div><div class="line"># mount --bind /mnt /var/www/html/pub/ </div><div class="line"># systemctl  start httpd</div></pre></td></tr></table></figure>
-<h2 id="定义ks文件"><a href="#定义ks文件" class="headerlink" title="定义ks文件"></a>定义ks文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">/pxe/CentOS72.ks</div><div class="line">[root@master pxe]# cat CentOS72.ks</div><div class="line">#version=DEVEL</div><div class="line"># System authorization information</div><div class="line"></div><div class="line">install</div><div class="line"># Keyboard layouts</div><div class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</div><div class="line">auth --enableshadow --passalgo=sha512</div><div class="line"></div><div class="line"># Use CDROM installation media</div><div class="line"># Run the Setup Agent on first boot</div><div class="line">#firstboot --enable</div><div class="line"># System language</div><div class="line">lang en_US.UTF-8</div><div class="line"></div><div class="line">url --url=http://172.16.10.1/pub/</div><div class="line"># Use graphical install</div><div class="line">graphical</div><div class="line">#text</div><div class="line"></div><div class="line">selinux --disabled</div><div class="line">skipx</div><div class="line"></div><div class="line">reboot</div><div class="line"></div><div class="line"># Network information</div><div class="line">#network  --bootproto=static --device=ens33 --gateway=172.16.10.254 --ip=172.16.10.30 --nameserver=114.114.114.114 --netmask=255.255.255.0 --onboot=on --ipv6=auto --activate</div><div class="line">network  --bootproto=dhcp --device=ens33 --onboot=yes --ipv6=auto --activate</div><div class="line">network  --hostname=digmyth</div><div class="line"></div><div class="line"># Root password=123456</div><div class="line">rootpw --iscrypted $6$6ErC1johQ5LVAYwQ$cGGxb6Q6./SpvXCZs.K39d9LpV/IeFnspUT6mHmsVsARzToRCSsZ4fLxcOh0tYWpt38Yh6JoMzmSEkEtCtMlS/</div><div class="line"># System services</div><div class="line">services --disabled=&quot;chronyd&quot;</div><div class="line"></div><div class="line"># System timezone</div><div class="line">timezone Asia/Shanghai --isUtc --nontp</div><div class="line"># System bootloader configuration</div><div class="line">clearpart --all --initlabel</div><div class="line">bootloader --append=&quot; crashkernel=auto&quot; --location=mbr --boot-drive=sda</div><div class="line"># Partition clearing information</div><div class="line"></div><div class="line">#clearpart --drives=sda --initlabel</div><div class="line">#clearpart --none --initlabel</div><div class="line"># Disk partitioning information</div><div class="line"></div><div class="line">#ignoredisk --only-use=sda</div><div class="line">#part pv.735 --fstype=&quot;lvmpv&quot; --ondisk=sda --size=19979</div><div class="line">#volgroup vg --pesize=4096 pv.735</div><div class="line">#logvol /boot --fstype=&quot;xfs&quot; --size=500 --name=boot --vgname=vg</div><div class="line">#logvol /  --fstype=&quot;xfs&quot; --size=16000 --name=root --vgname=vg</div><div class="line">#logvol /data  --fstype=&quot;xfs&quot; --size=3000 --name=data --vgname=vg</div><div class="line">#logvol swap --fstype=&quot;swap&quot; --grow --size=1</div><div class="line"></div><div class="line"></div><div class="line">%packages</div><div class="line">@^minimal</div><div class="line">@core</div><div class="line">kexec-tools</div><div class="line">vim</div><div class="line">net-tools</div><div class="line">sysstat</div><div class="line"></div><div class="line">%end</div><div class="line"></div><div class="line">%post</div><div class="line">touch /root/wxq.txt</div><div class="line">%end</div><div class="line"></div><div class="line">%addon com_redhat_kdump --enable --reserve-mb=&apos;auto&apos;</div><div class="line">%end</div></pre></td></tr></table></figure>
-<p>上面的装机将进入图形界面手动分区安装    </p>
-<p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466910816.jpg" alt="pxeboot"></p>
-<p>到此完结，可以结合cobbler实现多pxe环境并存。</p>
-<ul>
-<li>cobbler 一些概念：</li>
-<li>distro发行版： 其实就是pxe所说的相应内核文件</li>
-<li>profile:  提供pxeboot引导文件、KS文件、安装树（用现有iso镜像mirror/import方式）</li>
-</ul>
-<h5 id="是不是很完美-。。。"><a href="#是不是很完美-。。。" class="headerlink" title="是不是很完美 。。。"></a>是不是很完美 。。。</h5>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cja6ld3f0002giojxwm7l7ptf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjaarfr8d000azijx18xvqvz5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -702,7 +681,7 @@
 
 
   <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -740,7 +719,7 @@
       <ul>
         
           <li>
-            <a href="/2017/11/19/hello-world/">Hello World</a>
+            <a href="/2017/11/22/hello-world/">Hello World</a>
           </li>
         
           <li>
