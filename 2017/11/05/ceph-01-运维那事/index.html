@@ -17,7 +17,7 @@
 1ceph osd set noout
 1rbd create wxq --size 1
 12345678(ceph-mon)[root@pike-vm /]# rbd info rbd/wxqrbd image &amp;apos;wxq&amp;apos;:	size 1024 kB in 1 objects	order 22 (4096 kB objects)	block_name_">
-<meta property="og:updated_time" content="2017-11-22T08:01:19.000Z">
+<meta property="og:updated_time" content="2017-11-22T08:05:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ceph-01-运维那事">
 <meta name="twitter:description" content="待整理ceph运维笔记
@@ -109,11 +109,12 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg 8.7d query</div><div class="line">&#123;</div><div class="line">    &quot;state&quot;: &quot;active+clean&quot;,</div><div class="line">    &quot;snap_trimq&quot;: &quot;[]&quot;,</div><div class="line">...</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ceph  pg dump</div><div class="line">ceph  osd dump</div><div class="line">ceph pg map 8.7d</div><div class="line">ceph pg 8.7d list_missing</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ceph pg 4.438 mark_unfound_lost revert</div><div class="line">ceph pg 4.438 mark_unfound_lost delete</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ceph pg repair 0.44</div><div class="line">ceph osd pool set rbd min_size 1</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjaarfr7d0000zijxujopacsm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjaarlfci00030jjx1v51wj7c" class="article-share-link">Share</a>
       
       
     </footer>
