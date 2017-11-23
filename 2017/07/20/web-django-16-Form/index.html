@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>web-Django-16-Form验证 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录
+基本功能
+基本使用
+常用字段
+常用插件
+总结
+
+这篇博客记录Django Form功能的学习，链接请参考Django Form武佩齐权威博客
+基本功能
+Form验证
+生成html标签（保留上次提交的内容）
+
+详细：12345678class TestForm(forms.Form):    username = fields.CharField(  # 静态字段        requir">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web-Django-16-Form验证">
+<meta property="og:url" content="http://www.digmyth.com/2017/07/20/web-django-16-Form/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+基本功能
+基本使用
+常用字段
+常用插件
+总结
+
+这篇博客记录Django Form功能的学习，链接请参考Django Form武佩齐权威博客
+基本功能
+Form验证
+生成html标签（保留上次提交的内容）
+
+详细：12345678class TestForm(forms.Form):    username = fields.CharField(  # 静态字段        requir">
+<meta property="og:updated_time" content="2017-11-23T04:30:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web-Django-16-Form验证">
+<meta name="twitter:description" content="目录
+基本功能
+基本使用
+常用字段
+常用插件
+总结
+
+这篇博客记录Django Form功能的学习，链接请参考Django Form武佩齐权威博客
+基本功能
+Form验证
+生成html标签（保留上次提交的内容）
+
+详细：12345678class TestForm(forms.Form):    username = fields.CharField(  # 静态字段        requir">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-web-django-16-Form" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/20/web-django-16-Form/" class="article-date">
+  <time datetime="2017-07-20T12:26:37.000Z" itemprop="datePublished">2017-07-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      web-Django-16-Form验证
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>基本功能</li>
+<li>基本使用</li>
+<li>常用字段</li>
+<li>常用插件</li>
+<li>总结</li>
+</ul>
+<p>这篇博客记录Django Form功能的学习，链接请参考<a href="http://www.cnblogs.com/wupeiqi/articles/6144178.html" target="_blank" rel="external">Django Form武佩齐权威博客</a></p>
+<h2 id="基本功能"><a href="#基本功能" class="headerlink" title="基本功能"></a>基本功能</h2><ul>
+<li>Form验证</li>
+<li>生成html标签（保留上次提交的内容）</li>
+</ul>
+<p>详细：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">class TestForm(forms.Form):</div><div class="line">    username = fields.CharField(  # 静态字段</div><div class="line">        required=True,</div><div class="line">        min_length=6,</div><div class="line">        max_length=8,</div><div class="line">        error_messages=&#123;&quot;required&quot;:&quot;用户名不能为空&quot;, &quot;min_length&quot;:&quot;最少6位&quot;&#125;，</div><div class="line">        widget = widgets.TextInput(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;)  # 插件</div><div class="line">  )</div></pre></td></tr></table></figure></p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>模块导入-&gt;类定义-&gt;定义字段-&gt; 定义插件-&gt; 实例化-&gt; 传入前端-&gt;前端渲染<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from django  import forms</div><div class="line">from django.forms import fields,widgets</div></pre></td></tr></table></figure></p>
+<p>views.py定义Form类，写出来常用插件用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">class TestForm(forms.Form):</div><div class="line"></div><div class="line">    n1 = fields.CharField(</div><div class="line">        widget = widgets.TextInput()</div><div class="line">    )</div><div class="line"></div><div class="line">    n2 = fields.CharField(</div><div class="line">        widget = widgets.PasswordInput()</div><div class="line">    )</div><div class="line"></div><div class="line">    n3 = fields.CharField(</div><div class="line">        widget=widgets.Textarea()</div><div class="line">    )</div><div class="line"></div><div class="line">    n4 = fields.CharField(</div><div class="line">        widget=widgets.Select(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">    )</div></pre></td></tr></table></figure></p>
+<p>单选多选总结：<br>1   把上面<code>CharField</code>改为<code>ChoiceField</code>就好了，并choices=[]提到前面来<br>2   单选<code>CharField</code>就可以，多选一定记得用<code>ChoicField</code>,并且<code>choices=[]</code>提前</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># n5 = fields.CharField(  </div><div class="line">#    # 这里是有问题的，CharField只能是字符串，&quot;n5&quot;:[1,3]默认值是一个列表，后端没法接收数据。</div><div class="line">#     widget=widgets.SelectMultiple(choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)])</div><div class="line"># )</div><div class="line"></div><div class="line">n5 = fields.ChoiceField(</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget=widgets.SelectMultiple()</div><div class="line">)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">n6 = fields.IntegerField(</div><div class="line">    widget=widgets.RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">)</div><div class="line"></div><div class="line">n7 = fields.CharField(  # 这里只会生成CheckboxInput标签 &lt;input type=&quot;checkbox&quot; name=&quot;n7&quot; required=&quot;&quot; id=&quot;id_n7&quot;&gt;</div><div class="line">    widget=widgets.CheckboxInput()</div><div class="line">)</div><div class="line"></div><div class="line">n8 = fields.ChoiceField(  # 真正生成checkbox组写法</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget = widgets.CheckboxSelectMultiple()</div><div class="line">)</div><div class="line"></div><div class="line">n9 = fields.FileField(</div><div class="line">    widget=widgets.FileInput()</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>实例化Form类时传入默认值用于前端展示，主要学习文件上传的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">def test(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        obj = TestForm(</div><div class="line">            initial=&#123;&quot;n1&quot;:&quot;请输入&quot;,&quot;n2&quot;:&quot;xxx&quot;,&quot;n3&quot;:&quot;文本输入&quot;,&quot;n4&quot;:1,&quot;n5&quot;:[1,3], &quot;n6&quot;:2,&#125;</div><div class="line">        )</div><div class="line">        return render(request, &quot;test.html&quot;,&#123;&quot;obj&quot;:obj&#125;)</div><div class="line"></div><div class="line">    if request.method == &quot;POST&quot;:</div><div class="line">        # 文件提交保存在request.FILES</div><div class="line">        # obj = TestForm(data=request.POST,files=request.FILES)</div><div class="line">        # if obj.is_valid():</div><div class="line">        #     # obj.cleaned_data[&apos;n9&apos;]      这是上传的文件对象</div><div class="line">        #     #obj.cleaned_data[&apos;n9&apos;].name  这是上传文件名</div><div class="line">        #     files_obj = obj.cleaned_data[&apos;n9&apos;]</div><div class="line">        #     f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        #     for chunck in files_obj.chunks():</div><div class="line">        #         f.write(chunck)</div><div class="line">        #     f.close()</div><div class="line">        # else:</div><div class="line">        #     pass</div><div class="line">        files_obj = request.FILES.get(&quot;n9&quot;)</div><div class="line">        f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        for chunck in files_obj.chunks():</div><div class="line">            f.write(chunck)</div><div class="line">        f.close()</div><div class="line"></div><div class="line">        return redirect(&apos;/test/&apos;)</div></pre></td></tr></table></figure></p>
+<p>提交文件需要<code>enctype=&quot;multipart/form-data&quot;</code><br>测试时忽略其它值用<code>novalidate</code><br>test.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/test/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; novalidate&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &#123;&#123; obj.n1 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n2 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n3 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n4 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n5 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n6 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n7 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n8 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n9 &#125;&#125;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="常用字段"><a href="#常用字段" class="headerlink" title="常用字段"></a>常用字段</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CharField                       字符串 </div><div class="line">EmailField						字符串（邮箱格式）</div><div class="line">IntegerField					字符串（整形格式）</div><div class="line">GenericIPAddressField			字符串（Ip格式）</div><div class="line">RegexField						字符串（正则自定义）</div><div class="line">FileField						文件对象</div></pre></td></tr></table></figure>
+<h2 id="常用插件"><a href="#常用插件" class="headerlink" title="常用插件"></a>常用插件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">TextInput</div><div class="line">PasswordInput</div><div class="line">Textarea</div><div class="line">FileInput()</div><div class="line"></div><div class="line">Select(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;，choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">SelectMultiple(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;)   # choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)]</div><div class="line"></div><div class="line">RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line"></div><div class="line">CheckboxInput()</div><div class="line">CheckboxSelectMultiple()</div></pre></td></tr></table></figure>
+<h2 id="Form问题"><a href="#Form问题" class="headerlink" title="Form问题"></a>Form问题</h2><p>在前端使用选择标签渲染时，多表foreigh key跨表查询数据源无法实时更新。<br>比如choices的选项可以从数据库中获取，但是由于是静态字段<code>获取的值无法实时更新</code>，那么需要自定义构造方法从而达到此目的。</p>
+<p>方法有很多，推荐<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">from django.forms import Form</div><div class="line">from django.forms import widgets</div><div class="line">from django.forms import fields</div><div class="line">from django.core.validators import RegexValidator</div><div class="line"> </div><div class="line">class MyForm(Form):</div><div class="line"> </div><div class="line">    user = fields.ChoiceField(</div><div class="line">        # choices=((1, &apos;上海&apos;), (2, &apos;北京&apos;),),</div><div class="line">        initial=2,</div><div class="line">        widget=widgets.Select</div><div class="line">    )</div><div class="line"> </div><div class="line">    def __init__(self, *args, **kwargs):</div><div class="line">        super(MyForm,self).__init__(*args, **kwargs)</div><div class="line">        # self.fields[&apos;user&apos;].widget.choices = ((1, &apos;上海&apos;), (2, &apos;北京&apos;),)</div><div class="line">        # 或</div><div class="line">        self.fields[&apos;user&apos;].widget.choices = models.Classes.objects.all().value_list(&apos;id&apos;,&apos;caption&apos;)</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Django Form功能一是验证，功能二是用于生成html标签并且能保留上次提交的内容。<br>注意Form验证读取数据时的数据源实时更新问题，一般我们自定义Form类的构造方法实现。</p>
+<p>还有很多要学习的。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjabzc8jm002h08jx92xtqy3f" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/08/05/cephfs-manila/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          cephfs-ganesha-manila
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/01/基于CentOS7的PXE装机/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">基于CentOS 7的PXE装机</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/23/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

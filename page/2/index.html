@@ -61,6 +61,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-16-Form" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/20/web-django-16-Form/" class="article-date">
+  <time datetime="2017-07-20T12:26:37.000Z" itemprop="datePublished">2017-07-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/20/web-django-16-Form/">web-Django-16-Form验证</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>基本功能</li>
+<li>基本使用</li>
+<li>常用字段</li>
+<li>常用插件</li>
+<li>总结</li>
+</ul>
+<p>这篇博客记录Django Form功能的学习，链接请参考<a href="http://www.cnblogs.com/wupeiqi/articles/6144178.html" target="_blank" rel="external">Django Form武佩齐权威博客</a></p>
+<h2 id="基本功能"><a href="#基本功能" class="headerlink" title="基本功能"></a>基本功能</h2><ul>
+<li>Form验证</li>
+<li>生成html标签（保留上次提交的内容）</li>
+</ul>
+<p>详细：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">class TestForm(forms.Form):</div><div class="line">    username = fields.CharField(  # 静态字段</div><div class="line">        required=True,</div><div class="line">        min_length=6,</div><div class="line">        max_length=8,</div><div class="line">        error_messages=&#123;&quot;required&quot;:&quot;用户名不能为空&quot;, &quot;min_length&quot;:&quot;最少6位&quot;&#125;，</div><div class="line">        widget = widgets.TextInput(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;)  # 插件</div><div class="line">  )</div></pre></td></tr></table></figure></p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>模块导入-&gt;类定义-&gt;定义字段-&gt; 定义插件-&gt; 实例化-&gt; 传入前端-&gt;前端渲染<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from django  import forms</div><div class="line">from django.forms import fields,widgets</div></pre></td></tr></table></figure></p>
+<p>views.py定义Form类，写出来常用插件用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">class TestForm(forms.Form):</div><div class="line"></div><div class="line">    n1 = fields.CharField(</div><div class="line">        widget = widgets.TextInput()</div><div class="line">    )</div><div class="line"></div><div class="line">    n2 = fields.CharField(</div><div class="line">        widget = widgets.PasswordInput()</div><div class="line">    )</div><div class="line"></div><div class="line">    n3 = fields.CharField(</div><div class="line">        widget=widgets.Textarea()</div><div class="line">    )</div><div class="line"></div><div class="line">    n4 = fields.CharField(</div><div class="line">        widget=widgets.Select(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">    )</div></pre></td></tr></table></figure></p>
+<p>单选多选总结：<br>1   把上面<code>CharField</code>改为<code>ChoiceField</code>就好了，并choices=[]提到前面来<br>2   单选<code>CharField</code>就可以，多选一定记得用<code>ChoicField</code>,并且<code>choices=[]</code>提前</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># n5 = fields.CharField(  </div><div class="line">#    # 这里是有问题的，CharField只能是字符串，&quot;n5&quot;:[1,3]默认值是一个列表，后端没法接收数据。</div><div class="line">#     widget=widgets.SelectMultiple(choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)])</div><div class="line"># )</div><div class="line"></div><div class="line">n5 = fields.ChoiceField(</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget=widgets.SelectMultiple()</div><div class="line">)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">n6 = fields.IntegerField(</div><div class="line">    widget=widgets.RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">)</div><div class="line"></div><div class="line">n7 = fields.CharField(  # 这里只会生成CheckboxInput标签 &lt;input type=&quot;checkbox&quot; name=&quot;n7&quot; required=&quot;&quot; id=&quot;id_n7&quot;&gt;</div><div class="line">    widget=widgets.CheckboxInput()</div><div class="line">)</div><div class="line"></div><div class="line">n8 = fields.ChoiceField(  # 真正生成checkbox组写法</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget = widgets.CheckboxSelectMultiple()</div><div class="line">)</div><div class="line"></div><div class="line">n9 = fields.FileField(</div><div class="line">    widget=widgets.FileInput()</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>实例化Form类时传入默认值用于前端展示，主要学习文件上传的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">def test(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        obj = TestForm(</div><div class="line">            initial=&#123;&quot;n1&quot;:&quot;请输入&quot;,&quot;n2&quot;:&quot;xxx&quot;,&quot;n3&quot;:&quot;文本输入&quot;,&quot;n4&quot;:1,&quot;n5&quot;:[1,3], &quot;n6&quot;:2,&#125;</div><div class="line">        )</div><div class="line">        return render(request, &quot;test.html&quot;,&#123;&quot;obj&quot;:obj&#125;)</div><div class="line"></div><div class="line">    if request.method == &quot;POST&quot;:</div><div class="line">        # 文件提交保存在request.FILES</div><div class="line">        # obj = TestForm(data=request.POST,files=request.FILES)</div><div class="line">        # if obj.is_valid():</div><div class="line">        #     # obj.cleaned_data[&apos;n9&apos;]      这是上传的文件对象</div><div class="line">        #     #obj.cleaned_data[&apos;n9&apos;].name  这是上传文件名</div><div class="line">        #     files_obj = obj.cleaned_data[&apos;n9&apos;]</div><div class="line">        #     f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        #     for chunck in files_obj.chunks():</div><div class="line">        #         f.write(chunck)</div><div class="line">        #     f.close()</div><div class="line">        # else:</div><div class="line">        #     pass</div><div class="line">        files_obj = request.FILES.get(&quot;n9&quot;)</div><div class="line">        f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        for chunck in files_obj.chunks():</div><div class="line">            f.write(chunck)</div><div class="line">        f.close()</div><div class="line"></div><div class="line">        return redirect(&apos;/test/&apos;)</div></pre></td></tr></table></figure></p>
+<p>提交文件需要<code>enctype=&quot;multipart/form-data&quot;</code><br>测试时忽略其它值用<code>novalidate</code><br>test.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/test/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; novalidate&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &#123;&#123; obj.n1 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n2 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n3 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n4 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n5 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n6 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n7 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n8 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n9 &#125;&#125;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="常用字段"><a href="#常用字段" class="headerlink" title="常用字段"></a>常用字段</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CharField                       字符串 </div><div class="line">EmailField						字符串（邮箱格式）</div><div class="line">IntegerField					字符串（整形格式）</div><div class="line">GenericIPAddressField			字符串（Ip格式）</div><div class="line">RegexField						字符串（正则自定义）</div><div class="line">FileField						文件对象</div></pre></td></tr></table></figure>
+<h2 id="常用插件"><a href="#常用插件" class="headerlink" title="常用插件"></a>常用插件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">TextInput</div><div class="line">PasswordInput</div><div class="line">Textarea</div><div class="line">FileInput()</div><div class="line"></div><div class="line">Select(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;，choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">SelectMultiple(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;)   # choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)]</div><div class="line"></div><div class="line">RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line"></div><div class="line">CheckboxInput()</div><div class="line">CheckboxSelectMultiple()</div></pre></td></tr></table></figure>
+<h2 id="Form问题"><a href="#Form问题" class="headerlink" title="Form问题"></a>Form问题</h2><p>在前端使用选择标签渲染时，多表foreigh key跨表查询数据源无法实时更新。<br>比如choices的选项可以从数据库中获取，但是由于是静态字段<code>获取的值无法实时更新</code>，那么需要自定义构造方法从而达到此目的。</p>
+<p>方法有很多，推荐<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">from django.forms import Form</div><div class="line">from django.forms import widgets</div><div class="line">from django.forms import fields</div><div class="line">from django.core.validators import RegexValidator</div><div class="line"> </div><div class="line">class MyForm(Form):</div><div class="line"> </div><div class="line">    user = fields.ChoiceField(</div><div class="line">        # choices=((1, &apos;上海&apos;), (2, &apos;北京&apos;),),</div><div class="line">        initial=2,</div><div class="line">        widget=widgets.Select</div><div class="line">    )</div><div class="line"> </div><div class="line">    def __init__(self, *args, **kwargs):</div><div class="line">        super(MyForm,self).__init__(*args, **kwargs)</div><div class="line">        # self.fields[&apos;user&apos;].widget.choices = ((1, &apos;上海&apos;), (2, &apos;北京&apos;),)</div><div class="line">        # 或</div><div class="line">        self.fields[&apos;user&apos;].widget.choices = models.Classes.objects.all().value_list(&apos;id&apos;,&apos;caption&apos;)</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Django Form功能一是验证，功能二是用于生成html标签并且能保留上次提交的内容。<br>注意Form验证读取数据时的数据源实时更新问题，一般我们自定义Form类的构造方法实现。</p>
+<p>还有很多要学习的。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjabzc8jm002h08jx92xtqy3f" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
@@ -123,7 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjab425ar002ka9jx2dmy65o2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjabzc8js002m08jxa2aoy6dj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -187,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjab425ah002da9jxwkreb4jf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjabzc8ji002d08jxd0ni581v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -231,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjab425a90025a9jxncnkdvzi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjabzc8j8002508jxgx59sq5o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -278,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjab4257c000qa9jxpqlqku7b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjabzc8ha000q08jx2ztq9aui" class="article-share-link">Share</a>
       
       
     </footer>
@@ -336,7 +403,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjab4257s000za9jx7h827uyp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjabzc8ho000z08jxnvj22csh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -409,7 +476,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjab4256m0008a9jxg44vdqjr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjabzc8fa000808jx8k1ei3vt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -451,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjab425ae002ba9jxlt9l5vmi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjabzc8jf002b08jxkhzmev72" class="article-share-link">Share</a>
       
       
     </footer>
@@ -498,7 +565,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjab425ak002fa9jxwefb761k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjabzc8jk002f08jxscf9hew3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -546,66 +613,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjab4259z001wa9jxdo1gnn2r" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-mysql-pyton操作mysql" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/29/mysql-pyton操作mysql/" class="article-date">
-  <time datetime="2017-04-29T01:41:54.000Z" itemprop="datePublished">2017-04-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/29/mysql-pyton操作mysql/">Python 操作mysql</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这里记录下python操作mysql的知识点，详细参见<a href="http://www.cnblogs.com/wupeiqi/articles/5713330.html" target="_blank" rel="external">链接</a></p>
-<h2 id="模块安装"><a href="#模块安装" class="headerlink" title="模块安装"></a>模块安装</h2><p>在<code>python2</code>中使用模块<code>MySQLdb</code><br>在<code>python3</code>中使用模块<code>pymysql</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 install pymysql</div></pre></td></tr></table></figure></p>
-<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>基本操作过程就是</p>
-<ul>
-<li>创建连接</li>
-<li>创建游标</li>
-<li>发送语句</li>
-<li>获取数据</li>
-<li>事务提交</li>
-<li>关闭游标</li>
-<li>关闭连接<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line"># 创建连接</div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;db1&apos;)</div><div class="line"></div><div class="line"># 创建游标</div><div class="line">cursor = conn.cursor()</div><div class="line"></div><div class="line"># 发送语句</div><div class="line">cursor.execute(sqlstatement)</div><div class="line">cursor.executemany(sqlstatement)</div><div class="line"></div><div class="line"># 获取数据</div><div class="line">cursor.fetchone()</div><div class="line">cursor.fetchmany(3)</div><div class="line">cursor.fetchall()  </div><div class="line"></div><div class="line"># 事务提交，不然无法保存新建或者修改的数据</div><div class="line">conn.commit()</div><div class="line">  </div><div class="line"># 关闭游标</div><div class="line">cursor.close()</div><div class="line"># 关闭连接</div><div class="line">conn.close()</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="基本知识点"><a href="#基本知识点" class="headerlink" title="基本知识点"></a>基本知识点</h2><h3 id="获取新创建数据自增ID"><a href="#获取新创建数据自增ID" class="headerlink" title="获取新创建数据自增ID"></a>获取新创建数据自增ID</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">  </div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;t1&apos;)</div><div class="line">cursor = conn.cursor()</div><div class="line">cursor.executemany(&quot;insert into hosts(host,color_id)values(%s,%s)&quot;, [(&quot;1.1.1.11&quot;,1),(&quot;1.1.1.11&quot;,2)])</div><div class="line">conn.commit()</div><div class="line">cursor.close()</div><div class="line">conn.close()</div><div class="line">  </div><div class="line"># 获取最新自增ID</div><div class="line">new_id = cursor.lastrowid</div></pre></td></tr></table></figure>
-<h3 id="游标操作"><a href="#游标操作" class="headerlink" title="游标操作"></a>游标操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">在fetch数据时按照顺序进行，可以使用cursor.scroll(num,mode)来移动游标位置，如：</div><div class="line"></div><div class="line">cursor.scroll(1,mode=&apos;relative&apos;)  # 相对当前位置移动</div><div class="line">cursor.scroll(2,mode=&apos;absolute&apos;) # 相对绝对位置移动</div></pre></td></tr></table></figure>
-<h3 id="fetch-数据类型"><a href="#fetch-数据类型" class="headerlink" title="fetch 数据类型"></a>fetch 数据类型</h3><p>关于默认获取的数据是元组类型，如果想要获取字典类型的数据，如下<code>pymysql.cursors.DictCursor</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;t1&apos;)</div><div class="line"># 游标设置为字典类型</div><div class="line">cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)</div><div class="line">r = cursor.execute(&quot;call p1()&quot;)</div><div class="line">  </div><div class="line">result = cursor.fetchone()</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">effect_row = cursor.execute(&quot;update hosts set host = &apos;172.16.0.1&apos;&quot;)</div><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">#effect_row = cursor.execute(&quot;update hosts set host = &apos;172.16.0.1&apos; where nid &gt; %s&quot;, (1,))</div><div class="line">  </div><div class="line">这里值得注意的是不能把上面语句替换成下面语句，否则会被sql注入</div><div class="line">statement=&quot;update hosts set host = &apos;172.16.0.1&apos; where nid &gt; %s&quot; % 1</div><div class="line">effect_row = cursor.execute(statement)</div><div class="line"></div><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">#effect_row = cursor.executemany(&quot;insert into hosts(host,color_id)values(%s,%s)&quot;, [(&quot;172.16.0.1&quot;,1),(&quot;1.1.1.11&quot;,2)])</div></pre></td></tr></table></figure>
-<h3 id="SQLAlchemy"><a href="#SQLAlchemy" class="headerlink" title="SQLAlchemy"></a>SQLAlchemy</h3><p>SQLAlchemy是Python编程语言下的一款ORM框架，该框架建立在数据库API之上，使用关系对象映射进行数据库操作，简言之便是：将对象转换成SQL，然后使用数据API执行SQL并获取执行结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 install SQLAlchemy</div></pre></td></tr></table></figure></p>
-<p>SQLAlchemy本身无法操作数据库，其必须以来pymsql等第三方插件，Dialect用于和数据API进行交流，根据配置文件的不同调用不同的数据库API，从而实现对数据库的操作，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">MySQL-Python</div><div class="line">    mysql+mysqldb://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;[:&lt;port&gt;]/&lt;dbname&gt;</div><div class="line">   </div><div class="line">pymysql</div><div class="line">    mysql+pymysql://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;/&lt;dbname&gt;[?&lt;options&gt;]</div><div class="line">   </div><div class="line">MySQL-Connector</div><div class="line">    mysql+mysqlconnector://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;[:&lt;port&gt;]/&lt;dbname&gt;</div><div class="line">   </div><div class="line">cx_Oracle</div><div class="line">    oracle+cx_oracle://user:pass@host:port/dbname[?key=value&amp;key=value...]</div><div class="line">   </div><div class="line">更多详见：http://docs.sqlalchemy.org/en/latest/dialects/index.html</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjab4257q000xa9jx9ii4lb5h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjabzc8iw001w08jx1viyaje5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -656,7 +664,7 @@
       <ul>
         
           <li>
-            <a href="/2017/11/22/hello-world/">Hello World</a>
+            <a href="/2017/11/23/hello-world/">Hello World</a>
           </li>
         
           <li>
