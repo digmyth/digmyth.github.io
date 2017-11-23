@@ -108,7 +108,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">n6 = fields.IntegerField(</div><div class="line">    widget=widgets.RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">)</div><div class="line"></div><div class="line">n7 = fields.CharField(  # 这里只会生成CheckboxInput标签 &lt;input type=&quot;checkbox&quot; name=&quot;n7&quot; required=&quot;&quot; id=&quot;id_n7&quot;&gt;</div><div class="line">    widget=widgets.CheckboxInput()</div><div class="line">)</div><div class="line"></div><div class="line">n8 = fields.ChoiceField(  # 真正生成checkbox组写法</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget = widgets.CheckboxSelectMultiple()</div><div class="line">)</div><div class="line"></div><div class="line">n9 = fields.FileField(</div><div class="line">    widget=widgets.FileInput()</div><div class="line">)</div></pre></td></tr></table></figure>
 <p>实例化Form类时传入默认值用于前端展示，主要学习文件上传的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">def test(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        obj = TestForm(</div><div class="line">            initial=&#123;&quot;n1&quot;:&quot;请输入&quot;,&quot;n2&quot;:&quot;xxx&quot;,&quot;n3&quot;:&quot;文本输入&quot;,&quot;n4&quot;:1,&quot;n5&quot;:[1,3], &quot;n6&quot;:2,&#125;</div><div class="line">        )</div><div class="line">        return render(request, &quot;test.html&quot;,&#123;&quot;obj&quot;:obj&#125;)</div><div class="line"></div><div class="line">    if request.method == &quot;POST&quot;:</div><div class="line">        # 文件提交保存在request.FILES</div><div class="line">        # obj = TestForm(data=request.POST,files=request.FILES)</div><div class="line">        # if obj.is_valid():</div><div class="line">        #     # obj.cleaned_data[&apos;n9&apos;]      这是上传的文件对象</div><div class="line">        #     #obj.cleaned_data[&apos;n9&apos;].name  这是上传文件名</div><div class="line">        #     files_obj = obj.cleaned_data[&apos;n9&apos;]</div><div class="line">        #     f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        #     for chunck in files_obj.chunks():</div><div class="line">        #         f.write(chunck)</div><div class="line">        #     f.close()</div><div class="line">        # else:</div><div class="line">        #     pass</div><div class="line">        files_obj = request.FILES.get(&quot;n9&quot;)</div><div class="line">        f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        for chunck in files_obj.chunks():</div><div class="line">            f.write(chunck)</div><div class="line">        f.close()</div><div class="line"></div><div class="line">        return redirect(&apos;/test/&apos;)</div></pre></td></tr></table></figure></p>
 <p>提交文件需要<code>enctype=&quot;multipart/form-data&quot;</code><br>测试时忽略其它值用<code>novalidate</code><br>test.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/test/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; novalidate&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &#123;&#123; obj.n1 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n2 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n3 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n4 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n5 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n6 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n7 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n8 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n9 &#125;&#125;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="常用字段"><a href="#常用字段" class="headerlink" title="常用字段"></a>常用字段</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CharField                       字符串 </div><div class="line">EmailField						字符串（邮箱格式）</div><div class="line">IntegerField					字符串（整形格式）</div><div class="line">GenericIPAddressField			字符串（Ip格式）</div><div class="line">RegexField						字符串（正则自定义）</div><div class="line">FileField						文件对象</div></pre></td></tr></table></figure>
+<h2 id="常用字段"><a href="#常用字段" class="headerlink" title="常用字段"></a>常用字段</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CharField               字符串 </div><div class="line">EmailField		字符串（邮箱格式）</div><div class="line">IntegerField		字符串（整形格式）</div><div class="line">GenericIPAddressField	字符串（Ip格式）</div><div class="line">RegexField		字符串（正则自定义）</div><div class="line">FileField		文件对象</div></pre></td></tr></table></figure>
 <h2 id="常用插件"><a href="#常用插件" class="headerlink" title="常用插件"></a>常用插件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">TextInput</div><div class="line">PasswordInput</div><div class="line">Textarea</div><div class="line">FileInput()</div><div class="line"></div><div class="line">Select(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;，choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">SelectMultiple(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;)   # choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)]</div><div class="line"></div><div class="line">RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line"></div><div class="line">CheckboxInput()</div><div class="line">CheckboxSelectMultiple()</div></pre></td></tr></table></figure>
 <h2 id="Form问题"><a href="#Form问题" class="headerlink" title="Form问题"></a>Form问题</h2><p>在前端使用选择标签渲染时，多表foreigh key跨表查询数据源无法实时更新。<br>比如choices的选项可以从数据库中获取，但是由于是静态字段<code>获取的值无法实时更新</code>，那么需要自定义构造方法从而达到此目的。</p>
 <p>方法有很多，推荐<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">from django.forms import Form</div><div class="line">from django.forms import widgets</div><div class="line">from django.forms import fields</div><div class="line">from django.core.validators import RegexValidator</div><div class="line"> </div><div class="line">class MyForm(Form):</div><div class="line"> </div><div class="line">    user = fields.ChoiceField(</div><div class="line">        # choices=((1, &apos;上海&apos;), (2, &apos;北京&apos;),),</div><div class="line">        initial=2,</div><div class="line">        widget=widgets.Select</div><div class="line">    )</div><div class="line"> </div><div class="line">    def __init__(self, *args, **kwargs):</div><div class="line">        super(MyForm,self).__init__(*args, **kwargs)</div><div class="line">        # self.fields[&apos;user&apos;].widget.choices = ((1, &apos;上海&apos;), (2, &apos;北京&apos;),)</div><div class="line">        # 或</div><div class="line">        self.fields[&apos;user&apos;].widget.choices = models.Classes.objects.all().value_list(&apos;id&apos;,&apos;caption&apos;)</div></pre></td></tr></table></figure></p>
@@ -118,7 +118,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjabzc8jm002h08jx92xtqy3f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjabzgyut002h0vjx0xh1kvym" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjabzc8js002m08jxa2aoy6dj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjabzgyux002m0vjxt40hdn1k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -254,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjabzc8ji002d08jxd0ni581v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjabzgyuf002d0vjx59542qlw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjabzc8j8002508jxgx59sq5o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjabzgytl001z0vjxtf9lpc4f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -345,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjabzc8ha000q08jx2ztq9aui" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjabzgyqk000q0vjx5gu9xxeu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -403,7 +403,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjabzc8ho000z08jxnvj22csh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjabzgytw00250vjx2usyk0wq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -476,7 +476,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjabzc8fa000808jx8k1ei3vt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjabzgynw00080vjxichb259b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -518,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjabzc8jf002b08jxkhzmev72" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjabzgyua002b0vjxjti1asj0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -565,7 +565,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjabzc8jk002f08jxscf9hew3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjabzgyur002f0vjx903yjnwf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -613,7 +613,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjabzc8iw001w08jx1viyaje5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjabzgyt9001v0vjxcrnzzciy" class="article-share-link">Share</a>
       
       
     </footer>
