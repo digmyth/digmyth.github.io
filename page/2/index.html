@@ -106,7 +106,7 @@
 <p>单选多选总结：<br>1   把上面<code>CharField</code>改为<code>ChoiceField</code>就好了，并choices=[]提到前面来<br>2   单选<code>CharField</code>就可以，多选一定记得用<code>ChoicField</code>,并且<code>choices=[]</code>提前</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># n5 = fields.CharField(  </div><div class="line">#    # 这里是有问题的，CharField只能是字符串，&quot;n5&quot;:[1,3]默认值是一个列表，后端没法接收数据。</div><div class="line">#     widget=widgets.SelectMultiple(choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)])</div><div class="line"># )</div><div class="line"></div><div class="line">n5 = fields.ChoiceField(</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget=widgets.SelectMultiple()</div><div class="line">)</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">n6 = fields.IntegerField(</div><div class="line">    widget=widgets.RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">)</div><div class="line"></div><div class="line">n7 = fields.CharField(  # 这里只会生成CheckboxInput标签 &lt;input type=&quot;checkbox&quot; name=&quot;n7&quot; required=&quot;&quot; id=&quot;id_n7&quot;&gt;</div><div class="line">    widget=widgets.CheckboxInput()</div><div class="line">)</div><div class="line"></div><div class="line">n8 = fields.ChoiceField(  # 真正生成checkbox组写法</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget = widgets.CheckboxSelectMultiple()</div><div class="line">)</div><div class="line"></div><div class="line">n9 = fields.FileField(</div><div class="line">    widget=widgets.FileInput()</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>实例化Form类时传入默认值用于前端展示，主要学习文件上传的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">def test(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        obj = TestForm(</div><div class="line">            initial=&#123;&quot;n1&quot;:&quot;请输入&quot;,&quot;n2&quot;:&quot;xxx&quot;,&quot;n3&quot;:&quot;文本输入&quot;,&quot;n4&quot;:1,&quot;n5&quot;:[1,3], &quot;n6&quot;:2,&#125;</div><div class="line">        )</div><div class="line">        return render(request, &quot;test.html&quot;,&#123;&quot;obj&quot;:obj&#125;)</div><div class="line"></div><div class="line">    if request.method == &quot;POST&quot;:</div><div class="line">        # 文件提交保存在request.FILES</div><div class="line">        # obj = TestForm(data=request.POST,files=request.FILES)</div><div class="line">        # if obj.is_valid():</div><div class="line">        #     # obj.cleaned_data[&apos;n9&apos;]      这是上传的文件对象</div><div class="line">        #     #obj.cleaned_data[&apos;n9&apos;].name  这是上传文件名</div><div class="line">        #     files_obj = obj.cleaned_data[&apos;n9&apos;]</div><div class="line">        #     f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        #     for chunck in files_obj.chunks():</div><div class="line">        #         f.write(chunck)</div><div class="line">        #     f.close()</div><div class="line">        # else:</div><div class="line">        #     pass</div><div class="line">        files_obj = request.FILES.get(&quot;n9&quot;)</div><div class="line">        f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        for chunck in files_obj.chunks():</div><div class="line">            f.write(chunck)</div><div class="line">        f.close()</div><div class="line"></div><div class="line">        return redirect(&apos;/test/&apos;)</div></pre></td></tr></table></figure></p>
+<p>实例化Form类时传入默认值用于前端展示，主要学习文件上传的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">def test(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        obj = TestForm(</div><div class="line">            initial=&#123;&quot;n1&quot;:&quot;请输入&quot;,&quot;n2&quot;:&quot;xxx&quot;,&quot;n3&quot;:&quot;文本输入&quot;,&quot;n4&quot;:1,&quot;n5&quot;:[1,3], &quot;n6&quot;:2,&quot;n7&quot;:&quot;&quot;,&quot;n8&quot;:[2,3]&#125;</div><div class="line">        )</div><div class="line">        return render(request, &quot;test.html&quot;,&#123;&quot;obj&quot;:obj&#125;)</div><div class="line"></div><div class="line">    if request.method == &quot;POST&quot;:</div><div class="line">        # 文件提交保存在request.FILES</div><div class="line">        # obj = TestForm(data=request.POST,files=request.FILES)</div><div class="line">        # if obj.is_valid():</div><div class="line">        #     # obj.cleaned_data[&apos;n9&apos;]      这是上传的文件对象</div><div class="line">        #     #obj.cleaned_data[&apos;n9&apos;].name  这是上传文件名</div><div class="line">        #     files_obj = obj.cleaned_data[&apos;n9&apos;]</div><div class="line">        #     f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        #     for chunck in files_obj.chunks():</div><div class="line">        #         f.write(chunck)</div><div class="line">        #     f.close()</div><div class="line">        # else:</div><div class="line">        #     pass</div><div class="line">        files_obj = request.FILES.get(&quot;n9&quot;)</div><div class="line">        f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        for chunck in files_obj.chunks():</div><div class="line">            f.write(chunck)</div><div class="line">        f.close()</div><div class="line"></div><div class="line">        return redirect(&apos;/test/&apos;)</div></pre></td></tr></table></figure></p>
 <p>提交文件需要<code>enctype=&quot;multipart/form-data&quot;</code><br>测试时忽略其它值用<code>novalidate</code><br>test.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/test/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; novalidate&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &#123;&#123; obj.n1 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n2 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n3 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n4 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n5 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n6 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n7 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n8 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n9 &#125;&#125;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
 <h2 id="常用字段"><a href="#常用字段" class="headerlink" title="常用字段"></a>常用字段</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CharField               字符串 </div><div class="line">EmailField		字符串（邮箱格式）</div><div class="line">IntegerField		字符串（整形格式）</div><div class="line">GenericIPAddressField	字符串（Ip格式）</div><div class="line">RegexField		字符串（正则自定义）</div><div class="line">FileField		文件对象</div></pre></td></tr></table></figure>
 <h2 id="常用插件"><a href="#常用插件" class="headerlink" title="常用插件"></a>常用插件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">TextInput</div><div class="line">PasswordInput</div><div class="line">Textarea</div><div class="line">FileInput()</div><div class="line"></div><div class="line">Select(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;，choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">SelectMultiple(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;)   # choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)]</div><div class="line"></div><div class="line">RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line"></div><div class="line">CheckboxInput()</div><div class="line">CheckboxSelectMultiple()</div></pre></td></tr></table></figure>
@@ -118,7 +118,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjabzgyut002h0vjx0xh1kvym" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjac1ar1q002hyyjxb6fkskui" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjabzgyux002m0vjxt40hdn1k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjac1ar1v002myyjx4ny5kmyg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -254,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjabzgyuf002d0vjx59542qlw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjac1ar1n002dyyjxjfildlxj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjabzgytl001z0vjxtf9lpc4f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjac1ar1g0025yyjxvg47tmei" class="article-share-link">Share</a>
       
       
     </footer>
@@ -345,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjabzgyqk000q0vjx5gu9xxeu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjac1aqyh000qyyjx4d4wvb7l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -403,7 +403,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjabzgytw00250vjx2usyk0wq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjac1aqyw000zyyjxen28r86s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -476,7 +476,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjabzgynw00080vjxichb259b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjac1aqxx0008yyjxw76wsuve" class="article-share-link">Share</a>
       
       
     </footer>
@@ -518,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjabzgyua002b0vjxjti1asj0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjac1ar1m002byyjxxrfp08zq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -565,7 +565,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjabzgyur002f0vjx903yjnwf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjac1ar1p002fyyjx35uzbojy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -613,7 +613,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjabzgyt9001v0vjxcrnzzciy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjac1ar14001wyyjximg9p48h" class="article-share-link">Share</a>
       
       
     </footer>
