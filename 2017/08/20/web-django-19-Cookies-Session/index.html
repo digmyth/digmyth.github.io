@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>web-Django-09-Cookies-Session | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录
+Cookies
+Session
+代码学习
+相关配置
+总结
+
+Cookies用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。
+Session所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web-Django-09-Cookies-Session">
+<meta property="og:url" content="http://www.digmyth.com/2017/08/20/web-django-19-Cookies-Session/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+Cookies
+Session
+代码学习
+相关配置
+总结
+
+Cookies用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。
+Session所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服">
+<meta property="og:updated_time" content="2017-12-06T05:03:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web-Django-09-Cookies-Session">
+<meta name="twitter:description" content="目录
+Cookies
+Session
+代码学习
+相关配置
+总结
+
+Cookies用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。
+Session所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-web-django-19-Cookies-Session" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/20/web-django-19-Cookies-Session/" class="article-date">
+  <time datetime="2017-08-20T12:26:37.000Z" itemprop="datePublished">2017-08-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      web-Django-09-Cookies-Session
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>Cookies</li>
+<li>Session</li>
+<li>代码学习</li>
+<li>相关配置</li>
+<li>总结</li>
+</ul>
+<h2 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h2><p>用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。</p>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服务器端，对应一个随机字符串，再把这个随机字符串写入cookies，格式为{“sessionid”:”随机字符串”},问题就得到了解决。</p>
+<h2 id="代码学习"><a href="#代码学习" class="headerlink" title="代码学习"></a>代码学习</h2><p>Cookies 工作特性：<br>在浏览器F12 network-&gt;cookies中首次请求时可以看到 Response Cookies有写入的键值对，下次再访问时Request Cookies有这个键值对，证明此时浏览器会带着这个键值对发给服务器。可以简单用下面代码测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">def ck(request):</div><div class="line">    print(request.COOKIES)   # cookies会封装在request.COOKIES内</div><div class="line">    obj = render(request, &quot;ck.html&quot;, &#123;&quot;msg&quot;: &quot;&quot;&#125;)</div><div class="line">    obj.set_cookie(&apos;user&apos;, &apos;wxq&apos;)  # 向浏览器写入cookies键值对</div><div class="line"></div><div class="line">    return obj</div></pre></td></tr></table></figure></p>
+<p>下面用代码描述Cookies、Session各自工作：<br>login.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;/&gt;</div><div class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;/&gt;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt;&lt;span&gt;&#123;&#123; msg &#125;&#125;&lt;/span&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<p>views.py视图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">from app01 import models</div><div class="line">def login(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        return  render(request, &apos;login.html&apos;,&#123;&quot;msg&quot;: &quot;&quot;&#125;)</div><div class="line">    else:</div><div class="line">        u = request.POST.get(&quot;username&quot;)</div><div class="line">        p = request.POST.get(&quot;pwd&quot;)</div><div class="line">        v=models.UserInfo.objects.filter(username=u, pwd=p).exists()</div><div class="line">        if v:</div><div class="line"></div><div class="line">            # obj.set_cookie(&quot;user&quot;, u,max_age=5)</div><div class="line">            request.session[&quot;user&quot;] = u</div><div class="line">            request.session[&quot;pwd&quot;] = p</div><div class="line">            return redirect(&quot;/home/&quot;)</div><div class="line">        else:</div><div class="line"></div><div class="line">            return render(request,&quot;login.html&quot;,&#123;&quot;msg&quot;: &quot;用户名或密码错误&quot;&#125;)</div><div class="line"></div><div class="line">def home(request):</div><div class="line">    # v = request.COOKIES.get(&quot;user&quot;)</div><div class="line">    v = request.session.get(&quot;user&quot;)</div><div class="line">    if v:</div><div class="line">        return  HttpResponse(&quot;登录成功&quot;)</div><div class="line">    else:</div><div class="line">        return redirect(&quot;/login/&quot;)</div></pre></td></tr></table></figure></p>
+<h2 id="Cookies、Session相关配置"><a href="#Cookies、Session相关配置" class="headerlink" title="Cookies、Session相关配置"></a>Cookies、Session相关配置</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="external">配置参考</a></p>
+<p>settings.py配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SESSION_ENGINE = &apos;django.contrib.sessions.backends.db&apos;   # 引擎（默认）</div><div class="line"> </div><div class="line">SESSION_COOKIE_NAME ＝ &quot;sessionid&quot;         # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串（默认）</div><div class="line">SESSION_COOKIE_PATH ＝ &quot;/&quot;                 # Session的cookie保存的路径（默认）</div><div class="line">SESSION_COOKIE_DOMAIN = None               # Session的cookie保存的域名（默认）</div><div class="line">SESSION_COOKIE_SECURE = False              # 是否Https传输cookie（默认）</div><div class="line">SESSION_COOKIE_HTTPONLY = True             # 是否Session的cookie只支持http传输（默认）</div><div class="line">SESSION_COOKIE_AGE = 1209600               # Session的cookie失效日期（2周）（默认）</div><div class="line">SESSION_EXPIRE_AT_BROWSER_CLOSE = False    # 是否关闭浏览器使得Session过期（默认）</div><div class="line">SESSION_SAVE_EVERY_REQUEST = True          # 是否每次请求都保存Session，默认修改之后才保存（默认）</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>cookies是记录在浏览器上的键值对，本身与登录没有任何关系。 cookies信息保存在request.COOKIES<br>session是记录在服务器上的键值对，key是一个随机字符串。只有Django框架有session 相关的封装。session信息保存在request.session字典里</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/20/web-django-19-Cookies-Session/" data-id="cjaul9bb8002mzujxx5t3sg89" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/09/05/ceph-luminous安装/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ceph-luminous安装
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/08/08/kolla-on-redhat7.2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">kolla on redhat 7.2</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/12/06/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
