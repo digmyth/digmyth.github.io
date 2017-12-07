@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/07/hello-world/" class="article-date">
-  <time datetime="2017-12-07T07:33:54.440Z" itemprop="datePublished">2017-12-07</time>
+  <time datetime="2017-12-07T07:36:23.102Z" itemprop="datePublished">2017-12-07</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/07/hello-world/" data-id="cjaw623k9000i2mjxzdc2f618" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/07/hello-world/" data-id="cjaw65a9r000l38jxq3kofdv3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -151,7 +151,7 @@
 <p>render和HttpResponse的关系？<br>render:<br>1  模板+数据进行替换<br>2 HttpResponse(数据)</p>
 <p>HttpResponse:<br>1 HttpResponse(数据)</p>
 <p>Ajax请求时，响应内容时可以是render和HttpResponse,不要认为只能用HttpResponse. views.py里不能<code>return redirect(&quot;&quot;)</code><br>跳转是在前端跳转location.href = “<a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a>“</p>
-<h2 id="ajax前端组装数据"><a href="#ajax前端组装数据" class="headerlink" title="ajax前端组装数据"></a>ajax前端组装数据</h2><p>ajax形式发input数据时在前端取数据并组装数据后给后台<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ajax取input数据时，可以用data:&#123;&quot;user&quot;:$(&quot;#user&quot;).val(),&quot;pwd&quot;:$(&quot;#pwd&quot;).val()&#125;获取数据，更简单的数据组装方法是加form表单:</div><div class="line">&lt;form id=&quot;ff&quot;&gt;&lt;input /&gt;&lt;/form&gt;</div><div class="line">此时取数据可以用：data: $(&quot;#ff&quot;).serialize(),</div></pre></td></tr></table></figure></p>
+<h2 id="ajax前端组装数据"><a href="#ajax前端组装数据" class="headerlink" title="ajax前端组装数据"></a>ajax前端组装数据</h2><p>ajax形式发input数据时在前端取数据并组装数据后给后台<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ajax取input数据时，可以用data:&#123;&quot;user&quot;:$(&quot;#user&quot;).val(),&quot;pwd&quot;:$(&quot;#pwd&quot;).val()&#125;获取数据，</div><div class="line">更简单的数据组装方法是加form表单:&lt;form id=&quot;ff&quot;&gt;&lt;input /&gt;&lt;/form&gt;</div><div class="line">此时取数据可以用：data: $(&quot;#ff&quot;).serialize(),</div></pre></td></tr></table></figure></p>
 <h2 id="ajax涉及的序列化"><a href="#ajax涉及的序列化" class="headerlink" title="ajax涉及的序列化"></a>ajax涉及的序列化</h2><p>Django 中Ajax方式获取ORM数据时，涉及序列化操作的5种方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"># # 方式一  我们伪造的数据是可以序列化实现展示的</div><div class="line"># #  模板渲染后生成字符串</div><div class="line"># # user_list = models.UserInfo.objects.all()</div><div class="line"># #</div><div class="line"># # return render(request,&quot;tpl.html&quot;,&#123;&quot;user_list&quot;:user_list&#125;)</div><div class="line"># user_list = [</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line"># ]</div><div class="line">#</div><div class="line"># import json</div><div class="line"># data = json.dumps(user_list)</div><div class="line"># return HttpResponse(data)</div><div class="line"></div><div class="line"># # 方式二：  这里是失败的， QuerySet不支持Json序列化，经测试失败</div><div class="line"># user_list = models.UserInfo.objects.all()</div><div class="line"># import json</div><div class="line"># return  HttpResponse(json.dumps(user_list))</div><div class="line"></div><div class="line"># # 方式三 也是成功的,但不常见</div><div class="line">#</div><div class="line"># user_list = models.UserInfo.objects.all()</div><div class="line"># from django.core import serializers</div><div class="line"># data= serializers.serialize(&quot;json&quot;, user_list)</div><div class="line"># return  HttpResponse(data)</div><div class="line"></div><div class="line"># 方式四 推荐用法</div><div class="line"></div><div class="line">user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">user_list=list(user_list)</div><div class="line">print(user_list)</div><div class="line">import json</div><div class="line">data = json.dumps(user_list)</div><div class="line">return  HttpResponse(data)</div><div class="line"># 方式五 </div><div class="line"></div><div class="line">user_list = models.UserInfo.objects.values_list(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">user_list=list(user_list)</div><div class="line">print(user_list)</div><div class="line">import json</div><div class="line">data = json.dumps(user_list)</div><div class="line">return  HttpResponse(data)</div></pre></td></tr></table></figure></p>
 <h2 id="Ajax-错误验证"><a href="#Ajax-错误验证" class="headerlink" title="Ajax 错误验证"></a>Ajax 错误验证</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">## 异常判断</div><div class="line">   import json</div><div class="line">   ret = &#123;&apos;status&apos;:False,&apos;data&apos;:None,&apos;error&apos;:None&#125;</div><div class="line">   try:</div><div class="line">       user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">       user_list=list(user_list)</div><div class="line">       ret[&apos;status&apos;]= True</div><div class="line">       ret[&apos;data&apos;] = user_list</div><div class="line">   except Exception as e:</div><div class="line">       ret[&apos;error&apos;] = &apos;获取数据失败&apos;</div><div class="line">   data = json.dumps(ret)</div><div class="line">   return  HttpResponse(data)</div></pre></td></tr></table></figure>
 <p>或者以类的形式调用更为简洁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">app01项目下新建utls.py</div><div class="line">class BaseResponse():</div><div class="line">   def __init__(self):</div><div class="line">       self.status = False</div><div class="line">       self.data = None</div><div class="line">       self.error = None</div><div class="line">views.py中导入：</div><div class="line">from app01.utils import BaseResponse</div><div class="line">ret = BaseResponse()</div><div class="line">try:</div><div class="line">    user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">    user_list=list(user_list)</div><div class="line">    ret.status= True</div><div class="line">    ret.data = user_list</div><div class="line">except Exception as e:</div><div class="line">        ret.error = &apos;获取数据失败&apos;</div><div class="line">    data = json.dumps(ret.__dict__,ensure_ascii=False)       # False表示不要中文为变为unicode编码</div><div class="line">    return  HttpResponse(data)</div></pre></td></tr></table></figure></p>
@@ -164,7 +164,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjaw623pu002m2mjxel6z88fp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjaw65ad9002o38jxx36mz2xf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -217,7 +217,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjaw623kd000l2mjx0dhu8lsx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjaw65a7y000i38jx4nzepggh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -286,7 +286,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjaw623kk000o2mjxrplsbv48" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjaw65aap000o38jxvlryn5t4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -378,7 +378,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjaw623l1000v2mjx5l2g7843" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjaw65ab6000y38jxoioscaz0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -445,7 +445,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjaw623l6000y2mjxhzytym78" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjaw65ab2000v38jxq2df1x1w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -496,7 +496,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjaw623jn00062mjx7tayzz18" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjaw65a77000338jx5wn1y06b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -543,7 +543,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjaw623n300222mjxgvnwpcm8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjaw65aco002438jx7gttd6r1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -600,7 +600,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjaw623pr002k2mjx84z7rq62" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjaw65ad7002m38jxe45eh0id" class="article-share-link">Share</a>
       
       
     </footer>
@@ -661,7 +661,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjaw623ji00032mjxdti7iy42" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjaw65a7c000638jxb6mmhb9b" class="article-share-link">Share</a>
       
       
     </footer>
