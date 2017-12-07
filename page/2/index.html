@@ -111,7 +111,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjauljjtt000g17jxt6g50iif" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjaw48um20008ypjx6d0naqg9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -178,7 +178,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjauljjxb002k17jx1zoqqjff" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjaw48uqz002nypjx5ieag95x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -250,7 +250,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjauljjxj002r17jxset49x66" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjaw48ur1002pypjxdnw3ajen" class="article-share-link">Share</a>
       
       
     </footer>
@@ -314,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjauljjx5002g17jxvjtgfs6w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjaw48ur5002rypjxw4hemvk8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,54 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjauljjwv002817jxy1kbkn5m" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
-  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
-<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</div></pre></td></tr></table></figure></p>
-<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</div><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</div></pre></td></tr></table></figure></p>
-<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</div><div class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjauljjue000r17jxthooimnf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjaw48uqi0028ypjxiiovgh7m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -463,7 +416,54 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjauljjs7000d17jx8gi1ogau" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjaw48um6000aypjx1v2wjdsb" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
+<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</div></pre></td></tr></table></figure></p>
+<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</div><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</div></pre></td></tr></table></figure></p>
+<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</div><div class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjaw48uo8000rypjxmqckee5n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -521,7 +521,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjauljjuz001217jxsl2r9alq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjaw48uoq000yypjxxf8p51tr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -594,7 +594,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjauljjrx000817jxi0r2vhya" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjaw48ulz0006ypjx0diahc2e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -604,9 +604,9 @@
 
 
   
-    <article id="post-web-django-12-sql" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/05/20/web-django-12-sql/" class="article-date">
+    <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
   <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
 </a>
     
@@ -622,7 +622,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/20/web-django-12-sql/">web-Django-12-sql</a>
+      <a class="article-title" href="/2017/05/20/web-django-03-分页示例/">web-Django-02-分页示例</a>
     </h1>
   
 
@@ -630,18 +630,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-</ul>
-<h2 id="一-创建表"><a href="#一-创建表" class="headerlink" title="一 创建表"></a>一 创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class UserInfo(models.Model):</div><div class="line">    nid=models.AutoField(primary_key=True)</div><div class="line">    name=models.CharField(max_length=32)</div><div class="line">    pwd = models.CharField(max_length=32)</div></pre></td></tr></table></figure>
-<h2 id="二-操作表"><a href="#二-操作表" class="headerlink" title="二 操作表"></a>二 操作表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">q = models.UserInfo.objects.all()</div><div class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</div><div class="line"></div><div class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</div><div class="line"></div><div class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</div><div class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</div><div class="line"></div><div class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</div><div class="line">q = models.UserInfo.objects..filter(name=&apos;wxq&apos;).first()   # 推荐</div></pre></td></tr></table></figure>
-<h2 id="三-操作表的其它方法"><a href="#三-操作表的其它方法" class="headerlink" title="三 操作表的其它方法"></a>三 操作表的其它方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">1. all()       返回的是querySet</div><div class="line">2. filter(id__lt=10, id__gt=1) 并且查，  返回的是querySet</div><div class="line"></div><div class="line">3. get()  只有一个值，否则报错， 返回的是对象</div><div class="line">4. first() 只找第一个值，返回的是对象</div><div class="line"></div><div class="line"></div><div class="line">5. exclude 取反</div><div class="line">model.Book.objects.exclude(prince=134) 返回querySet</div><div class="line"></div><div class="line">6.  count</div><div class="line">modeles.Book.objects.exclude(prince=134).count()   #querySet对象来调用</div><div class="line"></div><div class="line">7. order_by(*field)</div><div class="line"></div><div class="line">models.Book.objects.objects.all().order_by(&quot;prince&quot;) 小到大排序</div><div class="line">models.Book.objects.objects.all().order_by(&quot;-prince&quot;) 大到小排序</div><div class="line"></div><div class="line">8.distinct() 提除重复的记录</div><div class="line"></div><div class="line">9 values   返回字典querySet集合</div><div class="line"></div><div class="line">10 values_list 返回元组querySet集合</div><div class="line"></div><div class="line">11 exist</div><div class="line">ret = models.Book.objects.all().exist()</div></pre></td></tr></table></figure>
-<p>待续。。</p>
+        <h3 id="1-django-分页功能"><a href="#1-django-分页功能" class="headerlink" title="1 django 分页功能"></a>1 django 分页功能</h3><p>app01/views.py Paginator模块的使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">def users(request):</div><div class="line">    from django.core.paginator import  Paginator,EmptyPage,PageNotAnInteger</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    paginator = Paginator(user_list,10)</div><div class="line">    # paginator.per_page         每页显示条目数量</div><div class="line">    # paginator.count            数据总个数  </div><div class="line">    # paginator.num_pages        总页数</div><div class="line">    # paginator.page_range       总页数的索引范围，如(1,10),(1,20)</div><div class="line">    current_page = request.GET.get(&apos;p&apos;)</div><div class="line">    try:</div><div class="line">        page_obj=paginator.page(current_page)</div><div class="line">    except EmptyPage  as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    except PageNotAnInteger as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    # page_obj.has_next()                 是否有下一页</div><div class="line">    # page_obj.next_page_number()         下一页页码</div><div class="line">    # page_obj.has_previous()             是否有上一页</div><div class="line">    # page_obj.previous_page_number()     上一页页码</div><div class="line">    # page_obj.object_list                分页之后的数据列表</div><div class="line">    # page_obj.number                     当前页</div><div class="line">    # page_obj.paginator                  paginator对象</div><div class="line"></div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;page_obj&apos;:page_obj&#125;)</div></pre></td></tr></table></figure></p>
+<p>templates/users.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&#123;% if page_obj.has_previous %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.previous_page_number &#125;&#125;&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line"></div><div class="line">&#123;% for i in page_obj.paginator.page_range %&#125;</div><div class="line">     &lt;a href=&quot;/users?p=&#123;&#123; i &#125;&#125;&quot;&gt;&#123;&#123; i &#125;&#125;&lt;/a&gt;</div><div class="line">&#123;% endfor %&#125;</div><div class="line"></div><div class="line">&#123;% if page_obj.has_next %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.next_page_number &#125;&#125;&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line">&lt;span&gt;</div><div class="line">    &lt;a&gt;&#123;&#123;  page_obj.number &#125;&#125;/&#123;&#123; page_obj.paginator.num_pages &#125;&#125;&lt;/a&gt;</div><div class="line">&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjauljjx8002i17jx1qb4e0c9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjaw48uqv002iypjxy0vij79y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -692,7 +687,7 @@
       <ul>
         
           <li>
-            <a href="/2017/12/06/hello-world/">Hello World</a>
+            <a href="/2017/12/07/hello-world/">Hello World</a>
           </li>
         
           <li>
