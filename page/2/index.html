@@ -61,6 +61,74 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-kolla-on-redhat7.2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/08/kolla-on-redhat7.2/" class="article-date">
+  <time datetime="2017-08-08T01:41:54.000Z" itemprop="datePublished">2017-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/08/kolla-on-redhat7.2/">kolla on redhat 7.2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在一次项目中客户要求在redhat 7.2系统安装部署kolla ocata版本，在这种特定要求下还是实践一把的，在此把详细文档做个记录。</p>
+<h1 id="1-install-wget"><a href="#1-install-wget" class="headerlink" title="1. install wget"></a>1. install wget</h1><p>最小化安装，系统很干净<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rpm -ivh ftp://195.220.108.108/linux/centos/7.3.1611/os/x86_64/Packages/wget-1.14-13.el7.x86_64.rpm</div></pre></td></tr></table></figure></p>
+<h1 id="2-remove-yum-of-redhat"><a href="#2-remove-yum-of-redhat" class="headerlink" title="2. remove yum of redhat"></a>2. remove yum of redhat</h1><p> 首先删除redhat原有的yum ，因为redhat 原本的yum 没有注册为redhat用户是用不了的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rpm -aq|grep yum|xargs rpm -e --nodeps </div><div class="line">rpm -aq|grep python-iniparse|xargs rpm -e --nodeps</div></pre></td></tr></table></figure></p>
+<h1 id="3-install-new-yum"><a href="#3-install-new-yum" class="headerlink" title="3. install new yum"></a>3. install new yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-3.4.3-132.el7.centos.0.1.noarch.rpm</div><div class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/python-iniparse-0.4-9.el7.noarch.rpm   </div><div class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm </div><div class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm </div><div class="line"></div><div class="line">rpm ivh *.rpm</div></pre></td></tr></table></figure>
+<h1 id="4-yum-sourece-configure"><a href="#4-yum-sourece-configure" class="headerlink" title="4.  yum sourece configure"></a>4.  yum sourece configure</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">edit  /etc/yum.repos.d/Centos72.repo</div><div class="line">[base]</div><div class="line">name=CentOS-$releasever - Base</div><div class="line">baseurl=http://vault.centos.org/7.2.1511/os/$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"></div><div class="line">#released updates</div><div class="line">[updates]</div><div class="line">name=CentOS-$releasever - Updates</div><div class="line">baseurl=http://vault.centos.org/7.2.1511/updates/$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"></div><div class="line">[extras]</div><div class="line">name=CentOS-$releasever - Extras</div><div class="line">baseurl=http://vault.centos.org/7.2.1511/extras//$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line">[centosplus]</div><div class="line">name=CentOS-$releasever - Plus</div><div class="line">baseurl=http://vault.centos.org/7.2.1511/centosplus//$basearch/</div><div class="line">gpgcheck=1</div><div class="line">enabled=0</div></pre></td></tr></table></figure>
+<h1 id="5-update-yum"><a href="#5-update-yum" class="headerlink" title="5. update yum"></a>5. update yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum clean all</div><div class="line">yum update</div><div class="line">yum install epel-release axel vim git curl wget   net-tools git gcc lrzsz python-devel vsftpd createrepo</div></pre></td></tr></table></figure>
+<h1 id="6-optimization-system"><a href="#6-optimization-system" class="headerlink" title="6. optimization system"></a>6. optimization system</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">close selinux</div><div class="line">close NetworkManager</div><div class="line">close firewalld</div></pre></td></tr></table></figure>
+<h1 id="7-add-docker-yum"><a href="#7-add-docker-yum" class="headerlink" title="7.  add docker yum"></a>7.  add docker yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">tee /etc/yum.repos.d/docker.repo &lt;&lt; &apos;EOF&apos;</div><div class="line">[dockerrepo]</div><div class="line">name=Docker Repository</div><div class="line">baseurl=https://yum.dockerproject.org/repo/main/centos/7/</div><div class="line">enabled=1</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=https://yum.dockerproject.org/gpg</div><div class="line">EOF</div></pre></td></tr></table></figure>
+<h1 id="8-install-docker"><a href="#8-install-docker" class="headerlink" title="8. install docker"></a>8. install docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</div></pre></td></tr></table></figure>
+<p>如果安装很慢，可以挂载ocata_20170420.iso光盘进入目录Packages/d 下面有相应软件包，执行下面命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum localinstall docker-engine-selinux-1.12.6-1.el7.centos.noarch.rpm docker-engine-1.12.6-1.el7.centos.x86_64.rpm</div></pre></td></tr></table></figure></p>
+<p>再执行完成安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</div></pre></td></tr></table></figure></p>
+<h1 id="9-配置docker"><a href="#9-配置docker" class="headerlink" title="9. 配置docker"></a>9. 配置docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir  /etc/systemd/system/docker.service.d/</div><div class="line">tee /etc/systemd/system/docker.service.d/kolla.conf &lt;&lt; eof  </div><div class="line">[Service]</div><div class="line">MountFlags=shared</div><div class="line">eof</div></pre></td></tr></table></figure>
+<p>edit  /usr/lib/systemd/system/docker.service<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ExecStart=/usr/bin/dockerd --insecure-registry 192.168.200.2:4000</div></pre></td></tr></table></figure></p>
+<p>启动docker:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div><div class="line">systemctl enable docker</div><div class="line">systemctl restart docker</div><div class="line">systemctl status  docker</div></pre></td></tr></table></figure></p>
+<h1 id="10-install-pip"><a href="#10-install-pip" class="headerlink" title="10. install pip"></a>10. install pip</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum install python-pip</div><div class="line">pip install -U pip</div><div class="line">#easy_install -U pip    # 或者easy_install工具安装</div><div class="line">pip install docker-py</div></pre></td></tr></table></figure>
+<h1 id="11-install-kolla-ansible"><a href="#11-install-kolla-ansible" class="headerlink" title="11. install kolla-ansible"></a>11. install kolla-ansible</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># yum install gcc libffi-devel python-devel openssl-devel</div><div class="line"># pip install kolla-ansible</div><div class="line">#cp -rf /usr/share/kolla-ansible/etc_examples/kolla/ /etc/</div><div class="line"># kolla-genpwd</div></pre></td></tr></table></figure>
+<h1 id="12-install-docker-registry"><a href="#12-install-docker-registry" class="headerlink" title="12. install docker registry"></a>12. install docker registry</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mount /dev/sr0 /mnt</div><div class="line">docker load &lt; registry.tar</div><div class="line"></div><div class="line">mkdir /opt/registry</div><div class="line">tar -zxf docker-registry.tar.gz -C /opt/registry</div><div class="line">docker run -d -p 4000:5000 --restart=always --name registry -v /opt/registry/:/var/lib/registry registry</div><div class="line"># curl http://172.16.100.100:4000/v2/_catalog</div><div class="line"># curl http://172.16.100.100:4000/v2/kolla/centos-source-nova-api/tags/list</div><div class="line">&#123;&quot;name&quot;:&quot;kolla/centos-source-nova-api&quot;,&quot;tags&quot;:[&quot;4.0.0.3&quot;]&#125;</div></pre></td></tr></table></figure>
+<h1 id="13-ceph-disk-set"><a href="#13-ceph-disk-set" class="headerlink" title="13.  ceph disk set"></a>13.  ceph disk set</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">parted /dev/sdb  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div><div class="line">parted /dev/sdc  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div><div class="line">parted /dev/sdd  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</div></pre></td></tr></table></figure>
+<h1 id="14-in-case-of-vm"><a href="#14-in-case-of-vm" class="headerlink" title="14.   in case of vm"></a>14.   in case of vm</h1><p>如果只是在虚机中实验搭建kolla，需要额外配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir -p /etc/kolla/config/nova</div><div class="line">vim /etc/kolla/config/nova/nova-compute.conf</div><div class="line">[libvirt]</div><div class="line">virt_type = qemu</div><div class="line">cpu_mode = none</div></pre></td></tr></table></figure></p>
+<p>创建 /etc/kolla/config/ceph.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">osd pool default size = 1</div><div class="line">osd pool default min size = 1</div></pre></td></tr></table></figure></p>
+<p>如果有需要，请手动调整副本数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd pool set rbd size 1</div></pre></td></tr></table></figure></p>
+<h1 id="15-edit-global-yml"><a href="#15-edit-global-yml" class="headerlink" title="15.  edit global.yml"></a>15.  edit global.yml</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">edit /etc/kolla/global.yml</div><div class="line">此处略过。。。</div></pre></td></tr></table></figure>
+<h1 id="16-kolla-ansible-deploy"><a href="#16-kolla-ansible-deploy" class="headerlink" title="16. kolla-ansible deploy"></a>16. kolla-ansible deploy</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">kolla-ansible prechecks</div><div class="line">kolla-ansible pull</div><div class="line">kolla-ansible deploy</div><div class="line">kolla-ansible post-deploy</div></pre></td></tr></table></figure>
+<h1 id="17-cli-commands-install"><a href="#17-cli-commands-install" class="headerlink" title="17. cli-commands install"></a>17. cli-commands install</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum  install ceph-common </div><div class="line">pip python-openstackclient   python-neutronclient</div></pre></td></tr></table></figure>
+<h1 id="18-access-dashboard"><a href="#18-access-dashboard" class="headerlink" title="18. access dashboard"></a>18. access dashboard</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://172.16.100.100/horizon</div></pre></td></tr></table></figure>
+<p>如果在openstack平台虚机中搭建kolla情况下，让其能通过浮动地址访问内部地址的dashboard<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -d 172.18.128.244 -p tcp --dport 80 -j DNAT --to 172.16.100.100</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">成功访问：http://172.18.128.244</div></pre></td></tr></table></figure>
+<p>《成功》。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjaw623ko000r2mjx11rniosq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-cephfs-manila" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/05/cephfs-manila/" class="article-date">
@@ -111,7 +179,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjaw48um20008ypjx6d0naqg9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjaw623jw000a2mjxs2l8zzir" class="article-share-link">Share</a>
       
       
     </footer>
@@ -178,7 +246,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjaw48uqz002nypjx5ieag95x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjaw623py002o2mjxcnwsjf1k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -250,7 +318,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjaw48ur1002pypjxdnw3ajen" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjaw623q4002t2mjxl957uke6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -314,7 +382,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjaw48ur5002rypjxw4hemvk8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjaw623nq002c2mjxxmnjcm1j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjaw48uqi0028ypjxiiovgh7m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjaw623n700242mjxvtna9gov" class="article-share-link">Share</a>
       
       
     </footer>
@@ -416,7 +484,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjaw48um6000aypjx1v2wjdsb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjaw623k5000f2mjxnw1jqtp0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -463,7 +531,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjaw48uo8000rypjxmqckee5n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjaw623kr000t2mjxpyjlvq74" class="article-share-link">Share</a>
       
       
     </footer>
@@ -521,7 +589,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjaw48uoq000yypjxxf8p51tr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjaw623ld00122mjx36xlujj3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -594,49 +662,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjaw48ulz0006ypjx0diahc2e" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
-  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/20/web-django-03-分页示例/">web-Django-02-分页示例</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-django-分页功能"><a href="#1-django-分页功能" class="headerlink" title="1 django 分页功能"></a>1 django 分页功能</h3><p>app01/views.py Paginator模块的使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">def users(request):</div><div class="line">    from django.core.paginator import  Paginator,EmptyPage,PageNotAnInteger</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    paginator = Paginator(user_list,10)</div><div class="line">    # paginator.per_page         每页显示条目数量</div><div class="line">    # paginator.count            数据总个数  </div><div class="line">    # paginator.num_pages        总页数</div><div class="line">    # paginator.page_range       总页数的索引范围，如(1,10),(1,20)</div><div class="line">    current_page = request.GET.get(&apos;p&apos;)</div><div class="line">    try:</div><div class="line">        page_obj=paginator.page(current_page)</div><div class="line">    except EmptyPage  as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    except PageNotAnInteger as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    # page_obj.has_next()                 是否有下一页</div><div class="line">    # page_obj.next_page_number()         下一页页码</div><div class="line">    # page_obj.has_previous()             是否有上一页</div><div class="line">    # page_obj.previous_page_number()     上一页页码</div><div class="line">    # page_obj.object_list                分页之后的数据列表</div><div class="line">    # page_obj.number                     当前页</div><div class="line">    # page_obj.paginator                  paginator对象</div><div class="line"></div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;page_obj&apos;:page_obj&#125;)</div></pre></td></tr></table></figure></p>
-<p>templates/users.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&#123;% if page_obj.has_previous %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.previous_page_number &#125;&#125;&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line"></div><div class="line">&#123;% for i in page_obj.paginator.page_range %&#125;</div><div class="line">     &lt;a href=&quot;/users?p=&#123;&#123; i &#125;&#125;&quot;&gt;&#123;&#123; i &#125;&#125;&lt;/a&gt;</div><div class="line">&#123;% endfor %&#125;</div><div class="line"></div><div class="line">&#123;% if page_obj.has_next %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.next_page_number &#125;&#125;&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line">&lt;span&gt;</div><div class="line">    &lt;a&gt;&#123;&#123;  page_obj.number &#125;&#125;/&#123;&#123; page_obj.paginator.num_pages &#125;&#125;&lt;/a&gt;</div><div class="line">&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjaw48uqv002iypjxy0vij79y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjaw623jr00082mjxo0bywgwn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -691,6 +717,10 @@
           </li>
         
           <li>
+            <a href="/2017/11/20/web-django-20-ajax/">web-Django-18-ajax</a>
+          </li>
+        
+          <li>
             <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
           </li>
         
@@ -700,10 +730,6 @@
         
           <li>
             <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
           </li>
         
       </ul>

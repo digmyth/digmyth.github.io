@@ -98,7 +98,49 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjaw48uqr002eypjx6z3rblnq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjaw623nz002i2mjxbokkdsr8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
+  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/20/web-django-03-分页示例/">web-Django-02-分页示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-django-分页功能"><a href="#1-django-分页功能" class="headerlink" title="1 django 分页功能"></a>1 django 分页功能</h3><p>app01/views.py Paginator模块的使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">def users(request):</div><div class="line">    from django.core.paginator import  Paginator,EmptyPage,PageNotAnInteger</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    paginator = Paginator(user_list,10)</div><div class="line">    # paginator.per_page         每页显示条目数量</div><div class="line">    # paginator.count            数据总个数  </div><div class="line">    # paginator.num_pages        总页数</div><div class="line">    # paginator.page_range       总页数的索引范围，如(1,10),(1,20)</div><div class="line">    current_page = request.GET.get(&apos;p&apos;)</div><div class="line">    try:</div><div class="line">        page_obj=paginator.page(current_page)</div><div class="line">    except EmptyPage  as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    except PageNotAnInteger as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    # page_obj.has_next()                 是否有下一页</div><div class="line">    # page_obj.next_page_number()         下一页页码</div><div class="line">    # page_obj.has_previous()             是否有上一页</div><div class="line">    # page_obj.previous_page_number()     上一页页码</div><div class="line">    # page_obj.object_list                分页之后的数据列表</div><div class="line">    # page_obj.number                     当前页</div><div class="line">    # page_obj.paginator                  paginator对象</div><div class="line"></div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;page_obj&apos;:page_obj&#125;)</div></pre></td></tr></table></figure></p>
+<p>templates/users.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&#123;% if page_obj.has_previous %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.previous_page_number &#125;&#125;&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line"></div><div class="line">&#123;% for i in page_obj.paginator.page_range %&#125;</div><div class="line">     &lt;a href=&quot;/users?p=&#123;&#123; i &#125;&#125;&quot;&gt;&#123;&#123; i &#125;&#125;&lt;/a&gt;</div><div class="line">&#123;% endfor %&#125;</div><div class="line"></div><div class="line">&#123;% if page_obj.has_next %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.next_page_number &#125;&#125;&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line">&lt;span&gt;</div><div class="line">    &lt;a&gt;&#123;&#123;  page_obj.number &#125;&#125;/&#123;&#123; page_obj.paginator.num_pages &#125;&#125;&lt;/a&gt;</div><div class="line">&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjaw623ng002a2mjxb3m7eaek" class="article-share-link">Share</a>
       
       
     </footer>
@@ -146,7 +188,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjaw48uqb0022ypjxfx1u4ogq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjaw623mv001x2mjxpj2260h4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -205,7 +247,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjaw48uom000wypjxz09tj7cz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjaw623la00102mjxsswd7faj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -260,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjaw48uqo002cypjxplx3rb6z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjaw623nt002e2mjx1k7fwn6m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -304,7 +346,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjaw48uq5001xypjx6sjerunf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjaw623mk001q2mjx6x8zsysf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +393,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjaw48upn001kypjx0qk0olop" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjaw623mn001s2mjxgisxqlds" class="article-share-link">Share</a>
       
       
     </footer>
@@ -395,7 +437,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjaw48upu001oypjxy0be770k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjaw623mg001o2mjx04isikaw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -477,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjaw48uqk002aypjxslumtahy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjaw623ne00282mjxesnranrf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -534,76 +576,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjaw48uq3001vypjxsilgclcc" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-06-01-正则表达式" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/01/python-06-01-正则表达式/" class="article-date">
-  <time datetime="2017-03-01T09:03:01.000Z" itemprop="datePublished">2017-03-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/01/python-06-01-正则表达式/">python-06-01-正则表达式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>基础</li>
-<li>进阶</li>
-<li>re模块</li>
-<li>分组</li>
-<li>切分字符串</li>
-<li>编译compile</li>
-<li>贪婪模式匹配</li>
-</ul>
-<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>元字符：(Meta-Characters)是正则表达式中具有特殊意义的专用字符<br>比如：\d表示数字 \s表示空格 \w表示[a-zA-Z0-9_]大小写字母数字下划线<br>元字符表 <a href="http://www.runoob.com/regexp/regexp-metachar.html" target="_blank" rel="external">链接</a><br>字符类：又字符集，一组可以匹配[ ]中字符串的字符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">.                     # 任意单个字符</div><div class="line">[]                    # 集合内</div><div class="line">[^]                   # 集合内取反</div><div class="line">?                     # 表示前一个字符长度为0或1</div><div class="line">+                     # 表示前一个字符长度为1或1以上</div><div class="line">*                     # 表示前一个字符长度为任意，等同于?+的并集</div><div class="line">&#123;m&#125;</div><div class="line">&#123;m,n&#125;</div><div class="line">&#123;0,n&#125;</div><div class="line">&#123;m,&#125;</div><div class="line">^</div><div class="line">$</div><div class="line">pat1|pat2</div><div class="line">()         	      # 分组</div><div class="line">\b                    # 嘛意思</div><div class="line">[0-9]  \d</div><div class="line">[0-9a-zA-Z_]  \w</div><div class="line">\s         	      # 任意空白字符</div><div class="line">\nn</div><div class="line">a*?                   # 这里？使用非贪婪模式（正则表达式默认工作在贪婪模式，尽可能多的去匹配）</div><div class="line">(*|+|?|&#123;&#125;)?`          # 使用非贪婪模式</div><div class="line">match 		      # 只匹配首项以开头的，与shell中^相同</div></pre></td></tr></table></figure></p>
-<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><h2 id="re模块"><a href="#re模块" class="headerlink" title="re模块"></a>re模块</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; res = re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</div><div class="line">&gt;&gt;&gt; print(res)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;              # 没有匹配到打印为None</div><div class="line"></div><div class="line">&gt;&gt;&gt; res.group()                                                 # 匹配到时用.group()取出匹配结果 </div><div class="line">&apos;wxq&apos;</div><div class="line"></div><div class="line">&gt;&gt;&gt; &quot;I love wxq &quot;.find(&apos;wxq&apos;)</div><div class="line">7</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;.&apos;, &apos;I love digmyth.com&apos;)                       # 匹配任意单个字符，所以匹配到&quot;I&quot;</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;\.&apos;, &apos;I love digmyth.com&apos;)                      # 只匹配.需要转义</div><div class="line">&lt;_sre.SRE_Match object; span=(14, 15), match=&apos;.&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;wx.&apos;, &apos;I love wxq.com&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;\d&apos;, &apos;I love 123 wxq&apos;)                          # 匹配单个数字</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 8), match=&apos;1&apos;&gt;</div><div class="line"> </div><div class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d&apos;, &apos;I love 123 wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;123&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d.\d\d\d.\d\d\d.\d\d\d&apos;, &apos;192.168.100.10&apos;)   # 少一位匹配不到</div><div class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d.\d\d\d.\d\d\d.\d\d\d&apos;, &apos;192.168.100.100&apos;)  # 匹配到</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 15), match=&apos;192.168.100.100&apos;&gt;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(r&apos;[aeiou]&apos;, &apos;I love wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(3, 4), match=&apos;o&apos;&gt;</div><div class="line">&gt;&gt;&gt; re.search(r&apos;[aeiouAEIOU]&apos;, &apos;I love wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</div><div class="line">&gt;&gt;&gt; re.search(r&apos;[a-z]&apos;, &apos;I love wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(2, 3), match=&apos;l&apos;&gt;</div><div class="line"> </div><div class="line">&gt;&gt;&gt; re.search(r&apos;[2-9]&apos;, &apos;I love 123  wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(8, 9), match=&apos;2&apos;&gt;</div><div class="line"> </div><div class="line">&gt;&gt;&gt; re.search(r&apos;[0-9]&apos;, &apos;I love 123  wxq&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(7, 8), match=&apos;1&apos;&gt;</div><div class="line">&gt;&gt;&gt; re.search(r&apos;ab&#123;3&#125;c&apos;, &apos;abbbc&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 5), match=&apos;abbbc&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;ab&#123;3,10&#125;c&apos;, &apos;abbbbbc&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 7), match=&apos;abbbbbc&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;[0-255]&apos;, &apos;188&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;1&apos;&gt;</div><div class="line">&gt;&gt;&gt; </div><div class="line">&gt;&gt;&gt; re.search(r&apos;[0-2][0-5][0-5]&apos;, &apos;188&apos;)                  # 没有匹配到</div><div class="line">&gt;&gt;&gt; </div><div class="line">&gt;&gt;&gt; re.search(r&apos;[01]\d\d|2[0-2]\d|25[0-5]&apos;, &apos;188&apos;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 3), match=&apos;188&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5]\.&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5]))&apos;, &apos;192.168.1.1&apos;)   # 只匹配到192</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 3), match=&apos;192&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5])\.&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;)   # 匹配不到</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5]\.)&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;)   # 匹配不到</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(([01]\d\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;) # 匹配不到</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]?\d?\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;) # 匹配有误细看</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 11), match=&apos;192.168.1.1&apos;&gt;</div></pre></td></tr></table></figure>
-<p>ip地址匹配最终完美写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]?\d?\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.240.240&apos;)  # 匹配有误细看</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 14), match=&apos;192.168.240.24&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;(2[0-4]\d|25[0-5]|[0-1]?\d?\d)&apos;, &apos;192.168.240.240&apos;) # 这个写法完美</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 15), match=&apos;192.168.240.240&apos;&gt;</div></pre></td></tr></table></figure></p>
-<p>[0-255]表示的是0，1，2后跟上55<br>[0-2][0-5][0-5]只是三个占位上的数字，没有个位，百位这样的区分，当然不能匹配188了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;3&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)       # 重复</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 24), match=&apos;daemon_Ddaemon_Ddaemon_D&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;1, 5&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)    # 注意没有空格</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;1,5&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)     # 匹配到了</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 24), match=&apos;daemon_Ddaemon_Ddaemon_D&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; s = &quot;&lt;html&gt;&lt;title&gt;I love www.digmyth.com&lt;/title&gt;&lt;/html&gt;&quot;</div><div class="line">&gt;&gt;&gt; re.search(r&apos;&lt;.+?&gt;&apos;, s)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 6), match=&apos;&lt;html&gt;&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; re.search(r&apos;&lt;.+&gt;&apos;, s)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 50), match=&apos;&lt;html&gt;&lt;title&gt;I love www.digmyth.com&lt;/title&gt;&lt;/html&gt;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.findall(r&apos;\bFishC\b&apos;, &quot;FishC.com!FishC_com!(FishC)&quot;)       # 待续。#^#</div><div class="line">[&apos;FishC&apos;, &apos;FishC&apos;]</div><div class="line">&gt;&gt;&gt; </div><div class="line">&gt;&gt;&gt; re.findall(r&apos;\w&apos;, &quot;牛X工作室Love_FishC_com!)&quot;)</div><div class="line">[&apos;牛&apos;, &apos;X&apos;, &apos;工&apos;, &apos;作&apos;, &apos;室&apos;, &apos;L&apos;, &apos;o&apos;, &apos;v&apos;, &apos;e&apos;, &apos;_&apos;, &apos;F&apos;, &apos;i&apos;, &apos;s&apos;, &apos;h&apos;, &apos;C&apos;, &apos;_&apos;, &apos;c&apos;, &apos;o&apos;, &apos;m&apos;]</div></pre></td></tr></table></figure>
-<p><code>re-replace/sub</code>的例子如下<br>字符串的strip方法只能去前后空格、字符串的replace方法是字符替换、re.sub方法也是替换功能。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; name = &apos; w   x   q&apos;</div><div class="line">&gt;&gt;&gt; name.strip()</div><div class="line">&apos;w   x   q&apos;</div><div class="line">&gt;&gt;&gt; name.replace(&apos; &apos;, &apos;&apos;)</div><div class="line">&apos;wxq&apos;</div><div class="line">&gt;&gt;&gt; re.sub(&apos; &apos;, &apos;&apos;, name)</div><div class="line">&apos;wxq&apos;</div><div class="line">&gt;&gt;&gt; re.sub(&apos;wxq&apos;, &apos;love&apos;, &apos;I wxq wxq wxq&apos;, count=2)</div><div class="line">&apos;I love love wxq&apos;</div></pre></td></tr></table></figure></p>
-<h2 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h2><p>eg1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; name = re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</div><div class="line">&gt;&gt;&gt; name.group()                       # .group()打印匹配对象</div><div class="line">&apos;wxq&apos;</div></pre></td></tr></table></figure></p>
-<p>eg2:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; s = &apos;aa bb cc dd  &apos;</div><div class="line">&gt;&gt;&gt; p = re.compile(r&apos;\w+\s+\w+&apos;)       #  匹配单词空格单词这样的分组</div><div class="line">&gt;&gt;&gt; p.findall(s)                       #  匹配分为了2组</div><div class="line">[&apos;aa bb&apos;, &apos;cc dd&apos;]</div><div class="line">&gt;&gt;&gt; p = re.compile(r&apos;(\w+)\s+\w+&apos;)     #  只匹配单词空格单词中括号那个单词</div><div class="line">&gt;&gt;&gt; p.findall(s)</div><div class="line">[&apos;aa&apos;, &apos;cc&apos;]</div><div class="line">&gt;&gt;&gt; p = re.compile(r&apos;((\w+)\s+\w+)&apos;)   #  先打印外括号，后打印内括号，先后内容组成元组，最后列表呈现</div><div class="line">&gt;&gt;&gt; p.findall(s)</div><div class="line">[(&apos;aa bb&apos;, &apos;aa&apos;), (&apos;cc dd&apos;, &apos;cc&apos;)]</div></pre></td></tr></table></figure></p>
-<p>eg3:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.search(&quot;(?P&lt;province&gt;[0-9]&#123;4&#125;)(?P&lt;city&gt;[0-9]&#123;2&#125;(?P&lt;birthday&gt;[0-9]&#123;4&#125;))&quot;, &quot;371481199306143242&quot;).groupdict()</div><div class="line">&#123;&apos;province&apos;: &apos;3714&apos;, &apos;birthday&apos;: &apos;1993&apos;, &apos;city&apos;: &apos;811993&apos;&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="切分字符串"><a href="#切分字符串" class="headerlink" title="切分字符串"></a>切分字符串</h2><p><code>re.split用法</code><br>split 以至少2个空格为分隔,  两种写法:<br>re.split(r’\s{2,}’,  str)<br>re.split(r’\s\s+’，str)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import re</div><div class="line">&gt;&gt;&gt; re.split(r&apos;\s&#123;2,&#125;&apos;, &apos;17:19:28 up  2:00,  3 users,  load average: 0.01, 0.03, 0.05&apos;) # 以2个空隔分割字符串返回列表</div><div class="line">[&apos;17:19:28 up&apos;, &apos;2:00,&apos;, &apos;3 users,&apos;, &apos;load average: 0.01, 0.03, 0.05&apos;]</div><div class="line">&gt;&gt;&gt; re.split(r&apos;\s\s+&apos;, &apos;17:19:28 up  2:00,  3 users,  load average: 0.01, 0.03, 0.05&apos;)</div><div class="line">[&apos;17:19:28 up&apos;, &apos;2:00,&apos;, &apos;3 users,&apos;, &apos;load average: 0.01, 0.03, 0.05&apos;]</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># cat whodata.txt</div><div class="line"> 17:24:49 up  2:05,  3 users,  load average: 0.00, 0.02, 0.05</div><div class="line">USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT</div><div class="line">root     pts/1    192.168.109.1    15:33    9.00s  0.17s  0.04s python3</div><div class="line">&gt;&gt;&gt; import re</div><div class="line">&gt;&gt;&gt; with open(&apos;whodata.txt&apos;, &apos;r&apos;) as f:</div><div class="line">...     for line in f:</div><div class="line">...         res = re.split(&apos;\s\s+&apos;, line)</div><div class="line">...         print(res)</div><div class="line">... </div><div class="line">[&apos; 17:24:49 up&apos;, &apos;2:05,&apos;, &apos;3 users,&apos;, &apos;load average: 0.00, 0.02, 0.05\n&apos;]</div><div class="line">[&apos;USER&apos;, &apos;TTY&apos;, &apos;FROM&apos;, &apos;LOGIN@&apos;, &apos;IDLE&apos;, &apos;JCPU&apos;, &apos;PCPU WHAT\n&apos;]</div><div class="line">[&apos;root&apos;, &apos;pts/1&apos;, &apos;192.168.109.1&apos;, &apos;15:33&apos;, &apos;9.00s&apos;, &apos;0.17s&apos;, &apos;0.04s python3\n&apos;]</div></pre></td></tr></table></figure>
-<p>eg1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; re.sub(&apos; &apos;, &apos;&apos;, name)</div><div class="line">&apos;wxq&apos;</div><div class="line">&gt;&gt;&gt; p = re.compile(&apos;\.&apos;)</div><div class="line">&gt;&gt;&gt; p.split(&apos;www.digmyth.com&apos;)</div><div class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</div><div class="line">&gt;&gt;&gt; url = &apos;www.digmyth.com&apos;</div><div class="line">&gt;&gt;&gt; re.compile(&apos;\.&apos;).split(url)</div><div class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</div><div class="line">&gt;&gt;&gt; re.sub(&apos;www&apos;, &apos;mail&apos;, url)</div><div class="line">&apos;mail.digmyth.com&apos;</div><div class="line">&gt;&gt;&gt; url.split(&apos;.&apos;)</div><div class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</div></pre></td></tr></table></figure></p>
-<p>eg2:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import re</div><div class="line">&gt;&gt;&gt; name = &apos;hello    world&apos;</div><div class="line">&gt;&gt;&gt; str_a, str_b = re.split(r&apos;\s+&apos;, name)</div><div class="line">&gt;&gt;&gt; str_a, str_b</div><div class="line">(&apos;hello&apos;, &apos;world&apos;)</div><div class="line">&gt;&gt;&gt; str_a</div><div class="line">&apos;hello&apos;</div><div class="line">&gt;&gt;&gt; str_b</div><div class="line">&apos;world&apos;</div></pre></td></tr></table></figure></p>
-<p>eg3:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat put_split.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">import os</div><div class="line">import re</div><div class="line">input = input(&quot;enter you str: &quot;).strip()</div><div class="line">cmd, path = re.split(r&apos;\s+&apos;, input)</div><div class="line">print(cmd.strip())</div><div class="line">print(path.strip())</div><div class="line">root@ubuntu:~# python3 put_split.py </div><div class="line">enter you str:    put /root/demo.txt</div><div class="line">put</div><div class="line">/root/demo.txt</div></pre></td></tr></table></figure></p>
-<h2 id="编译compile"><a href="#编译compile" class="headerlink" title="编译compile"></a>编译compile</h2><p>正则表达式工作流程： 检测语法–&gt; 编译–&gt; 匹配<br>当一个正则表达式多次调用时，建议预先编译好，后续直接用于匹配以提高效率</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; p = re.compile(r&apos;[A-Z]&apos;)</div><div class="line">&gt;&gt;&gt; type(p)</div><div class="line">&lt;class &apos;_sre.SRE_Pattern&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; p.search(&quot;I Love www.DigMyth.Com&quot;)</div><div class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</div><div class="line"></div><div class="line">&gt;&gt;&gt; p.findall(&quot;I LLove www.DigMyth.Com&quot;)</div><div class="line">[&apos;I&apos;, &apos;L&apos;, &apos;L&apos;, &apos;D&apos;, &apos;M&apos;, &apos;C&apos;]</div></pre></td></tr></table></figure>
-<h2 id="贪婪模式匹配"><a href="#贪婪模式匹配" class="headerlink" title="贪婪模式匹配"></a>贪婪模式匹配</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjaw48upf001eypjxyuwpenqb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjaw623md001m2mjxl68397gv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -658,6 +631,10 @@
           </li>
         
           <li>
+            <a href="/2017/11/20/web-django-20-ajax/">web-Django-18-ajax</a>
+          </li>
+        
+          <li>
             <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
           </li>
         
@@ -667,10 +644,6 @@
         
           <li>
             <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
           </li>
         
       </ul>
