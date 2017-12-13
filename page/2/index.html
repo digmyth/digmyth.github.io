@@ -119,7 +119,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjb4x4nuh000rlujxd2vrjjud" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjb4ykchn000rmtjxlkqfr5it" class="article-share-link">Share</a>
       
       
     </footer>
@@ -179,7 +179,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjb4x4ntv000alujxhudu152d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjb4ykcfp000amtjxrmcxs375" class="article-share-link">Share</a>
       
       
     </footer>
@@ -246,7 +246,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjb4x4nwj002glujx7fpwmrvp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjb4ykcjv002gmtjx0qhs0mil" class="article-share-link">Share</a>
       
       
     </footer>
@@ -318,7 +318,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjb4x4nwu002tlujxky3aos0x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjb4ykck8002tmtjxpoxp7l3v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -382,7 +382,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjb4x4nwh002elujxzaftpal4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjb4ykcju002emtjxcskc1f7z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -426,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjb4x4nw70026lujxor0w8s3s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjb4ykcjl0026mtjxwyoneyln" class="article-share-link">Share</a>
       
       
     </footer>
@@ -492,13 +492,13 @@
 <p>添加几个组做如下增删及更新数据操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">obj = models.UserGroup.objects.filter(id=2).first() #id为2的组是B组</div><div class="line">print(obj.id,obj.caption,obj.m)</div><div class="line">obj.m.add(*[1,2])     #ID为1，2的用户加入B组</div><div class="line"># obj.m.remove(*[1,]) # 删除B组中用户id为1的记录</div><div class="line">obj.m.clear()         # 清除组id为2的所有记录</div><div class="line">obj.m.set([1,])       # 不管id为2的组有几个用户都清空后把用户id为1的加入B组</div></pre></td></tr></table></figure></p>
 <h3 id="2-3-多对多查询"><a href="#2-3-多对多查询" class="headerlink" title="2.3 多对多查询"></a>2.3 多对多查询</h3><p>学习多对多查询<br>注意：first/get返回对象，filter/all/values/values_list返回QuerySet<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">obj=models.UserGroup.objects.filter(id=2).first()  # 得到组对象</div><div class="line">v=obj.m.all()     # obj.m表示UserInfo表</div><div class="line">for row in v:</div><div class="line">    print(row.username, row.dp.title)</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">obj=models.UserGroup.objects.filter(id=2).first() # 得到组ID为2的对象</div><div class="line">v=obj.m.filter(dp__title=&quot;IT&quot;).first()  # UserInfo表中查部门为IT的记录</div><div class="line">print(v.username)                       # 打印符合条件的username</div></pre></td></tr></table></figure>
-<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">models.UserInfo.objects.all().select_related(&quot;DePart&quot;)  #优化方法一</div><div class="line">models.UserInfo.objects.all().prefetch_related(&quot;ForeighKeyname&quot;) # 优化方法二</div><div class="line">models.UserInfo.objects.all()  # 分解为1</div><div class="line">models.DePart.objects.filter(id__in = [1,2,3,4]) # 分解为2</div><div class="line"></div><div class="line">#only:只取相应字段，否则性能下降</div><div class="line"># defer:不取相应字段，否则性能下降</div><div class="line">models.UserInfo.objects.all().only(&apos;id&apos;,&apos;name&apos;)  # 只取哪几列</div><div class="line">models.UserInfo.objects.all().defer(&apos;id&apos;,&apos;name&apos;) # 不取哪几列</div></pre></td></tr></table></figure>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">models.UserInfo.objects.all().select_related(&quot;ForeighKeyname&quot;)   #优化方法一</div><div class="line">models.UserInfo.objects.all().prefetch_related(&quot;ForeighKeyname&quot;) # 优化方法二</div><div class="line">prefetch_related可以分解为models.UserInfo.objects.all()  # 分解为1</div><div class="line">取到了ForeighKeyname_id=[1,2,3,4,5]</div><div class="line">然后models.DePart.objects.filter(id__in = [1,2,3,4,5]) # 分解为2</div><div class="line">这样就把跨表查询变为了2次单表查询</div><div class="line">推荐用优化方法二</div><div class="line"></div><div class="line">#only:只取相应字段，否则性能下降</div><div class="line"># defer:不取相应字段，否则性能下降</div><div class="line">models.UserInfo.objects.all().only(&apos;id&apos;,&apos;name&apos;)  # 只取哪几列</div><div class="line">models.UserInfo.objects.all().defer(&apos;id&apos;,&apos;name&apos;) # 不取哪几列</div></pre></td></tr></table></figure>
 <p><a href="http://www.cnblogs.com/yuanchenqi/articles/7552333.html" target="_blank" rel="external">还有更多</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjb4x4nwq002olujxolza6e98" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjb4ykck4002omtjxp6cdav1x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -545,7 +545,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjb4x4nui000tlujxt7vtv3ay" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjb4ykchq000tmtjx72az8de2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -603,7 +603,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjb4x4nu2000flujxbbgoxjiz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjb4ykcfw000fmtjxguhi6a42" class="article-share-link">Share</a>
       
       
     </footer>
@@ -661,7 +661,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjb4x4nuu0012lujx9qdndeyb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjb4ykci70012mtjx3mdq6133" class="article-share-link">Share</a>
       
       
     </footer>
