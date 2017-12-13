@@ -17,7 +17,7 @@
 
 一 创建表1234class UserInfo(models.Model):    nid=models.AutoField(primary_key=True)    name=models.CharField(max_length=32)    pwd = models.CharField(max_length=32)
 二 操作表123456789101112q = models.Us">
-<meta property="og:updated_time" content="2017-11-22T13:51:45.000Z">
+<meta property="og:updated_time" content="2017-12-13T01:45:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-Django-12-sql">
 <meta name="twitter:description" content="目录
@@ -102,14 +102,14 @@
 <li>目录</li>
 </ul>
 <h2 id="一-创建表"><a href="#一-创建表" class="headerlink" title="一 创建表"></a>一 创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class UserInfo(models.Model):</div><div class="line">    nid=models.AutoField(primary_key=True)</div><div class="line">    name=models.CharField(max_length=32)</div><div class="line">    pwd = models.CharField(max_length=32)</div></pre></td></tr></table></figure>
-<h2 id="二-操作表"><a href="#二-操作表" class="headerlink" title="二 操作表"></a>二 操作表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">q = models.UserInfo.objects.all()</div><div class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</div><div class="line"></div><div class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</div><div class="line"></div><div class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</div><div class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</div><div class="line"></div><div class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</div><div class="line">q = models.UserInfo.objects..filter(name=&apos;wxq&apos;).first()   # 推荐</div></pre></td></tr></table></figure>
-<h2 id="三-操作表的其它方法"><a href="#三-操作表的其它方法" class="headerlink" title="三 操作表的其它方法"></a>三 操作表的其它方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">1. all()       返回的是querySet</div><div class="line">2. filter(id__lt=10, id__gt=1) 并且查，  返回的是querySet</div><div class="line"></div><div class="line">3. get()  只有一个值，否则报错， 返回的是对象</div><div class="line">4. first() 只找第一个值，返回的是对象</div><div class="line"></div><div class="line"></div><div class="line">5. exclude 取反</div><div class="line">model.Book.objects.exclude(prince=134) 返回querySet</div><div class="line"></div><div class="line">6.  count</div><div class="line">modeles.Book.objects.exclude(prince=134).count()   #querySet对象来调用</div><div class="line"></div><div class="line">7. order_by(*field)</div><div class="line"></div><div class="line">models.Book.objects.objects.all().order_by(&quot;prince&quot;) 小到大排序</div><div class="line">models.Book.objects.objects.all().order_by(&quot;-prince&quot;) 大到小排序</div><div class="line"></div><div class="line">8.distinct() 提除重复的记录</div><div class="line"></div><div class="line">9 values   返回字典querySet集合</div><div class="line"></div><div class="line">10 values_list 返回元组querySet集合</div><div class="line"></div><div class="line">11 exist</div><div class="line">ret = models.Book.objects.all().exist()</div></pre></td></tr></table></figure>
+<h2 id="二-操作表"><a href="#二-操作表" class="headerlink" title="二 操作表"></a>二 操作表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">q = models.UserInfo.objects.all()</div><div class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</div><div class="line"></div><div class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</div><div class="line"></div><div class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</div><div class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</div><div class="line"></div><div class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</div><div class="line">q = models.UserInfo.objects.filter(name=&apos;wxq&apos;).first()    # 推荐</div></pre></td></tr></table></figure>
+<h2 id="三-操作表的其它方法"><a href="#三-操作表的其它方法" class="headerlink" title="三 操作表的其它方法"></a>三 操作表的其它方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">1. all()       返回的是querySet</div><div class="line">2. filter(id__lt=10, id__gt=1) 并且查，  返回的是querySet</div><div class="line"></div><div class="line">3. get()  只有一个值，否则报错， 返回的是对象</div><div class="line">4. first() 只找第一个值，返回的是对象</div><div class="line"></div><div class="line"></div><div class="line">5. exclude 取反</div><div class="line">model.Book.objects.exclude(prince=134) 返回querySet</div><div class="line"></div><div class="line">6.  count</div><div class="line">modeles.Book.objects.exclude(prince=134).count()   #querySet对象才有.count()调用方法 </div><div class="line"></div><div class="line">7. order_by(*field)</div><div class="line"></div><div class="line">models.Book.objects.objects.all().order_by(&quot;prince&quot;) 小到大排序</div><div class="line">models.Book.objects.objects.all().order_by(&quot;-prince&quot;) 大到小排序</div><div class="line"></div><div class="line">8.distinct() 提除重复的记录</div><div class="line"></div><div class="line">9 values   返回字典querySet集合</div><div class="line"></div><div class="line">10 values_list 返回元组querySet集合</div><div class="line"></div><div class="line">11 exist</div><div class="line">ret = models.Book.objects.all().exist()</div></pre></td></tr></table></figure>
 <p>待续。。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjaxyn8bm002ggfjxwzw8gxfd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjb4en4rj002g0ojxonadedaf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -118,19 +118,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2017/05/20/web-django-03-分页示例/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/06/05/cephfs-Ganesha/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          web-Django-02-分页示例
+          cephfs-Ganesha
         
       </div>
     </a>
   
   
-    <a href="/2017/05/15/python加密解密加签验签/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/05/20/web-django-03-分页示例/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">python-加密解密加签验签</div>
+      <div class="article-nav-title">web-Django-02-分页示例</div>
     </a>
   
 </nav>
@@ -174,7 +174,7 @@
       <ul>
         
           <li>
-            <a href="/2017/12/08/hello-world/">Hello World</a>
+            <a href="/2017/12/13/hello-world/">Hello World</a>
           </li>
         
           <li>

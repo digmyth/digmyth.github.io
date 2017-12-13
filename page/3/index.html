@@ -61,6 +61,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-12-sql" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/20/web-django-12-sql/" class="article-date">
+  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/20/web-django-12-sql/">web-Django-12-sql</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+</ul>
+<h2 id="一-创建表"><a href="#一-创建表" class="headerlink" title="一 创建表"></a>一 创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class UserInfo(models.Model):</div><div class="line">    nid=models.AutoField(primary_key=True)</div><div class="line">    name=models.CharField(max_length=32)</div><div class="line">    pwd = models.CharField(max_length=32)</div></pre></td></tr></table></figure>
+<h2 id="二-操作表"><a href="#二-操作表" class="headerlink" title="二 操作表"></a>二 操作表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">q = models.UserInfo.objects.all()</div><div class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</div><div class="line"></div><div class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</div><div class="line"></div><div class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</div><div class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</div><div class="line"></div><div class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</div><div class="line">q = models.UserInfo.objects.filter(name=&apos;wxq&apos;).first()    # 推荐</div></pre></td></tr></table></figure>
+<h2 id="三-操作表的其它方法"><a href="#三-操作表的其它方法" class="headerlink" title="三 操作表的其它方法"></a>三 操作表的其它方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">1. all()       返回的是querySet</div><div class="line">2. filter(id__lt=10, id__gt=1) 并且查，  返回的是querySet</div><div class="line"></div><div class="line">3. get()  只有一个值，否则报错， 返回的是对象</div><div class="line">4. first() 只找第一个值，返回的是对象</div><div class="line"></div><div class="line"></div><div class="line">5. exclude 取反</div><div class="line">model.Book.objects.exclude(prince=134) 返回querySet</div><div class="line"></div><div class="line">6.  count</div><div class="line">modeles.Book.objects.exclude(prince=134).count()   #querySet对象才有.count()调用方法 </div><div class="line"></div><div class="line">7. order_by(*field)</div><div class="line"></div><div class="line">models.Book.objects.objects.all().order_by(&quot;prince&quot;) 小到大排序</div><div class="line">models.Book.objects.objects.all().order_by(&quot;-prince&quot;) 大到小排序</div><div class="line"></div><div class="line">8.distinct() 提除重复的记录</div><div class="line"></div><div class="line">9 values   返回字典querySet集合</div><div class="line"></div><div class="line">10 values_list 返回元组querySet集合</div><div class="line"></div><div class="line">11 exist</div><div class="line">ret = models.Book.objects.all().exist()</div></pre></td></tr></table></figure>
+<p>待续。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjb4en4rj002g0ojxonadedaf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
@@ -93,54 +140,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjaxyn8bk002egfjxvyxr67ye" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-12-sql" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/20/web-django-12-sql/" class="article-date">
-  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/20/web-django-12-sql/">web-Django-12-sql</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-</ul>
-<h2 id="一-创建表"><a href="#一-创建表" class="headerlink" title="一 创建表"></a>一 创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class UserInfo(models.Model):</div><div class="line">    nid=models.AutoField(primary_key=True)</div><div class="line">    name=models.CharField(max_length=32)</div><div class="line">    pwd = models.CharField(max_length=32)</div></pre></td></tr></table></figure>
-<h2 id="二-操作表"><a href="#二-操作表" class="headerlink" title="二 操作表"></a>二 操作表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">q = models.UserInfo.objects.all()</div><div class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</div><div class="line"></div><div class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</div><div class="line"></div><div class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</div><div class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</div><div class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</div><div class="line"></div><div class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</div><div class="line">q = models.UserInfo.objects..filter(name=&apos;wxq&apos;).first()   # 推荐</div></pre></td></tr></table></figure>
-<h2 id="三-操作表的其它方法"><a href="#三-操作表的其它方法" class="headerlink" title="三 操作表的其它方法"></a>三 操作表的其它方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">1. all()       返回的是querySet</div><div class="line">2. filter(id__lt=10, id__gt=1) 并且查，  返回的是querySet</div><div class="line"></div><div class="line">3. get()  只有一个值，否则报错， 返回的是对象</div><div class="line">4. first() 只找第一个值，返回的是对象</div><div class="line"></div><div class="line"></div><div class="line">5. exclude 取反</div><div class="line">model.Book.objects.exclude(prince=134) 返回querySet</div><div class="line"></div><div class="line">6.  count</div><div class="line">modeles.Book.objects.exclude(prince=134).count()   #querySet对象来调用</div><div class="line"></div><div class="line">7. order_by(*field)</div><div class="line"></div><div class="line">models.Book.objects.objects.all().order_by(&quot;prince&quot;) 小到大排序</div><div class="line">models.Book.objects.objects.all().order_by(&quot;-prince&quot;) 大到小排序</div><div class="line"></div><div class="line">8.distinct() 提除重复的记录</div><div class="line"></div><div class="line">9 values   返回字典querySet集合</div><div class="line"></div><div class="line">10 values_list 返回元组querySet集合</div><div class="line"></div><div class="line">11 exist</div><div class="line">ret = models.Book.objects.all().exist()</div></pre></td></tr></table></figure>
-<p>待续。。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-12-sql/" data-id="cjaxyn8bm002ggfjxwzw8gxfd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjb4en4rf002c0ojxicpewgdv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -188,7 +188,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjaxyn8b20024gfjxuewd64h9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjb4en4qy001w0ojxfze4lcm9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -247,7 +247,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjaxyn8a0001igfjx91qi035w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjb4en4q200120ojxjiwe406x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -302,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjaxyn8bf002agfjxfol44lmp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjb4en4ro002n0ojxhg5gmiia" class="article-share-link">Share</a>
       
       
     </footer>
@@ -346,7 +346,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjaxyn8an001xgfjxf782nu8y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjb4en4qp001o0ojxd4665kfc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -393,7 +393,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjaxyn8ac001qgfjxxop2k3w3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjb4en4qs001q0ojxt0e0pueg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -437,7 +437,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjaxyn8a9001ogfjx99zdpqt6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjb4en4qu001s0ojxxts4y0fh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -519,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjaxyn8ch002tgfjxvpforytx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjb4en4re002a0ojxsq6nvbdf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -576,7 +576,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjaxyn8a6001mgfjxxnfy95us" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjb4en4qn001m0ojxeq3ohyun" class="article-share-link">Share</a>
       
       
     </footer>
@@ -627,7 +627,7 @@
       <ul>
         
           <li>
-            <a href="/2017/12/08/hello-world/">Hello World</a>
+            <a href="/2017/12/13/hello-world/">Hello World</a>
           </li>
         
           <li>

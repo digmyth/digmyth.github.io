@@ -120,7 +120,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjaxyn89v001ggfjxlx9i0wx3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjb4en4qk001i0ojxci9j7h8a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -168,7 +168,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjaxyn8a4001kgfjxc69qm25d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjb4en4ql001k0ojx4ehd4rdw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -377,7 +377,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjaxyn8ag001sgfjxu9g7fjb5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjb4en4qx001u0ojxapjttihf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -463,7 +463,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjaxyn89s001egfjxffcd9pz9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjb4en4qh001g0ojx01beobkn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -535,7 +535,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjaxyn8b60026gfjxrt9253yq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjb4en4r700240ojxsqwu9alz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -618,7 +618,51 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjaxyn89n001cgfjxzghm43o7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjb4en4qg001e0ojxhykkpxxr" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjb4en4r1001y0ojxcjey6lav" class="article-share-link">Share</a>
       
       
     </footer>
@@ -709,51 +753,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjaxyn88z0012gfjxsi2p6gzc" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
-  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Shell/">Shell</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjaxyn8ar001zgfjx50nfplnh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjb4en4q600160ojx6wubyxe6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1004,7 +1004,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjaxyn89h001agfjxkf8m2cxa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjb4en4qa001a0ojxli4hmddc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1072,7 +1072,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjaxyn89d0018gfjxumsahwrd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjb4en4q800180ojxzmq63kfh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1123,7 +1123,7 @@
       <ul>
         
           <li>
-            <a href="/2017/12/08/hello-world/">Hello World</a>
+            <a href="/2017/12/13/hello-world/">Hello World</a>
           </li>
         
           <li>
