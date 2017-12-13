@@ -119,7 +119,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjb4wbli6000rl5jx8y03ovdo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjb4x4nuh000rlujxd2vrjjud" class="article-share-link">Share</a>
       
       
     </footer>
@@ -179,7 +179,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjb4wblhi000al5jx8mvri2u5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjb4x4ntv000alujxhudu152d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -246,7 +246,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjb4wblkl002gl5jx0e3lq0g0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjb4x4nwj002glujx7fpwmrvp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -318,7 +318,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjb4wbll0002tl5jxrudlafqq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjb4x4nwu002tlujxky3aos0x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -382,7 +382,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjb4wblkj002el5jxp8cd18ln" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjb4x4nwh002elujxzaftpal4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -426,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjb4wblk60026l5jxz8v37g6i" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjb4x4nw70026lujxor0w8s3s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -470,6 +470,7 @@
 </ul>
 <h2 id="一对多查询"><a href="#一对多查询" class="headerlink" title="一对多查询"></a>一对多查询</h2><h3 id="1-1-创建测试数据"><a href="#1-1-创建测试数据" class="headerlink" title="1.1 创建测试数据"></a>1.1 创建测试数据</h3><p>models.py数据库模型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class DePart(models.Model):</div><div class="line">    title=models.CharField(max_length=32)</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username=models.CharField(max_length=32)</div><div class="line">    pwd=models.CharField(max_length=32)</div><div class="line">    dp = models.ForeignKey(DePart)</div></pre></td></tr></table></figure></p>
 <p>创建测试数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">models.DePart.objects.create(title=&quot;IT&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;咨询&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;公关&quot;)</div><div class="line"></div><div class="line">models.UserInfo.objects.create(username=&quot;user1&quot;,pwd=123,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user2&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user3&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user4&quot;,pwd=456,dp_id=2)</div></pre></td></tr></table></figure></p>
+<p>注：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">p=models.UserInfo.objects.create(username=&apos;wxq&apos;,pwd=123)  # 返回对象本身</div><div class="line">print(p.username,p.pwd)</div></pre></td></tr></table></figure></p>
 <h3 id="1-2-一对多正向查询"><a href="#1-2-一对多正向查询" class="headerlink" title="1.2 一对多正向查询"></a>1.2 一对多正向查询</h3><p>all() 返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.all()</div><div class="line">for row in v:</div><div class="line">    print(row.id,row.title,row.userinfo_set.all())</div></pre></td></tr></table></figure></p>
 <p>values()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># values()每一个字典代表一行数据</div><div class="line"># v = models.UserInfo.objects.values(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</div><div class="line"># for row in v:</div><div class="line">#     print(row[&apos;username&apos;],row[&apos;dp__title&apos;])</div></pre></td></tr></table></figure></p>
 <p>values_list()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># values_list()每一个元组代表一行数据</div><div class="line">v = models.UserInfo.objects.values_list(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</div><div class="line">for row in v:</div><div class="line">    print(row[0],row[2])</div></pre></td></tr></table></figure></p>
@@ -497,7 +498,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjb4wblku002ol5jxiulo73vn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjb4x4nwq002olujxolza6e98" class="article-share-link">Share</a>
       
       
     </footer>
@@ -544,7 +545,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjb4wbli9000tl5jxulxxvxyj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjb4x4nui000tlujxt7vtv3ay" class="article-share-link">Share</a>
       
       
     </footer>
@@ -602,7 +603,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjb4wblhp000fl5jxvfa68v6t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjb4x4nu2000flujxbbgoxjiz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -660,7 +661,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjb4wblin0012l5jxu6s4djn0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjb4x4nuu0012lujx9qdndeyb" class="article-share-link">Share</a>
       
       
     </footer>
