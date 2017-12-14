@@ -61,6 +61,64 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mysql-sysbench" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/10/mysql-sysbench/" class="article-date">
+  <time datetime="2017-06-10T01:41:54.000Z" itemprop="datePublished">2017-06-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/10/mysql-sysbench/">Mysql sysbench 压测</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>工具安装</li>
+<li>执行压测</li>
+<li>针对优化</li>
+<li>示例结果</li>
+</ul>
+<h3 id="数据库指标"><a href="#数据库指标" class="headerlink" title="数据库指标"></a>数据库指标</h3><p>对于mysql压力测试，大多用sysbench/tpcc-mysql工具。主要针对数据库OLTP（在线事务处理）指标。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">qps : query per second 查询量</div><div class="line">tps: transaction per second 事务量</div></pre></td></tr></table></figure>
+<h3 id="工具安装"><a href="#工具安装" class="headerlink" title="工具安装"></a>工具安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum install sysbench -y</div><div class="line">[root@mysql sysbench]# sysbench  --version</div><div class="line">sysbench 1.0.9</div></pre></td></tr></table></figure>
+<p>在<code>sysbench</code>压测时会调用内置<code>lua</code>脚本, 这些脚本为于<code>/etc/share/sysbench</code>目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/usr/share/sysbench</div><div class="line">[root@mysql sysbench]# ll</div><div class="line">total 64</div><div class="line">-rwxr-xr-x 1 root root  1452 Sep 18 12:29 bulk_insert.lua</div><div class="line">-rw-r--r-- 1 root root 13762 Sep 18 12:29 oltp_common.lua</div><div class="line">-rwxr-xr-x 1 root root  1290 Sep 18 12:29 oltp_delete.lua</div><div class="line">-rwxr-xr-x 1 root root  2018 Sep 18 12:29 oltp_insert.lua</div><div class="line">-rwxr-xr-x 1 root root  1265 Sep 18 12:29 oltp_point_select.lua</div><div class="line">-rwxr-xr-x 1 root root  1649 Sep 18 12:29 oltp_read_only.lua</div><div class="line">-rwxr-xr-x 1 root root  1824 Sep 18 12:29 oltp_read_write.lua</div><div class="line">-rwxr-xr-x 1 root root  1118 Sep 18 12:29 oltp_update_index.lua</div><div class="line">-rwxr-xr-x 1 root root  1127 Sep 18 12:29 oltp_update_non_index.lua</div><div class="line">-rwxr-xr-x 1 root root  1440 Sep 18 12:29 oltp_write_only.lua</div><div class="line">-rwxr-xr-x 1 root root  1919 Sep 18 12:29 select_random_points.lua</div><div class="line">-rwxr-xr-x 1 root root  2118 Sep 18 12:29 select_random_ranges.lua</div><div class="line">drwxr-xr-x 4 root root  4096 Nov 10 02:57 tests</div></pre></td></tr></table></figure></p>
+<h3 id="执行压测"><a href="#执行压测" class="headerlink" title="执行压测"></a>执行压测</h3><p>方便压测时找到内置<code>lua</code>脚本，以下命令都在<code>/etc/share/sysbench</code>目录下执行</p>
+<p>在远端连接数据库时，授权<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grant all on test.* to root@&apos;%&apos; identified by &apos;123&apos;;</div></pre></td></tr></table></figure></p>
+<p>生成压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/share/sysbench/</div><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  prepare</div></pre></td></tr></table></figure></p>
+<p>执行压测<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  run</div></pre></td></tr></table></figure></p>
+<p>清理压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  cleanup</div></pre></td></tr></table></figure></p>
+<h3 id="优化数据库"><a href="#优化数据库" class="headerlink" title="优化数据库"></a>优化数据库</h3><p>在压测过程中可能出现一些错误，连接数不够，max_prepared_stmt_count不够，可优化/etc/my.cnf 做适当调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">max_connections = 4096</div><div class="line">max_prepared_stmt_count=100000      # 默认16384压测时需调大</div><div class="line">query_cache_type = 1</div><div class="line">query_cache_size = 10M</div><div class="line"></div><div class="line">wsrep_slave_threads = 4</div><div class="line">#wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh</div><div class="line">max_connections = 10000</div><div class="line">key_buffer_size = 64M</div><div class="line">max_heap_table_size = 64M</div><div class="line">tmp_table_size = 64M</div><div class="line">innodb_buffer_pool_size = 8192M</div></pre></td></tr></table></figure></p>
+<h3 id="示例结果"><a href="#示例结果" class="headerlink" title="示例结果"></a>示例结果</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">Initializing worker threads...</div><div class="line"></div><div class="line">Threads started!</div><div class="line"></div><div class="line">[ 10s ] thds: 300 tps: 198.33 qps: 5741.67 (r/w/o: 4335.25/830.02/576.41) lat (ms,95%): 3706.08 err/s: 81.77 reconn/s: 0.00</div><div class="line">[ 20s ] thds: 300 tps: 222.61 qps: 6095.90 (r/w/o: 4553.90/924.16/617.84) lat (ms,95%): 4203.93 err/s: 102.31 reconn/s: 0.00</div><div class="line">[ 30s ] thds: 300 tps: 221.01 qps: 5899.58 (r/w/o: 4399.84/899.83/599.92) lat (ms,95%): 4055.23 err/s: 93.20 reconn/s: 0.00</div><div class="line">[ 40s ] thds: 300 tps: 198.06 qps: 5400.91 (r/w/o: 4032.79/827.03/541.09) lat (ms,95%): 4683.57 err/s: 89.98 reconn/s: 0.00</div><div class="line">[ 50s ] thds: 300 tps: 186.14 qps: 5162.76 (r/w/o: 3866.39/783.36/513.00) lat (ms,95%): 5312.73 err/s: 90.12 reconn/s: 0.00</div><div class="line">[ 60s ] thds: 300 tps: 158.49 qps: 4433.94 (r/w/o: 3325.93/670.45/437.56) lat (ms,95%): 5507.54 err/s: 78.99 reconn/s: 0.00</div><div class="line">SQL statistics:</div><div class="line">    queries performed:</div><div class="line">        read:                            246736</div><div class="line">        write:                           50340</div><div class="line">        other:                           33317</div><div class="line">        total:                           330393</div><div class="line">    transactions:                        12147  (195.34 per sec.)</div><div class="line">    queries:                             330393 (5313.17 per sec.)</div><div class="line">    ignored errors:                      5477   (88.08 per sec.)</div><div class="line">    reconnects:                          0      (0.00 per sec.)</div><div class="line"></div><div class="line">General statistics:</div><div class="line">    total time:                          62.1815s</div><div class="line">    total number of events:              12147</div><div class="line"></div><div class="line">Latency (ms):</div><div class="line">         min:                                 16.10</div><div class="line">         avg:                               1503.84</div><div class="line">         max:                              14267.54</div><div class="line">         95th percentile:                   4683.57</div><div class="line">         sum:                            18267086.41</div><div class="line"></div><div class="line">Threads fairness:</div><div class="line">    events (avg/stddev):           40.4900/6.29</div><div class="line">    execution time (avg/stddev):   60.8903/0.59</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjb5znl4q0010zzjxq7xwc5ma" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-cephfs-Ganesha" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/05/cephfs-Ganesha/" class="article-date">
@@ -124,7 +182,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjb50lxqb0008rljxjh7mf61x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjb5znl1v0008zzjx5oylzu9d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -166,7 +224,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjb50lxty002crljx8ctqjxhd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjb5znl6k002czzjxjgmtphxj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -214,7 +272,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjb50lxt9001wrljxqe00f7my" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjb5znl64001zzzjxojq303sz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjb50lxrq0010rljxhp1y2pxx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjb5znl4k000vzzjx9d5ngcjm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -328,7 +386,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjb50lxtt002arljxkkhxlzuy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjb5znl6h0028zzjxy7gsvyft" class="article-share-link">Share</a>
       
       
     </footer>
@@ -380,7 +438,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjb50lxup002mrljxt322kdat" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjb5znl73002tzzjxvqqgxewv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -424,7 +482,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjb50lxt6001urljx7lyaai90" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjb5znl5v001szzjx40r2wkps" class="article-share-link">Share</a>
       
       
     </footer>
@@ -471,7 +529,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjb50lxsy001qrljxstzynnto" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjb5znl5o001ozzjx0y5jx6yt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,89 +573,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjb50lxt2001srljxiqq08y5y" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-01-入门" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/20/web-django-01-入门/" class="article-date">
-  <time datetime="2017-03-20T12:26:37.000Z" itemprop="datePublished">2017-03-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/20/web-django-01-入门/">web-Django-01-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>什么是WSGI</li>
-<li>什么是mvc/mtv模型</li>
-<li>orm如何工作</li>
-<li>Django安装</li>
-</ul>
-<h1 id="一、什么是WSGI"><a href="#一、什么是WSGI" class="headerlink" title="一、什么是WSGI"></a>一、什么是WSGI</h1><p>对浏览器而言，远端是服务器程序和应用程序，而服务器程序就是socket Server,用于接收用户请求，解析用户请求，响应用户请求，这部份工作永远不变的。<br>可变的是应用程序，那么服务器程序与应用程序解耦偶就有了必要。</p>
-<p>接收用户请求，解析用户请求，响应用户请求这些封装为WSGI接口简化开发。</p>
-<p>定义web app与web server之间接口解耦规则就是WSGI.</p>
-<p>Python标准库提供的独立wsgi服务器称为wsgiref</p>
-<h1 id="二、什么是mvc-mtv模型"><a href="#二、什么是mvc-mtv模型" class="headerlink" title="二、什么是mvc/mtv模型"></a>二、什么是mvc/mtv模型</h1><p>init.py: 告诉python它不是一个目录文件夹而是一个包</p>
-<p>mvc:  model(数据库交互) view(模板)  control (业务处理逻辑)</p>
-<p>mtv:  model（数据库交互）view(视图，业务逻辑处理)  templates(模板）</p>
-<p>注： templates模板可以放在项目下或各个app下</p>
-<h1 id="三、orm如何工作"><a href="#三、orm如何工作" class="headerlink" title="三、orm如何工作"></a>三、orm如何工作</h1><p>一个类对应一张表<br>一个类对象对应一行表记录<br>一个类属性对应记录字段值</p>
-<p>自动路由： 反射应用，自定义扩展</p>
-<h1 id="四、Django安装"><a href="#四、Django安装" class="headerlink" title="四、Django安装"></a>四、Django安装</h1><p>安装Django<br>pip3 install django  pika  pymysql</p>
-<p>查看安装<br>pip3 list</p>
-<p>创建一个Django项目<br>cd /opt<br>mkdir /opt/templates   # 用于整个项目存放模板文件<br>django-admin startproject Mysite  #创建一个项目</p>
-<p>生成目录结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">/opt/Mysite</div><div class="line">    - Mysite        # 还有一个与项目同名的文件夹/opt/Mysite/Mysite，对整个程序进行配置</div><div class="line">        - __init__.py</div><div class="line">        - settings.py  # 配置文件</div><div class="line">        - urls.py      # URL对应关系</div><div class="line">        - wsgi.py      # 遵循WSGI规范，一般使用 uwsgi + nginx</div><div class="line">    - manage.py        # /opt/Mysite/manage.py管理Django程序：如下</div><div class="line">              - python manage.py  runserver # 运行程序</div><div class="line">              - python manage.py startapp xx  # 创建app</div><div class="line">              # Django的orm框架</div><div class="line">              - python manage.py makemigrations  </div><div class="line">              - python manage.py migrate</div></pre></td></tr></table></figure></p>
-<p>创建一个应用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">cd /opt/Mysite</div><div class="line">python manage.py startapp app01</div><div class="line">生成/opt/Mysite/app01目录结构如下：</div><div class="line">/opt/Mysite/app01/__init__.py # 说明app01是一个包</div><div class="line">/opt/Mysite/app01/migrations  # django orm框架，修改表结构的操作记录（差异化）</div><div class="line">/opt/Mysite/app01/admin.py    # Django提供的后台管理程序</div><div class="line">/opt/Mysite/app01/apps.py     # 配置当前app</div><div class="line">/opt/Mysite/app01/models.py   # 数据库交互：orm-写指定的类，通过命令可以创建数据库结构</div><div class="line">/opt/Mysite/app01/views.py    # 视图函数，业务逻辑处理</div><div class="line">/opt/Mysite/app01/test.py     # 单元测试</div></pre></td></tr></table></figure></p>
-<p>初始练习：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Mysite/Mysite/urls.py (导入from blog import views及编写业务逻辑url(r&apos;^index&apos;,views.index)</div><div class="line">) ---&gt; 练习各种例子。。。</div></pre></td></tr></table></figure></p>
-<p>URLS别名用法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^/login$&apos;, views.login, name=&quot;LOGIN&quot;)</div><div class="line"></div><div class="line">那么前端templates中的html代码需要用别名方式，语法如下：</div><div class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt; 改为</div><div class="line">&lt;form action=&quot;&#123;% url &apos;LOGIN&apos; %&#125;&quot; mothod=&quot;post&quot;&gt;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">urls</div><div class="line">	url(正则表达式 视图函数，参数，别名）</div><div class="line"></div><div class="line">正则这里匹配到的或者说捕获到的数据都是字符串类型，</div><div class="line">post提交的数据</div><div class="line"></div><div class="line">get post都可以向server端发送数据，区别是提交数据的方式不同：格式如下</div><div class="line">get ?id=2&amp;page=3</div><div class="line">post 数据在body里</div><div class="line">	</div><div class="line"></div><div class="line">无命名分组   位置参数</div><div class="line"></div><div class="line">有命名分组   关键字参数--在函数定义时，只能用命名的key，这一点是要注意的</div><div class="line"></div><div class="line"></div><div class="line">获取登录首页是以GET方法提交              -----GET</div><div class="line">用户名，密码表单submit时是以POST方式提交 -----POST</div><div class="line"></div><div class="line">时间表达：</div><div class="line">1 时间戳</div><div class="line">2 字符串</div><div class="line">3 结构化时间</div></pre></td></tr></table></figure>
-<h1 id="五、Django生命周期"><a href="#五、Django生命周期" class="headerlink" title="五、Django生命周期"></a>五、Django生命周期</h1><p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150927926423.png" alt="Django生命周期"></p>
-<h2 id="5-1-路由系统URLS"><a href="#5-1-路由系统URLS" class="headerlink" title="5.1 路由系统URLS"></a>5.1 路由系统URLS</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1  /index/                     -&gt; def index(request)</div><div class="line">2  /detail-(\d+)/               -&gt; def detail(request, nid)</div><div class="line">  /detail-(?P&lt;nid&gt;\d+)/        -&gt; def detail(request,nid)</div><div class="line"></div><div class="line">3 </div><div class="line">    /index/          -&gt; def index(request)   name=n1</div><div class="line">    </div><div class="line">    使用别名生成URL：</div><div class="line">        模板语言：     &#123;% url  n1 %&#125;   -&gt; /index/</div><div class="line">        </div><div class="line">        视图函数：（需要导入reverse模块）    reverse(name=&quot;n1&quot;)  --&gt; /index/</div><div class="line"></div><div class="line"> 4  /web/   include(&quot;app01.urls&quot;)</div></pre></td></tr></table></figure>
-<h2 id="5-2-视图函数"><a href="#5-2-视图函数" class="headerlink" title="5.2 视图函数"></a>5.2 视图函数</h2><p>1 函数至少一个参数 request<br>2 request<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">request.method     # 请求方法</div><div class="line">request.GET        # 请求方法为GET的数据</div><div class="line">request.POST       # 请求方法为POST的数据</div><div class="line">    注：      如何获取request.post数据的呢，如果有请求头</div><div class="line">             （Content-Type:application/x-www-form-urlencoded; charset=UTF-8），</div><div class="line">              则从request.body里取出post数据</div><div class="line">request.body       #   请求时发送的所有数据</div><div class="line">request.FILES      #   请求时发送的文件数据</div></pre></td></tr></table></figure></p>
-<p>注意:<br>form表单提交方法只能是get或post<br>当提交文件时特别注明<code>enctype=&quot;multipart/form-data&quot;</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;&quot;  method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</div><div class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;</div><div class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;&gt;</div><div class="line">    &lt;input type=&quot;file&quot; name=&quot;filename&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<p>3 返回方式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">HttpResponse()</div><div class="line">render(request,)</div><div class="line">redirect()</div></pre></td></tr></table></figure></p>
-<h2 id="5-3-ORM操作"><a href="#5-3-ORM操作" class="headerlink" title="5.3 ORM操作"></a>5.3 ORM操作</h2><p>各数据库操作是一种外对sql api接口的封装</p>
-<ul>
-<li>第一层封装：数据库存储最底层是db驱动，对外开放SQL API用于操作数据库</li>
-<li>第二层封装：python3 中操作mysql数据库的库为pymysql,是对SQL API之上的一层封装</li>
-<li>第三层封装: orm操作是最高级封装，pymsql之上的一层封装</li>
-<li>最终：orm翻译成pymsql,pymysql再翻译成sql语句</li>
-</ul>
-<p>Django 数据库操作具体语法介绍<a href="http://www.digmyth.com/2017/05/20/web-django-17-sql/">请参考</a></p>
-<h2 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h2><p>Django对template中html的渲染有着一套语法,我有专门一篇博客讲解模板渲染语法<br><a href="http://www.digmyth.com/2017/06/20/web-django-17-1%E6%A8%A1%E6%9D%BF%E6%B8%B2%E6%9F%93/">渲染语法博客参考</a></p>
-<p>1 基本方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</div><div class="line">   x.html</div><div class="line">    &#123;&#123; k.2  &#125;&#125;</div><div class="line"></div><div class="line">   &#123;% for i in d %&#125;</div><div class="line">     &#123;&#123; i &#125;&#125;  --key</div><div class="line">   &#123;% endfor %&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">   &#123;% for k,v in d.items %&#125;</div><div class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</div><div class="line">   &#123;% endfor %&#125;</div></pre></td></tr></table></figure></p>
-<p>2  函数</p>
-<p>Django 提供的函数:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">simple_tag 可以有多个参数</div><div class="line">filter     只能有2个参数，并且可以做条件语句的条件</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjb50lxtr0028rljx5bza98ym" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjb5znl5z001uzzjx4aj21m5o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -648,7 +624,11 @@
       <ul>
         
           <li>
-            <a href="/2017/12/13/hello-world/">Hello World</a>
+            <a href="/2017/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
           </li>
         
           <li>
@@ -661,10 +641,6 @@
         
           <li>
             <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
           </li>
         
       </ul>

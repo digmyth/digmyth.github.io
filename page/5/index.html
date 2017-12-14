@@ -61,6 +61,257 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-03-02-函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/23/python-03-02-函数/" class="article-date">
+  <time datetime="2017-01-23T12:42:06.000Z" itemprop="datePublished">2017-01-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/23/python-03-02-函数/">python-03-02-函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>函数概念</li>
+<li>普通函数</li>
+<li>匿名函数</li>
+<li>递归函数</li>
+<li>闭包</li>
+<li>高阶函数</li>
+</ul>
+<h2 id="函数概念"><a href="#函数概念" class="headerlink" title="函数概念"></a>函数概念</h2><h4 id="什么是函数"><a href="#什么是函数" class="headerlink" title="什么是函数"></a>什么是函数</h4><ul>
+<li>函数是python为了代码最大程度地重用和最小化代码冗余而提供的基本程序结构</li>
+<li>函数是一种设计工具，它能让程序员将复杂的程序逻辑分解为可管理的部件</li>
+<li>函数用于将相关功能打包并参数化，一个函数可以当参数传给变量或另一个函数</li>
+<li>python自带有许多内置函数</li>
+<li>在python有4种函数表现形式：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">全局函数： 定义在模块中</div><div class="line">局部函数：嵌套于其它函数中</div><div class="line">lambda函数：表达式，可以出现在任意表达式可以出现的地方(又称匿名函名)</div><div class="line">方法：定义在类中与特定数据类型关联的函数，并且只能与数据类型关联一起使用.</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="函数语法"><a href="#函数语法" class="headerlink" title="函数语法"></a>函数语法</h4><ul>
+<li>函数代码表现<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def functionName(parameters):</div><div class="line">    函数主体代码</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h4><p>def 是一个可执行语句,因此可以出现在任意语句可以出现的地方，甚至可以嵌套于其它if/while语句中<br>def 创建了一个对象并将其赋值给一个变量名，也就是函数名<br>return 用于返回结果对象,其为可选,无return语句时函数自动返回None对象,多个返回值时用逗号分隔，并组合为元组形式返回一个对象<br>def 语句运行之后可以在程序中通过函数后附加括号的形式进行调用</p>
+<h2 id="普通函数"><a href="#普通函数" class="headerlink" title="普通函数"></a>普通函数</h2><p>函数传参<br>内置函数<br>官方 <a href="https://docs.python.org/3/library/functions.html?highlight=built#ascii" target="_blank" rel="external">详解</a><br>More info <a href="http://www.cnblogs.com/alex3714/articles/5740985.html" target="_blank" rel="external">动我试试</a></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th>Built-in Functions</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>abs()</td>
+<td>dict()</td>
+<td>help()</td>
+<td>main()</td>
+<td>setattr()</td>
+</tr>
+<tr>
+<td>all()</td>
+<td>dir()</td>
+<td>hex()</td>
+<td>next()</td>
+<td>slice()</td>
+</tr>
+<tr>
+<td>any()</td>
+<td>divmod()</td>
+<td>id()</td>
+<td>object()</td>
+<td>sorted()</td>
+</tr>
+<tr>
+<td>ascii()</td>
+<td>enumerate()</td>
+<td>input()</td>
+<td>oct()</td>
+<td>staticmethod()</td>
+</tr>
+<tr>
+<td>bin()</td>
+<td>eval()</td>
+<td>int()</td>
+<td>open()</td>
+<td>str()</td>
+</tr>
+<tr>
+<td>bool()</td>
+<td>exec()</td>
+<td>isinstance()</td>
+<td>ord ()</td>
+<td>sum()</td>
+</tr>
+<tr>
+<td>bytearray()</td>
+<td>filter()</td>
+<td>issubclass()</td>
+<td>pow()</td>
+<td>super()</td>
+</tr>
+<tr>
+<td>bytes()</td>
+<td>float()</td>
+<td>iter()</td>
+<td>print()</td>
+<td>tuple()</td>
+</tr>
+<tr>
+<td>callable()</td>
+<td>format()</td>
+<td>len()</td>
+<td>property()</td>
+<td>type()</td>
+</tr>
+<tr>
+<td>chr()</td>
+<td>frozenset()</td>
+<td>list()</td>
+<td>range()</td>
+<td>vars()</td>
+</tr>
+<tr>
+<td>classmethod()</td>
+<td>getattr()</td>
+<td>locals()</td>
+<td>repr()</td>
+<td>zip()</td>
+</tr>
+<tr>
+<td>compile()</td>
+<td>globals()</td>
+<td>map()</td>
+<td>reversed()</td>
+<td><code>__import__()</code></td>
+</tr>
+<tr>
+<td>complex()</td>
+<td>hasattr()</td>
+<td>max()</td>
+<td>round()</td>
+<td></td>
+</tr>
+<tr>
+<td>delattr()</td>
+<td>hash()</td>
+<td>memoryview()</td>
+<td>set()</td>
+</tr>
+</tbody>
+</table>
+<p>拿几个作下说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">ASCII编码表查询：</div><div class="line">ord(&apos;a&apos;) 字符在编码表中的数字表示</div><div class="line">chr(97)  数字在编码表中的字符表示</div><div class="line"></div><div class="line">global() 查看全局变量</div><div class="line">locals() 查看局部变量</div><div class="line">vars()  无参数时等于locals(), 有参数时vars(a) == a.__dict__ (__dict__一个对象的属性)</div><div class="line"></div><div class="line">eval()  把字符串形式的表达式解析并扫行</div><div class="line">exec()  把字符串形式的代码解析并执行</div><div class="line">compile()把文件的代码加载进来，按 eval, exec方式解析并执行</div><div class="line"></div><div class="line"># 以字符串的形式导入模块, 后面模块章节也会讲到__import__()用法</div><div class="line">mode = &apos;module_name&apos;</div><div class="line">__import__(mode)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">all()与any()区别：</div><div class="line">all:</div><div class="line">传入一个可迭代对象，对其中每个元素求bool(x),所有返回True,则返回Tru</div><div class="line">迭代对象为空时返回True，注意是为空如[]，不是空元素如[&apos;&apos;]</div><div class="line"></div><div class="line">any:</div><div class="line">传入一个可迭代对象，对其中每个元素求bool(x),任意一个返回True，则返回True</div><div class="line">迭代对象为空时，返回False</div><div class="line"></div><div class="line">def all(*args, **kwargs): # real signature unknown</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    Return True if bool(x) is True for all values x in the iterable.</div><div class="line">    </div><div class="line">    If the iterable is empty, return True.</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    pass</div><div class="line"></div><div class="line">def any(*args, **kwargs): # real signature unknown</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    Return True if bool(x) is True for any x in the iterable.</div><div class="line">    </div><div class="line">    If the iterable is empty, return False.</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    pass</div></pre></td></tr></table></figure>
+<h2 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [31]: f = (lambda x,y,z=10: x+y+z)       # 匿名函数也支持默认参数   </div><div class="line">In [32]: f(4,9)</div><div class="line">Out[32]: 23</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [56]: L = [ (lambda x: x*2),(lambda y: y*3) ]    # 匿名函数可以出现在任意表达式可以出现的地方</div><div class="line">In [56]: for i in L:</div><div class="line">   ....:     print(i(4))</div><div class="line">   ....:     </div><div class="line">8</div><div class="line">12</div></pre></td></tr></table></figure>
+<h2 id="递归函数"><a href="#递归函数" class="headerlink" title="递归函数"></a>递归函数</h2><p>定义： 一个函数的自我循环调用称为递归</p>
+<ul>
+<li><p>阶乘</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; def fact(x):</div><div class="line">...     if x &lt;= 1: return 1</div><div class="line">...     else: return x * fact(x-1)</div><div class="line">... </div><div class="line">&gt;&gt;&gt; fact(4)</div><div class="line">24</div></pre></td></tr></table></figure>
+</li>
+<li><p>汉诺塔<br>汉诺塔： 是一个传说，大概意思就是说把一个柱子上的盘子通过第二根柱子移到第三根柱子上。。未完。。。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat  hanoi.py </div><div class="line">#!/usr/bin/env python3</div><div class="line"></div><div class="line">def move(n, a, b, c):</div><div class="line">   if n == 1:</div><div class="line">       print(&apos;move&apos;, a, &apos;--&gt;&apos;, c)</div><div class="line">   else:</div><div class="line">      move(n-1, a, c, b)</div><div class="line">      print(&apos;move&apos;, a, &apos;--&gt;&apos;, c)</div><div class="line">      move(n-1, b, a, c)</div><div class="line">n = int(input(&quot;input: &quot;))</div><div class="line">move(n, &apos;A&apos;, &apos;B&apos;, &apos;C&apos;)</div><div class="line">root@ubuntu:~# python3 hanoi.py </div><div class="line">input: 3</div><div class="line">move A --&gt; C</div><div class="line">move A --&gt; B</div><div class="line">move C --&gt; B</div><div class="line">move A --&gt; C</div><div class="line">move B --&gt; A</div><div class="line">move B --&gt; C</div><div class="line">move A --&gt; C</div></pre></td></tr></table></figure>
+</li>
+<li><p>斐波那契数列</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat fibonacci.py </div><div class="line">#!/usr/bin/env python3</div><div class="line"></div><div class="line">def fibonacci():</div><div class="line">    a = b = 1</div><div class="line">    yield a</div><div class="line">    yield b</div><div class="line">    while True:</div><div class="line">        a, b = b, a+b</div><div class="line">        yield b</div><div class="line">for num in fibonacci():</div><div class="line">    if num &gt; 100:</div><div class="line">        break</div><div class="line">    print(num, end=&apos; &apos;)</div><div class="line"></div><div class="line">print()</div><div class="line">root@ubuntu:~# python3 fibonacci.py </div><div class="line">1 1 2 3 5 8 13 21 34 55 89</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>python闭包：lexical closure<br>函数及相关环境所构成的整体, 或者说一个函数(内层函数)和它所处的环境(外层函数)所构成的整体称为python闭包<br>在这种情况下内层函数会记住外层函数的变量，在外层函数返回时内层函数依然可以调用</p>
+<p>eg1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">In [123]: def f1(x):</div><div class="line">   .....:     def f2(y):</div><div class="line">   .....:         return y ** x</div><div class="line">   .....:     return f2       # 内层函数直接返回</div><div class="line">   .....: </div><div class="line">In [124]: f = f1(3)           # f1为f2提供运行环境，记住外部变量</div><div class="line"></div><div class="line">In [125]: f                   </div><div class="line">Out[125]: &lt;function __main__.f1.&lt;locals&gt;.f2&gt;</div><div class="line"></div><div class="line">In [126]: f(4)</div><div class="line">Out[126]: 64</div><div class="line"></div><div class="line">In [127]: f(5)</div><div class="line">Out[127]: 125</div></pre></td></tr></table></figure></p>
+<p>以上例子用匿名函数lambda简写成如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">In [129]: def f1(x):</div><div class="line">   .....:     return lambda y: y ** x</div><div class="line">   .....: </div><div class="line"></div><div class="line">In [131]: f = f1(3)</div><div class="line"></div><div class="line">In [132]: f(6)</div><div class="line">Out[132]: 216</div></pre></td></tr></table></figure></p>
+<h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><p>定义： 一个函数当参数传递给另一个函数，我们就称这样的函数为高阶函数.<br>装饰器/函数闭包: 是有返回函数的高阶函数，是高阶函数的特例</p>
+<table>
+<thead>
+<tr>
+<th>高阶函数</th>
+<th>用法说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>map(func,seq1,seq2)</td>
+<td>将函数func作用于给定序列(s)的每个元素，并用一个列表来提供返回值，如果func为None,func表现为一个身份函数，返回一个含有每个序列中元素集合的n个元组列表</td>
+</tr>
+<tr>
+<td>reduce(func, seq, init)</td>
+<td>将二元函数作用于seq序列的元素，每次携带一对(先前的结果以及下一个序列无素)，连续地将现有的结果和下一个值作用在获得的随后的结果上，最后减少我们的序列为一个单一的返回值，如果初始值init给定，第一个比较会是init和第一个序列元素而不是序列的头两个元素</td>
+</tr>
+<tr>
+<td>filter(func,seq)</td>
+<td>调用一个布尔函数func来迭代遍历每个seq中的元素，返回一个使func返回值为True的元素组成的序列</td>
+</tr>
+</tbody>
+</table>
+<h4 id="map"><a href="#map" class="headerlink" title="map()"></a>map()</h4><p><code>map()</code>将传入的函数依次作用到序列的每个元素，并把结果作为新的Iterator返回</p>
+<p>一个序列时<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">In [143]: def f(x):</div><div class="line">   .....:     return x ** 2</div><div class="line"></div><div class="line">In [144]: res = map(f, [1,2,3,4])    # 根据说明这里返回结果是一个Iterator惰性序列</div><div class="line"></div><div class="line">In [145]: list(res)                  # 惰性序列需要通过list()函数让它把整个序列都计算出来并返回一个list</div><div class="line">Out[145]: [1, 4, 9, 16]</div></pre></td></tr></table></figure></p>
+<p>二个序列时<br>每一次同时依次取一个序列的一个值，两个序列就有2个值，那么用传入的函数作用于这2个值返回一个值,最后这些值再以列表显现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">In [140]: def f(x,y):</div><div class="line">    return y ** x</div><div class="line"></div><div class="line">In [141]: res = map(f, [1,2,3], [4,5,6])</div><div class="line"></div><div class="line">In [142]: list(res)</div><div class="line">Out[142]: [4, 25, 216]</div></pre></td></tr></table></figure></p>
+<h4 id="reduce"><a href="#reduce" class="headerlink" title="reduce()"></a>reduce()</h4><p>python3中reduce函数在functools模块里,用时需要先导入</p>
+<p>从初始值开始，对序列折叠<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">In [39]: from functools import reduce</div><div class="line">In [50]: def add(x,y):</div><div class="line">   ....:     return x+y</div><div class="line">   ....: </div><div class="line">In [52]: reduce(add, [1,2,3], 10)   # 10为初始值</div><div class="line">Out[52]: 16</div></pre></td></tr></table></figure></p>
+<p>如果要把序列[1, 3, 5, 7, 9]变换成整数13579，reduce就可以派上用场：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from functools import reduce</div><div class="line">&gt;&gt;&gt; def fn(x, y):</div><div class="line">...     return x * 10 + y</div><div class="line">...</div><div class="line">&gt;&gt;&gt; reduce(fn, [1, 3, 5, 7, 9])</div><div class="line">13579</div></pre></td></tr></table></figure></p>
+<p>这个例子本身没多大用处，但是考虑到字符串str也是一个序列，对上面的例子稍加改动，配合map()就可以写出把str转换为int的函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from functools import reduce</div><div class="line">&gt;&gt;&gt; def fn(x, y):</div><div class="line">...     return x * 10 + y</div><div class="line">...</div><div class="line">&gt;&gt;&gt; def char2num(s):</div><div class="line">...     return &#123;&apos;0&apos;: 0, &apos;1&apos;: 1, &apos;2&apos;: 2, &apos;3&apos;: 3, &apos;4&apos;: 4, &apos;5&apos;: 5, &apos;6&apos;: 6, &apos;7&apos;: 7, &apos;8&apos;: 8, &apos;9&apos;: 9&#125;[s]</div><div class="line">...</div><div class="line">&gt;&gt;&gt; reduce(fn, map(char2num, &apos;13579&apos;))</div><div class="line">13579</div></pre></td></tr></table></figure>
+<p>整理成一个str2int的函数就是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">from functools import reduce</div><div class="line"></div><div class="line">def str2int(s):</div><div class="line">    def fn(x, y):</div><div class="line">        return x * 10 + y</div><div class="line">    def char2num(s):</div><div class="line">        return &#123;&apos;0&apos;: 0, &apos;1&apos;: 1, &apos;2&apos;: 2, &apos;3&apos;: 3, &apos;4&apos;: 4, &apos;5&apos;: 5, &apos;6&apos;: 6, &apos;7&apos;: 7, &apos;8&apos;: 8, &apos;9&apos;: 9&#125;[s]</div><div class="line">    return reduce(fn, map(char2num, s))</div></pre></td></tr></table></figure></p>
+<p>还可以用lambda函数进一步简化成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from functools import reduce</div><div class="line"></div><div class="line">def char2num(s):</div><div class="line">    return &#123;&apos;0&apos;: 0, &apos;1&apos;: 1, &apos;2&apos;: 2, &apos;3&apos;: 3, &apos;4&apos;: 4, &apos;5&apos;: 5, &apos;6&apos;: 6, &apos;7&apos;: 7, &apos;8&apos;: 8, &apos;9&apos;: 9&#125;[s]</div><div class="line"></div><div class="line">def str2int(s):</div><div class="line">    return reduce(lambda x, y: x * 10 + y, map(char2num, s))</div></pre></td></tr></table></figure></p>
+<p>也就是说，假设Python没有提供int()函数，你完全可以自己写一个把字符串转化为整数的函数.</p>
+<h4 id="filter"><a href="#filter" class="headerlink" title="filter()"></a>filter()</h4><p>Python内建的filter()函数用于过滤序列。<br>filter()把传入的函数依次作用于每个元素，然后根据返回值是<code>True</code>还是<code>False</code>决定保留还是丢弃该元素。</p>
+<p>例如，在一个list中，删掉偶数，只保留奇数，可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">def is_odd(n):</div><div class="line">    return n % 2 == 1</div><div class="line"></div><div class="line">list(filter(is_odd, [1, 2, 4, 5, 6, 9, 10, 15]))</div><div class="line"># 结果: [1, 5, 9, 15]</div></pre></td></tr></table></figure></p>
+<p>把一个序列中的空字符串删掉，可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">def not_empty(s):</div><div class="line">    return s and s.strip()</div><div class="line"></div><div class="line">list(filter(not_empty, [&apos;A&apos;, &apos;&apos;, &apos;B&apos;, None, &apos;C&apos;, &apos;  &apos;]))</div><div class="line"># 结果: [&apos;A&apos;, &apos;B&apos;, &apos;C&apos;]</div></pre></td></tr></table></figure></p>
+<p>可见filter()这个高阶函数，关键在于正确实现一个“筛选”函数, 这个函数必须是一个二元函数，返回<code>True</code>  或 <code>False</code>的函数</p>
+<p>注意到filter()函数返回的是一个Iterator，也就是一个惰性序列，所以要强迫filter()完成计算结果，需要用list()函数获得所有结果并返回list。</p>
+<p>用filter求素数</p>
+<p>计算素数的一个方法是埃氏筛法，它的算法理解起来非常简单：</p>
+<p>首先，列出从2开始的所有自然数，构造一个序列：</p>
+<p>2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, …</p>
+<p>取序列的第一个数2，它一定是素数，然后用2把序列的2的倍数筛掉：<br>取新序列的第一个数3，它一定是素数，然后用3把序列的3的倍数筛掉：<br>取新序列的第一个数5，然后用5把序列的5的倍数筛掉：<br>不断筛下去，就可以得到所有的素数。</p>
+<p>用Python来实现这个算法，可以先构造一个从3开始的奇数序列：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">def _odd_iter():</div><div class="line">    n = 1</div><div class="line">    while True:</div><div class="line">        n = n + 2</div><div class="line">        yield n</div></pre></td></tr></table></figure></p>
+<p>注意这是一个生成器，并且是一个无限序列。</p>
+<p>然后定义一个筛选函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def _not_divisible(n):</div><div class="line">    return lambda x: x % n != 0</div></pre></td></tr></table></figure></p>
+<p>最后，定义一个生成器，不断返回下一个素数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">def primes():</div><div class="line">    yield 2</div><div class="line">    it = _odd_iter() # 初始序列</div><div class="line">    while True:</div><div class="line">        n = next(it) # 返回序列的第一个数</div><div class="line">        yield n</div><div class="line">        it = filter(_not_divisible(n), it) # 构造新序列</div></pre></td></tr></table></figure></p>
+<p>这个生成器先返回第一个素数2，然后，利用filter()不断产生筛选后的新的序列。</p>
+<p>由于primes()也是一个无限序列，所以调用时需要设置一个退出循环的条件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 打印1000以内的素数:</div><div class="line">for n in primes():</div><div class="line">    if n &lt; 1000:</div><div class="line">        print(n)</div><div class="line">    else:</div><div class="line">        break</div></pre></td></tr></table></figure></p>
+<p>小结： filter()的作用是从一个序列中筛出符合条件的元素。由于filter()使用了惰性计算，所以只有在取filter()结果的时候，才会真正筛选并每次返回下一个筛出的元素。</p>
+<h4 id="sorted"><a href="#sorted" class="headerlink" title="sorted()"></a>sorted()</h4><p>sorted()高阶函数用于排序</p>
+<p>sorted()语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sorted(iterable, key=None, reverse=False)</div><div class="line">    Return a new list containing all items from the iterable in ascending order.</div></pre></td></tr></table></figure></p>
+<p>先来看一个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; list1 = [&#123;&quot;age&quot;:20, &quot;name&quot;: &quot;def&quot;&#125;, &#123;&apos;age&apos;:25, &quot;name&quot;:&quot;abc&quot;&#125;, &#123;&quot;age&quot;:10, &quot;name&quot;:&quot;ghi&quot;&#125;]</div><div class="line"></div><div class="line">&gt;&gt;&gt; sorted(list1, key=lambda x: x[&apos;age&apos;], reverse=False) </div><div class="line">[&#123;&apos;age&apos;: 10, &apos;name&apos;: &apos;ghi&apos;&#125;,</div><div class="line"> &#123;&apos;age&apos;: 20, &apos;name&apos;: &apos;def&apos;&#125;,</div><div class="line"> &#123;&apos;age&apos;: 25, &apos;name&apos;: &apos;abc&apos;&#125;]</div></pre></td></tr></table></figure></p>
+<p>这个例子也可以写成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">In [174]: def f1(x):</div><div class="line">   .....:     return x[&quot;age&quot;]</div><div class="line">   .....: </div><div class="line">In [175]: list1 = [&#123;&quot;age&quot;:20, &quot;name&quot;: &quot;def&quot;&#125;, &#123;&apos;age&apos;:25, &quot;name&quot;:&quot;abc&quot;&#125;, &#123;&quot;age&quot;:10, &quot;name&quot;:&quot;ghi&quot;&#125;]</div><div class="line"></div><div class="line">In [176]: sorted(list1, key=f1)</div><div class="line">Out[176]: </div><div class="line">[&#123;&apos;age&apos;: 10, &apos;name&apos;: &apos;ghi&apos;&#125;,</div><div class="line"> &#123;&apos;age&apos;: 20, &apos;name&apos;: &apos;def&apos;&#125;,</div><div class="line"> &#123;&apos;age&apos;: 25, &apos;name&apos;: &apos;abc&apos;&#125;]</div></pre></td></tr></table></figure></p>
+<p>list1这样的迭代对象取出一个值（一个一个的字典）给key函数处理后的结果作为排序依据，而后返回另一个排续后的对象.</p>
+<p>列表自身有个<code>sort()</code>方法，和<code>sorted()</code>有什么区别呢？ 来看个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">In [66]: list1</div><div class="line">Out[66]: [1, 2, 3, 4, 5]</div><div class="line"></div><div class="line">In [67]: list1.sort()      # sort()方法是在原有列表上排序，这是与sorted()高阶函数的区别</div><div class="line"></div><div class="line">In [68]: list1</div><div class="line">Out[68]: [1, 2, 3, 4, 5]</div><div class="line"></div><div class="line">In [69]: list1.sort(reverse=True)   # reverse表示逆序</div><div class="line"></div><div class="line">In [70]: list1         </div><div class="line">Out[70]: [5, 4, 3, 2, 1]</div></pre></td></tr></table></figure></p>
+<p>区别就是sorted()会生成新的对象，而列表sort()不会，如下是按字母排序的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">In [173]: sorted([&apos;bob&apos;, &apos;about&apos;, &apos;Zoo&apos;, &apos;Credit&apos;], key=str.lower)</div><div class="line">Out[173]: [&apos;about&apos;, &apos;bob&apos;, &apos;Credit&apos;, &apos;Zoo&apos;]</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjb5znl5f001izzjx3b1wcrjk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-python-03-01-IO" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/20/python-03-01-IO/" class="article-date">
@@ -119,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjb50lxs6001arljxbcjgqreb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjb5znl52001azzjxnju34k0e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -183,7 +434,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjb50lxs30018rljxph9maawv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjb5znl4z0018zzjxr86p7krk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -335,7 +586,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="cjb50lxrz0016rljxlvypdjp1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="cjb5znl4x0016zzjxb9w0cku3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -377,7 +628,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjb50lxpm0000rljxt5snjz2k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjb5znl1o0003zzjxt9v8wav4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -421,7 +672,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cjb50lxqm000crljxdim2rdy6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cjb5znl1y000azzjx4qft83p0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -470,7 +721,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cjb50lxuu002qrljxyoly4756" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cjb5znl70002qzzjx0pkqms44" class="article-share-link">Share</a>
       
       
     </footer>
@@ -521,7 +772,11 @@ Age_of_name = &quot;xx&quot;  #类名
       <ul>
         
           <li>
-            <a href="/2017/12/13/hello-world/">Hello World</a>
+            <a href="/2017/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
           </li>
         
           <li>
@@ -534,10 +789,6 @@ Age_of_name = &quot;xx&quot;  #类名
         
           <li>
             <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
           </li>
         
       </ul>
