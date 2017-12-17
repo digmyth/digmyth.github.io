@@ -92,12 +92,15 @@
 <li>auth模块</li>
 <li>Django内置补充 </li>
 </ul>
-<h2 id="auth模块"><a href="#auth模块" class="headerlink" title="auth模块"></a>auth模块</h2><p>可以基于Cookie/Session自己写登录、注销的用户认证，这里我们学Django自带的auth模块实现用户的登录、注销认证系统。</p>
+<h2 id="auth模块"><a href="#auth模块" class="headerlink" title="auth模块"></a>auth模块</h2><p>可以基于Cookie/Session自己写登录、注销的用户认证，这里我们学习Django自带的auth模块实现用户的登录、注销认证系统。</p>
 <p>模块引入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.contrib import auth   # 模块引入</div><div class="line">#from django.contrib.auth.models import User,AbstractUser</div><div class="line">#from app01 import  models</div></pre></td></tr></table></figure></p>
 <p>下面2条命令会生成Django默认表，其中有张表auth_user用于存认证用户信息。<br>注： 这张表不能直接对其操作，Django提供一个接口，通过auth模块操作User表.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations</div><div class="line">python manage.py migrate</div></pre></td></tr></table></figure></p>
 <p>创建一个超级用户，auth_user可查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py  createsuperuser</div></pre></td></tr></table></figure></p>
 <p>自己写登录系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">def login(request):</div><div class="line">    if request.method==&quot;GET&quot;:</div><div class="line">        return render(request,&quot;login.html&quot;)</div><div class="line">    elif request.method==&quot;POST&quot;:</div><div class="line">        username=request.POST.get(&quot;username&quot;)</div><div class="line">        pwd=request.POST.get(&quot;pwd&quot;)</div><div class="line">        user_obj=auth.authenticate(username=username,password=pwd) # 验证</div><div class="line">        if user_obj:</div><div class="line">            auth.login(request,user_obj)  # 写入session</div><div class="line">            return  redirect(&quot;/home/&quot;)</div><div class="line">        else:</div><div class="line">            return  redirect(&quot;/login/&quot;)</div><div class="line"></div><div class="line">def log_out(request):</div><div class="line">    auth.logout(request)     #相当于request.session.flush() 去除session</div><div class="line">    return redirect(&quot;/login/&quot;)</div><div class="line"></div><div class="line">def home(request):</div><div class="line">    if not request.user_obj.is_authenticated():  # 是否认证过有没写入session</div><div class="line">        return redirect(&quot;/login/&quot;)   </div><div class="line">    return render(request,&quot;home.html&quot;)</div></pre></td></tr></table></figure></p>
-<h2 id="Django-内置补充"><a href="#Django-内置补充" class="headerlink" title="Django 内置补充"></a>Django 内置补充</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">django已经为我们设计好了一个用于此种情况的装饰器：login_requierd()</div><div class="line"></div><div class="line">from django.contrib.auth.decorators import login_required</div><div class="line">      </div><div class="line">@login_required</div><div class="line">def my_view(request):</div><div class="line">  ...</div><div class="line">若用户没有登录，则会跳转到django默认的 登录URL &apos;/accounts/login/ &apos; </div><div class="line">(这个值可以在settings文件中通过LOGIN_URL进行修改)。并传递当前访问</div><div class="line">url的绝对路径 (登陆成功后，会重定向到该路径)。</div><div class="line"></div><div class="line">User对象</div><div class="line">User 对象属性：username， password（必填项）password用哈希算法保存到数据库</div><div class="line"></div><div class="line">is_staff ： 用户是否拥有网站的管理权限.</div><div class="line"></div><div class="line">is_active ： 是否允许用户登录, 设置为``False``，可以不用删除用户来禁止 用户登录</div><div class="line"></div><div class="line"> </div><div class="line"></div><div class="line">2.1 、is_authenticated()</div><div class="line">表明是否认证通过并有session</div><div class="line"></div><div class="line">2.2 、创建用户</div><div class="line">使用 create_user 辅助函数创建用户:</div><div class="line">from django.contrib.auth.models import User</div><div class="line">user = User.objects.create_user（username=&apos;&apos;,password=&apos;&apos;,email=&apos;&apos;）</div><div class="line"></div><div class="line">2.3 、check_password(passwd)</div><div class="line"></div><div class="line">用户需要修改密码的时候 首先要让他输入原来的密码 ，如果给定的字符串通过了密码检查，返回 True</div><div class="line">2.4 、修改密码</div><div class="line">使用 set_password() 来修改密码</div><div class="line"></div><div class="line">user = User.objects.get(username=&apos;&apos;)</div><div class="line">user.set_password(password=&apos;&apos;)</div><div class="line">user.save</div></pre></td></tr></table></figure>
+<p>总结：<br>利用Django自带的表创建用户，不能对Django自带的表直接操作，那怎么创建呢，Django提供一个接口，通过auth模块操作User表.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from django.contrib.auth.models import User</div><div class="line">user = User.objects.create_user（username=&apos;&apos;,password=&apos;&apos;,email=&apos;&apos;）</div></pre></td></tr></table></figure></p>
+<p>当Django自带User表字段不够用时，可以自己建表继承User表字段，方法:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.contrib.auth.models import  AbstractUser</div><div class="line">class UserInfo(AbstractUser):</div><div class="line">     detail = modoles.CharField(max_length=32)</div></pre></td></tr></table></figure></p>
+<p>自建表记得settins.py配置<code>AUTH_USER_MODEL</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">STATIC_URL = &apos;/static/&apos;</div><div class="line">STATICFILES_DIRS =[</div><div class="line">    os.path.join(BASE_DIR,&quot;blog&quot;,&quot;static&quot;),</div><div class="line">]</div><div class="line"></div><div class="line"># MEDIA_ROOT=os.path.join(BASE_DIR,&apos;blog&apos;,&apos;media&apos;,&apos;upload&apos;)</div><div class="line"># MEDIA_URL = &apos;/media/&apos;</div><div class="line"></div><div class="line">AUTH_USER_MODEL= &quot;blog.UserInfo&quot;</div></pre></td></tr></table></figure></p>
+<h2 id="Django-内置补充"><a href="#Django-内置补充" class="headerlink" title="Django 内置补充"></a>Django 内置补充</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">django已经为我们设计好了一个用于此种情况的装饰器：login_requierd()</div><div class="line"></div><div class="line">from django.contrib.auth.decorators import login_required</div><div class="line">      </div><div class="line">@login_required</div><div class="line">def my_view(request):</div><div class="line">  ...</div><div class="line">若用户没有登录，则会跳转到django默认的 登录URL &apos;/accounts/login/ &apos; </div><div class="line">(这个值可以在settings文件中通过LOGIN_URL进行修改)。并传递当前访问</div><div class="line">url的绝对路径 (登陆成功后，会重定向到该路径)。</div><div class="line"></div><div class="line">User对象</div><div class="line">User 对象属性：username， password（必填项）password用哈希算法保存到数据库</div><div class="line"></div><div class="line">is_staff ： 用户是否拥有网站的管理权限.</div><div class="line"></div><div class="line">is_active ： 是否允许用户登录, 设置为``False``，可以不用删除用户来禁止 用户登录</div><div class="line"></div><div class="line"></div><div class="line">2.1 、is_authenticated()</div><div class="line">表明是否认证通过并有session,当使用auth模块时，前端`&#123;&#123; request.user &#125;&#125;`可以直接使用</div><div class="line">不需要后端传入request.user变量。</div><div class="line">request.user.username 为AnonymousUser或用户名</div><div class="line"></div><div class="line">2.2 、创建用户</div><div class="line">使用 create_user 辅助函数创建用户:</div><div class="line">from django.contrib.auth.models import User</div><div class="line">user = User.objects.create_user（username=&apos;&apos;,password=&apos;&apos;,email=&apos;&apos;）</div><div class="line"></div><div class="line">2.3 、check_password(passwd)</div><div class="line"></div><div class="line">用户需要修改密码的时候 首先要让他输入原来的密码 ，如果给定的字符串通过了密码检查，返回 True</div><div class="line">2.4 、修改密码</div><div class="line">使用 set_password() 来修改密码</div><div class="line"></div><div class="line">user = User.objects.get(username=&apos;&apos;)</div><div class="line">user.set_password(password=&apos;&apos;)</div><div class="line">user.save</div></pre></td></tr></table></figure>
 <p>简单示例<br>注册：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">def sign_up(request):</div><div class="line">    state = None</div><div class="line">    if request.method == &apos;POST&apos;:</div><div class="line"> </div><div class="line">        password = request.POST.get(&apos;password&apos;, &apos;&apos;)</div><div class="line">        repeat_password = request.POST.get(&apos;repeat_password&apos;, &apos;&apos;)</div><div class="line">        email=request.POST.get(&apos;email&apos;, &apos;&apos;)</div><div class="line">        username = request.POST.get(&apos;username&apos;, &apos;&apos;)</div><div class="line">        if User.objects.filter(username=username):</div><div class="line">                state = &apos;user_exist&apos;</div><div class="line">        else:</div><div class="line">                new_user = User.objects.create_user(username=username, password=password,email=email)</div><div class="line">                new_user.save()</div><div class="line"> </div><div class="line">                return redirect(&apos;/book/&apos;)</div><div class="line">    content = &#123;</div><div class="line">        &apos;state&apos;: state,</div><div class="line">        &apos;user&apos;: None,</div><div class="line">    &#125;</div><div class="line">    return render(request, &apos;sign_up.html&apos;, content)</div></pre></td></tr></table></figure></p>
 <p>修改密码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">@login_required</div><div class="line">def set_password(request):</div><div class="line">    user = request.user</div><div class="line">    state = None</div><div class="line">    if request.method == &apos;POST&apos;:</div><div class="line">        old_password = request.POST.get(&apos;old_password&apos;, &apos;&apos;)</div><div class="line">        new_password = request.POST.get(&apos;new_password&apos;, &apos;&apos;)</div><div class="line">        repeat_password = request.POST.get(&apos;repeat_password&apos;, &apos;&apos;)</div><div class="line">        if user.check_password(old_password):</div><div class="line">            if not new_password:</div><div class="line">                state = &apos;empty&apos;</div><div class="line">            elif new_password != repeat_password:</div><div class="line">                state = &apos;repeat_error&apos;</div><div class="line">            else:</div><div class="line">                user.set_password(new_password)</div><div class="line">                user.save()</div><div class="line">                return redirect(&quot;/log_in/&quot;)</div><div class="line">        else:</div><div class="line">            state = &apos;password_error&apos;</div><div class="line">    content = &#123;</div><div class="line">        &apos;user&apos;: user,</div><div class="line">        &apos;state&apos;: state,</div><div class="line">    &#125;</div><div class="line">    return render(request, &apos;set_password.html&apos;, content)</div></pre></td></tr></table></figure></p>
 <p><a href="http://www.cnblogs.com/yuanchenqi/articles/7609586.html" target="_blank" rel="external">补充原文</a></p>
@@ -105,7 +108,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjba8qjq4002k5mjx8z2xys46" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjba9k2ce002k8mjx7k5zkxij" class="article-share-link">Share</a>
       
       
     </footer>
@@ -162,7 +165,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjba8qjq2002i5mjxsndrwuvd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjba9k2b3002i8mjxe9mmloo0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -223,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjba8qjjt00065mjxrwvah86c" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjba9k28600068mjxt3zytrdq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -291,7 +294,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjba8qjmn000r5mjx2ynwpf8y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjba9k291000r8mjxrd1ws9y1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +354,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjba8qjlm000a5mjxskhp3tn2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjba9k28f000a8mjxyry0bvjk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -418,7 +421,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjba8qjq0002g5mjx0fnx7viz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjba9k2b1002g8mjxduojlocg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -490,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjba8qjqk002z5mjxfwuqca4q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjba9k2cr002z8mjxd46eqnjo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -554,7 +557,72 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjba8qjpz002e5mjxnjp8rwt0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjba9k2b0002e8mjx93k95lsq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/web-02-前端html/" class="article-date">
+  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</div><div class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</div><div class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</div><div class="line">    &lt;/select&gt;</div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</div><div class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</div><div class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="external">参考</a><br>基本概念：</p>
+<ul>
+<li>html很骨感.</li>
+<li>css就是装饰或样式.</li>
+<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
+</ul>
+<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
+<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
+<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
+<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">position</div><div class="line">     position: relative  # 与absolute一起使用</div><div class="line">     position: absolute  #随滚动条滚动而滚动</div><div class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</div><div class="line">     position: fixed     # 永远在窗口某位置</div></pre></td></tr></table></figure></p>
+<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="external">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
+<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
+<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
+<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
+<h2 id="contentType"><a href="#contentType" class="headerlink" title="contentType"></a>contentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
+<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
+<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
+<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
+<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
+<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjba9k2ap00268mjx0t9ojk5f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -627,72 +695,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjba8qjqe002u5mjxbq29f8qj" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/web-02-前端html/" class="article-date">
-  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</div><div class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</div><div class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</div><div class="line">    &lt;/select&gt;</div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</div><div class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</div><div class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="external">参考</a><br>基本概念：</p>
-<ul>
-<li>html很骨感.</li>
-<li>css就是装饰或样式.</li>
-<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
-</ul>
-<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
-<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
-<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
-<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">position</div><div class="line">     position: relative  # 与absolute一起使用</div><div class="line">     position: absolute  #随滚动条滚动而滚动</div><div class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</div><div class="line">     position: fixed     # 永远在窗口某位置</div></pre></td></tr></table></figure></p>
-<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="external">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
-<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
-<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
-<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
-<h2 id="contentType"><a href="#contentType" class="headerlink" title="contentType"></a>contentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
-<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
-<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
-<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
-<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
-<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjba8qjpk00265mjxa24emilp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjba9k2co002u8mjx6uug2u2m" class="article-share-link">Share</a>
       
       
     </footer>
