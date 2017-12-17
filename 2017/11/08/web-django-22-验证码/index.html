@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>web-Django-22-验证码 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录
+生成验证码
+认证验证码
+插件认证
+
+生成验证码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web-Django-22-验证码">
+<meta property="og:url" content="http://www.digmyth.com/2017/11/08/web-django-22-验证码/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+生成验证码
+认证验证码
+插件认证
+
+生成验证码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091">
+<meta property="og:updated_time" content="2017-12-17T03:57:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web-Django-22-验证码">
+<meta name="twitter:description" content="目录
+生成验证码
+认证验证码
+插件认证
+
+生成验证码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-web-django-22-验证码" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/08/web-django-22-验证码/" class="article-date">
+  <time datetime="2017-11-08T12:26:37.000Z" itemprop="datePublished">2017-11-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      web-Django-22-验证码
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>生成验证码</li>
+<li>认证验证码</li>
+<li>插件认证</li>
+</ul>
+<h2 id="生成验证码"><a href="#生成验证码" class="headerlink" title="生成验证码"></a>生成验证码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div></pre></td><td class="code"><pre><div class="line">def get_valid_img(request):</div><div class="line">    # 第一步</div><div class="line">    # f=open(&quot;default.jpg&quot;,&apos;rb&apos;)</div><div class="line">    #     data=f.read()</div><div class="line"></div><div class="line">    # 第二步</div><div class="line">    # import PIL</div><div class="line">    # from PIL import Image</div><div class="line">    # img = Image.new(mode=&apos;RGB&apos;, size=(120, 30), color=(123, 222, 255))</div><div class="line">    # f=open(&apos;code.png&apos;,&apos;wb&apos;)</div><div class="line">    # img.save(f,&apos;png&apos;)</div><div class="line">    # f = open(&apos;code.png&apos;, &apos;rb&apos;)</div><div class="line">    # data=f.read()</div><div class="line">    # f.close()</div><div class="line"></div><div class="line">    # 第三步</div><div class="line">    # from io import BytesIO</div><div class="line">    # f=BytesIO()</div><div class="line">    #</div><div class="line">    # from PIL import Image</div><div class="line">    # img = Image.new(mode=&apos;RGB&apos;, size=(120, 30), color=(255, 255, 66))</div><div class="line">    # img.save(f,&quot;png&quot;)</div><div class="line">    # data=f.getvalue()</div><div class="line"></div><div class="line">    # # 第四步：</div><div class="line">    #</div><div class="line">    # from io import BytesIO</div><div class="line">    #</div><div class="line">    # f = BytesIO()</div><div class="line">    # from PIL import Image, ImageDraw, ImageFont</div><div class="line">    #</div><div class="line">    # # 画字</div><div class="line">    # img = Image.new(mode=&apos;RGB&apos;, size=(120, 30), color=(0, 255, 0))</div><div class="line">    # draw = ImageDraw.Draw(img, mode=&apos;RGB&apos;)</div><div class="line">    # font=ImageFont.truetype(&quot;blog/static/dist/fonts/kumo.ttf&quot;,28)</div><div class="line">    # draw.text([15,0],&apos;y&apos;,&quot;red&quot;,font=font)</div><div class="line">    #</div><div class="line">    # img.save(f,&quot;png&quot;)</div><div class="line">    # data=f.getvalue()</div><div class="line"></div><div class="line"></div><div class="line">    # 第五步：</div><div class="line">    import random</div><div class="line">    from io import BytesIO</div><div class="line">    from PIL import Image, ImageDraw, ImageFont</div><div class="line">    f = BytesIO()</div><div class="line">    img = Image.new(mode=&apos;RGB&apos;, size=(120, 30),</div><div class="line">                    color=(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))</div><div class="line">    draw = ImageDraw.Draw(img, mode=&apos;RGB&apos;)</div><div class="line"></div><div class="line">    char_list = []</div><div class="line">    # # 画字</div><div class="line">    for i in range(5):</div><div class="line">        char = random.choice([chr(random.randint(65, 90)), str(random.randint(1, 9)), chr(random.randint(97, 122)), ])</div><div class="line"></div><div class="line">        font = ImageFont.truetype(&quot;blog/static/dist/fonts/kumo.ttf&quot;, 28)</div><div class="line">        draw.text([i * 24, 0], char, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),font=font)</div><div class="line">        char_list.append(char)</div><div class="line">    #</div><div class="line">    # # =========================</div><div class="line">    width = 120</div><div class="line">    height = 30</div><div class="line"></div><div class="line"></div><div class="line">    def rndColor():</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        生成随机颜色</div><div class="line">        :return:</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        return (random.randint(0, 255), random.randint(10, 255), random.randint(64, 255))</div><div class="line"></div><div class="line"></div><div class="line">    # 写干扰点</div><div class="line">    for i in range(40):</div><div class="line">        draw.point([random.randint(0, width), random.randint(0, height)], fill=rndColor())</div><div class="line"></div><div class="line">    # # 写干扰圆圈</div><div class="line">    # for i in range(40):</div><div class="line">    #     draw.point([random.randint(0, width), random.randint(0, height)], fill=rndColor())</div><div class="line">    #     x = random.randint(0, width)</div><div class="line">    #     y = random.randint(0, height)</div><div class="line">    #     draw.arc((x, y, x + 4, y + 4), 0, 90, fill=rndColor())</div><div class="line">    #</div><div class="line">    # # 画干扰线</div><div class="line">    # for i in range(5):</div><div class="line">    #     x1 = random.randint(0, width)</div><div class="line">    #     y1 = random.randint(0, height)</div><div class="line">    #     x2 = random.randint(0, width)</div><div class="line">    #     y2 = random.randint(0, height)</div><div class="line">    #</div><div class="line">    #     draw.line((x1, y1, x2, y2), fill=rndColor())</div><div class="line"></div><div class="line">    img.save(f, &quot;png&quot;)</div><div class="line">    data = f.getvalue()</div><div class="line"></div><div class="line">    s = &apos;&apos;.join(char_list)</div><div class="line"></div><div class="line">    request.session[&quot;valid_code&quot;] = s</div><div class="line"></div><div class="line">    &apos;&apos;&apos;</div><div class="line">    Dajngo:</div><div class="line">    set_cookie(&quot;sessionId&quot;,&quot;asdsa234asd3sad&quot;)</div><div class="line">    in session表</div><div class="line">    sessionkey           sessiondata</div><div class="line">    asdsa234asd3sad      &#123;&quot;valid_code&quot;:s&#125;</div><div class="line">    &apos;&apos;&apos;</div><div class="line"></div><div class="line">    return HttpResponse(data)</div></pre></td></tr></table></figure>
+<h2 id="认证验证码"><a href="#认证验证码" class="headerlink" title="认证验证码"></a>认证验证码</h2><p>注意： 验证码的验证过程也是基于session/cookie,session/cookie知识必备<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">from PIL import Image</div><div class="line">from blog.utils import  BaseResponse</div><div class="line">from django.contrib import auth</div><div class="line">from blog import models</div><div class="line"></div><div class="line">import  json</div><div class="line">from blog.forms import RegForm</div><div class="line">def login(request):</div><div class="line">    if request.method==&quot;GET&quot;:</div><div class="line">        return render(request,&quot;login.html&quot;)</div><div class="line">    elif request.is_ajax():</div><div class="line">        username=request.POST.get(&quot;username&quot;)</div><div class="line">        password=request.POST.get(&quot;password&quot;)</div><div class="line">        valid=request.POST.get(&quot;valid&quot;)    # 输入的验证码</div><div class="line">        keep_valid = request.session.get(&quot;valid_code&quot;)</div><div class="line">        loginResponse = BaseResponse()</div><div class="line"></div><div class="line">        if valid.upper() == keep_valid.upper():</div><div class="line">            user=auth.authenticate(username=username,password=password)  # auth模块做认证</div><div class="line">            if user:</div><div class="line">                loginResponse.user = username</div><div class="line">                auth.login(request,user)   # auth模块加session</div><div class="line">            else:</div><div class="line">                loginResponse.error = &quot;用户名或密码错误&quot;</div><div class="line">        else:</div><div class="line">            loginResponse.error=&quot;验证码错误&quot;</div><div class="line"></div><div class="line">        return HttpResponse(json.dumps(loginResponse.__dict__))</div></pre></td></tr></table></figure></p>
+<h2 id="插件认证"><a href="#插件认证" class="headerlink" title="插件认证"></a>插件认证</h2><p>这个插件用于拦截机器识别，确定人为登录，使认证系统更加安全<br>等补充…</p>
+<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7468816.html" target="_blank" rel="external">参考</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjba8qjqa002q5mjxsnebwapy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/11/09/mysql-MGR/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Mysql MGR 集群
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/11/08/mysql-Galera/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Mysql Galera集群搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/12/17/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
