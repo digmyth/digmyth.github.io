@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>web-Django-19-auth认证系统 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录
+auth模块
+Django内置补充 
+
+auth模块可以基于Cookie/Session自己写登录、注销的用户认证，这里我们学Django自带的auth模块实现用户的登录、注销认证系统。
+模块引入123from django.contrib import auth   # 模块引入#from django.contrib.auth.models import User,AbstractUs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web-Django-19-auth认证系统">
+<meta property="og:url" content="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+auth模块
+Django内置补充 
+
+auth模块可以基于Cookie/Session自己写登录、注销的用户认证，这里我们学Django自带的auth模块实现用户的登录、注销认证系统。
+模块引入123from django.contrib import auth   # 模块引入#from django.contrib.auth.models import User,AbstractUs">
+<meta property="og:updated_time" content="2017-12-17T03:33:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web-Django-19-auth认证系统">
+<meta name="twitter:description" content="目录
+auth模块
+Django内置补充 
+
+auth模块可以基于Cookie/Session自己写登录、注销的用户认证，这里我们学Django自带的auth模块实现用户的登录、注销认证系统。
+模块引入123from django.contrib import auth   # 模块引入#from django.contrib.auth.models import User,AbstractUs">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-web-django-19-auth认证系统" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/09/web-django-19-auth认证系统/" class="article-date">
+  <time datetime="2017-10-09T12:26:37.000Z" itemprop="datePublished">2017-10-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      web-Django-19-auth认证系统
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>auth模块</li>
+<li>Django内置补充 </li>
+</ul>
+<h2 id="auth模块"><a href="#auth模块" class="headerlink" title="auth模块"></a>auth模块</h2><p>可以基于Cookie/Session自己写登录、注销的用户认证，这里我们学Django自带的auth模块实现用户的登录、注销认证系统。</p>
+<p>模块引入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.contrib import auth   # 模块引入</div><div class="line">#from django.contrib.auth.models import User,AbstractUser</div><div class="line">#from app01 import  models</div></pre></td></tr></table></figure></p>
+<p>下面2条命令会生成Django默认表，其中有张表auth_user用于存认证用户信息。<br>注： 这张表不能直接对其操作，Django提供一个接口，通过auth模块操作User表.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations</div><div class="line">python manage.py migrate</div></pre></td></tr></table></figure></p>
+<p>创建一个超级用户，auth_user可查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py  createsuperuser</div></pre></td></tr></table></figure></p>
+<p>自己写登录系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">def login(request):</div><div class="line">    if request.method==&quot;GET&quot;:</div><div class="line">        return render(request,&quot;login.html&quot;)</div><div class="line">    elif request.method==&quot;POST&quot;:</div><div class="line">        username=request.POST.get(&quot;username&quot;)</div><div class="line">        pwd=request.POST.get(&quot;pwd&quot;)</div><div class="line">        user_obj=auth.authenticate(username=username,password=pwd) # 验证</div><div class="line">        if user_obj:</div><div class="line">            auth.login(request,user_obj)  # 写入session</div><div class="line">            return  redirect(&quot;/home/&quot;)</div><div class="line">        else:</div><div class="line">            return  redirect(&quot;/login/&quot;)</div><div class="line"></div><div class="line">def log_out(request):</div><div class="line">    auth.logout(request)     #相当于request.session.flush() 去除session</div><div class="line">    return redirect(&quot;/login/&quot;)</div><div class="line"></div><div class="line">def home(request):</div><div class="line">    if not request.user_obj.is_authenticated():  # 是否认证过有没写入session</div><div class="line">        return redirect(&quot;/login/&quot;)   </div><div class="line">    return render(request,&quot;home.html&quot;)</div></pre></td></tr></table></figure></p>
+<h2 id="Django-内置补充"><a href="#Django-内置补充" class="headerlink" title="Django 内置补充"></a>Django 内置补充</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">django已经为我们设计好了一个用于此种情况的装饰器：login_requierd()</div><div class="line"></div><div class="line">from django.contrib.auth.decorators import login_required</div><div class="line">      </div><div class="line">@login_required</div><div class="line">def my_view(request):</div><div class="line">  ...</div><div class="line">若用户没有登录，则会跳转到django默认的 登录URL &apos;/accounts/login/ &apos; (这个值可以在settings文件中通过LOGIN_URL进行修改)。并传递  当前访问url的绝对路径 (登陆成功后，会重定向到该路径)。</div><div class="line"></div><div class="line">User对象</div><div class="line">User 对象属性：username， password（必填项）password用哈希算法保存到数据库</div><div class="line"></div><div class="line">is_staff ： 用户是否拥有网站的管理权限.</div><div class="line"></div><div class="line">is_active ： 是否允许用户登录, 设置为``False``，可以不用删除用户来禁止 用户登录</div><div class="line"></div><div class="line"> </div><div class="line"></div><div class="line">2.1 、is_authenticated()</div><div class="line">如果是真正的 User 对象，返回值恒为 True 。 用于检查用户是否已经通过了认证。</div><div class="line">通过认证并不意味着用户拥有任何权限，甚至也不检查该用户是否处于激活状态，这只是表明用户成功的通过了认证。 这个方法很重要, 在后台用request.user.is_authenticated()判断用户是否已经登录，如果true则可以向前台展示request.user.name</div><div class="line"></div><div class="line">2.2 、创建用户</div><div class="line">使用 create_user 辅助函数创建用户:</div><div class="line"></div><div class="line"></div><div class="line">from django.contrib.auth.models import User</div><div class="line">user = User.objects.create_user（username=&apos;&apos;,password=&apos;&apos;,email=&apos;&apos;）</div><div class="line">2.3 、check_password(passwd)</div><div class="line"></div><div class="line">用户需要修改密码的时候 首先要让他输入原来的密码 ，如果给定的字符串通过了密码检查，返回 True</div><div class="line">2.4 、修改密码</div><div class="line">使用 set_password() 来修改密码</div><div class="line"></div><div class="line">user = User.objects.get(username=&apos;&apos;)</div><div class="line">user.set_password(password=&apos;&apos;)</div><div class="line">user.save</div></pre></td></tr></table></figure>
+<p>简单示例<br>注册：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">def sign_up(request):</div><div class="line">    state = None</div><div class="line">    if request.method == &apos;POST&apos;:</div><div class="line"> </div><div class="line">        password = request.POST.get(&apos;password&apos;, &apos;&apos;)</div><div class="line">        repeat_password = request.POST.get(&apos;repeat_password&apos;, &apos;&apos;)</div><div class="line">        email=request.POST.get(&apos;email&apos;, &apos;&apos;)</div><div class="line">        username = request.POST.get(&apos;username&apos;, &apos;&apos;)</div><div class="line">        if User.objects.filter(username=username):</div><div class="line">                state = &apos;user_exist&apos;</div><div class="line">        else:</div><div class="line">                new_user = User.objects.create_user(username=username, password=password,email=email)</div><div class="line">                new_user.save()</div><div class="line"> </div><div class="line">                return redirect(&apos;/book/&apos;)</div><div class="line">    content = &#123;</div><div class="line">        &apos;state&apos;: state,</div><div class="line">        &apos;user&apos;: None,</div><div class="line">    &#125;</div><div class="line">    return render(request, &apos;sign_up.html&apos;, content)</div></pre></td></tr></table></figure></p>
+<p>修改密码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">@login_required</div><div class="line">def set_password(request):</div><div class="line">    user = request.user</div><div class="line">    state = None</div><div class="line">    if request.method == &apos;POST&apos;:</div><div class="line">        old_password = request.POST.get(&apos;old_password&apos;, &apos;&apos;)</div><div class="line">        new_password = request.POST.get(&apos;new_password&apos;, &apos;&apos;)</div><div class="line">        repeat_password = request.POST.get(&apos;repeat_password&apos;, &apos;&apos;)</div><div class="line">        if user.check_password(old_password):</div><div class="line">            if not new_password:</div><div class="line">                state = &apos;empty&apos;</div><div class="line">            elif new_password != repeat_password:</div><div class="line">                state = &apos;repeat_error&apos;</div><div class="line">            else:</div><div class="line">                user.set_password(new_password)</div><div class="line">                user.save()</div><div class="line">                return redirect(&quot;/log_in/&quot;)</div><div class="line">        else:</div><div class="line">            state = &apos;password_error&apos;</div><div class="line">    content = &#123;</div><div class="line">        &apos;user&apos;: user,</div><div class="line">        &apos;state&apos;: state,</div><div class="line">    &#125;</div><div class="line">    return render(request, &apos;set_password.html&apos;, content)</div></pre></td></tr></table></figure></p>
+<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7609586.html" target="_blank" rel="external">补充原文</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjba7vux4002e1jjx4jwfxi1g" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/10/31/ssh-01-反向代理/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ssh-01-反向代理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/10/08/web-django-19-Cookies-Session/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">web-Django-19-Cookies-Session</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/12/17/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

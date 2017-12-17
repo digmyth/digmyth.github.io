@@ -61,6 +61,63 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-19-Cookies-Session" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/08/web-django-19-Cookies-Session/" class="article-date">
+  <time datetime="2017-10-08T12:26:37.000Z" itemprop="datePublished">2017-10-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/08/web-django-19-Cookies-Session/">web-Django-19-Cookies-Session</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>Cookies</li>
+<li>Session</li>
+<li>代码学习</li>
+<li>相关配置</li>
+<li>总结</li>
+</ul>
+<h2 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h2><p>用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。</p>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服务器端，对应一个随机字符串，再把这个随机字符串写入cookies，格式为{“sessionid”:”随机字符串”},问题就得到了解决。</p>
+<h2 id="代码学习"><a href="#代码学习" class="headerlink" title="代码学习"></a>代码学习</h2><p>Cookies 工作特性：<br>在浏览器F12 network-&gt;cookies中首次请求时可以看到 Response Cookies有写入的键值对，下次再访问时Request Cookies有这个键值对，证明此时浏览器会带着这个键值对发给服务器。可以简单用下面代码测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">def ck(request):</div><div class="line">    print(request.COOKIES)   # cookies会封装在request.COOKIES内</div><div class="line">    obj = render(request, &quot;ck.html&quot;, &#123;&quot;msg&quot;: &quot;&quot;&#125;)</div><div class="line">    obj.set_cookie(&apos;user&apos;, &apos;wxq&apos;)  # 向浏览器写入cookies键值对</div><div class="line"></div><div class="line">    return obj</div></pre></td></tr></table></figure></p>
+<p>下面用代码描述Cookies、Session各自工作：<br>login.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;/&gt;</div><div class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;/&gt;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt;&lt;span&gt;&#123;&#123; msg &#125;&#125;&lt;/span&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<p>views.py视图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">from app01 import models</div><div class="line">def login(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        return  render(request, &apos;login.html&apos;,&#123;&quot;msg&quot;: &quot;&quot;&#125;)</div><div class="line">    else:</div><div class="line">        u = request.POST.get(&quot;username&quot;)</div><div class="line">        p = request.POST.get(&quot;pwd&quot;)</div><div class="line">        v=models.UserInfo.objects.filter(username=u, pwd=p).exists()</div><div class="line">        if v:</div><div class="line"></div><div class="line">            # obj.set_cookie(&quot;user&quot;, u,max_age=5)</div><div class="line">            request.session[&quot;user&quot;] = u</div><div class="line">            request.session[&quot;pwd&quot;] = p</div><div class="line">            return redirect(&quot;/home/&quot;)</div><div class="line">        else:</div><div class="line"></div><div class="line">            return render(request,&quot;login.html&quot;,&#123;&quot;msg&quot;: &quot;用户名或密码错误&quot;&#125;)</div><div class="line"></div><div class="line">def home(request):</div><div class="line">    # v = request.COOKIES.get(&quot;user&quot;)</div><div class="line">    v = request.session.get(&quot;user&quot;)</div><div class="line">    if v:</div><div class="line">        return  HttpResponse(&quot;登录成功&quot;)</div><div class="line">    else:</div><div class="line">        return redirect(&quot;/login/&quot;)</div></pre></td></tr></table></figure></p>
+<h2 id="利用session注销"><a href="#利用session注销" class="headerlink" title="利用session注销"></a>利用session注销</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">def logout(request):</div><div class="line">	&apos;&apos;&apos;</div><div class="line">	obj=HttpResponse(&quot;xxx&quot;)</div><div class="line">	obj.set_cookie(&quot;user&quot;,&quot;name&quot;)   # 设置cookie</div><div class="line">	request.COOKIES.get(&quot;user&quot;)     # 获取cookie</div><div class="line">        obj.delete_cookie(&apos;user&apos;)       # 清除cookie</div><div class="line">	&apos;&apos;&apos;</div><div class="line">    #request.session[&apos;user&apos;] = &apos;wxq&apos; # 设置session</div><div class="line">    #request.session.get(&apos;user&apos;)     # 获取session</div><div class="line">    request.session.clear()          # 清除session</div><div class="line">	return redirect(&quot;/login/&quot;)</div></pre></td></tr></table></figure>
+<h2 id="Cookies、Session相关配置"><a href="#Cookies、Session相关配置" class="headerlink" title="Cookies、Session相关配置"></a>Cookies、Session相关配置</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="external">配置参考</a></p>
+<p>settings.py配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SESSION_ENGINE = &apos;django.contrib.sessions.backends.db&apos;   # 引擎（默认）</div><div class="line"> </div><div class="line">SESSION_COOKIE_NAME ＝ &quot;sessionid&quot;         # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串（默认）</div><div class="line">SESSION_COOKIE_PATH ＝ &quot;/&quot;                 # Session的cookie保存的路径（默认）</div><div class="line">SESSION_COOKIE_DOMAIN = None               # Session的cookie保存的域名（默认）</div><div class="line">SESSION_COOKIE_SECURE = False              # 是否Https传输cookie（默认）</div><div class="line">SESSION_COOKIE_HTTPONLY = True             # 是否Session的cookie只支持http传输（默认）</div><div class="line">SESSION_COOKIE_AGE = 1209600               # Session的cookie失效日期（2周）（默认）</div><div class="line">SESSION_EXPIRE_AT_BROWSER_CLOSE = False    # 是否关闭浏览器使得Session过期（默认）</div><div class="line">SESSION_SAVE_EVERY_REQUEST = True          # 是否每次请求都保存Session，默认修改之后才保存（默认）</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>cookies是记录在浏览器上的键值对，本身与登录没有任何关系。 cookies信息保存在request.COOKIES<br>session是记录在服务器上的键值对，key是一个随机字符串。只有Django框架有session 相关的封装。session信息保存在request.session字典里</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjba7vux2002c1jjxel6wxmil" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-ceph-luminous安装" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/05/ceph-luminous安装/" class="article-date">
@@ -112,7 +169,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjb5zst1c00060kjxvj4cmxyp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjba7vutw00081jjxckrtbuwp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -180,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjb5zst3n000r0kjxzgo3lcz4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjba7vuuz000u1jjxsyzro1cv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -240,7 +297,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjb5zst1i000a0kjxcs8y3nqm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjba7vuu1000a1jjxa9zugyvt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -307,7 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjb5zst5j002g0kjxr76qgakz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjba7vux8002i1jjx8usoilm9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -379,7 +436,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjb5zst60002v0kjxvw909obs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjba7vuxq002x1jjxxzegu6ir" class="article-share-link">Share</a>
       
       
     </footer>
@@ -443,7 +500,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjb5zst5h002e0kjxvugy6r9h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjba7vux6002g1jjxy9r7ukue" class="article-share-link">Share</a>
       
       
     </footer>
@@ -508,7 +565,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjb5zst5600260kjx8kkt27po" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjba7vuwx00261jjxfqx2496l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -581,7 +638,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjb5zst5v002q0kjx9wigg229" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjba7vuxi002q1jjxm55dnq5v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -628,65 +685,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjb5zst3q000t0kjx4b9znacw" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/git-01/" class="article-date">
-  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>git建版本库</li>
-<li>git别名设置</li>
-<li>git基本配置</li>
-<li>git基本命令</li>
-<li>git分支管理</li>
-</ul>
-<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init # 把当前目录变成git可管理的仓库</div><div class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</div></pre></td></tr></table></figure>
-<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">为命令设置别名</div><div class="line">$ git config --global alias.co checkout</div><div class="line">$ git config --global alias.ci commit</div><div class="line">$ git config --global alias.br branch</div></pre></td></tr></table></figure>
-<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">每台机器自报家门</div><div class="line">$ git config --global user.name &quot;Your Name&quot;</div><div class="line">$ git config --global user.email &quot;email@example.com&quot;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优先级从高到低是</div><div class="line">.git/config--&gt;  --global --&gt; system</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">全局生效: 配置保存在/etc/gitconfig</div><div class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</div><div class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div><div class="line">	email = you@example.com</div><div class="line"></div><div class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">只对某仓库生效：配置保存在reponame/.git/config</div><div class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</div><div class="line">[root@wxq-srv git_work]# cat .git/config </div><div class="line">[core]</div><div class="line">	repositoryformatversion = 0</div><div class="line">	filemode = true</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">[user]</div><div class="line">	name = wxq1</div></pre></td></tr></table></figure>
-<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git log  # 每一次提交的记录</div><div class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</div><div class="line">git reset --hard $commit_id   # 回到指定版本</div><div class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</div><div class="line">git add index.html   # 添加更改至state暂存	区</div><div class="line">git reset HEAD index.html  # unstage 退出暂存区</div><div class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</div></pre></td></tr></table></figure>
-<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
-<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看分支：git branch</div><div class="line">创建分支：git branch &lt;name&gt;</div><div class="line">切换分支：git checkout &lt;name&gt;</div><div class="line">创建+切换分支：git checkout -b &lt;name&gt;</div><div class="line">合并某分支到当前分支：git merge &lt;name&gt;</div><div class="line">删除分支：git branch -d &lt;name&gt;</div></pre></td></tr></table></figure>
-<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjb5zst1p000f0kjx3xmd7d1z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjba7vuva000y1jjxa16k8mqe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -737,7 +736,7 @@
       <ul>
         
           <li>
-            <a href="/2017/12/14/hello-world/">Hello World</a>
+            <a href="/2017/12/17/hello-world/">Hello World</a>
           </li>
         
           <li>
