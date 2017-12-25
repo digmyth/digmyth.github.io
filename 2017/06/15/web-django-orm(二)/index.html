@@ -8,9 +8,9 @@
   <meta name="description" content="目录
 一对多查询
 多对多查询
+查询优化
 
-
-一对多查询1.1 创建测试数据models.py数据库模型1234567from django.db import modelsclass DePart(models.Model):    title=models.CharField(max_length=32)class UserInfo(models.Model):    username=models.C">
+一对多查询1.1 创建测试数据models.py数据库模型1234567from django.db import modelsclass DePart(models.Model):    title=models.CharField(max_length=32)class UserInfo(models.Model):    username=mode">
 <meta property="og:type" content="article">
 <meta property="og:title" content="web-django-orm(二)">
 <meta property="og:url" content="http://www.digmyth.com/2017/06/15/web-django-orm(二)/index.html">
@@ -18,18 +18,18 @@
 <meta property="og:description" content="目录
 一对多查询
 多对多查询
+查询优化
 
-
-一对多查询1.1 创建测试数据models.py数据库模型1234567from django.db import modelsclass DePart(models.Model):    title=models.CharField(max_length=32)class UserInfo(models.Model):    username=models.C">
-<meta property="og:updated_time" content="2017-12-25T06:44:37.000Z">
+一对多查询1.1 创建测试数据models.py数据库模型1234567from django.db import modelsclass DePart(models.Model):    title=models.CharField(max_length=32)class UserInfo(models.Model):    username=mode">
+<meta property="og:updated_time" content="2017-12-25T06:48:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-django-orm(二)">
 <meta name="twitter:description" content="目录
 一对多查询
 多对多查询
+查询优化
 
-
-一对多查询1.1 创建测试数据models.py数据库模型1234567from django.db import modelsclass DePart(models.Model):    title=models.CharField(max_length=32)class UserInfo(models.Model):    username=models.C">
+一对多查询1.1 创建测试数据models.py数据库模型1234567from django.db import modelsclass DePart(models.Model):    title=models.CharField(max_length=32)class UserInfo(models.Model):    username=mode">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -108,7 +108,7 @@
 <li>目录</li>
 <li>一对多查询</li>
 <li>多对多查询</li>
-<li></li>
+<li>查询优化</li>
 </ul>
 <h2 id="一对多查询"><a href="#一对多查询" class="headerlink" title="一对多查询"></a>一对多查询</h2><h3 id="1-1-创建测试数据"><a href="#1-1-创建测试数据" class="headerlink" title="1.1 创建测试数据"></a>1.1 创建测试数据</h3><p>models.py数据库模型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class DePart(models.Model):</div><div class="line">    title=models.CharField(max_length=32)</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username=models.CharField(max_length=32)</div><div class="line">    pwd=models.CharField(max_length=32)</div><div class="line">    dp = models.ForeignKey(DePart)</div></pre></td></tr></table></figure></p>
 <p>创建测试数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">models.DePart.objects.create(title=&quot;IT&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;咨询&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;公关&quot;)</div><div class="line"></div><div class="line">models.UserInfo.objects.create(username=&quot;user1&quot;,pwd=123,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user2&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user3&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user4&quot;,pwd=456,dp_id=2)</div></pre></td></tr></table></figure></p>
@@ -142,7 +142,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjblub5l2002u7wjxrq0hzvwz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjbludo9x002u8ijxzec7ihgq" class="article-share-link">Share</a>
       
       
     </footer>
