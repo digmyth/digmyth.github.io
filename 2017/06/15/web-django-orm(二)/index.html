@@ -21,7 +21,7 @@
 
 
 一对多查询1.1 创建测试数据models.py数据库模型1234567from django.db import modelsclass DePart(models.Model):    title=models.CharField(max_length=32)class UserInfo(models.Model):    username=models.C">
-<meta property="og:updated_time" content="2017-12-13T11:28:12.000Z">
+<meta property="og:updated_time" content="2017-12-25T05:03:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-django-orm(二)">
 <meta name="twitter:description" content="目录
@@ -126,7 +126,7 @@
 <li>values_list <code>字段+ __跨表字段</code><br>反向查询用表名</li>
 <li>all:   <code>表名小写+_set</code></li>
 <li>values:  <code>表名小写 + __跨表字段</code></li>
-<li>values_list <code>表名小写+ __跨表字段</code></li>
+<li>values_list <code>表名小写+ __跨表字段</code><br>一句话就是： 正向查询用字段，反向查询用表名</li>
 </ul>
 <h2 id="多对多查询"><a href="#多对多查询" class="headerlink" title="多对多查询"></a>多对多查询</h2><h3 id="2-1-多对多自建表"><a href="#2-1-多对多自建表" class="headerlink" title="2.1 多对多自建表"></a>2.1 多对多自建表</h3><p>当我们自己建第三张表时，第三张表列数没有限制，更加灵活，更能满足复杂需求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">表模型</div><div class="line">class UserGroup(models.Model):</div><div class="line">    caption= models.CharField(max_length=32)</div><div class="line"></div><div class="line">class U2G(models.Model):</div><div class="line">    ui = models.ForeignKey(UserInfo)</div><div class="line">    ug =  models.ForeignKey(UserGroup)</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">创建测试数据</div><div class="line">models.U2G.objects.create(ui_id=1,ug_id=1)</div><div class="line">models.U2G.objects.create(ui_id=2,ug_id=1)</div><div class="line">models.U2G.objects.create(ui_id=3,ug_id=2)</div><div class="line">models.U2G.objects.create(ui_id=4,ug_id=2)</div><div class="line">v=models.U2G.objects.all()</div><div class="line">for row in v:</div><div class="line">    print(row.ug.caption,row.ui.username)</div><div class="line"># 打印结果</div><div class="line">A组 user1</div><div class="line">A组 user2</div><div class="line">B组 user3</div><div class="line">B组 user4</div></pre></td></tr></table></figure>
@@ -141,7 +141,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjba9mmds002u97jxu15qw9bm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjblqlnuw002o2yjxrlhajjee" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,7 +206,7 @@
       <ul>
         
           <li>
-            <a href="/2017/12/17/hello-world/">Hello World</a>
+            <a href="/2017/12/25/hello-world/">Hello World</a>
           </li>
         
           <li>
