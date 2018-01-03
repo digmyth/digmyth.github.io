@@ -108,7 +108,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjbyym0m4002k71jxmna7qqjq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjbz5lqu2002ka1jxrf406uus" class="article-share-link">Share</a>
       
       
     </footer>
@@ -165,7 +165,65 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjbyym0m2002i71jxk6kax4p3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjbz5lqtz002ia1jxeqhnoqqq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-django-orm(三)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/09/15/web-django-orm(三)/" class="article-date">
+  <time datetime="2017-09-15T12:51:41.000Z" itemprop="datePublished">2017-09-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/15/web-django-orm(三)/">web-django-orm(三)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>Orm Shell</li>
+<li>FQ查询</li>
+<li>聚合查询</li>
+</ul>
+<h2 id="一-Orm-Shell"><a href="#一-Orm-Shell" class="headerlink" title="一 Orm Shell"></a>一 Orm Shell</h2><p>  pycharm中models我们己经学习过了，这里记录下在linux操作系统中启动<code>Orm Shell</code>需要做的几件事儿.</p>
+<h3 id="1-模块导入"><a href="#1-模块导入" class="headerlink" title="1  模块导入"></a>1  模块导入</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">pip3 install pymysql</div><div class="line">pycharm中可以在应用目录下__init__.py,也可以在项目目录__init__.py下</div><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div><div class="line">但是linux系统里只能在项目目录下</div></pre></td></tr></table></figure>
+<h3 id="2-models-py的区别"><a href="#2-models-py的区别" class="headerlink" title="2 models.py的区别"></a>2 models.py的区别</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">在建立一对一或一对多关系表时需要位置参数on_delete=models.CASCADE，多对多不需要</div><div class="line">author=models.OneToOneField(&quot;Author&quot;,on_delete=models.CASCADE)</div><div class="line">publisher=models.ForeignKey(to=&quot;Publish&quot;,on_delete=models.CASCADE)</div><div class="line">authors=models.ManyToManyField(&quot;Author&quot;)</div></pre></td></tr></table></figure>
+<h3 id="3-数据库"><a href="#3-数据库" class="headerlink" title="3 数据库"></a>3 数据库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">&apos;default&apos;: &#123;</div><div class="line">    &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">    &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">    &apos;USER&apos;: &apos;root&apos;,</div><div class="line">    &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">    &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">    &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h3 id="4-明确指明INSTALLED-APPS"><a href="#4-明确指明INSTALLED-APPS" class="headerlink" title="4 明确指明INSTALLED_APPS"></a>4 明确指明INSTALLED_APPS</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    INSTALLED_APPS = [</div><div class="line">    &apos;django.contrib.admin&apos;,</div><div class="line">    &apos;django.contrib.auth&apos;,</div><div class="line">    &apos;django.contrib.contenttypes&apos;,</div><div class="line">    &apos;django.contrib.sessions&apos;,</div><div class="line">    &apos;django.contrib.messages&apos;,</div><div class="line">    &apos;django.contrib.staticfiles&apos;,</div><div class="line">    &apos;app01.apps.App01Config&apos;,  </div><div class="line">]</div></pre></td></tr></table></figure>
+<h3 id="5-启动Orm-Shell"><a href="#5-启动Orm-Shell" class="headerlink" title="5 启动Orm Shell"></a>5 启动Orm Shell</h3><p>可以命令行操作orm语句学习了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">python3 manage.py  shell</div><div class="line">&gt;&gt;&gt; from app01 import models</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="6-联表sql示例"><a href="#6-联表sql示例" class="headerlink" title="6 联表sql示例"></a>6 联表sql示例</h3><p>原始sql语句的一个精典联表操作示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">    MariaDB [wxq_db]&gt; select sum(app01_book.price) as bookSumPrice,app01_publish.name </div><div class="line">    -&gt;from app01_book_authors</div><div class="line">    -&gt;left join app01_book</div><div class="line">    -&gt;on app01_book.nid=book_id</div><div class="line">    -&gt;left join app01_author</div><div class="line">    -&gt;on author_id=app01_author.id</div><div class="line">    -&gt;left join app01_publish</div><div class="line">    -&gt;on publisher_id=app01_publish.id</div><div class="line">    -&gt;group by app01_publish.name</div><div class="line">    -&gt;having bookSumPrice &gt; 100</div><div class="line">    -&gt;order by bookSumPrice desc;</div><div class="line">+--------------+-----------------+</div><div class="line">| bookSumPrice | name            |</div><div class="line">+--------------+-----------------+</div><div class="line">|       176.40 | 工业出版社      |</div><div class="line">|       124.00 | 人民出版社      |</div><div class="line">+--------------+-----------------+</div><div class="line">2 rows in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+<h2 id="二-FQ查询"><a href="#二-FQ查询" class="headerlink" title="二 FQ查询"></a>二 FQ查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">def FQQuery(request):</div><div class="line">    from django.db.models import F,Q</div><div class="line">    </div><div class="line">    # F查询</div><div class="line">    # F查询用于自修改或字段比较或一个字段值赋值给另一字段的场景</div><div class="line"></div><div class="line">    # ret1=models.Book.objects.filter(comment_num__gt=50)</div><div class="line">    # ret2=models.Book.objects.filter(comment_num__gt=F(&quot;read_num&quot;)*2)</div><div class="line">    # print(ret2)</div><div class="line"></div><div class="line">    #models.Book.objects.all().update(price=F(&quot;price&quot;)+10)</div><div class="line"></div><div class="line">    ################################## Q查询</div><div class="line">    ret3=models.Book.objects.filter(comment_num__gt=50,read_num__gt=50)  # 并且</div><div class="line">    ret3=models.Book.objects.filter(Q(comment_num__gt=100)|Q(read_num__gt=100))   # 或者</div><div class="line">    print(ret3)</div><div class="line">    </div><div class="line">    return HttpResponse(&quot;OK&quot;)</div></pre></td></tr></table></figure>
+<p>F查询总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">F查询适用场景:</div><div class="line"></div><div class="line">场景1：  两个字段间值的比较F(&apos;price&apos;)</div><div class="line">场景2：  自运算，如F(&apos;price&apos;) + 10</div></pre></td></tr></table></figure></p>
+<p>Q查询总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 注意事项：不同顺序的区别，不同放置的区别</div><div class="line"># 关键字语句放在Q查询的后面，并且只要有(逗号)就是(且)的意思</div><div class="line">#ret3=models.Book.objects.filter(price__lt=100,(Q(comment_num__gt=100)|Q(read_num__gt=100))) # 有效语句</div><div class="line">#ret3=models.Book.objects.filter(Q(comment_num__gt=100)|Q(read_num__gt=100),price__lt=100)   # 有效语句</div><div class="line">#ret3=models.Book.objects.filter(price__lt=100,Q(comment_num__gt=100)|Q(read_num__gt=100))   # 无效语句</div></pre></td></tr></table></figure></p>
+<h2 id="三-聚合查询"><a href="#三-聚合查询" class="headerlink" title="三 聚合查询"></a>三 聚合查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">def juheQuery(reqeuest):</div><div class="line">     from django.db.models import F,Q,Avg,Count,Sum,Min,Max</div><div class="line">     # 单纯聚合函数</div><div class="line">     # 计算所有图书的平均价格</div><div class="line">     # ret=models.Book.objects.all().aggregate(priceSum=Sum(&quot;price&quot;))</div><div class="line">     # print(ret)  # &#123;&apos;priceSum&apos;: Decimal(&apos;2158.00&apos;)&#125;</div><div class="line"></div><div class="line">     # 统计每一本书的作者个数</div><div class="line"></div><div class="line">     # ret2=models.Book.objects.all().annotate(authors_num=Count(&quot;authors&quot;))  # 返回QuerySet</div><div class="line">     # print(ret2)   # [book_obj1,book_obj2,book_obj3,book_obj4,....]</div><div class="line">     #</div><div class="line">     # for obj in ret2:</div><div class="line">     #     print(obj.nid,obj.title,obj.authors_num)</div><div class="line"></div><div class="line"></div><div class="line">     # 查询每一个出版社出版过的所有书籍的总价格</div><div class="line"></div><div class="line">      #方式1：</div><div class="line">     # ret3=models.Publish.objects.all().annotate(priceSum=Sum(&quot;bookList__price&quot;))</div><div class="line">     #</div><div class="line">     # for obj in ret3:</div><div class="line">     #     print(obj.id,obj.name,obj.priceSum)</div><div class="line"></div><div class="line">     # ret4 = models.Publish.objects.all().annotate(priceSum=Sum(&quot;bookList__price&quot;)).values(&quot;name&quot;,&quot;priceSum&quot;)</div><div class="line">     # print(ret4)</div><div class="line"></div><div class="line">     # 方式2：</div><div class="line">     # ret5=models.Book.objects.all().values(&quot;publisher__name&quot;).annotate(priceSum=Sum(&quot;price&quot;)).values(&quot;publisher__name&quot;,&quot;priceSum&quot;)</div><div class="line">     # print(ret5)</div><div class="line">     </div><div class="line">     return HttpResponse(&quot;OK&quot;)</div></pre></td></tr></table></figure>
+<p>实践示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [178]: models.Publish.objects.annotate(priceSum=Sum(&quot;book__price&quot;)).values(&apos;name&apos;,&apos;priceSum&apos;)</div><div class="line">Out[178]: &lt;QuerySet [&#123;&apos;priceSum&apos;: Decimal(&apos;12.00&apos;), &apos;name&apos;: &apos;人民出版社&apos;&#125;, &#123;&apos;priceSum&apos;: Decimal(&apos;8.80&apos;), &apos;name&apos;: &apos;工业出版社&apos;&#125;, &#123;&apos;priceSum&apos;: Decimal(&apos;8.80&apos;), &apos;name&apos;: &apos;清华版社&apos;&#125;]&gt;</div><div class="line"></div><div class="line">In [179]: models.Book.objects.values(&quot;publisher__name&quot;).annotate(priceSum=Sum(&quot;price&quot;)).values(&apos;publisher__name&apos;,&apos;priceSum&apos;)</div><div class="line">Out[179]: &lt;QuerySet [&#123;&apos;publisher__name&apos;: &apos;人民出版社&apos;, &apos;priceSum&apos;: Decimal(&apos;12.00&apos;)&#125;, &#123;&apos;publisher__name&apos;: &apos;清华版社&apos;, &apos;priceSum&apos;: Decimal(&apos;8.80&apos;)&#125;, &#123;&apos;publisher__name&apos;: &apos;工业出版社&apos;, &apos;priceSum&apos;: Decimal(&apos;8.80&apos;)&#125;]&gt;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cjbz5lqug002ua1jxuwdsf2r1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -226,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjbyym0fp000671jxfz7lqfv4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjbz5lqnm0006a1jxzalx9txk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -294,7 +352,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjbyym0ib000r71jxrc7es0ji" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjbz5lqr3000ra1jx1ab8y2ky" class="article-share-link">Share</a>
       
       
     </footer>
@@ -354,7 +412,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjbyym0fu000a71jx1bb23190" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjbz5lqq9000aa1jx3ujoh4io" class="article-share-link">Share</a>
       
       
     </footer>
@@ -421,7 +479,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjbyym0lz002g71jx9ralrqcl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjbz5lqty002ga1jxdcuqabp7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -493,7 +551,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjbyym0mm002z71jxfcxwycq7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjbz5lquo0031a1jxl3pw5ht5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -557,7 +615,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjbyym0lx002e71jxu5vwf4cu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjbz5lqtw002ea1jxdhyejg1v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -631,72 +689,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjbyym0mg002u71jxwlqm912x" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/web-02-前端html/" class="article-date">
-  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</div><div class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</div><div class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</div><div class="line">    &lt;/select&gt;</div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</div><div class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</div><div class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="external">参考</a><br>基本概念：</p>
-<ul>
-<li>html很骨感.</li>
-<li>css就是装饰或样式.</li>
-<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
-</ul>
-<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
-<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
-<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
-<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">position</div><div class="line">     position: relative  # 与absolute一起使用</div><div class="line">     position: absolute  #随滚动条滚动而滚动</div><div class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</div><div class="line">     position: fixed     # 永远在窗口某位置</div></pre></td></tr></table></figure></p>
-<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="external">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
-<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
-<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
-<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
-<h2 id="contentType"><a href="#contentType" class="headerlink" title="contentType"></a>contentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
-<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
-<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
-<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
-<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
-<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjbyym0ln002671jxqeg7xxh0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjbz5lqui002wa1jxflij16cy" class="article-share-link">Share</a>
       
       
     </footer>

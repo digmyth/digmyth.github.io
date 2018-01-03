@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>web-django-orm(三) | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录
+Orm Shell
+FQ查询
+聚合查询
+
+一 Orm Shell  pycharm中models我们己经学习过了，这里记录下在linux操作系统中启动Orm Shell需要做的几件事儿.
+1  模块导入12345pip3 install pymysqlpycharm中可以在应用目录下__init__.py,也可以在项目目录__init__.py下import pymysqlpymysql.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web-django-orm(三)">
+<meta property="og:url" content="http://www.digmyth.com/2017/09/15/web-django-orm(三)/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+Orm Shell
+FQ查询
+聚合查询
+
+一 Orm Shell  pycharm中models我们己经学习过了，这里记录下在linux操作系统中启动Orm Shell需要做的几件事儿.
+1  模块导入12345pip3 install pymysqlpycharm中可以在应用目录下__init__.py,也可以在项目目录__init__.py下import pymysqlpymysql.">
+<meta property="og:updated_time" content="2018-01-03T14:23:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web-django-orm(三)">
+<meta name="twitter:description" content="目录
+Orm Shell
+FQ查询
+聚合查询
+
+一 Orm Shell  pycharm中models我们己经学习过了，这里记录下在linux操作系统中启动Orm Shell需要做的几件事儿.
+1  模块导入12345pip3 install pymysqlpycharm中可以在应用目录下__init__.py,也可以在项目目录__init__.py下import pymysqlpymysql.">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-web-django-orm(三)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/09/15/web-django-orm(三)/" class="article-date">
+  <time datetime="2017-09-15T12:51:41.000Z" itemprop="datePublished">2017-09-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      web-django-orm(三)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>Orm Shell</li>
+<li>FQ查询</li>
+<li>聚合查询</li>
+</ul>
+<h2 id="一-Orm-Shell"><a href="#一-Orm-Shell" class="headerlink" title="一 Orm Shell"></a>一 Orm Shell</h2><p>  pycharm中models我们己经学习过了，这里记录下在linux操作系统中启动<code>Orm Shell</code>需要做的几件事儿.</p>
+<h3 id="1-模块导入"><a href="#1-模块导入" class="headerlink" title="1  模块导入"></a>1  模块导入</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">pip3 install pymysql</div><div class="line">pycharm中可以在应用目录下__init__.py,也可以在项目目录__init__.py下</div><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div><div class="line">但是linux系统里只能在项目目录下</div></pre></td></tr></table></figure>
+<h3 id="2-models-py的区别"><a href="#2-models-py的区别" class="headerlink" title="2 models.py的区别"></a>2 models.py的区别</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">在建立一对一或一对多关系表时需要位置参数on_delete=models.CASCADE，多对多不需要</div><div class="line">author=models.OneToOneField(&quot;Author&quot;,on_delete=models.CASCADE)</div><div class="line">publisher=models.ForeignKey(to=&quot;Publish&quot;,on_delete=models.CASCADE)</div><div class="line">authors=models.ManyToManyField(&quot;Author&quot;)</div></pre></td></tr></table></figure>
+<h3 id="3-数据库"><a href="#3-数据库" class="headerlink" title="3 数据库"></a>3 数据库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">&apos;default&apos;: &#123;</div><div class="line">    &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">    &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">    &apos;USER&apos;: &apos;root&apos;,</div><div class="line">    &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">    &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">    &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h3 id="4-明确指明INSTALLED-APPS"><a href="#4-明确指明INSTALLED-APPS" class="headerlink" title="4 明确指明INSTALLED_APPS"></a>4 明确指明INSTALLED_APPS</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    INSTALLED_APPS = [</div><div class="line">    &apos;django.contrib.admin&apos;,</div><div class="line">    &apos;django.contrib.auth&apos;,</div><div class="line">    &apos;django.contrib.contenttypes&apos;,</div><div class="line">    &apos;django.contrib.sessions&apos;,</div><div class="line">    &apos;django.contrib.messages&apos;,</div><div class="line">    &apos;django.contrib.staticfiles&apos;,</div><div class="line">    &apos;app01.apps.App01Config&apos;,  </div><div class="line">]</div></pre></td></tr></table></figure>
+<h3 id="5-启动Orm-Shell"><a href="#5-启动Orm-Shell" class="headerlink" title="5 启动Orm Shell"></a>5 启动Orm Shell</h3><p>可以命令行操作orm语句学习了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">python3 manage.py  shell</div><div class="line">&gt;&gt;&gt; from app01 import models</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="6-联表sql示例"><a href="#6-联表sql示例" class="headerlink" title="6 联表sql示例"></a>6 联表sql示例</h3><p>原始sql语句的一个精典联表操作示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">    MariaDB [wxq_db]&gt; select sum(app01_book.price) as bookSumPrice,app01_publish.name </div><div class="line">    -&gt;from app01_book_authors</div><div class="line">    -&gt;left join app01_book</div><div class="line">    -&gt;on app01_book.nid=book_id</div><div class="line">    -&gt;left join app01_author</div><div class="line">    -&gt;on author_id=app01_author.id</div><div class="line">    -&gt;left join app01_publish</div><div class="line">    -&gt;on publisher_id=app01_publish.id</div><div class="line">    -&gt;group by app01_publish.name</div><div class="line">    -&gt;having bookSumPrice &gt; 100</div><div class="line">    -&gt;order by bookSumPrice desc;</div><div class="line">+--------------+-----------------+</div><div class="line">| bookSumPrice | name            |</div><div class="line">+--------------+-----------------+</div><div class="line">|       176.40 | 工业出版社      |</div><div class="line">|       124.00 | 人民出版社      |</div><div class="line">+--------------+-----------------+</div><div class="line">2 rows in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+<h2 id="二-FQ查询"><a href="#二-FQ查询" class="headerlink" title="二 FQ查询"></a>二 FQ查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">def FQQuery(request):</div><div class="line">    from django.db.models import F,Q</div><div class="line">    </div><div class="line">    # F查询</div><div class="line">    # F查询用于自修改或字段比较或一个字段值赋值给另一字段的场景</div><div class="line"></div><div class="line">    # ret1=models.Book.objects.filter(comment_num__gt=50)</div><div class="line">    # ret2=models.Book.objects.filter(comment_num__gt=F(&quot;read_num&quot;)*2)</div><div class="line">    # print(ret2)</div><div class="line"></div><div class="line">    #models.Book.objects.all().update(price=F(&quot;price&quot;)+10)</div><div class="line"></div><div class="line">    ################################## Q查询</div><div class="line">    ret3=models.Book.objects.filter(comment_num__gt=50,read_num__gt=50)  # 并且</div><div class="line">    ret3=models.Book.objects.filter(Q(comment_num__gt=100)|Q(read_num__gt=100))   # 或者</div><div class="line">    print(ret3)</div><div class="line">    </div><div class="line">    return HttpResponse(&quot;OK&quot;)</div></pre></td></tr></table></figure>
+<p>F查询总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">F查询适用场景:</div><div class="line"></div><div class="line">场景1：  两个字段间值的比较F(&apos;price&apos;)</div><div class="line">场景2：  自运算，如F(&apos;price&apos;) + 10</div></pre></td></tr></table></figure></p>
+<p>Q查询总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 注意事项：不同顺序的区别，不同放置的区别</div><div class="line"># 关键字语句放在Q查询的后面，并且只要有(逗号)就是(且)的意思</div><div class="line">#ret3=models.Book.objects.filter(price__lt=100,(Q(comment_num__gt=100)|Q(read_num__gt=100))) # 有效语句</div><div class="line">#ret3=models.Book.objects.filter(Q(comment_num__gt=100)|Q(read_num__gt=100),price__lt=100)   # 有效语句</div><div class="line">#ret3=models.Book.objects.filter(price__lt=100,Q(comment_num__gt=100)|Q(read_num__gt=100))   # 无效语句</div></pre></td></tr></table></figure></p>
+<h2 id="三-聚合查询"><a href="#三-聚合查询" class="headerlink" title="三 聚合查询"></a>三 聚合查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">def juheQuery(reqeuest):</div><div class="line">     from django.db.models import F,Q,Avg,Count,Sum,Min,Max</div><div class="line">     # 单纯聚合函数</div><div class="line">     # 计算所有图书的平均价格</div><div class="line">     # ret=models.Book.objects.all().aggregate(priceSum=Sum(&quot;price&quot;))</div><div class="line">     # print(ret)  # &#123;&apos;priceSum&apos;: Decimal(&apos;2158.00&apos;)&#125;</div><div class="line"></div><div class="line">     # 统计每一本书的作者个数</div><div class="line"></div><div class="line">     # ret2=models.Book.objects.all().annotate(authors_num=Count(&quot;authors&quot;))  # 返回QuerySet</div><div class="line">     # print(ret2)   # [book_obj1,book_obj2,book_obj3,book_obj4,....]</div><div class="line">     #</div><div class="line">     # for obj in ret2:</div><div class="line">     #     print(obj.nid,obj.title,obj.authors_num)</div><div class="line"></div><div class="line"></div><div class="line">     # 查询每一个出版社出版过的所有书籍的总价格</div><div class="line"></div><div class="line">      #方式1：</div><div class="line">     # ret3=models.Publish.objects.all().annotate(priceSum=Sum(&quot;bookList__price&quot;))</div><div class="line">     #</div><div class="line">     # for obj in ret3:</div><div class="line">     #     print(obj.id,obj.name,obj.priceSum)</div><div class="line"></div><div class="line">     # ret4 = models.Publish.objects.all().annotate(priceSum=Sum(&quot;bookList__price&quot;)).values(&quot;name&quot;,&quot;priceSum&quot;)</div><div class="line">     # print(ret4)</div><div class="line"></div><div class="line">     # 方式2：</div><div class="line">     # ret5=models.Book.objects.all().values(&quot;publisher__name&quot;).annotate(priceSum=Sum(&quot;price&quot;)).values(&quot;publisher__name&quot;,&quot;priceSum&quot;)</div><div class="line">     # print(ret5)</div><div class="line">     </div><div class="line">     return HttpResponse(&quot;OK&quot;)</div></pre></td></tr></table></figure>
+<p>实践示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [178]: models.Publish.objects.annotate(priceSum=Sum(&quot;book__price&quot;)).values(&apos;name&apos;,&apos;priceSum&apos;)</div><div class="line">Out[178]: &lt;QuerySet [&#123;&apos;priceSum&apos;: Decimal(&apos;12.00&apos;), &apos;name&apos;: &apos;人民出版社&apos;&#125;, &#123;&apos;priceSum&apos;: Decimal(&apos;8.80&apos;), &apos;name&apos;: &apos;工业出版社&apos;&#125;, &#123;&apos;priceSum&apos;: Decimal(&apos;8.80&apos;), &apos;name&apos;: &apos;清华版社&apos;&#125;]&gt;</div><div class="line"></div><div class="line">In [179]: models.Book.objects.values(&quot;publisher__name&quot;).annotate(priceSum=Sum(&quot;price&quot;)).values(&apos;publisher__name&apos;,&apos;priceSum&apos;)</div><div class="line">Out[179]: &lt;QuerySet [&#123;&apos;publisher__name&apos;: &apos;人民出版社&apos;, &apos;priceSum&apos;: Decimal(&apos;12.00&apos;)&#125;, &#123;&apos;publisher__name&apos;: &apos;清华版社&apos;, &apos;priceSum&apos;: Decimal(&apos;8.80&apos;)&#125;, &#123;&apos;publisher__name&apos;: &apos;工业出版社&apos;, &apos;priceSum&apos;: Decimal(&apos;8.80&apos;)&#125;]&gt;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cjbz5lqug002ua1jxuwdsf2r1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/10/08/web-django-19-Cookies-Session/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          web-Django-19-Cookies-Session
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/09/05/ceph-luminous安装/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ceph-luminous安装</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/03/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
