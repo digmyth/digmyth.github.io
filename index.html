@@ -61,10 +61,78 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-25-DjangoAdmin" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/16/web-django-25-DjangoAdmin/" class="article-date">
+  <time datetime="2018-01-16T12:14:46.374Z" itemprop="datePublished">2018-01-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/16/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>DjangoAdmin工作流程</li>
+<li>制作启动文件 </li>
+<li>单例模式应用 </li>
+</ul>
+<p><a href="http://www.cnblogs.com/wupeiqi/articles/7444717.html" target="_blank" rel="external">博客参考</a></p>
+<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">admin.py注册models_class如models.UserInfo</div><div class="line">from django.template import admin</div><div class="line">from app01 import models</div><div class="line">admin.site.registry(models.UserInfo)</div></pre></td></tr></table></figure></p>
+<p>2 admin.site.urls<br>  admin.site.urls循环_registry={}字典生成相应URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">生成4个URL分别是如下：</div><div class="line">app01/userinfo/</div><div class="line">app01/userinfo/add/</div><div class="line">app01/userinfo/1/change/</div><div class="line">app01/userinfo/1/delete/</div></pre></td></tr></table></figure></p>
+<p>其中要深入理解URL include原理：  url(r’^xx’, “可以是视图函数，也可以是元组”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">partterns = [</div><div class="line">   url(r&apos;^admin&apos;, admin.site.urls),            </div><div class="line">		     # admin.site.urls 返回形如（[],None,None）的元组.</div><div class="line">   url(r&apos;^backend&apos;, include(&apos;backend.urls&apos;)), </div><div class="line">		    # include 同样返回形如（[],None,None）的元组.</div><div class="line">		    # 也可以写成形如 include([],None,None) 格式.</div><div class="line"> ]</div></pre></td></tr></table></figure></p>
+<h2 id="二-制作stack启动文件"><a href="#二-制作stack启动文件" class="headerlink" title="二  制作stack启动文件"></a>二  制作stack启动文件</h2><ul>
+<li>1  创建一个stack 的app</li>
+<li>2  settings.py 注册app<pre><code>-  &apos;stack.apps.StackConfig&apos;,
+</code></pre></li>
+<li>3  在stack apps.py文件定义ready方法</li>
+</ul>
+<p>stack/apps.py文件ready()方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from django.utils.module_loading import autodiscover_modules</div><div class="line">class StackConfig(AppConfig):</div><div class="line">   name = &apos;stack&apos;</div><div class="line"></div><div class="line">   def ready(self):</div><div class="line">       autodiscover_modules(&quot;xxx&quot;)</div></pre></td></tr></table></figure></p>
+<ul>
+<li>4 启动项目时会先在执行所有app下的xxx.py文件.<br>   (当然前提是这些app也是settings.py注册好的)</li>
+</ul>
+<h2 id="三-单例模式"><a href="#三-单例模式" class="headerlink" title="三 单例模式"></a>三 单例模式</h2><p>单例模式有很多种实现方式</p>
+<p>其中一种：利用模块多次导入时，除第一次外不会真正执行模块代码。</p>
+<p>如果模块中有实例化对象操作，那么多次导入也不会真正实例化多个对象，而是同一个实例</p>
+<p>如果在一个程序先运行的文件改变了实例数据或属性，后运行的文件导入后读这个实例就会有数据或属性.</p>
+<p>  示例：<br>  随便定义一个实例化对象的文件stack/service.v1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">class StackSite():</div><div class="line">    def __init__(self):</div><div class="line">        self._registry = &#123;&#125;</div><div class="line"></div><div class="line">    def register(self,class_name,config_class):</div><div class="line">        self._registry[class_name] = config_class</div><div class="line"></div><div class="line">   site = StackSite()</div><div class="line">```       </div><div class="line"> 在我们定义的启动文件app01/xxx.py中写入代码(因为会先执行xxx.py)</div></pre></td></tr></table></figure></p>
+<p>from stack.service import v1<br>v1.site.register(“k1”,”v1”)<br>v1.site.register(“k2”,”v2”)<br>v1.site.name = ‘wxq’<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">项目urls.py中写入</div></pre></td></tr></table></figure></p>
+<p>from stack.service import v1<br>print(v1.site._registry)<br>print(v1.site.name)<br>```      </p>
+<p>总结<br>启动项目时，先执行app01/xxx.py,后执行urls.py文件，程序读到了实例的数据并不是重新实例化新对象，这就是单例模式的运用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/01/16/web-django-25-DjangoAdmin/" data-id="cjchlpd9j0030f1jx14h1104k" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/16/hello-world/" class="article-date">
-  <time datetime="2018-01-16T12:13:05.981Z" itemprop="datePublished">2018-01-16</time>
+  <time datetime="2018-01-16T12:14:46.237Z" itemprop="datePublished">2018-01-16</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +168,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/16/hello-world/" data-id="cjchln7su000lefjxy2y6ifbw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/16/hello-world/" data-id="cjchlpd5p000lf1jxuihsohiy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -160,7 +228,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjchln7vk002yefjxnvct0siq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjchlpd9g002yf1jxrh8q15gv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -226,75 +294,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjchln7v3002kefjx01tnpuey" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-25-DjangoAdmin" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/08/web-django-25-DjangoAdmin/" class="article-date">
-  <time datetime="2017-12-08T12:26:37.000Z" itemprop="datePublished">2017-12-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/08/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>DjangoAdmin工作流程</li>
-<li>制作启动文件 </li>
-<li>单例模式应用 </li>
-</ul>
-<p><a href="http://www.cnblogs.com/wupeiqi/articles/7444717.html" target="_blank" rel="external">博客参考</a></p>
-<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">admin.py注册models_class如models.UserInfo</div><div class="line">from django.template import admin</div><div class="line">from app01 import models</div><div class="line">admin.site.registry(models.UserInfo)</div></pre></td></tr></table></figure></p>
-<p>2 admin.site.urls<br>  admin.site.urls循环_registry={}字典生成相应URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">生成4个URL分别是如下：</div><div class="line">app01/userinfo/</div><div class="line">app01/userinfo/add/</div><div class="line">app01/userinfo/1/change/</div><div class="line">app01/userinfo/1/delete/</div></pre></td></tr></table></figure></p>
-<p>其中要深入理解URL include原理：  url(r’^xx’, “可以是视图函数，也可以是元组”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">partterns = [</div><div class="line">   url(r&apos;^admin&apos;, admin.site.urls),            </div><div class="line">		     # admin.site.urls 返回形如（[],None,None）的元组.</div><div class="line">   url(r&apos;^backend&apos;, include(&apos;backend.urls&apos;)), </div><div class="line">		    # include 同样返回形如（[],None,None）的元组.</div><div class="line">		    # 也可以写成形如 include([],None,None) 格式.</div><div class="line"> ]</div></pre></td></tr></table></figure></p>
-<h2 id="二-制作stack启动文件"><a href="#二-制作stack启动文件" class="headerlink" title="二  制作stack启动文件"></a>二  制作stack启动文件</h2><ul>
-<li>1  创建一个stack 的app</li>
-<li>2  settings.py 注册app<pre><code>-  &apos;stack.apps.StackConfig&apos;,
-</code></pre></li>
-<li>3  在stack apps.py文件定义ready方法</li>
-</ul>
-<p>stack/apps.py文件ready()方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from django.utils.module_loading import autodiscover_modules</div><div class="line">class StackConfig(AppConfig):</div><div class="line">   name = &apos;stack&apos;</div><div class="line"></div><div class="line">   def ready(self):</div><div class="line">       autodiscover_modules(&quot;xxx&quot;)</div></pre></td></tr></table></figure></p>
-<ul>
-<li>4 启动项目时会先在执行所有app下的xxx.py文件.<br>   (当然前提是这些app也是settings.py注册好的)</li>
-</ul>
-<h2 id="三-单例模式"><a href="#三-单例模式" class="headerlink" title="三 单例模式"></a>三 单例模式</h2><p>单例模式有很多种实现方式</p>
-<p>其中一种：利用模块多次导入时，除第一次外不会真正执行模块代码。</p>
-<p>如果模块中有实例化对象操作，那么多次导入也不会真正实例化多个对象，而是同一个实例</p>
-<p>如果在一个程序先运行的文件改变了实例数据或属性，后运行的文件导入后读这个实例就会有数据或属性.</p>
-<p>  示例：<br>  随便定义一个实例化对象的文件stack/service.v1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">class StackSite():</div><div class="line">    def __init__(self):</div><div class="line">        self._registry = &#123;&#125;</div><div class="line"></div><div class="line">    def register(self,class_name,config_class):</div><div class="line">        self._registry[class_name] = config_class</div><div class="line"></div><div class="line">   site = StackSite()</div><div class="line">```       </div><div class="line"> 在我们定义的启动文件app01/xxx.py中写入代码(因为会先执行xxx.py)</div></pre></td></tr></table></figure></p>
-<p>from stack.service import v1<br>v1.site.register(“k1”,”v1”)<br>v1.site.register(“k2”,”v2”)<br>v1.site.name = ‘wxq’<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">项目urls.py中写入</div></pre></td></tr></table></figure></p>
-<p>from stack.service import v1<br>print(v1.site._registry)<br>print(v1.site.name)<br>```      </p>
-<p>总结<br>启动项目时，先执行app01/xxx.py,后执行urls.py文件，程序读到了实例的数据并不是重新实例化新对象，这就是单例模式的运用。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/08/web-django-25-DjangoAdmin/" data-id="cjchln7vm0030efjxjz9wfyyk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjchlpd8v002kf1jxaj5yrks6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -343,7 +343,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjchln7vh002wefjxvt5it3jr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjchlpd9c002wf1jxyjzmp768" class="article-share-link">Share</a>
       
       
     </footer>
@@ -401,7 +401,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjchln7vd002sefjxassx57bu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjchlpd96002sf1jx17dwu5xk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -465,7 +465,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjchln7vb002qefjxmaxfbnpu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjchlpd93002qf1jxtr19ba48" class="article-share-link">Share</a>
       
       
     </footer>
@@ -518,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjchln7sr000iefjxinryqpsi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjchlpd5m000if1jxyj0vaaec" class="article-share-link">Share</a>
       
       
     </footer>
@@ -587,7 +587,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjchln7sx000oefjxpmtm61jp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjchlpd5s000of1jx1wgz6qvk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -679,7 +679,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjchln7tb000yefjxzovv1f8s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjchlpd67000yf1jxm07eg18b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -730,6 +730,10 @@
       <ul>
         
           <li>
+            <a href="/2018/01/16/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/16/hello-world/">Hello World</a>
           </li>
         
@@ -739,10 +743,6 @@
         
           <li>
             <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/08/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
           </li>
         
           <li>
