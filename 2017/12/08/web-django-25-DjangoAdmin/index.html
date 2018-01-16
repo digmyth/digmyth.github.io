@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>web-Django-25-DjangoAdmin | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录
+DjangoAdmin工作流程
+制作启动文件 
+单例模式应用 
+
+博客参考
+一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web-Django-25-DjangoAdmin">
+<meta property="og:url" content="http://www.digmyth.com/2017/12/08/web-django-25-DjangoAdmin/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+DjangoAdmin工作流程
+制作启动文件 
+单例模式应用 
+
+博客参考
+一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+<meta property="og:updated_time" content="2018-01-16T12:12:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web-Django-25-DjangoAdmin">
+<meta name="twitter:description" content="目录
+DjangoAdmin工作流程
+制作启动文件 
+单例模式应用 
+
+博客参考
+一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-web-django-25-DjangoAdmin" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/08/web-django-25-DjangoAdmin/" class="article-date">
+  <time datetime="2017-12-08T12:26:37.000Z" itemprop="datePublished">2017-12-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      web-Django-25-DjangoAdmin
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>DjangoAdmin工作流程</li>
+<li>制作启动文件 </li>
+<li>单例模式应用 </li>
+</ul>
+<p><a href="http://www.cnblogs.com/wupeiqi/articles/7444717.html" target="_blank" rel="external">博客参考</a></p>
+<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">admin.py注册models_class如models.UserInfo</div><div class="line">from django.template import admin</div><div class="line">from app01 import models</div><div class="line">admin.site.registry(models.UserInfo)</div></pre></td></tr></table></figure></p>
+<p>2 admin.site.urls<br>  admin.site.urls循环_registry={}字典生成相应URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">生成4个URL分别是如下：</div><div class="line">app01/userinfo/</div><div class="line">app01/userinfo/add/</div><div class="line">app01/userinfo/1/change/</div><div class="line">app01/userinfo/1/delete/</div></pre></td></tr></table></figure></p>
+<p>其中要深入理解URL include原理：  url(r’^xx’, “可以是视图函数，也可以是元组”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">partterns = [</div><div class="line">   url(r&apos;^admin&apos;, admin.site.urls),            </div><div class="line">		     # admin.site.urls 返回形如（[],None,None）的元组.</div><div class="line">   url(r&apos;^backend&apos;, include(&apos;backend.urls&apos;)), </div><div class="line">		    # include 同样返回形如（[],None,None）的元组.</div><div class="line">		    # 也可以写成形如 include([],None,None) 格式.</div><div class="line"> ]</div></pre></td></tr></table></figure></p>
+<h2 id="二-制作stack启动文件"><a href="#二-制作stack启动文件" class="headerlink" title="二  制作stack启动文件"></a>二  制作stack启动文件</h2><ul>
+<li>1  创建一个stack 的app</li>
+<li>2  settings.py 注册app<pre><code>-  &apos;stack.apps.StackConfig&apos;,
+</code></pre></li>
+<li>3  在stack apps.py文件定义ready方法</li>
+</ul>
+<p>stack/apps.py文件ready()方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from django.utils.module_loading import autodiscover_modules</div><div class="line">class StackConfig(AppConfig):</div><div class="line">   name = &apos;stack&apos;</div><div class="line"></div><div class="line">   def ready(self):</div><div class="line">       autodiscover_modules(&quot;xxx&quot;)</div></pre></td></tr></table></figure></p>
+<ul>
+<li>4 启动项目时会先在执行所有app下的xxx.py文件.<br>   (当然前提是这些app也是settings.py注册好的)</li>
+</ul>
+<h2 id="三-单例模式"><a href="#三-单例模式" class="headerlink" title="三 单例模式"></a>三 单例模式</h2><p>单例模式有很多种实现方式</p>
+<p>其中一种：利用模块多次导入时，除第一次外不会真正执行模块代码。</p>
+<p>如果模块中有实例化对象操作，那么多次导入也不会真正实例化多个对象，而是同一个实例</p>
+<p>如果在一个程序先运行的文件改变了实例数据或属性，后运行的文件导入后读这个实例就会有数据或属性.</p>
+<p>  示例：<br>  随便定义一个实例化对象的文件stack/service.v1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">class StackSite():</div><div class="line">    def __init__(self):</div><div class="line">        self._registry = &#123;&#125;</div><div class="line"></div><div class="line">    def register(self,class_name,config_class):</div><div class="line">        self._registry[class_name] = config_class</div><div class="line"></div><div class="line">   site = StackSite()</div><div class="line">```       </div><div class="line"> 在我们定义的启动文件app01/xxx.py中写入代码(因为会先执行xxx.py)</div></pre></td></tr></table></figure></p>
+<p>from stack.service import v1<br>v1.site.register(“k1”,”v1”)<br>v1.site.register(“k2”,”v2”)<br>v1.site.name = ‘wxq’<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">项目urls.py中写入</div></pre></td></tr></table></figure></p>
+<p>from stack.service import v1<br>print(v1.site._registry)<br>print(v1.site.name)<br>```      </p>
+<p>总结<br>启动项目时，先执行app01/xxx.py,后执行urls.py文件，程序读到了实例的数据并不是重新实例化新对象，这就是单例模式的运用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/08/web-django-25-DjangoAdmin/" data-id="cjchln7vm0030efjxjz9wfyyk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/20/web-django-17-ModelForm/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          web-Django-17-ModelForm
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/12/01/web-django-23-Django序列化/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">web-Django-23-Django序列化</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/16/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/08/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

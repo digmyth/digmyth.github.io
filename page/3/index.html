@@ -61,6 +61,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-16-Form" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/20/web-django-16-Form/" class="article-date">
+  <time datetime="2017-07-20T12:26:37.000Z" itemprop="datePublished">2017-07-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/20/web-django-16-Form/">web-Django-16-Form验证</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>基本功能</li>
+<li>基本使用</li>
+<li>常用字段</li>
+<li>常用插件</li>
+<li>总结</li>
+</ul>
+<p>这篇博客记录Django Form功能的学习，链接请参考<a href="http://www.cnblogs.com/wupeiqi/articles/6144178.html" target="_blank" rel="external">Django Form武佩齐权威博客</a></p>
+<h2 id="基本功能"><a href="#基本功能" class="headerlink" title="基本功能"></a>基本功能</h2><ul>
+<li>Form验证</li>
+<li>生成html标签（保留上次提交的内容）</li>
+</ul>
+<p>详细：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">class TestForm(forms.Form):</div><div class="line">    username = fields.CharField(  # 静态字段</div><div class="line">        required=True,</div><div class="line">        min_length=6,</div><div class="line">        max_length=8,</div><div class="line">        error_messages=&#123;&quot;required&quot;:&quot;用户名不能为空&quot;, &quot;min_length&quot;:&quot;最少6位&quot;&#125;，</div><div class="line">        widget = widgets.TextInput(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;)  # 插件</div><div class="line">  )</div></pre></td></tr></table></figure></p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>模块导入-&gt;类定义-&gt;定义字段-&gt; 定义插件-&gt; 实例化-&gt; 传入前端-&gt;前端渲染<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from django  import forms</div><div class="line">from django.forms import fields,widgets</div></pre></td></tr></table></figure></p>
+<p>views.py定义Form类，写出来常用插件用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">class TestForm(forms.Form):</div><div class="line"></div><div class="line">    n1 = fields.CharField(</div><div class="line">        widget = widgets.TextInput()</div><div class="line">    )</div><div class="line"></div><div class="line">    n2 = fields.CharField(</div><div class="line">        widget = widgets.PasswordInput()</div><div class="line">    )</div><div class="line"></div><div class="line">    n3 = fields.CharField(</div><div class="line">        widget=widgets.Textarea()</div><div class="line">    )</div><div class="line"></div><div class="line">    n4 = fields.CharField(</div><div class="line">        widget=widgets.Select(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">    )</div></pre></td></tr></table></figure></p>
+<p>单选多选总结：<br>1   把上面<code>CharField</code>改为<code>ChoiceField</code>就好了，并choices=[]提到前面来<br>2   单选<code>CharField</code>就可以，多选一定记得用<code>ChoicField</code>,并且<code>choices=[]</code>提前</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># n5 = fields.CharField(  </div><div class="line">#    # 这里是有问题的，CharField只能是字符串，&quot;n5&quot;:[1,3]默认值是一个列表，后端没法接收数据。</div><div class="line">#     widget=widgets.SelectMultiple(choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)])</div><div class="line"># )</div><div class="line"></div><div class="line">n5 = fields.ChoiceField(</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget=widgets.SelectMultiple()</div><div class="line">)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">n6 = fields.IntegerField(</div><div class="line">    widget=widgets.RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">)</div><div class="line"></div><div class="line">n7 = fields.CharField(  # 这里只会生成CheckboxInput标签 &lt;input type=&quot;checkbox&quot; name=&quot;n7&quot; required=&quot;&quot; id=&quot;id_n7&quot;&gt;</div><div class="line">    widget=widgets.CheckboxInput()</div><div class="line">)</div><div class="line"></div><div class="line">n8 = fields.ChoiceField(  # 真正生成checkbox组写法</div><div class="line">    choices=[(1, &quot;北京&quot;), (2, &quot;上海&quot;), (3, &quot;成都&quot;)],</div><div class="line">    widget = widgets.CheckboxSelectMultiple()</div><div class="line">)</div><div class="line"></div><div class="line">n9 = fields.FileField(</div><div class="line">    widget=widgets.FileInput()</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>实例化Form类时传入默认值用于前端展示，主要学习文件上传的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">def test(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        obj = TestForm(</div><div class="line">            initial=&#123;&quot;n1&quot;:&quot;请输入&quot;,&quot;n2&quot;:&quot;xxx&quot;,&quot;n3&quot;:&quot;文本输入&quot;,&quot;n4&quot;:1,&quot;n5&quot;:[1,3], &quot;n6&quot;:2,&quot;n7&quot;:&quot;&quot;,&quot;n8&quot;:[2,3]&#125;</div><div class="line">        )</div><div class="line">        return render(request, &quot;test.html&quot;,&#123;&quot;obj&quot;:obj&#125;)</div><div class="line"></div><div class="line">    if request.method == &quot;POST&quot;:</div><div class="line">        # 文件提交保存在request.FILES</div><div class="line">        # obj = TestForm(data=request.POST,files=request.FILES)</div><div class="line">        # if obj.is_valid():</div><div class="line">        #     # obj.cleaned_data[&apos;n9&apos;]      这是上传的文件对象</div><div class="line">        #     #obj.cleaned_data[&apos;n9&apos;].name  这是上传文件名</div><div class="line">        #     files_obj = obj.cleaned_data[&apos;n9&apos;]</div><div class="line">        #     f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        #     for chunck in files_obj.chunks():</div><div class="line">        #         f.write(chunck)</div><div class="line">        #     f.close()</div><div class="line">        # else:</div><div class="line">        #     pass</div><div class="line">        files_obj = request.FILES.get(&quot;n9&quot;)</div><div class="line">        f = open(files_obj.name, &apos;wb&apos;)</div><div class="line">        for chunck in files_obj.chunks():</div><div class="line">            f.write(chunck)</div><div class="line">        f.close()</div><div class="line"></div><div class="line">        return redirect(&apos;/test/&apos;)</div></pre></td></tr></table></figure></p>
+<p>提交文件需要<code>enctype=&quot;multipart/form-data&quot;</code><br>测试时忽略其它值用<code>novalidate</code><br>test.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/test/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; novalidate&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &#123;&#123; obj.n1 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n2 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n3 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n4 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n5 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n6 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n7 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n8 &#125;&#125;</div><div class="line">    &#123;&#123; obj.n9 &#125;&#125;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="常用字段"><a href="#常用字段" class="headerlink" title="常用字段"></a>常用字段</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CharField               字符串 </div><div class="line">EmailField		字符串（邮箱格式）</div><div class="line">IntegerField		字符串（整形格式）</div><div class="line">GenericIPAddressField	字符串（Ip格式）</div><div class="line">RegexField		字符串（正则自定义）</div><div class="line">FileField		文件对象</div></pre></td></tr></table></figure>
+<h2 id="常用插件"><a href="#常用插件" class="headerlink" title="常用插件"></a>常用插件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">TextInput</div><div class="line">PasswordInput</div><div class="line">Textarea</div><div class="line">FileInput()</div><div class="line"></div><div class="line">Select(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;，choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line">SelectMultiple(attrs=&#123;&apos;class&apos;: &apos;form-control&apos;&#125;)   # choices=[(1,&quot;北京&quot;),(2,&quot;上海&quot;),(3,&quot;成都&quot;)]</div><div class="line"></div><div class="line">RadioSelect(choices=[(1,&quot;超级管理员&quot;),(2,&quot;普通用户&quot;)])</div><div class="line"></div><div class="line">CheckboxInput()</div><div class="line">CheckboxSelectMultiple()</div></pre></td></tr></table></figure>
+<h2 id="Form问题"><a href="#Form问题" class="headerlink" title="Form问题"></a>Form问题</h2><p>在前端使用选择标签渲染时，多表foreigh key跨表查询数据源无法实时更新。<br>比如choices的选项可以从数据库中获取，但是由于是静态字段<code>获取的值无法实时更新</code>，那么需要自定义构造方法从而达到此目的。</p>
+<p>方法有很多，推荐<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">from django.forms import Form</div><div class="line">from django.forms import widgets</div><div class="line">from django.forms import fields</div><div class="line">from django.core.validators import RegexValidator</div><div class="line"> </div><div class="line">class MyForm(Form):</div><div class="line"> </div><div class="line">    user = fields.ChoiceField(</div><div class="line">        # choices=((1, &apos;上海&apos;), (2, &apos;北京&apos;),),</div><div class="line">        initial=2,</div><div class="line">        widget=widgets.Select</div><div class="line">    )</div><div class="line"> </div><div class="line">    def __init__(self, *args, **kwargs):</div><div class="line">        super(MyForm,self).__init__(*args, **kwargs)</div><div class="line">        # self.fields[&apos;user&apos;].widget.choices = ((1, &apos;上海&apos;), (2, &apos;北京&apos;),)</div><div class="line">        # 或</div><div class="line">        self.fields[&apos;user&apos;].widget.choices = models.Classes.objects.all().value_list(&apos;id&apos;,&apos;caption&apos;)</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Django Form功能一是验证，功能二是用于生成html标签并且能保留上次提交的内容。<br>注意Form验证读取数据时的数据源实时更新问题，一般我们自定义Form类的构造方法实现。</p>
+<p>还有很多要学习的。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjchln7v1002iefjxpvffwatv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
@@ -123,7 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjchkxibe0039csjxtdy3e5ym" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjchln7vz003befjx1sg6hla6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -187,72 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjchkxiaf002gcsjx0bdtcbz1" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/web-02-前端html/" class="article-date">
-  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</div><div class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</div><div class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</div><div class="line">    &lt;/select&gt;</div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</div><div class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</div><div class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="external">参考</a><br>基本概念：</p>
-<ul>
-<li>html很骨感.</li>
-<li>css就是装饰或样式.</li>
-<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
-</ul>
-<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
-<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
-<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
-<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">position</div><div class="line">     position: relative  # 与absolute一起使用</div><div class="line">     position: absolute  #随滚动条滚动而滚动</div><div class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</div><div class="line">     position: fixed     # 永远在窗口某位置</div></pre></td></tr></table></figure></p>
-<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="external">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
-<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
-<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
-<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
-<h2 id="contentType"><a href="#contentType" class="headerlink" title="contentType"></a>contentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
-<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
-<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
-<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
-<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
-<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjchkxia20026csjxk9pueqxv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjchln7uz002gefjxs4qj4ulx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -326,7 +328,72 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjchkxib90034csjxqugtwgzb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjchln7vt0036efjxy2zbdupt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/web-02-前端html/" class="article-date">
+  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</div><div class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</div><div class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</div><div class="line">    &lt;/select&gt;</div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</div><div class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</div><div class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="external">参考</a><br>基本概念：</p>
+<ul>
+<li>html很骨感.</li>
+<li>css就是装饰或样式.</li>
+<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
+</ul>
+<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
+<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
+<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
+<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">position</div><div class="line">     position: relative  # 与absolute一起使用</div><div class="line">     position: absolute  #随滚动条滚动而滚动</div><div class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</div><div class="line">     position: fixed     # 永远在窗口某位置</div></pre></td></tr></table></figure></p>
+<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="external">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
+<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
+<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
+<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
+<h2 id="contentType"><a href="#contentType" class="headerlink" title="contentType"></a>contentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
+<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
+<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
+<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
+<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
+<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjchln7un0026efjxg6xjhbm2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -373,7 +440,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjchkxi7x000tcsjxwpmogh4p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjchln7t3000tefjx4hm2ulbl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -431,7 +498,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjchkxi7f000fcsjxgh6lmmv9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjchln7so000fefjxcgx3010z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -489,7 +556,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjchkxi8c0012csjxo8qnx5cw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjchln7th0012efjx8ehbnmme" class="article-share-link">Share</a>
       
       
     </footer>
@@ -562,7 +629,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjchkxi700008csjxos1ilkdt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjchln7sb0008efjxqbpf1dj1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -604,55 +671,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjchkxia9002ccsjx34gzjycg" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
-  <time datetime="2017-05-15T12:51:41.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/python加密解密加签验签/">python-加密解密加签验签</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="python加密解密，加签验签"><a href="#python加密解密，加签验签" class="headerlink" title="python加密解密，加签验签"></a>python加密解密，加签验签</h2><p>(转)<br>在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步</p>
-<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">import base64</div><div class="line">from Crypto.PublicKey import RSA</div><div class="line">from Crypto.Hash import SHA</div><div class="line">from Crypto.Cipher import PKCS1_v1_5</div><div class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</div><div class="line"></div><div class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</div><div class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</div></pre></td></tr></table></figure>
-<p>加密</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">def split_data(l, n):</div><div class="line">    for i in range(0, len(l), n):</div><div class="line">        yield l[i: i+n]</div><div class="line">        </div><div class="line">def encrypt(params):</div><div class="line">    raw = params.encode(&apos;utf-8&apos;)</div><div class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</div><div class="line">    ＃ 加密超长字节117个字节一加密</div><div class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</div><div class="line">    return base64.b64encode(content)</div></pre></td></tr></table></figure>
-<p>解密<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">def decrypt(data):</div><div class="line">    raw = data.encode(&apos;utf-8&apos;)</div><div class="line">    decrypt = PKCS1_v1_5.new(PRI_KEY).decrypt</div><div class="line">    # 解密超长字符128一解密</div><div class="line">    content = b&apos;&apos;.join(decrypt(x, object()) for x in chunks(raw, 128))</div><div class="line">    return content.decode()</div></pre></td></tr></table></figure></p>
-<p>加签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def signer(data):</div><div class="line">    signstr = data.encode(&apos;utf-8&apos;)</div><div class="line">    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))</div><div class="line">    return base64.b64encode(sign)</div></pre></td></tr></table></figure></p>
-<p>验签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def verify_sign(unsign, raw_sign):</div><div class="line">    # unsign: 签名</div><div class="line">    # raw_sign: 待验证签名</div><div class="line">    assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), raw_sign)</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjchkxi9n001wcsjxa26xil66" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjchln7uu002cefjxr05tvq70" class="article-share-link">Share</a>
       
       
     </footer>
@@ -715,11 +734,11 @@
           </li>
         
           <li>
-            <a href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
+            <a href="/2017/12/08/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
           </li>
         
           <li>
-            <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
+            <a href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
           </li>
         
       </ul>
