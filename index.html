@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/16/hello-world/" class="article-date">
-  <time datetime="2018-01-16T11:31:21.721Z" itemprop="datePublished">2018-01-16</time>
+  <time datetime="2018-01-16T11:35:43.806Z" itemprop="datePublished">2018-01-16</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,73 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/16/hello-world/" data-id="cjchk5ji1000l4cjxufdma2gt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/16/hello-world/" data-id="cjchkb5q7000laejxhcx73m20" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-django-17-ModelForm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/20/web-django-17-ModelForm/" class="article-date">
+  <time datetime="2017-12-20T12:26:37.000Z" itemprop="datePublished">2017-12-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>回顾Form</li>
+<li>ModelForm特性</li>
+<li>ModelForm使用</li>
+<li>html前端展示</li>
+</ul>
+<h2 id="ModelForm简介"><a href="#ModelForm简介" class="headerlink" title="ModelForm简介"></a>ModelForm简介</h2><h4 id="1-回顾Form"><a href="#1-回顾Form" class="headerlink" title="1 回顾Form"></a>1 回顾Form</h4><p>Form作用：<br>第一： 用于Form验证<br>第二： 用于生成 html标签，并且可以保留数据（如编辑）</p>
+<p>缺点：<br>多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update()</p>
+<h4 id="2-ModelForm特性"><a href="#2-ModelForm特性" class="headerlink" title="2 ModelForm特性"></a>2 ModelForm特性</h4><p>解决办法，引用ModelForm</p>
+<ul>
+<li>1 它可以循环model class字段在前端生成表单或html标签并保留数据</li>
+<li>2  调用save()方法自动跨表保存数据。</li>
+<li>3  可以自定义models class以外的fields字段,很灵活，如果自定义的字段名与model class字段名重名， 那么model class字段将被重写</li>
+<li>4  ModelForm同样可以做数据验证包括钩子函数</li>
+<li>5  ModelForm中的fields字段是可以循环的，循环在前端生成不必写</li>
+<li>6  当编辑数据时传入instance=obj 可以循环生成表单并且表单有值。</li>
+</ul>
+<p>ModelForm适用场景</p>
+<ul>
+<li>Form与ModelForm没有谁好谁不好，只是适用场景不同。</li>
+<li>ModelForm依赖modelsclass, modelForm必须和models.py在一起。</li>
+</ul>
+<h4 id="3-ModelForm使用"><a href="#3-ModelForm使用" class="headerlink" title="3 ModelForm使用"></a>3 ModelForm使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">from django.forms import Form</div><div class="line">from django.forms import ModelForm</div><div class="line">from django.forms import fields</div><div class="line">from django.forms import widgets as fwidgets</div><div class="line">from app01 import models</div><div class="line">class TestForm(ModelForm):</div><div class="line">    class Meta:</div><div class="line">        model = models.Book</div><div class="line">        fields = &quot;__all__&quot; # 可以是[&quot;&quot;,&quot;&quot;,]</div><div class="line">        labels = &#123;</div><div class="line">            &apos;title&apos;:&quot;书名&quot;,</div><div class="line">            &quot;price&quot;:&quot;价格&quot;,</div><div class="line">        &#125;</div><div class="line">        error_messages = &#123;</div><div class="line">            &quot;title&quot;:&#123;&quot;requried&quot;:&quot;书名不能为空&quot;,&#125;,</div><div class="line">        &#125;</div><div class="line">        widgets=&#123;</div><div class="line">            &quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<h4 id="4-html前端展示"><a href="#4-html前端展示" class="headerlink" title="4 html前端展示"></a>4 html前端展示</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;form  action=&quot;/addbook/&quot; method=&quot;POST&quot; novalidate&gt;</div><div class="line">    &#123;% csrf_token %&#125;</div><div class="line">    &#123;% for field in form %&#125;</div><div class="line">     &lt;p&gt;&#123;&#123; field.label &#125;&#125;:&#123;&#123; field  &#125;&#125; &#123;&#123; field.errors.0 &#125;&#125;&lt;/p&gt;</div><div class="line">    &#123;% endfor %&#125;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
+<p>引入bootstrap时，querySet for循环展示:注意时间格式的转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;div class=&quot;container&quot; style=&quot;width: 700px;margin-top: 50px&quot;&gt;</div><div class="line">    &lt;table class=&quot;table table-bordered&quot;&gt;</div><div class="line">        &lt;thead&gt;&lt;/thead&gt;</div><div class="line">        &lt;tbody&gt;</div><div class="line">            &#123;% for row in data_list %&#125;</div><div class="line">                &lt;tr&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; row.title &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; row.price &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; row.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&lt;/td&gt;</div><div class="line">                &lt;/tr&gt;</div><div class="line">            &#123;% endfor %&#125;</div><div class="line">        &lt;/tbody&gt;</div><div class="line">    &lt;/table&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjchkb5sy002kaejxf864kzf3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -149,7 +215,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjchk5jmd002u4cjxjgjhwi89" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjchkb5ta002waejx295fu7ij" class="article-share-link">Share</a>
       
       
     </footer>
@@ -207,7 +273,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjchk5jm8002q4cjx0djni9y9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjchkb5t6002saejx5i2vga1l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -271,7 +337,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjchk5jm4002o4cjxfcs9469r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjchkb5t4002qaejxrmhpg8fr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -324,7 +390,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjchk5jhx000i4cjxjg809obs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjchkb5q4000iaejxjw4d4do0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -393,7 +459,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjchk5ji5000o4cjxpv0zjfoq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjchkb5qa000oaejxug9i1l9e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -485,7 +551,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjchk5jjs000y4cjxdgxm1bjz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjchkb5qp000yaejxzpbklpik" class="article-share-link">Share</a>
       
       
     </footer>
@@ -535,7 +601,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjchk5jmb002s4cjxhphct97m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjchkb5t8002uaejxk966j315" class="article-share-link">Share</a>
       
       
     </footer>
@@ -602,58 +668,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjchk5jih000v4cjxmqz8lb3s" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-ceph-01-运维那事" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/05/ceph-01-运维那事/" class="article-date">
-  <time datetime="2017-11-05T01:41:54.000Z" itemprop="datePublished">2017-11-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/05/ceph-01-运维那事/">ceph-01-运维那事</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>待整理ceph运维笔记</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ceph osd set noout</div><div class="line">ceph osd unset noout</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rbd create wxq --size 1</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# rbd info rbd/wxq</div><div class="line">rbd image &apos;wxq&apos;:</div><div class="line">	size 1024 kB in 1 objects</div><div class="line">	order 22 (4096 kB objects)</div><div class="line">	block_name_prefix: rbd_data.498102ae8944a</div><div class="line">	format: 2</div><div class="line">	features: layering, exclusive-lock, object-map, fast-diff, deep-flatten</div><div class="line">	flags:</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph osd map rbd rbd_data.498102ae8944a</div><div class="line">osdmap e183 pool &apos;rbd&apos; (0) object &apos;rbd_data.498102ae8944a&apos; -&gt; pg 0.455bea7d (0.3d) -&gt; up ([1], p1) acting ([1], p1)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@lab8106 ]#ceph-objectstore-tool  \</div><div class="line"> --data-path /var/lib/ceph/osd/ceph-1/   \</div><div class="line"> --journal-path /var/lib/ceph/osd/ceph-1/journal  \</div><div class="line"> --pgid 0.3d    \</div><div class="line"> rbd_data.498102ae8944a </div><div class="line"> remove</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg map 8.7d </div><div class="line">osdmap e183 pg 8.7d (8.7d) -&gt; up [2] acting [2]</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(ceph-mon)[root@pike-vm /]# ceph pg 8.7d query</div><div class="line">&#123;</div><div class="line">    &quot;state&quot;: &quot;active+clean&quot;,</div><div class="line">    &quot;snap_trimq&quot;: &quot;[]&quot;,</div><div class="line">...</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ceph  pg dump</div><div class="line">ceph  osd dump</div><div class="line">ceph pg map 8.7d</div><div class="line">ceph pg 8.7d list_missing</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ceph pg 4.438 mark_unfound_lost revert</div><div class="line">ceph pg 4.438 mark_unfound_lost delete</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ceph pg repair 0.44</div><div class="line">ceph osd pool set rbd min_size 1</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjchk5jh600034cjxm3vsnhle" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjchkb5ql000vaejxlj8dza7n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -708,6 +723,10 @@
           </li>
         
           <li>
+            <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
+          </li>
+        
+          <li>
             <a href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
           </li>
         
@@ -717,10 +736,6 @@
         
           <li>
             <a href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
           </li>
         
       </ul>
