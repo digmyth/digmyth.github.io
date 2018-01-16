@@ -23,7 +23,7 @@ DjangoAdmin工作流程
 
 博客参考
 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
-<meta property="og:updated_time" content="2018-01-16T12:14:39.000Z">
+<meta property="og:updated_time" content="2018-01-16T12:16:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-Django-25-DjangoAdmin">
 <meta name="twitter:description" content="目录
@@ -84,7 +84,7 @@ DjangoAdmin工作流程
         <section id="main"><article id="post-web-django-25-DjangoAdmin" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/16/web-django-25-DjangoAdmin/" class="article-date">
-  <time datetime="2018-01-16T12:14:46.374Z" itemprop="datePublished">2018-01-16</time>
+  <time datetime="2018-01-16T12:16:28.913Z" itemprop="datePublished">2018-01-16</time>
 </a>
     
   <div class="article-category">
@@ -131,7 +131,7 @@ DjangoAdmin工作流程
 <p>其中一种：利用模块多次导入时，除第一次外不会真正执行模块代码。</p>
 <p>如果模块中有实例化对象操作，那么多次导入也不会真正实例化多个对象，而是同一个实例</p>
 <p>如果在一个程序先运行的文件改变了实例数据或属性，后运行的文件导入后读这个实例就会有数据或属性.</p>
-<p>  示例：<br>  随便定义一个实例化对象的文件stack/service.v1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">class StackSite():</div><div class="line">    def __init__(self):</div><div class="line">        self._registry = &#123;&#125;</div><div class="line"></div><div class="line">    def register(self,class_name,config_class):</div><div class="line">        self._registry[class_name] = config_class</div><div class="line"></div><div class="line">   site = StackSite()</div><div class="line">```       </div><div class="line"> 在我们定义的启动文件app01/xxx.py中写入代码(因为会先执行xxx.py)</div></pre></td></tr></table></figure></p>
+<p>  示例：<br>  随便定义一个实例化对象的文件stack/service.v1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class StackSite():</div><div class="line">    def __init__(self):</div><div class="line">        self._registry = &#123;&#125;</div><div class="line"></div><div class="line">    def register(self,class_name,config_class):</div><div class="line">        self._registry[class_name] = config_class</div><div class="line"></div><div class="line">   site = StackSite()</div><div class="line">```       </div><div class="line"></div><div class="line"></div><div class="line">在我们定义的启动文件app01/xxx.py中写入代码(因为会先执行xxx.py)</div></pre></td></tr></table></figure></p>
 <p>from stack.service import v1<br>v1.site.register(“k1”,”v1”)<br>v1.site.register(“k2”,”v2”)<br>v1.site.name = ‘wxq’<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">项目urls.py中写入</div></pre></td></tr></table></figure></p>
 <p>from stack.service import v1<br>print(v1.site._registry)<br>print(v1.site.name)<br>```      </p>
 <p>总结<br>启动项目时，先执行app01/xxx.py,后执行urls.py文件，程序读到了实例的数据并不是重新实例化新对象，这就是单例模式的运用。</p>
@@ -139,7 +139,7 @@ DjangoAdmin工作流程
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/16/web-django-25-DjangoAdmin/" data-id="cjchlpd9j0030f1jx14h1104k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/16/web-django-25-DjangoAdmin/" data-id="cjchlrkdt0030fmjxqrx1f4yp" class="article-share-link">Share</a>
       
       
     </footer>
