@@ -3,21 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>linux_iptables应用 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>web-Django-23-Django序列化 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="iptables 规则应用总结防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
-反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPTiptables -">
+  <meta name="description" content="目录
+序列化
+
+Django中的序列化操作序列化操作参考ajax学习Django返回前端数据一般为json格式，那么就要数据进行序列化。方法一：Django内置serializers123from django.core import serializersret = models.BookType.objects.all()data = serializers.serialize(&amp;quot;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="linux_iptables应用">
-<meta property="og:url" content="http://www.digmyth.com/2017/06/15/linux-iptables应用/index.html">
+<meta property="og:title" content="web-Django-23-Django序列化">
+<meta property="og:url" content="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="iptables 规则应用总结防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
-反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPTiptables -">
-<meta property="og:updated_time" content="2017-08-23T07:40:00.000Z">
+<meta property="og:description" content="目录
+序列化
+
+Django中的序列化操作序列化操作参考ajax学习Django返回前端数据一般为json格式，那么就要数据进行序列化。方法一：Django内置serializers123from django.core import serializersret = models.BookType.objects.all()data = serializers.serialize(&amp;quot;">
+<meta property="og:updated_time" content="2018-01-16T08:29:44.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linux_iptables应用">
-<meta name="twitter:description" content="iptables 规则应用总结防火墙端口重定向规则1iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080
-反向代理防火墙规则12iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPTiptables -">
+<meta name="twitter:title" content="web-Django-23-Django序列化">
+<meta name="twitter:description" content="目录
+序列化
+
+Django中的序列化操作序列化操作参考ajax学习Django返回前端数据一般为json格式，那么就要数据进行序列化。方法一：Django内置serializers123from django.core import serializersret = models.BookType.objects.all()data = serializers.serialize(&amp;quot;">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -66,14 +72,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-web-django-23-Django序列化" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
-  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+    <a href="/2017/12/01/web-django-23-Django序列化/" class="article-date">
+  <time datetime="2017-12-01T12:26:37.000Z" itemprop="datePublished">2017-12-01</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
   </div>
 
   </div>
@@ -84,7 +90,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      linux_iptables应用
+      web-Django-23-Django序列化
     </h1>
   
 
@@ -92,18 +98,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
-<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</div></pre></td></tr></table></figure></p>
-<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</div><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</div></pre></td></tr></table></figure></p>
-<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</div><div class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</div></pre></td></tr></table></figure></p>
+        <ul>
+<li>目录</li>
+<li>序列化</li>
+</ul>
+<h2 id="Django中的序列化操作"><a href="#Django中的序列化操作" class="headerlink" title="Django中的序列化操作"></a>Django中的序列化操作</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="external">序列化操作参考</a><br><a href="http://www.digmyth.com/2017/11/20/web-django-20-ajax/">ajax学习</a><br>Django返回前端数据一般为json格式，那么就要数据进行序列化。<br>方法一：<br>Django内置serializers<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.core import serializers</div><div class="line">ret = models.BookType.objects.all()</div><div class="line">data = serializers.serialize(&quot;json&quot;, ret)</div></pre></td></tr></table></figure></p>
+<p>方法二：<br>json.dumps<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import json</div><div class="line"> </div><div class="line">#ret = models.BookType.objects.all().values(&apos;caption&apos;)</div><div class="line">ret = models.BookType.objects.all().values_list(&apos;caption&apos;)</div><div class="line">ret=list(ret)</div><div class="line">result = json.dumps(ret,nsure_ascii=False)</div></pre></td></tr></table></figure></p>
+<p>方法三：<br>由于json.dumps时无法处理datetime日期，所以可以通过自定义处理器来做扩展<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">import json </div><div class="line">from datetime import date </div><div class="line">from datetime import datetime </div><div class="line">   </div><div class="line">class JsonCustomEncoder(json.JSONEncoder): </div><div class="line">    def default(self, field): </div><div class="line">        if isinstance(field, datetime): </div><div class="line">            return o.strftime(&apos;%Y-%m-%d %H:%M:%S&apos;) </div><div class="line">        elif isinstance(field, date): </div><div class="line">            return o.strftime(&apos;%Y-%m-%d&apos;) </div><div class="line">        else: </div><div class="line">            return json.JSONEncoder.default(self, field) </div><div class="line"># ds = json.dumps(d, cls=JsonCustomEncoder)</div></pre></td></tr></table></figure></p>
+<p>有时在前端渲染也需要<code>date:&#39;Y-m-d&#39;</code>处理一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;出版日期&lt;input  type=&quot;date&quot; name=&quot;pubdate&quot; value=&quot;&#123;&#123; edit_book.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&quot;&gt;&lt;/p&gt;</div></pre></td></tr></table></figure></p>
+<p>如果用到了Form或ModelForm，同样需要widgets处理下时间格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">widgets=&#123;</div><div class="line">&quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjchdoy2u000t2fjxg9xy4rpq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjchdoy77002m2fjxvflehc6c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -112,19 +120,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2017/06/15/git-01/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/01/16/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          git 利器
+          Hello World
         
       </div>
     </a>
   
   
-    <a href="/2017/06/10/mysql-sysbench/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/11/21/web-django-21-图片上传/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Mysql sysbench 压测</div>
+      <div class="article-nav-title">web-Django-21-图片上传</div>
     </a>
   
 </nav>
