@@ -3,14 +3,39 @@
 <head>
   <meta charset="utf-8">
   
-  <title>归档: 2017 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>web-Django-04-路由分发与别名.md | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:url" content="http://www.digmyth.com/archives/2017/index.html">
+  <meta name="description" content="目录
+别名设置
+namespace设置
+reverse
+include本质
+
+Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。
+别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web-Django-04-路由分发与别名.md">
+<meta property="og:url" content="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+别名设置
+namespace设置
+reverse
+include本质
+
+Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。
+别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
+<meta property="og:updated_time" content="2018-01-16T11:31:06.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta name="twitter:title" content="web-Django-04-路由分发与别名.md">
+<meta name="twitter:description" content="目录
+别名设置
+namespace设置
+reverse
+include本质
+
+Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。
+别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -59,215 +84,80 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/12/01/web-django-23-Django序列化/" class="archive-article-date">
-  <time datetime="2017-12-01T12:26:37.000Z" itemprop="datePublished">12月 1</time>
+        <section id="main"><article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
+    <h1 class="article-title" itemprop="name">
+      web-Django-04-路由分发与别名.md
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/21/web-django-21-图片上传/" class="archive-article-date">
-  <time datetime="2017-11-21T12:26:37.000Z" itemprop="datePublished">11月 21</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
-    </h1>
-  
+        <ul>
+<li>目录</li>
+<li>别名设置</li>
+<li>namespace设置</li>
+<li>reverse</li>
+<li>include本质</li>
+</ul>
+<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</div></pre></td></tr></table></figure></p>
+<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</div><div class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</div></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">from django.urls import reverse</div><div class="line">def login(request):</div><div class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</div><div class="line">    return redirect(url)</div></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</div></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</div></pre></td></tr></table></figure></p>
+<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/20/web-django-20-ajax/" class="archive-article-date">
-  <time datetime="2017-11-20T12:26:37.000Z" itemprop="datePublished">11月 20</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/12/haproxy-基础/" class="archive-article-date">
-  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">11月 12</time>
-</a>
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjchk5jlr002e4cjxslwv458c" class="article-share-link">Share</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/09/kolla-Pike-on-CentOS7.3/" class="archive-article-date">
-  <time datetime="2017-11-09T00:41:54.000Z" itemprop="datePublished">11月 9</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/11/09/kolla-Pike-on-CentOS7.3/">kolla Pike on CentOS 7.3</a>
-    </h1>
-  
-
-    </header>
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/04/29/mysql-pyton操作mysql/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Python 操作mysql
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/04/20/web-django-02-基本配置示例/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">web-Django-02-基本配置示例</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/09/mysql-MGR/" class="archive-article-date">
-  <time datetime="2017-11-08T22:41:54.000Z" itemprop="datePublished">11月 9</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/11/09/mysql-MGR/">Mysql MGR 集群</a>
-    </h1>
-  
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/08/web-django-22-验证码/" class="archive-article-date">
-  <time datetime="2017-11-08T12:26:37.000Z" itemprop="datePublished">11月 8</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/11/08/web-django-22-验证码/">web-Django-22-验证码</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/08/mysql-Galera/" class="archive-article-date">
-  <time datetime="2017-11-08T01:41:54.000Z" itemprop="datePublished">11月 8</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/05/ceph-01-运维那事/" class="archive-article-date">
-  <time datetime="2017-11-05T01:41:54.000Z" itemprop="datePublished">11月 5</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/11/05/ceph-01-运维那事/">ceph-01-运维那事</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/10/31/ssh-01-反向代理/" class="archive-article-date">
-  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">10月 31</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/10/31/ssh-01-反向代理/">ssh-01-反向代理</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-
-  <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/2017/page/2/">2</a><a class="page-number" href="/archives/2017/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2017/page/6/">6</a><a class="extend next" rel="next" href="/archives/2017/page/2/">__('next') &raquo;</a>
-  </nav>
 </section>
         
           <aside id="sidebar">

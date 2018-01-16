@@ -61,6 +61,61 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-02-基本配置示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-02-基本配置示例/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-02-基本配置示例/">web-Django-02-基本配置示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-django安装"><a href="#1-django安装" class="headerlink" title="1 django安装"></a>1 django安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install django pymysql</div></pre></td></tr></table></figure>
+<h3 id="2-新建django-project"><a href="#2-新建django-project" class="headerlink" title="2 新建django project"></a>2 新建django project</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">django-admin.py startproject mysite  或用pycharm新建一个项目</div></pre></td></tr></table></figure>
+<h3 id="3-该项目下创建一个应用"><a href="#3-该项目下创建一个应用" class="headerlink" title="3 该项目下创建一个应用"></a>3 该项目下创建一个应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd mysite &amp;&amp; python manage.py startapp  app01</div></pre></td></tr></table></figure>
+<h3 id="4-配置Django"><a href="#4-配置Django" class="headerlink" title="4 配置Django"></a>4 配置Django</h3><p>settings.py文件确保有下面代码，用于在static目录放置静态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">STATIC_URL = &apos;/static/&apos;</div><div class="line">STATICFILES_DIRS= (</div><div class="line">    os.path.join(BASE_DIR, &apos;static&apos;),</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>确保INSTALLED_APPS = []有app01,应用</p>
+<h3 id="5-Django-mysql配置"><a href="#5-Django-mysql配置" class="headerlink" title="5 Django mysql配置"></a>5 Django mysql配置</h3><p>settings.py文件确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">    &apos;default&apos;: &#123;</div><div class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">        &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">        &apos;USER&apos;: &apos;root&apos;,</div><div class="line">        &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">        &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">        &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>app01下 <strong>init</strong>.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div></pre></td></tr></table></figure></p>
+<p>对于初学者建议配置此项，用于打印orm翻译后的sql语后，便于对照学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">LOGGING = &#123;</div><div class="line">    &apos;version&apos;: 1,</div><div class="line">    &apos;disable_existing_loggers&apos;: False,</div><div class="line">    &apos;handlers&apos;: &#123;</div><div class="line">        &apos;console&apos;:&#123;</div><div class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</div><div class="line">            &apos;class&apos;:&apos;logging.StreamHandler&apos;,</div><div class="line">        &#125;,</div><div class="line">    &#125;,</div><div class="line">    &apos;loggers&apos;: &#123;</div><div class="line">        &apos;django.db.backends&apos;: &#123;</div><div class="line">            &apos;handlers&apos;: [&apos;console&apos;],</div><div class="line">            &apos;propagate&apos;: True,</div><div class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</div><div class="line">        &#125;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="6-django生成数据"><a href="#6-django生成数据" class="headerlink" title="6 django生成数据"></a>6 django生成数据</h3><p>models.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username = models.CharField(max_length=32)</div><div class="line">    password = models.CharField(max_length=32)</div><div class="line">    email = models.CharField(max_length=32)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations</div><div class="line">python manage.py migrate</div></pre></td></tr></table></figure>
+<h3 id="7-urls-py定义"><a href="#7-urls-py定义" class="headerlink" title="7  urls.py定义"></a>7  urls.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from app01 import views</div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</div><div class="line">    url(r&apos;^users/$&apos;, views.users),</div><div class="line">    # url(r&apos;^create_data/&apos;, views.create_data),</div><div class="line">]</div></pre></td></tr></table></figure>
+<h3 id="8-views-py定义"><a href="#8-views-py定义" class="headerlink" title="8 views.py定义"></a>8 views.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render,HttpResponse, redirect</div><div class="line">from app01 import models</div><div class="line"></div><div class="line">def create_data(request):</div><div class="line">    for i in range(1,104):</div><div class="line">        models.UserInfo.objects.create(</div><div class="line">            username = &quot;root%s&quot; %i,</div><div class="line">            password = &quot;123&quot;,</div><div class="line">            email = &quot;root%s@qq.com&quot; %i,</div><div class="line">    )</div><div class="line">    return HttpResponse(&quot;data generate...&quot;)</div><div class="line"></div><div class="line">def users(request):</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;user_list &apos;:user_list &#125;)</div></pre></td></tr></table></figure>
+<h3 id="9-templates-users-html定义"><a href="#9-templates-users-html定义" class="headerlink" title="9 templates/users.html定义"></a>9 templates/users.html定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html lang=&quot;en&quot;&gt;</div><div class="line">&lt;head&gt;</div><div class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</div><div class="line">    &lt;title&gt;Title&lt;/title&gt;</div><div class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/static/bootstrap-3.3.7-dist/css/bootstrap.css&quot;&gt;</div><div class="line"></div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">    &lt;div style=&quot;width: 700px; margin: 10px     auto&quot;&gt;</div><div class="line">    &lt;h1&gt;用户列表&lt;/h1&gt;</div><div class="line">    &lt;table class=&quot;table table-hover table-bordered&quot;&gt;</div><div class="line">        &lt;thead&gt;</div><div class="line">            &lt;tr&gt;</div><div class="line">                &lt;th&gt; 用户名&lt;/th&gt;</div><div class="line">                &lt;th&gt; 密码&lt;/th&gt;</div><div class="line">                &lt;th&gt;邮箱&lt;/th&gt;</div><div class="line">            &lt;/tr&gt;</div><div class="line">        &lt;/thead&gt;</div><div class="line">    </div><div class="line">        &lt;tbody&gt;</div><div class="line">            &#123;% for user in page_obj.object_list  %&#125;</div><div class="line">                &lt;tr&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.username &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.password &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.email &#125;&#125;&lt;/td&gt;</div><div class="line">                &lt;/tr&gt;</div><div class="line">            &#123;% endfor %&#125;</div><div class="line">    </div><div class="line">        &lt;/tbody&gt;</div><div class="line">    &lt;/table&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
+<h3 id="10-注意bootstrap应用"><a href="#10-注意bootstrap应用" class="headerlink" title="10 注意bootstrap应用"></a>10 注意bootstrap应用</h3><p><a href="http://v3.bootcss.com/getting-started/#download" target="_blank" rel="external">bootstrap下载链接</a></p>
+<h3 id="11-启动项目"><a href="#11-启动项目" class="headerlink" title="11 启动项目"></a>11 启动项目</h3><p>运行项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py runserver 127.0.0.1:8000</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjchk5jlm002a4cjxw1ipk6rt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-web-django-orm(一)" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/04/15/web-django-orm(一)/" class="article-date">
@@ -103,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjchdoy7g002s2fjx0l491eh8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjchk5jmg002w4cjxyh6m7h9y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -147,7 +202,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjchdoy57001s2fjx33yrbpev" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjchk5jl4001u4cjxuhz2grhk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -194,7 +249,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjchdoy5g001w2fjx6adjbn9h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjchk5jkz001q4cjxjleb8zi7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -238,7 +293,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjchdoy4z001o2fjxsfy8fe3g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjchk5jl1001s4cjx8vu8newm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -320,7 +375,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjchdoy6q00282fjxi7wkystk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjchk5jll00284cjx1z1cl8g2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -377,7 +432,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjchdoy4u001m2fjxsk2zo7d2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjchk5jkw001o4cjxr6o0ye4v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -446,7 +501,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjchdoy54001q2fjxykjjimn6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjchk5jks001k4cjxhcdz1914" class="article-share-link">Share</a>
       
       
     </footer>
@@ -494,7 +549,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjchdoy4q001k2fjxphy22e37" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjchk5jku001m4cjxrai4sl8j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -705,93 +760,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjchdoy4n001i2fjxbrlw9qk5" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-05-01-列表解析-生成器-迭代器" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/18/python-05-01-列表解析-生成器-迭代器/" class="article-date">
-  <time datetime="2017-02-18T02:53:38.000Z" itemprop="datePublished">2017-02-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/18/python-05-01-列表解析-生成器-迭代器/">python-05-01-列表解析_生成器_迭代器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>列表解析</li>
-<li>生成器</li>
-<li>迭代器</li>
-</ul>
-<h2 id="列表解析"><a href="#列表解析" class="headerlink" title="列表解析"></a>列表解析</h2><p>什么是列表解析？<br>定义： 基于一个列表生成另外一个列表，或动态生成一个列表。<br>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [26]: [ i ** 2 for i in range(2,8)]    # 对原列表乘以2</div><div class="line">Out[26]: [4, 9, 16, 25, 36, 49]</div><div class="line"></div><div class="line">In [25]: [ i for i in range(1,10) if i % 2 ]  # 对原列表取奇数</div><div class="line">Out[25]: [1, 3, 5, 7, 9]</div></pre></td></tr></table></figure></p>
-<p>练习1： 有如下文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># cat word.txt</div><div class="line">render practice inventory  indent accelerate,</div><div class="line">trigger status,wxq.</div></pre></td></tr></table></figure></p>
-<p>我们计算<code>word.txt</code>单词个数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">In [29]: f = open(&apos;/root/word.txt&apos;, &apos;r&apos;)</div><div class="line">In [31]: word_list = [ word for line in f for word in line.split() ]</div><div class="line"></div><div class="line">In [36]: print(word_list)</div><div class="line">[&apos;render&apos;, &apos;practice&apos;, &apos;inventory&apos;, &apos;indent&apos;, &apos;accelerate,&apos;, &apos;trigger&apos;, &apos;status,wxq.&apos;]</div><div class="line"></div><div class="line">In [37]: f.seek(0)       # 上面读取过文件，指针己然在最后了，这里是把指针移到文件首部</div><div class="line">Out[37]: 0</div><div class="line"></div><div class="line">In [38]: len([ word for line in f for word in line.split() ])  # 计算结果为7</div><div class="line">Out[38]: 7</div></pre></td></tr></table></figure></p>
-<p>我们计算<code>word.txt</code>非空白字符数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [37]: f.seek(0)       # 把指针移到文件首部</div><div class="line">Out[37]: 0</div><div class="line"></div><div class="line">In [41]: sum([ len(word) for line in f for word in line.split() ])</div><div class="line">Out[41]: 58</div></pre></td></tr></table></figure></p>
-<p>练习2： 打印一个3行5列的矩阵<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [45]: list1 = [ (x+1, y+1) for x in range(3) for y in range(5) ]</div><div class="line">In [47]: print(list1)</div><div class="line">[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5)]</div></pre></td></tr></table></figure></p>
-<p>练习3：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; d = &#123;&apos;x&apos;: &apos;A&apos;, &apos;y&apos;: &apos;B&apos;, &apos;z&apos;: &apos;C&apos; &#125;</div><div class="line">&gt;&gt;&gt; [k + &apos;=&apos; + v for k, v in d.items()]</div><div class="line">[&apos;y=B&apos;, &apos;x=A&apos;, &apos;z=C&apos;]</div></pre></td></tr></table></figure></p>
-<p>练习4：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">In [61]: L = [&apos;I&apos;, &apos;WILL&apos;, &apos;STUDY&apos;, &apos;HARD&apos;, &apos;PYTHON&apos;]</div><div class="line"></div><div class="line">In [62]: [ s.capitalize() for s in L ]</div><div class="line">Out[62]: [&apos;I&apos;, &apos;Will&apos;, &apos;Study&apos;, &apos;Hard&apos;, &apos;Python&apos;]</div></pre></td></tr></table></figure></p>
-<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><p>列表解析会创建完整列表占用内存，那么有没有一种算法或机制让我们循环使用时推算出后续元素，这样节省了内存空间。<br>定义：这种边循环边计算的机制，称为生成器<code>generator</code></p>
-<p>创建一个生成器，其中一个方法就是把前面的列表解析[] 换成()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">In [107]: g = (i for i in range(4))</div><div class="line"></div><div class="line">In [108]: g</div><div class="line">Out[108]: &lt;generator object &lt;genexpr&gt; at 0x7f98a27ba150&gt;</div><div class="line"></div><div class="line">In [117]: g.send(None)    </div><div class="line">Out[117]: 0</div><div class="line"></div><div class="line">In [118]: g.send(None)</div><div class="line">Out[118]: 1</div><div class="line"></div><div class="line">In [119]: next(g)</div><div class="line">Out[119]: 2</div><div class="line"></div><div class="line">In [120]: next(g)</div><div class="line">Out[120]: 3</div><div class="line"></div><div class="line">In [122]: next(g)</div><div class="line">---------------------------------------------------------------------------</div><div class="line">StopIteration                             Traceback (most recent call last)</div><div class="line">&lt;ipython-input-122-5f315c5de15b&gt; in &lt;module&gt;()</div><div class="line">----&gt; 1 next(g)</div><div class="line"></div><div class="line">StopIteration:</div></pre></td></tr></table></figure></p>
-<p>利用<code>yield</code>创建一个生成器，取出完整元素需要用for 循环来迭代<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">In [123]: def genNum(x):</div><div class="line">   .....:     i = 0</div><div class="line">   .....:     while i &lt; x:</div><div class="line">   .....:         yield i</div><div class="line">   .....:         i += 1      </div><div class="line"></div><div class="line">In [124]: g = genNum(5)</div><div class="line">In [136]: for i in g:</div><div class="line">   .....:     print(i, end=&apos; &apos;)</div><div class="line">   .....:     </div><div class="line">0 1 2 3 4</div></pre></td></tr></table></figure></p>
-<p> 来看一下<code>yield</code>工作细节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">In [138]: def consumer():</div><div class="line">   .....:     print(&quot;yield starting&quot;)</div><div class="line">   .....:     m = yield 5</div><div class="line">   .....:     print(&quot;m_values: %s&quot; % m)</div><div class="line">   .....:     n = yield 12</div><div class="line">   .....:     print(&quot;Game over&quot;)</div><div class="line">   .....:     </div><div class="line"></div><div class="line">In [139]: c = consumer()</div><div class="line"></div><div class="line">In [140]: c.send(None)</div><div class="line">yield starting</div><div class="line">Out[140]: 5</div><div class="line"></div><div class="line">In [141]: c.send(&apos;to be brave&apos;)</div><div class="line">m_values: to be brave</div><div class="line">Out[141]: 12</div></pre></td></tr></table></figure></p>
-<p>小结:</p>
-<ul>
-<li>c.send(None)遇到第一个yield停止，在解释器中out yield中的值，在python  yield.py却不会.</li>
-<li>c.send(‘to be brave’)会上次中止处继续，’to be brave’会赋值给yield 5,即m = ‘to be brave’, 遇到第二个yield停止.</li>
-<li>g.send(None)启动迭代器，遇到第一个yield返回.<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">root@apt:~/script_study# cat yield.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">#</div><div class="line">def h():  </div><div class="line">    print(&quot;yield starting&quot;)  </div><div class="line">    m = yield 5</div><div class="line">    print(&quot;m_values: %s&quot; % m)</div><div class="line">    d = yield 12  </div><div class="line">    print(&apos;Game over&apos;)  </div><div class="line">c = h()</div><div class="line"># print test info</div><div class="line">c.send(None)</div><div class="line">c.send(&apos;Fighting!&apos;)</div><div class="line"></div><div class="line">root@apt:~/script_study# python3 yield.py </div><div class="line">yield starting</div><div class="line">m_values: Fighting!</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>后面协程正是用的这个知识点。</p>
-<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p>细心的朋友不难发现生成器可以被next()函数不断调用并返回下一个值，直到最后抛出StopIteration错误表示无法继续返回下一个值为止。</p>
-<ul>
-<li>可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator</li>
-<li>可以直接作用于for循环的对象统称为可迭代对象：Iterable</li>
-</ul>
-<p>哪些是可迭代对象呢？或说可作用于for循环呢？有以下几种数据类型：</p>
-<p>一类是集合数据类型，如list、tuple、dict、set、str等；</p>
-<p>一类是generator，包括生成器和带yield的generator function。</p>
-<p>可以使用isinstance()判断一个对象是否是Iterable对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from collections import Iterable</div><div class="line">&gt;&gt;&gt; isinstance([], Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(&#123;&#125;, Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(&apos;abc&apos;, Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance((x for x in range(10)), Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(100, Iterable)</div><div class="line">False</div></pre></td></tr></table></figure></p>
-<p>可以使用isinstance()判断一个对象是否是Iterator对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from collections import Iterator</div><div class="line">&gt;&gt;&gt; isinstance((x for x in range(10)), Iterator)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance([], Iterator)</div><div class="line">False</div><div class="line">&gt;&gt;&gt; isinstance(&#123;&#125;, Iterator)</div><div class="line">False</div><div class="line">&gt;&gt;&gt; isinstance(&apos;abc&apos;, Iterator)</div><div class="line">False</div></pre></td></tr></table></figure></p>
-<p>生成器都是Iterator对象，但list、dict、str虽然是Iterable，却不是Iterator。</p>
-<p>把list、dict、str等Iterable变成Iterator可以使用iter()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; isinstance(iter([]), Iterator)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(iter(&apos;abc&apos;), Iterator)</div><div class="line">True</div></pre></td></tr></table></figure></p>
-<p>为什么list、dict、str等数据类型不是Iterator 呢？</p>
-<p>这是因为Python的Iterator对象表示的是一个数据流，Iterator对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误。可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过next()函数实现按需计算下一个数据，所以Iterator的计算是惰性的，只有在需要返回下一个数据时它才会计算。</p>
-<p><code>Iterator</code>甚至可以表示一个无限大的数据流，例如全体自然数。而使用list是永远不可能存储全体自然数的。</p>
-<p>小结</p>
-<p>凡是可作用于for循环的对象都是Iterable类型；</p>
-<p>凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；</p>
-<p>集合数据类型如list、dict、str等是Iterable但不是Iterator，不过可以通过iter()函数获得一个Iterator对象。</p>
-<p>Python的for循环本质上就是通过不断调用next()函数实现的，例如：</p>
-<p>for x in [1, 2, 3, 4, 5]:<br>    pass<br>实际上完全等价于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># 首先获得Iterator对象:</div><div class="line">it = iter([1, 2, 3, 4, 5])</div><div class="line"># 循环:</div><div class="line">while True:</div><div class="line">    try:</div><div class="line">        # 获得下一个值:</div><div class="line">        x = next(it)</div><div class="line">    except StopIteration:</div><div class="line">        # 遇到StopIteration就退出循环</div><div class="line">        break</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjchdoy4i001g2fjxtr9vf0s4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjchk5jkq001i4cjxq2dphcck" class="article-share-link">Share</a>
       
       
     </footer>
