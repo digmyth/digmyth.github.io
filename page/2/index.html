@@ -61,6 +61,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mysql-Galera" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/08/mysql-Galera/" class="article-date">
+  <time datetime="2017-11-08T01:41:54.000Z" itemprop="datePublished">2017-11-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>wsrep简介</li>
+<li>Galera集群搭建</li>
+</ul>
+<h2 id="wsrep简介"><a href="#wsrep简介" class="headerlink" title="wsrep简介"></a>wsrep简介</h2><p><code>wsrep</code>是<code>writeset replication</code>的简称，是一种API，在底层调用各库实现数据库同步写.通过wsrep协议在全局实现复制,任何一节点都可读写.</p>
+<p>基于wsrep协议提供的一种底层复制机制，实现了<code>Galera cluster</code>数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，才能借住于wsrep协议实现复制机制.</p>
+<p>多个节点之上有了信息层，上层应用完成高可用，研发时调用信息层所提供的api去开发，并基于这个api去完成集群事务决策，不然就要自行加入中间层称资源管理器crm，如pacemaker</p>
+<p>galera cluster不是专为数据库提供的，只是一个工作在较为底层能够为你的服务提供数据复制功能的底层组件.</p>
+<p>mysql只有在研发时调用了galera cluster api写的mysql才能利用galera cluster完成复制,它的复制不再是让其它节点通过读取主节点二进制日志文件在本地重放，而是你指明了复制哪个数据库文件，由galera cluster自己在底层完成同步，mysql本身不感知.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">percona-cluster 版本支持galera cluster</div><div class="line">MariaDB-cluster 版本支持galera cluster</div></pre></td></tr></table></figure>
+<p>复制的问题和解决方案:<br>(1) 数据损坏或丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">语句或行记录二进制日志，从而在从服务器上重放，重放机制也可能主从不一致的情况硬件故障、软件bug也会有数据损坏或丢失</div><div class="line">Master: MHA + semi replication(至少有一个从节点接收到了提交的binlog事件才返回成功，也是半同步复制)</div><div class="line">如果主节点数据损坏或丢失，就必须手动在从节点通过gtid来判断出己经提交的所有应用或事务，然后合并出一个较新的从节点提升为主节点</div><div class="line">Slave: 重新复制数据即可</div></pre></td></tr></table></figure></p>
+<p>(2) 运维部署注意事项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">关键业务监控</div><div class="line">重要数据要备份和冗余</div><div class="line">不能混合使用存储引警</div><div class="line">MyISM: 不支持事务</div><div class="line">InnoDB: 支持事务</div></pre></td></tr></table></figure></p>
+<p>(3) 设置了不唯一的server ID<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">不唯一，整个复制集群数据产生错乱，每一个服务节点都不会在本地重放由同一个server ID 所产生的事件</div><div class="line">会导致重新复制数据</div></pre></td></tr></table></figure></p>
+<p>(4) 复制延迟<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">需要额外监控工具的辅助</div><div class="line">自写一些脚本监控</div><div class="line">从节点有一个落后于主节点的时间判定，这个时间不为0时，尝试重启从节点服务</div><div class="line">对于从服务器延迟，主节点的事务是可以并发的，往二进制写入是单线程的，有先有后，从服务器重放也是单线程的，从服务器延迟落后也是必然的</div><div class="line">mysql5.6/mariadb 10以后引入了多线程复制机制，三节点集群可设置wsrep_slave_threads = 4</div></pre></td></tr></table></figure></p>
+<p>数据库服务衡量指标<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">qps : query per second 查询量</div><div class="line">tps: transaction per second 事务量</div></pre></td></tr></table></figure></p>
+<h2 id="Galera集群搭建"><a href="#Galera集群搭建" class="headerlink" title="Galera集群搭建"></a>Galera集群搭建</h2><p>最新文档请参考<a href="https://mariadb.com/kb/en/library/getting-started-with-mariadb-galera-cluster/#bootstrapping-a-new-cluster" target="_blank" rel="external">Galera 集群官方链接</a></p>
+<h3 id="一-准备工作"><a href="#一-准备工作" class="headerlink" title="一 准备工作"></a>一 准备工作</h3><p>1  关闭防火墙<br>2  关闭selinux<br>3  同步主机时间<br>4  设置hosts文件</p>
+<h3 id="二-MariaDB源"><a href="#二-MariaDB源" class="headerlink" title="二  MariaDB源"></a>二  MariaDB源</h3><p>在MariaDB 10.1以前需要卸载<code>mariadb</code>包，单独准备<code>MariaDB-Galera-server源</code>来安装MariaDB-Galera-server包<br>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">yum list all | grep -i galera</div><div class="line">yum remove mariadb*</div><div class="line">yum -y install MariaDB-Galera-server.rpm galera-25.3</div><div class="line">rpm -ql MariaDB-Galera-server</div><div class="line">rpm -qa | grep MariaDB</div><div class="line">	 MariaDB-common-10.0.32-1.el7.centos.x86_64</div><div class="line">	 MariaDB-shared-10.0.32-1.el7.centos.x86_64</div><div class="line">	 MariaDB-Galera-server-10.0.32-1.el7.centos.x86_64</div><div class="line">	 MariaDB-client-10.0.32-1.el7.centos.x86_64</div><div class="line">vim /etc/my.cnf.d/server.cnf</div><div class="line">[galera]</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>而在MariaDB 10.1以后MariaDB-server己经自带Galera集群了，不必单独安装<code>MariaDB-Galera-server</code>包，只需准备如下源</p>
+<p>编辑/etc/yum.repos.d/Mariadb.repo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># MariaDB 10.2 CentOS repository list - created 2017-11-07 12:07 UTC</div><div class="line"># http://downloads.mariadb.org/mariadb/repositories/</div><div class="line">[mariadb]</div><div class="line">name = MariaDB</div><div class="line">baseurl = http://yum.mariadb.org/10.2/centos7-amd64</div><div class="line">gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</div><div class="line">gpgcheck=1</div></pre></td></tr></table></figure></p>
+<h3 id="三-软件安装"><a href="#三-软件安装" class="headerlink" title="三 软件安装"></a>三 软件安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install MariaDB-server MariaDB-client</div></pre></td></tr></table></figure>
+<h3 id="四-修改配置"><a href="#四-修改配置" class="headerlink" title="四  修改配置"></a>四  修改配置</h3><p>编辑/etc/my.cnf.d/server.cnf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[galera]</div><div class="line">#Mandatory settings</div><div class="line">wsrep_provider=/usr/lib64/galera/libgalera_smm.so  # 可查rpm -ql galera | grep -i smm.so</div><div class="line">wsrep_cluster_address = &apos;gcomm://172.16.100.67,172.16.100.68,172.16.100.69&apos;</div><div class="line">wsrep_cluster_name = &apos;cluster&apos;</div><div class="line">wsrep_node_name = &apos;node1&apos;</div><div class="line">wsrep_node_address= &apos;172.16.100.67&apos;</div><div class="line">binlog_format = row</div><div class="line">default_storage_engine = InnoDB</div><div class="line">innodb_autoinc_lock_mode = 2</div><div class="line">bind-address = 0.0.0.0</div><div class="line">wsrep_on=ON</div></pre></td></tr></table></figure></p>
+<h3 id="五-启动服务"><a href="#五-启动服务" class="headerlink" title="五 启动服务"></a>五 启动服务</h3><p>任意一个节点启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/etc/init.d/mysql start --wsrep-new-cluster</div><div class="line">或service mysql bootstrap</div><div class="line">或systemctl  start mariadb --wsrep-new-cluster</div></pre></td></tr></table></figure></p>
+<p>然后在其它节点正常启动即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl  start mariadb</div><div class="line">MariaDB [(none)]&gt; show status like &apos;%wsrep%&apos;;</div></pre></td></tr></table></figure></p>
+<p>简单验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">create database mydb;</div><div class="line">use mydb</div><div class="line">create table tb1 (id int, name char(10));</div><div class="line">desc tb1;</div><div class="line">create table tb2 (id int unsigend auto_increment not null primary key, name char(30));</div><div class="line">insert into tb2(name) values (&apos;hi&apos;, &apos;hello&apos;)</div><div class="line">select * from tb2;</div></pre></td></tr></table></figure></p>
+<p>有关认证及集群检测自行研究<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">wsrep_sst_method = xtrabackup-v2</div><div class="line">wsrep_sst_auth = root:NtEXLlZGF9KeXYUE79e7H8N5C9Vdy0EkHlBfFPtr</div><div class="line">wsrep_slave_threads = 4</div><div class="line">wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh   # 注意定义这个脚本</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjchkxi82000vcsjxauibi3rd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-ceph-01-运维那事" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/05/ceph-01-运维那事/" class="article-date">
@@ -102,7 +169,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjchkb5ny0003aejxz32s5acm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjchkxi540003csjxca5yuuug" class="article-share-link">Share</a>
       
       
     </footer>
@@ -149,7 +216,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjchkb5sg0021aejxoer13b65" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjchkxi9w0021csjxdpq1yfk2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,7 +273,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjchkb5t2002oaejxybt9po6d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjchkxiaq002ocsjxkpaqmiif" class="article-share-link">Share</a>
       
       
     </footer>
@@ -263,7 +330,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjchkb5t0002maejx5ql28eao" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjchkxian002mcsjxla1vg2gt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -322,7 +389,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cjchkb5tg0030aejxl0m4y7xg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cjchkxib70032csjxa5kutpx6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -383,7 +450,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjchkb5pm0006aejxqldvrntp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjchkxi5a0006csjx89m9yh2h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -451,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjchkb5qc000raejxddbwtndc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjchkxi7v000rcsjxyd8btwqf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -511,7 +578,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjchkb5pr000aaejxvdhhzves" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjchkxi75000acsjxxh29oerc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -578,79 +645,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjchkb5sw002iaejx2llirnd9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
-  <time datetime="2017-07-01T01:41:54.000Z" itemprop="datePublished">2017-07-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/01/基于CentOS7的PXE装机/">基于CentOS 7的PXE装机</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><code>网上各种贴子各种飞总说不到重点，本人表示不喜欢。</code></p>
-<h3 id="基于Centos7PXE装机"><a href="#基于Centos7PXE装机" class="headerlink" title="基于Centos7PXE装机"></a>基于Centos7PXE装机</h3><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
-<li>pxe装机依赖几个服务： dhcp/tftp/fileserver</li>
-<li>dhcp:  为装机分配地址及指明tftp server服务器是谁，下载什么文件</li>
-<li>tftp:   提供网络引导文件pxelinux.0及内核文件vmlinuz、initrd.img<ul>
-<li>(具体文件： boot.msg  initrd.img  pxelinux.0  pxelinux.cfg  splash.png  vesamenu.c32  vmlinuz)</li>
-</ul>
-</li>
-<li>fileserver: 提供安装树输出，一般指yum repository (yum 仓库或yum源)</li>
-<li>syslinux:   网络引导文件pxelinux.0由syslinux软件包提供</li>
-</ul>
-<h2 id="dhcp服务"><a href="#dhcp服务" class="headerlink" title="dhcp服务"></a>dhcp服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum  -y install  dhcp</div><div class="line">rpm -ql dhcp</div><div class="line">/etc/dhcp/dhcpd.conf      # 主配置文件</div><div class="line">/var/lib/dhcpd/dhcpd.leases  # 租约文件</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# cat /etc/dhcp/dhcpd.conf  | grep -v ^# | grep -v ^$</div><div class="line">option domain-name &quot;digmyth.com&quot;;</div><div class="line">option domain-name-servers 114.114.114.114;</div><div class="line">default-lease-time 600;</div><div class="line">max-lease-time 7200;</div><div class="line">log-facility local7;</div><div class="line">subnet 172.16.10.0 netmask 255.255.255.0 &#123;</div><div class="line">  range 172.16.10.20 172.16.10.30;</div><div class="line">  option domain-name-servers 172.16.10.1;</div><div class="line">  option domain-name &quot;digmyth.com&quot;;</div><div class="line">  option routers 172.16.10.254;</div><div class="line">  default-lease-time 600;</div><div class="line">  max-lease-time 7200;</div><div class="line">&#125;</div><div class="line">filename &quot;pxelinux.0&quot;;     # 定义网络引导文件名</div><div class="line">next-server 172.16.10.1;   # 定义tftp server地址</div></pre></td></tr></table></figure>
-<p>启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># systemctl  start dhcpd</div><div class="line">[root@master ~]# netstat -unlp | grep 67</div><div class="line">udp        0      0 0.0.0.0:67              0.0.0.0:*                           995/dhcpd</div></pre></td></tr></table></figure></p>
-<h2 id="syslinux提供引导文件"><a href="#syslinux提供引导文件" class="headerlink" title="syslinux提供引导文件"></a>syslinux提供引导文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">准备网络引导文件pxelinux.0  相当于bootloader</div><div class="line"># yum -y install syslinux</div><div class="line">[root@master tftpboot]# ll /usr/share/syslinux/pxelinux.0 </div><div class="line">-rw-r--r--. 1 root root 26764 Nov  6  2016 /usr/share/syslinux/pxelinux.0</div></pre></td></tr></table></figure>
-<h2 id="tftp-server"><a href="#tftp-server" class="headerlink" title="tftp server"></a>tftp server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install tftp tftp-server</div><div class="line">[root@master ~]# rpm -ql tftp-server</div><div class="line">/etc/xinetd.d/tftp   # 启动文件</div><div class="line">/usr/sbin/in.tftpd</div><div class="line">/var/lib/tftpboot   # 服务根目录</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># cat /etc/xinetd.d/tftp</div><div class="line">service tftp</div><div class="line">&#123;</div><div class="line">	socket_type		= dgram</div><div class="line">	protocol		= udp</div><div class="line">	wait			= yes</div><div class="line">	user			= root</div><div class="line">	server			= /usr/sbin/in.tftpd</div><div class="line">	server_args		= -s /var/lib/tftpboot</div><div class="line">    disable			= no  #改为no</div><div class="line">	per_source		= 11</div><div class="line">	cps			= 100 2</div><div class="line">	flags			= IPv4</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>启动tftp服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># cp  /usr/share/syslinux/pxelinux.0  /var/lit/tftpboot</div><div class="line"># systemctl  start tftp</div><div class="line"># tftp localhost</div><div class="line">&gt; get pxelinux.0   # 测试成功</div></pre></td></tr></table></figure></p>
-<h2 id="准备内核及其它相关文件"><a href="#准备内核及其它相关文件" class="headerlink" title="准备内核及其它相关文件"></a>准备内核及其它相关文件</h2><p>   此时<code>pxe</code>己经能够获得地址并下载<code>pxelinux.0</code>进行网络引导，接下来是下载内核文件<code>vmlinuz</code>、<code>initrd.img</code>继续完成装机。<br> 这里我拿<code>CentOS7.2</code>为例：<code>CentOS-7-x86_64-DVD-1511.iso</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# mount -o loop CentOS-7-x86_64-DVD-1511.iso  /mnt</div><div class="line">mount: /dev/loop0 is write-protected, mounting read-only</div><div class="line">[root@master pxeboot]# cd /mnt/images/pxeboot/</div><div class="line">[root@master pxeboot]# cp vmlinuz /var/lib/tftpboot/</div><div class="line">[root@master pxeboot]# cp initrd.img  /var/lib/tftpboot/</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">mkdir /var/lib/tftpboot/pxelinux.cfg</div><div class="line">cp /mnt/isolinux/isolinux.cfg  /var/lib/tftpboot/pxelinux.cfg /default </div><div class="line">[root@master pxelinux.cfg]# cat default </div><div class="line">default vesamenu.c32</div><div class="line">#default linux   # 这里是一个标签，对找后面相应的label</div><div class="line">timeout 600</div><div class="line"></div><div class="line">menu title CentOS 7 wxq    # 此处定义title</div><div class="line">label linux</div><div class="line">  menu label ^Install CentOS 7  # 此处定义系统安装时显示版本</div><div class="line">  kernel vmlinuz</div><div class="line">  append initrd=initrd.img method=http://172.16.10.1/pub/ ks=http://172.16.10.1/pxe/CentOS72.ks</div><div class="line"># 注意： 如果此处只定义method,那么装机过程将全手动。</div></pre></td></tr></table></figure>
-<p>此外还有一些额外文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# ls /mnt/isolinux/</div><div class="line">boot.cat  grub.conf   isolinux.bin  memtest     TRANS.TBL    vesamenu.c32</div><div class="line">boot.msg  initrd.img  isolinux.cfg  splash.png  upgrade.img  vmlinuz</div><div class="line">[root@master ~]# ll /var/lib/tftpboot/</div><div class="line">boot.msg  initrd.img  pxelinux.0   splash.png  vesamenu.c32  vmlinuz</div></pre></td></tr></table></figure></p>
-<h2 id="定义安装树"><a href="#定义安装树" class="headerlink" title="定义安装树"></a>定义安装树</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install httpd</div><div class="line"># mkdir /var/www/html/pxe</div><div class="line"># mkdir /var/www/html/pub</div><div class="line"># mount --bind /mnt /var/www/html/pub/ </div><div class="line"># systemctl  start httpd</div></pre></td></tr></table></figure>
-<h2 id="定义ks文件"><a href="#定义ks文件" class="headerlink" title="定义ks文件"></a>定义ks文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">/pxe/CentOS72.ks</div><div class="line">[root@master pxe]# cat CentOS72.ks</div><div class="line">#version=DEVEL</div><div class="line"># System authorization information</div><div class="line"></div><div class="line">install</div><div class="line"># Keyboard layouts</div><div class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</div><div class="line">auth --enableshadow --passalgo=sha512</div><div class="line"></div><div class="line"># Use CDROM installation media</div><div class="line"># Run the Setup Agent on first boot</div><div class="line">#firstboot --enable</div><div class="line"># System language</div><div class="line">lang en_US.UTF-8</div><div class="line"></div><div class="line">url --url=http://172.16.10.1/pub/</div><div class="line"># Use graphical install</div><div class="line">graphical</div><div class="line">#text</div><div class="line"></div><div class="line">selinux --disabled</div><div class="line">skipx</div><div class="line"></div><div class="line">reboot</div><div class="line"></div><div class="line"># Network information</div><div class="line">#network  --bootproto=static --device=ens33 --gateway=172.16.10.254 --ip=172.16.10.30 --nameserver=114.114.114.114 --netmask=255.255.255.0 --onboot=on --ipv6=auto --activate</div><div class="line">network  --bootproto=dhcp --device=ens33 --onboot=yes --ipv6=auto --activate</div><div class="line">network  --hostname=digmyth</div><div class="line"></div><div class="line"># Root password=123456</div><div class="line">rootpw --iscrypted $6$6ErC1johQ5LVAYwQ$cGGxb6Q6./SpvXCZs.K39d9LpV/IeFnspUT6mHmsVsARzToRCSsZ4fLxcOh0tYWpt38Yh6JoMzmSEkEtCtMlS/</div><div class="line"># System services</div><div class="line">services --disabled=&quot;chronyd&quot;</div><div class="line"></div><div class="line"># System timezone</div><div class="line">timezone Asia/Shanghai --isUtc --nontp</div><div class="line"># System bootloader configuration</div><div class="line">clearpart --all --initlabel</div><div class="line">bootloader --append=&quot; crashkernel=auto&quot; --location=mbr --boot-drive=sda</div><div class="line"># Partition clearing information</div><div class="line"></div><div class="line">#clearpart --drives=sda --initlabel</div><div class="line">#clearpart --none --initlabel</div><div class="line"># Disk partitioning information</div><div class="line"></div><div class="line">#ignoredisk --only-use=sda</div><div class="line">#part pv.735 --fstype=&quot;lvmpv&quot; --ondisk=sda --size=19979</div><div class="line">#volgroup vg --pesize=4096 pv.735</div><div class="line">#logvol /boot --fstype=&quot;xfs&quot; --size=500 --name=boot --vgname=vg</div><div class="line">#logvol /  --fstype=&quot;xfs&quot; --size=16000 --name=root --vgname=vg</div><div class="line">#logvol /data  --fstype=&quot;xfs&quot; --size=3000 --name=data --vgname=vg</div><div class="line">#logvol swap --fstype=&quot;swap&quot; --grow --size=1</div><div class="line"></div><div class="line"></div><div class="line">%packages</div><div class="line">@^minimal</div><div class="line">@core</div><div class="line">kexec-tools</div><div class="line">vim</div><div class="line">net-tools</div><div class="line">sysstat</div><div class="line"></div><div class="line">%end</div><div class="line"></div><div class="line">%post</div><div class="line">touch /root/wxq.txt</div><div class="line">%end</div><div class="line"></div><div class="line">%addon com_redhat_kdump --enable --reserve-mb=&apos;auto&apos;</div><div class="line">%end</div></pre></td></tr></table></figure>
-<p>上面的装机将进入图形界面手动分区安装    </p>
-<p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466910816.jpg" alt="pxeboot"></p>
-<p>到此完结，可以结合cobbler实现多pxe环境并存。</p>
-<ul>
-<li>cobbler 一些概念：</li>
-<li>distro发行版： 其实就是pxe所说的相应内核文件</li>
-<li>profile:  提供pxeboot引导文件、KS文件、安装树（用现有iso镜像mirror/import方式）</li>
-</ul>
-<h5 id="是不是很完美-。。。"><a href="#是不是很完美-。。。" class="headerlink" title="是不是很完美 。。。"></a>是不是很完美 。。。</h5>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjchkb5tn0037aejxx3cfr9ee" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjchkxiah002icsjxzeeqk9qr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -705,6 +700,10 @@
           </li>
         
           <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
             <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
           </li>
         
@@ -714,10 +713,6 @@
         
           <li>
             <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
           </li>
         
       </ul>

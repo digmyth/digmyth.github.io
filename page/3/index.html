@@ -61,6 +61,78 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
+  <time datetime="2017-07-01T01:41:54.000Z" itemprop="datePublished">2017-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/01/基于CentOS7的PXE装机/">基于CentOS 7的PXE装机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>网上各种贴子各种飞总说不到重点，本人表示不喜欢。</code></p>
+<h3 id="基于Centos7PXE装机"><a href="#基于Centos7PXE装机" class="headerlink" title="基于Centos7PXE装机"></a>基于Centos7PXE装机</h3><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>pxe装机依赖几个服务： dhcp/tftp/fileserver</li>
+<li>dhcp:  为装机分配地址及指明tftp server服务器是谁，下载什么文件</li>
+<li>tftp:   提供网络引导文件pxelinux.0及内核文件vmlinuz、initrd.img<ul>
+<li>(具体文件： boot.msg  initrd.img  pxelinux.0  pxelinux.cfg  splash.png  vesamenu.c32  vmlinuz)</li>
+</ul>
+</li>
+<li>fileserver: 提供安装树输出，一般指yum repository (yum 仓库或yum源)</li>
+<li>syslinux:   网络引导文件pxelinux.0由syslinux软件包提供</li>
+</ul>
+<h2 id="dhcp服务"><a href="#dhcp服务" class="headerlink" title="dhcp服务"></a>dhcp服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum  -y install  dhcp</div><div class="line">rpm -ql dhcp</div><div class="line">/etc/dhcp/dhcpd.conf      # 主配置文件</div><div class="line">/var/lib/dhcpd/dhcpd.leases  # 租约文件</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# cat /etc/dhcp/dhcpd.conf  | grep -v ^# | grep -v ^$</div><div class="line">option domain-name &quot;digmyth.com&quot;;</div><div class="line">option domain-name-servers 114.114.114.114;</div><div class="line">default-lease-time 600;</div><div class="line">max-lease-time 7200;</div><div class="line">log-facility local7;</div><div class="line">subnet 172.16.10.0 netmask 255.255.255.0 &#123;</div><div class="line">  range 172.16.10.20 172.16.10.30;</div><div class="line">  option domain-name-servers 172.16.10.1;</div><div class="line">  option domain-name &quot;digmyth.com&quot;;</div><div class="line">  option routers 172.16.10.254;</div><div class="line">  default-lease-time 600;</div><div class="line">  max-lease-time 7200;</div><div class="line">&#125;</div><div class="line">filename &quot;pxelinux.0&quot;;     # 定义网络引导文件名</div><div class="line">next-server 172.16.10.1;   # 定义tftp server地址</div></pre></td></tr></table></figure>
+<p>启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># systemctl  start dhcpd</div><div class="line">[root@master ~]# netstat -unlp | grep 67</div><div class="line">udp        0      0 0.0.0.0:67              0.0.0.0:*                           995/dhcpd</div></pre></td></tr></table></figure></p>
+<h2 id="syslinux提供引导文件"><a href="#syslinux提供引导文件" class="headerlink" title="syslinux提供引导文件"></a>syslinux提供引导文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">准备网络引导文件pxelinux.0  相当于bootloader</div><div class="line"># yum -y install syslinux</div><div class="line">[root@master tftpboot]# ll /usr/share/syslinux/pxelinux.0 </div><div class="line">-rw-r--r--. 1 root root 26764 Nov  6  2016 /usr/share/syslinux/pxelinux.0</div></pre></td></tr></table></figure>
+<h2 id="tftp-server"><a href="#tftp-server" class="headerlink" title="tftp server"></a>tftp server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install tftp tftp-server</div><div class="line">[root@master ~]# rpm -ql tftp-server</div><div class="line">/etc/xinetd.d/tftp   # 启动文件</div><div class="line">/usr/sbin/in.tftpd</div><div class="line">/var/lib/tftpboot   # 服务根目录</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># cat /etc/xinetd.d/tftp</div><div class="line">service tftp</div><div class="line">&#123;</div><div class="line">	socket_type		= dgram</div><div class="line">	protocol		= udp</div><div class="line">	wait			= yes</div><div class="line">	user			= root</div><div class="line">	server			= /usr/sbin/in.tftpd</div><div class="line">	server_args		= -s /var/lib/tftpboot</div><div class="line">    disable			= no  #改为no</div><div class="line">	per_source		= 11</div><div class="line">	cps			= 100 2</div><div class="line">	flags			= IPv4</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>启动tftp服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># cp  /usr/share/syslinux/pxelinux.0  /var/lit/tftpboot</div><div class="line"># systemctl  start tftp</div><div class="line"># tftp localhost</div><div class="line">&gt; get pxelinux.0   # 测试成功</div></pre></td></tr></table></figure></p>
+<h2 id="准备内核及其它相关文件"><a href="#准备内核及其它相关文件" class="headerlink" title="准备内核及其它相关文件"></a>准备内核及其它相关文件</h2><p>   此时<code>pxe</code>己经能够获得地址并下载<code>pxelinux.0</code>进行网络引导，接下来是下载内核文件<code>vmlinuz</code>、<code>initrd.img</code>继续完成装机。<br> 这里我拿<code>CentOS7.2</code>为例：<code>CentOS-7-x86_64-DVD-1511.iso</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# mount -o loop CentOS-7-x86_64-DVD-1511.iso  /mnt</div><div class="line">mount: /dev/loop0 is write-protected, mounting read-only</div><div class="line">[root@master pxeboot]# cd /mnt/images/pxeboot/</div><div class="line">[root@master pxeboot]# cp vmlinuz /var/lib/tftpboot/</div><div class="line">[root@master pxeboot]# cp initrd.img  /var/lib/tftpboot/</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">mkdir /var/lib/tftpboot/pxelinux.cfg</div><div class="line">cp /mnt/isolinux/isolinux.cfg  /var/lib/tftpboot/pxelinux.cfg /default </div><div class="line">[root@master pxelinux.cfg]# cat default </div><div class="line">default vesamenu.c32</div><div class="line">#default linux   # 这里是一个标签，对找后面相应的label</div><div class="line">timeout 600</div><div class="line"></div><div class="line">menu title CentOS 7 wxq    # 此处定义title</div><div class="line">label linux</div><div class="line">  menu label ^Install CentOS 7  # 此处定义系统安装时显示版本</div><div class="line">  kernel vmlinuz</div><div class="line">  append initrd=initrd.img method=http://172.16.10.1/pub/ ks=http://172.16.10.1/pxe/CentOS72.ks</div><div class="line"># 注意： 如果此处只定义method,那么装机过程将全手动。</div></pre></td></tr></table></figure>
+<p>此外还有一些额外文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@master ~]# ls /mnt/isolinux/</div><div class="line">boot.cat  grub.conf   isolinux.bin  memtest     TRANS.TBL    vesamenu.c32</div><div class="line">boot.msg  initrd.img  isolinux.cfg  splash.png  upgrade.img  vmlinuz</div><div class="line">[root@master ~]# ll /var/lib/tftpboot/</div><div class="line">boot.msg  initrd.img  pxelinux.0   splash.png  vesamenu.c32  vmlinuz</div></pre></td></tr></table></figure></p>
+<h2 id="定义安装树"><a href="#定义安装树" class="headerlink" title="定义安装树"></a>定义安装树</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># yum  -y install httpd</div><div class="line"># mkdir /var/www/html/pxe</div><div class="line"># mkdir /var/www/html/pub</div><div class="line"># mount --bind /mnt /var/www/html/pub/ </div><div class="line"># systemctl  start httpd</div></pre></td></tr></table></figure>
+<h2 id="定义ks文件"><a href="#定义ks文件" class="headerlink" title="定义ks文件"></a>定义ks文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">/pxe/CentOS72.ks</div><div class="line">[root@master pxe]# cat CentOS72.ks</div><div class="line">#version=DEVEL</div><div class="line"># System authorization information</div><div class="line"></div><div class="line">install</div><div class="line"># Keyboard layouts</div><div class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</div><div class="line">auth --enableshadow --passalgo=sha512</div><div class="line"></div><div class="line"># Use CDROM installation media</div><div class="line"># Run the Setup Agent on first boot</div><div class="line">#firstboot --enable</div><div class="line"># System language</div><div class="line">lang en_US.UTF-8</div><div class="line"></div><div class="line">url --url=http://172.16.10.1/pub/</div><div class="line"># Use graphical install</div><div class="line">graphical</div><div class="line">#text</div><div class="line"></div><div class="line">selinux --disabled</div><div class="line">skipx</div><div class="line"></div><div class="line">reboot</div><div class="line"></div><div class="line"># Network information</div><div class="line">#network  --bootproto=static --device=ens33 --gateway=172.16.10.254 --ip=172.16.10.30 --nameserver=114.114.114.114 --netmask=255.255.255.0 --onboot=on --ipv6=auto --activate</div><div class="line">network  --bootproto=dhcp --device=ens33 --onboot=yes --ipv6=auto --activate</div><div class="line">network  --hostname=digmyth</div><div class="line"></div><div class="line"># Root password=123456</div><div class="line">rootpw --iscrypted $6$6ErC1johQ5LVAYwQ$cGGxb6Q6./SpvXCZs.K39d9LpV/IeFnspUT6mHmsVsARzToRCSsZ4fLxcOh0tYWpt38Yh6JoMzmSEkEtCtMlS/</div><div class="line"># System services</div><div class="line">services --disabled=&quot;chronyd&quot;</div><div class="line"></div><div class="line"># System timezone</div><div class="line">timezone Asia/Shanghai --isUtc --nontp</div><div class="line"># System bootloader configuration</div><div class="line">clearpart --all --initlabel</div><div class="line">bootloader --append=&quot; crashkernel=auto&quot; --location=mbr --boot-drive=sda</div><div class="line"># Partition clearing information</div><div class="line"></div><div class="line">#clearpart --drives=sda --initlabel</div><div class="line">#clearpart --none --initlabel</div><div class="line"># Disk partitioning information</div><div class="line"></div><div class="line">#ignoredisk --only-use=sda</div><div class="line">#part pv.735 --fstype=&quot;lvmpv&quot; --ondisk=sda --size=19979</div><div class="line">#volgroup vg --pesize=4096 pv.735</div><div class="line">#logvol /boot --fstype=&quot;xfs&quot; --size=500 --name=boot --vgname=vg</div><div class="line">#logvol /  --fstype=&quot;xfs&quot; --size=16000 --name=root --vgname=vg</div><div class="line">#logvol /data  --fstype=&quot;xfs&quot; --size=3000 --name=data --vgname=vg</div><div class="line">#logvol swap --fstype=&quot;swap&quot; --grow --size=1</div><div class="line"></div><div class="line"></div><div class="line">%packages</div><div class="line">@^minimal</div><div class="line">@core</div><div class="line">kexec-tools</div><div class="line">vim</div><div class="line">net-tools</div><div class="line">sysstat</div><div class="line"></div><div class="line">%end</div><div class="line"></div><div class="line">%post</div><div class="line">touch /root/wxq.txt</div><div class="line">%end</div><div class="line"></div><div class="line">%addon com_redhat_kdump --enable --reserve-mb=&apos;auto&apos;</div><div class="line">%end</div></pre></td></tr></table></figure>
+<p>上面的装机将进入图形界面手动分区安装    </p>
+<p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466910816.jpg" alt="pxeboot"></p>
+<p>到此完结，可以结合cobbler实现多pxe环境并存。</p>
+<ul>
+<li>cobbler 一些概念：</li>
+<li>distro发行版： 其实就是pxe所说的相应内核文件</li>
+<li>profile:  提供pxeboot引导文件、KS文件、安装树（用现有iso镜像mirror/import方式）</li>
+</ul>
+<h5 id="是不是很完美-。。。"><a href="#是不是很完美-。。。" class="headerlink" title="是不是很完美 。。。"></a>是不是很完美 。。。</h5>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjchkxibe0039csjxtdy3e5ym" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-web-django-11-模板渲染" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/20/web-django-11-模板渲染/" class="article-date">
@@ -115,7 +187,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjchkb5sv002gaejxrev5ivgd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjchkxiaf002gcsjx0bdtcbz1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -180,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjchkb5sm0026aejxu55u2mjr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjchkxia20026csjxk9pueqxv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -254,7 +326,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjchkb5ti0032aejxaasxl8ha" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjchkxib90034csjxqugtwgzb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -301,7 +373,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjchkb5qf000taejxdnowhdw8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjchkxi7x000tcsjxwpmogh4p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -359,7 +431,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjchkb5py000faejxn9txl96v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjchkxi7f000fcsjxgh6lmmv9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -417,7 +489,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjchkb5qu0012aejxgbi4ow79" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjchkxi8c0012csjxo8qnx5cw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -490,7 +562,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjchkb5pp0008aejxduqu0fzc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjchkxi700008csjxos1ilkdt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -532,7 +604,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjchkb5sr002caejxtguwk153" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjchkxia9002ccsjx34gzjycg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -580,66 +652,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjchkb5s8001waejx0c28anho" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-mysql-pyton操作mysql" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/29/mysql-pyton操作mysql/" class="article-date">
-  <time datetime="2017-04-29T01:41:54.000Z" itemprop="datePublished">2017-04-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/29/mysql-pyton操作mysql/">Python 操作mysql</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这里记录下python操作mysql的知识点，详细参见<a href="http://www.cnblogs.com/wupeiqi/articles/5713330.html" target="_blank" rel="external">链接</a></p>
-<h2 id="模块安装"><a href="#模块安装" class="headerlink" title="模块安装"></a>模块安装</h2><p>在<code>python2</code>中使用模块<code>MySQLdb</code><br>在<code>python3</code>中使用模块<code>pymysql</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 install pymysql</div></pre></td></tr></table></figure></p>
-<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>基本操作过程就是</p>
-<ul>
-<li>创建连接</li>
-<li>创建游标</li>
-<li>发送语句</li>
-<li>获取数据</li>
-<li>事务提交</li>
-<li>关闭游标</li>
-<li>关闭连接<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line"># 创建连接</div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;db1&apos;)</div><div class="line"></div><div class="line"># 创建游标</div><div class="line">cursor = conn.cursor()</div><div class="line"></div><div class="line"># 发送语句</div><div class="line">cursor.execute(sqlstatement)</div><div class="line">cursor.executemany(sqlstatement)</div><div class="line"></div><div class="line"># 获取数据</div><div class="line">cursor.fetchone()</div><div class="line">cursor.fetchmany(3)</div><div class="line">cursor.fetchall()  </div><div class="line"></div><div class="line"># 事务提交，不然无法保存新建或者修改的数据</div><div class="line">conn.commit()</div><div class="line">  </div><div class="line"># 关闭游标</div><div class="line">cursor.close()</div><div class="line"># 关闭连接</div><div class="line">conn.close()</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="基本知识点"><a href="#基本知识点" class="headerlink" title="基本知识点"></a>基本知识点</h2><h3 id="获取新创建数据自增ID"><a href="#获取新创建数据自增ID" class="headerlink" title="获取新创建数据自增ID"></a>获取新创建数据自增ID</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">  </div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;t1&apos;)</div><div class="line">cursor = conn.cursor()</div><div class="line">cursor.executemany(&quot;insert into hosts(host,color_id)values(%s,%s)&quot;, [(&quot;1.1.1.11&quot;,1),(&quot;1.1.1.11&quot;,2)])</div><div class="line">conn.commit()</div><div class="line">cursor.close()</div><div class="line">conn.close()</div><div class="line">  </div><div class="line"># 获取最新自增ID</div><div class="line">new_id = cursor.lastrowid</div></pre></td></tr></table></figure>
-<h3 id="游标操作"><a href="#游标操作" class="headerlink" title="游标操作"></a>游标操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">在fetch数据时按照顺序进行，可以使用cursor.scroll(num,mode)来移动游标位置，如：</div><div class="line"></div><div class="line">cursor.scroll(1,mode=&apos;relative&apos;)  # 相对当前位置移动</div><div class="line">cursor.scroll(2,mode=&apos;absolute&apos;) # 相对绝对位置移动</div></pre></td></tr></table></figure>
-<h3 id="fetch-数据类型"><a href="#fetch-数据类型" class="headerlink" title="fetch 数据类型"></a>fetch 数据类型</h3><p>关于默认获取的数据是元组类型，如果想要获取字典类型的数据，如下<code>pymysql.cursors.DictCursor</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;t1&apos;)</div><div class="line"># 游标设置为字典类型</div><div class="line">cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)</div><div class="line">r = cursor.execute(&quot;call p1()&quot;)</div><div class="line">  </div><div class="line">result = cursor.fetchone()</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">effect_row = cursor.execute(&quot;update hosts set host = &apos;172.16.0.1&apos;&quot;)</div><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">#effect_row = cursor.execute(&quot;update hosts set host = &apos;172.16.0.1&apos; where nid &gt; %s&quot;, (1,))</div><div class="line">  </div><div class="line">这里值得注意的是不能把上面语句替换成下面语句，否则会被sql注入</div><div class="line">statement=&quot;update hosts set host = &apos;172.16.0.1&apos; where nid &gt; %s&quot; % 1</div><div class="line">effect_row = cursor.execute(statement)</div><div class="line"></div><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">#effect_row = cursor.executemany(&quot;insert into hosts(host,color_id)values(%s,%s)&quot;, [(&quot;172.16.0.1&quot;,1),(&quot;1.1.1.11&quot;,2)])</div></pre></td></tr></table></figure>
-<h3 id="SQLAlchemy"><a href="#SQLAlchemy" class="headerlink" title="SQLAlchemy"></a>SQLAlchemy</h3><p>SQLAlchemy是Python编程语言下的一款ORM框架，该框架建立在数据库API之上，使用关系对象映射进行数据库操作，简言之便是：将对象转换成SQL，然后使用数据API执行SQL并获取执行结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 install SQLAlchemy</div></pre></td></tr></table></figure></p>
-<p>SQLAlchemy本身无法操作数据库，其必须以来pymsql等第三方插件，Dialect用于和数据API进行交流，根据配置文件的不同调用不同的数据库API，从而实现对数据库的操作，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">MySQL-Python</div><div class="line">    mysql+mysqldb://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;[:&lt;port&gt;]/&lt;dbname&gt;</div><div class="line">   </div><div class="line">pymysql</div><div class="line">    mysql+pymysql://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;/&lt;dbname&gt;[?&lt;options&gt;]</div><div class="line">   </div><div class="line">MySQL-Connector</div><div class="line">    mysql+mysqlconnector://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;[:&lt;port&gt;]/&lt;dbname&gt;</div><div class="line">   </div><div class="line">cx_Oracle</div><div class="line">    oracle+cx_oracle://user:pass@host:port/dbname[?key=value&amp;key=value...]</div><div class="line">   </div><div class="line">更多详见：http://docs.sqlalchemy.org/en/latest/dialects/index.html</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjchkb5qr0010aejx8m7lmaim" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjchkxi9n001wcsjxa26xil66" class="article-share-link">Share</a>
       
       
     </footer>
@@ -694,6 +707,10 @@
           </li>
         
           <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
             <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
           </li>
         
@@ -703,10 +720,6 @@
         
           <li>
             <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
           </li>
         
       </ul>

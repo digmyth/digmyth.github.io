@@ -61,14 +61,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-web-django-02-基本配置示例" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-mysql-pyton操作mysql" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/04/20/web-django-02-基本配置示例/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+    <a href="/2017/04/29/mysql-pyton操作mysql/" class="article-date">
+  <time datetime="2017-04-29T01:41:54.000Z" itemprop="datePublished">2017-04-29</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
   </div>
 
   </div>
@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-02-基本配置示例/">web-Django-02-基本配置示例</a>
+      <a class="article-title" href="/2017/04/29/mysql-pyton操作mysql/">Python 操作mysql</a>
     </h1>
   
 
@@ -87,26 +87,30 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="1-django安装"><a href="#1-django安装" class="headerlink" title="1 django安装"></a>1 django安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install django pymysql</div></pre></td></tr></table></figure>
-<h3 id="2-新建django-project"><a href="#2-新建django-project" class="headerlink" title="2 新建django project"></a>2 新建django project</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">django-admin.py startproject mysite  或用pycharm新建一个项目</div></pre></td></tr></table></figure>
-<h3 id="3-该项目下创建一个应用"><a href="#3-该项目下创建一个应用" class="headerlink" title="3 该项目下创建一个应用"></a>3 该项目下创建一个应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd mysite &amp;&amp; python manage.py startapp  app01</div></pre></td></tr></table></figure>
-<h3 id="4-配置Django"><a href="#4-配置Django" class="headerlink" title="4 配置Django"></a>4 配置Django</h3><p>settings.py文件确保有下面代码，用于在static目录放置静态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">STATIC_URL = &apos;/static/&apos;</div><div class="line">STATICFILES_DIRS= (</div><div class="line">    os.path.join(BASE_DIR, &apos;static&apos;),</div><div class="line">)</div></pre></td></tr></table></figure></p>
-<p>确保INSTALLED_APPS = []有app01,应用</p>
-<h3 id="5-Django-mysql配置"><a href="#5-Django-mysql配置" class="headerlink" title="5 Django mysql配置"></a>5 Django mysql配置</h3><p>settings.py文件确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">    &apos;default&apos;: &#123;</div><div class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">        &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">        &apos;USER&apos;: &apos;root&apos;,</div><div class="line">        &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">        &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">        &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>app01下 <strong>init</strong>.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div></pre></td></tr></table></figure></p>
-<p>对于初学者建议配置此项，用于打印orm翻译后的sql语后，便于对照学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">LOGGING = &#123;</div><div class="line">    &apos;version&apos;: 1,</div><div class="line">    &apos;disable_existing_loggers&apos;: False,</div><div class="line">    &apos;handlers&apos;: &#123;</div><div class="line">        &apos;console&apos;:&#123;</div><div class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</div><div class="line">            &apos;class&apos;:&apos;logging.StreamHandler&apos;,</div><div class="line">        &#125;,</div><div class="line">    &#125;,</div><div class="line">    &apos;loggers&apos;: &#123;</div><div class="line">        &apos;django.db.backends&apos;: &#123;</div><div class="line">            &apos;handlers&apos;: [&apos;console&apos;],</div><div class="line">            &apos;propagate&apos;: True,</div><div class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</div><div class="line">        &#125;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="6-django生成数据"><a href="#6-django生成数据" class="headerlink" title="6 django生成数据"></a>6 django生成数据</h3><p>models.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username = models.CharField(max_length=32)</div><div class="line">    password = models.CharField(max_length=32)</div><div class="line">    email = models.CharField(max_length=32)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations</div><div class="line">python manage.py migrate</div></pre></td></tr></table></figure>
-<h3 id="7-urls-py定义"><a href="#7-urls-py定义" class="headerlink" title="7  urls.py定义"></a>7  urls.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from app01 import views</div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</div><div class="line">    url(r&apos;^users/$&apos;, views.users),</div><div class="line">    # url(r&apos;^create_data/&apos;, views.create_data),</div><div class="line">]</div></pre></td></tr></table></figure>
-<h3 id="8-views-py定义"><a href="#8-views-py定义" class="headerlink" title="8 views.py定义"></a>8 views.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render,HttpResponse, redirect</div><div class="line">from app01 import models</div><div class="line"></div><div class="line">def create_data(request):</div><div class="line">    for i in range(1,104):</div><div class="line">        models.UserInfo.objects.create(</div><div class="line">            username = &quot;root%s&quot; %i,</div><div class="line">            password = &quot;123&quot;,</div><div class="line">            email = &quot;root%s@qq.com&quot; %i,</div><div class="line">    )</div><div class="line">    return HttpResponse(&quot;data generate...&quot;)</div><div class="line"></div><div class="line">def users(request):</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;user_list &apos;:user_list &#125;)</div></pre></td></tr></table></figure>
-<h3 id="9-templates-users-html定义"><a href="#9-templates-users-html定义" class="headerlink" title="9 templates/users.html定义"></a>9 templates/users.html定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html lang=&quot;en&quot;&gt;</div><div class="line">&lt;head&gt;</div><div class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</div><div class="line">    &lt;title&gt;Title&lt;/title&gt;</div><div class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/static/bootstrap-3.3.7-dist/css/bootstrap.css&quot;&gt;</div><div class="line"></div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">    &lt;div style=&quot;width: 700px; margin: 10px     auto&quot;&gt;</div><div class="line">    &lt;h1&gt;用户列表&lt;/h1&gt;</div><div class="line">    &lt;table class=&quot;table table-hover table-bordered&quot;&gt;</div><div class="line">        &lt;thead&gt;</div><div class="line">            &lt;tr&gt;</div><div class="line">                &lt;th&gt; 用户名&lt;/th&gt;</div><div class="line">                &lt;th&gt; 密码&lt;/th&gt;</div><div class="line">                &lt;th&gt;邮箱&lt;/th&gt;</div><div class="line">            &lt;/tr&gt;</div><div class="line">        &lt;/thead&gt;</div><div class="line">    </div><div class="line">        &lt;tbody&gt;</div><div class="line">            &#123;% for user in page_obj.object_list  %&#125;</div><div class="line">                &lt;tr&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.username &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.password &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.email &#125;&#125;&lt;/td&gt;</div><div class="line">                &lt;/tr&gt;</div><div class="line">            &#123;% endfor %&#125;</div><div class="line">    </div><div class="line">        &lt;/tbody&gt;</div><div class="line">    &lt;/table&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
-<h3 id="10-注意bootstrap应用"><a href="#10-注意bootstrap应用" class="headerlink" title="10 注意bootstrap应用"></a>10 注意bootstrap应用</h3><p><a href="http://v3.bootcss.com/getting-started/#download" target="_blank" rel="external">bootstrap下载链接</a></p>
-<h3 id="11-启动项目"><a href="#11-启动项目" class="headerlink" title="11 启动项目"></a>11 启动项目</h3><p>运行项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py runserver 127.0.0.1:8000</div></pre></td></tr></table></figure></p>
+        <p>这里记录下python操作mysql的知识点，详细参见<a href="http://www.cnblogs.com/wupeiqi/articles/5713330.html" target="_blank" rel="external">链接</a></p>
+<h2 id="模块安装"><a href="#模块安装" class="headerlink" title="模块安装"></a>模块安装</h2><p>在<code>python2</code>中使用模块<code>MySQLdb</code><br>在<code>python3</code>中使用模块<code>pymysql</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 install pymysql</div></pre></td></tr></table></figure></p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>基本操作过程就是</p>
+<ul>
+<li>创建连接</li>
+<li>创建游标</li>
+<li>发送语句</li>
+<li>获取数据</li>
+<li>事务提交</li>
+<li>关闭游标</li>
+<li>关闭连接<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line"># 创建连接</div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;db1&apos;)</div><div class="line"></div><div class="line"># 创建游标</div><div class="line">cursor = conn.cursor()</div><div class="line"></div><div class="line"># 发送语句</div><div class="line">cursor.execute(sqlstatement)</div><div class="line">cursor.executemany(sqlstatement)</div><div class="line"></div><div class="line"># 获取数据</div><div class="line">cursor.fetchone()</div><div class="line">cursor.fetchmany(3)</div><div class="line">cursor.fetchall()  </div><div class="line"></div><div class="line"># 事务提交，不然无法保存新建或者修改的数据</div><div class="line">conn.commit()</div><div class="line">  </div><div class="line"># 关闭游标</div><div class="line">cursor.close()</div><div class="line"># 关闭连接</div><div class="line">conn.close()</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="基本知识点"><a href="#基本知识点" class="headerlink" title="基本知识点"></a>基本知识点</h2><h3 id="获取新创建数据自增ID"><a href="#获取新创建数据自增ID" class="headerlink" title="获取新创建数据自增ID"></a>获取新创建数据自增ID</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">  </div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;t1&apos;)</div><div class="line">cursor = conn.cursor()</div><div class="line">cursor.executemany(&quot;insert into hosts(host,color_id)values(%s,%s)&quot;, [(&quot;1.1.1.11&quot;,1),(&quot;1.1.1.11&quot;,2)])</div><div class="line">conn.commit()</div><div class="line">cursor.close()</div><div class="line">conn.close()</div><div class="line">  </div><div class="line"># 获取最新自增ID</div><div class="line">new_id = cursor.lastrowid</div></pre></td></tr></table></figure>
+<h3 id="游标操作"><a href="#游标操作" class="headerlink" title="游标操作"></a>游标操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">在fetch数据时按照顺序进行，可以使用cursor.scroll(num,mode)来移动游标位置，如：</div><div class="line"></div><div class="line">cursor.scroll(1,mode=&apos;relative&apos;)  # 相对当前位置移动</div><div class="line">cursor.scroll(2,mode=&apos;absolute&apos;) # 相对绝对位置移动</div></pre></td></tr></table></figure>
+<h3 id="fetch-数据类型"><a href="#fetch-数据类型" class="headerlink" title="fetch 数据类型"></a>fetch 数据类型</h3><p>关于默认获取的数据是元组类型，如果想要获取字典类型的数据，如下<code>pymysql.cursors.DictCursor</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;t1&apos;)</div><div class="line"># 游标设置为字典类型</div><div class="line">cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)</div><div class="line">r = cursor.execute(&quot;call p1()&quot;)</div><div class="line">  </div><div class="line">result = cursor.fetchone()</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">effect_row = cursor.execute(&quot;update hosts set host = &apos;172.16.0.1&apos;&quot;)</div><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">#effect_row = cursor.execute(&quot;update hosts set host = &apos;172.16.0.1&apos; where nid &gt; %s&quot;, (1,))</div><div class="line">  </div><div class="line">这里值得注意的是不能把上面语句替换成下面语句，否则会被sql注入</div><div class="line">statement=&quot;update hosts set host = &apos;172.16.0.1&apos; where nid &gt; %s&quot; % 1</div><div class="line">effect_row = cursor.execute(statement)</div><div class="line"></div><div class="line"># 执行SQL，并返回受影响行数</div><div class="line">#effect_row = cursor.executemany(&quot;insert into hosts(host,color_id)values(%s,%s)&quot;, [(&quot;172.16.0.1&quot;,1),(&quot;1.1.1.11&quot;,2)])</div></pre></td></tr></table></figure>
+<h3 id="SQLAlchemy"><a href="#SQLAlchemy" class="headerlink" title="SQLAlchemy"></a>SQLAlchemy</h3><p>SQLAlchemy是Python编程语言下的一款ORM框架，该框架建立在数据库API之上，使用关系对象映射进行数据库操作，简言之便是：将对象转换成SQL，然后使用数据API执行SQL并获取执行结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 install SQLAlchemy</div></pre></td></tr></table></figure></p>
+<p>SQLAlchemy本身无法操作数据库，其必须以来pymsql等第三方插件，Dialect用于和数据API进行交流，根据配置文件的不同调用不同的数据库API，从而实现对数据库的操作，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">MySQL-Python</div><div class="line">    mysql+mysqldb://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;[:&lt;port&gt;]/&lt;dbname&gt;</div><div class="line">   </div><div class="line">pymysql</div><div class="line">    mysql+pymysql://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;/&lt;dbname&gt;[?&lt;options&gt;]</div><div class="line">   </div><div class="line">MySQL-Connector</div><div class="line">    mysql+mysqlconnector://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;[:&lt;port&gt;]/&lt;dbname&gt;</div><div class="line">   </div><div class="line">cx_Oracle</div><div class="line">    oracle+cx_oracle://user:pass@host:port/dbname[?key=value&amp;key=value...]</div><div class="line">   </div><div class="line">更多详见：http://docs.sqlalchemy.org/en/latest/dialects/index.html</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjchkb5sq002aaejxwrn6xhdn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjchkxi890010csjxbamb86mk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -161,7 +165,62 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjchkb5st002eaejx6ycygoqo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjchkxiac002ecsjxsbzrqy64" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-django-02-基本配置示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-02-基本配置示例/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-02-基本配置示例/">web-Django-02-基本配置示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-django安装"><a href="#1-django安装" class="headerlink" title="1 django安装"></a>1 django安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install django pymysql</div></pre></td></tr></table></figure>
+<h3 id="2-新建django-project"><a href="#2-新建django-project" class="headerlink" title="2 新建django project"></a>2 新建django project</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">django-admin.py startproject mysite  或用pycharm新建一个项目</div></pre></td></tr></table></figure>
+<h3 id="3-该项目下创建一个应用"><a href="#3-该项目下创建一个应用" class="headerlink" title="3 该项目下创建一个应用"></a>3 该项目下创建一个应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd mysite &amp;&amp; python manage.py startapp  app01</div></pre></td></tr></table></figure>
+<h3 id="4-配置Django"><a href="#4-配置Django" class="headerlink" title="4 配置Django"></a>4 配置Django</h3><p>settings.py文件确保有下面代码，用于在static目录放置静态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">STATIC_URL = &apos;/static/&apos;</div><div class="line">STATICFILES_DIRS= (</div><div class="line">    os.path.join(BASE_DIR, &apos;static&apos;),</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>确保INSTALLED_APPS = []有app01,应用</p>
+<h3 id="5-Django-mysql配置"><a href="#5-Django-mysql配置" class="headerlink" title="5 Django mysql配置"></a>5 Django mysql配置</h3><p>settings.py文件确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">    &apos;default&apos;: &#123;</div><div class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">        &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">        &apos;USER&apos;: &apos;root&apos;,</div><div class="line">        &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">        &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">        &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>app01下 <strong>init</strong>.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div></pre></td></tr></table></figure></p>
+<p>对于初学者建议配置此项，用于打印orm翻译后的sql语后，便于对照学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">LOGGING = &#123;</div><div class="line">    &apos;version&apos;: 1,</div><div class="line">    &apos;disable_existing_loggers&apos;: False,</div><div class="line">    &apos;handlers&apos;: &#123;</div><div class="line">        &apos;console&apos;:&#123;</div><div class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</div><div class="line">            &apos;class&apos;:&apos;logging.StreamHandler&apos;,</div><div class="line">        &#125;,</div><div class="line">    &#125;,</div><div class="line">    &apos;loggers&apos;: &#123;</div><div class="line">        &apos;django.db.backends&apos;: &#123;</div><div class="line">            &apos;handlers&apos;: [&apos;console&apos;],</div><div class="line">            &apos;propagate&apos;: True,</div><div class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</div><div class="line">        &#125;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="6-django生成数据"><a href="#6-django生成数据" class="headerlink" title="6 django生成数据"></a>6 django生成数据</h3><p>models.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username = models.CharField(max_length=32)</div><div class="line">    password = models.CharField(max_length=32)</div><div class="line">    email = models.CharField(max_length=32)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations</div><div class="line">python manage.py migrate</div></pre></td></tr></table></figure>
+<h3 id="7-urls-py定义"><a href="#7-urls-py定义" class="headerlink" title="7  urls.py定义"></a>7  urls.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from app01 import views</div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</div><div class="line">    url(r&apos;^users/$&apos;, views.users),</div><div class="line">    # url(r&apos;^create_data/&apos;, views.create_data),</div><div class="line">]</div></pre></td></tr></table></figure>
+<h3 id="8-views-py定义"><a href="#8-views-py定义" class="headerlink" title="8 views.py定义"></a>8 views.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render,HttpResponse, redirect</div><div class="line">from app01 import models</div><div class="line"></div><div class="line">def create_data(request):</div><div class="line">    for i in range(1,104):</div><div class="line">        models.UserInfo.objects.create(</div><div class="line">            username = &quot;root%s&quot; %i,</div><div class="line">            password = &quot;123&quot;,</div><div class="line">            email = &quot;root%s@qq.com&quot; %i,</div><div class="line">    )</div><div class="line">    return HttpResponse(&quot;data generate...&quot;)</div><div class="line"></div><div class="line">def users(request):</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;user_list &apos;:user_list &#125;)</div></pre></td></tr></table></figure>
+<h3 id="9-templates-users-html定义"><a href="#9-templates-users-html定义" class="headerlink" title="9 templates/users.html定义"></a>9 templates/users.html定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html lang=&quot;en&quot;&gt;</div><div class="line">&lt;head&gt;</div><div class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</div><div class="line">    &lt;title&gt;Title&lt;/title&gt;</div><div class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/static/bootstrap-3.3.7-dist/css/bootstrap.css&quot;&gt;</div><div class="line"></div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">    &lt;div style=&quot;width: 700px; margin: 10px     auto&quot;&gt;</div><div class="line">    &lt;h1&gt;用户列表&lt;/h1&gt;</div><div class="line">    &lt;table class=&quot;table table-hover table-bordered&quot;&gt;</div><div class="line">        &lt;thead&gt;</div><div class="line">            &lt;tr&gt;</div><div class="line">                &lt;th&gt; 用户名&lt;/th&gt;</div><div class="line">                &lt;th&gt; 密码&lt;/th&gt;</div><div class="line">                &lt;th&gt;邮箱&lt;/th&gt;</div><div class="line">            &lt;/tr&gt;</div><div class="line">        &lt;/thead&gt;</div><div class="line">    </div><div class="line">        &lt;tbody&gt;</div><div class="line">            &#123;% for user in page_obj.object_list  %&#125;</div><div class="line">                &lt;tr&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.username &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.password &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.email &#125;&#125;&lt;/td&gt;</div><div class="line">                &lt;/tr&gt;</div><div class="line">            &#123;% endfor %&#125;</div><div class="line">    </div><div class="line">        &lt;/tbody&gt;</div><div class="line">    &lt;/table&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
+<h3 id="10-注意bootstrap应用"><a href="#10-注意bootstrap应用" class="headerlink" title="10 注意bootstrap应用"></a>10 注意bootstrap应用</h3><p><a href="http://v3.bootcss.com/getting-started/#download" target="_blank" rel="external">bootstrap下载链接</a></p>
+<h3 id="11-启动项目"><a href="#11-启动项目" class="headerlink" title="11 启动项目"></a>11 启动项目</h3><p>运行项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py runserver 127.0.0.1:8000</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjchkxia7002acsjxjxjf1yl7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -213,7 +272,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjchkb5td002yaejxsy51ugi1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjchkxib50030csjx714e1hgb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -257,7 +316,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjchkb5s6001uaejxjtm2kh52" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjchkxi9k001ucsjx3e5d2zyi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -304,7 +363,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjchkb5s0001qaejx5pphxkhe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjchkxi9f001qcsjxkplasis0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -348,7 +407,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjchkb5s2001saejxom3wdxfa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjchkxi9h001scsjxdvarz651" class="article-share-link">Share</a>
       
       
     </footer>
@@ -430,7 +489,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjchkb5sp0028aejxncx1rvmh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjchkxia50028csjx174fjnme" class="article-share-link">Share</a>
       
       
     </footer>
@@ -487,7 +546,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjchkb5rv001oaejxn2pcknyv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjchkxi9b001ocsjxyedzqo22" class="article-share-link">Share</a>
       
       
     </footer>
@@ -556,55 +615,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjchkb5rq001kaejxkw60bx19" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-07-01-面象对象编程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/01/python-07-01-面象对象编程/" class="article-date">
-  <time datetime="2017-03-01T00:28:28.000Z" itemprop="datePublished">2017-03-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/01/python-07-01-面象对象编程/">python-07-01-面象对象编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录<br>*</li>
-</ul>
-<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><p>定义： 面向对象编程(<code>oop</code>=object-oriented programming):  相对于面对过程编程，它只是一种编程范示。</p>
-<p>状态和转换这种状态的操作: 状态其实就是数据，转换这种状态的操作其实就是方法</p>
-<p>类：将同一种具体的共同特性抽象出来<br>数据：如变量<br>方法：函数：操作变量引用的数据的代码<br>方法是类的组成部份，属性也是在类中定义的, 但数据是在类实例化时赋值的.</p>
-<p>对象是类的实例，对象的某个方法的调用理解为对其发消息，或接口调用<br>同一个类的所有对象都能接收相同的消息，也就是同种方法<br>依赖  一个类中的方法操作另一个类的对象<br>聚合 类A的对象包含类B的对象<br>继承：描述特殊或具体与一般性的关系<br>面向对象的模型机制有3原则：封装，继承，多态</p>
-<p>类或类成员有数据和方法<br>一个类的行为和接口是通过类的方法来定义的<br>对象是类的实例<br>自定义类—实例化—–对象–对象间的操作—消息传递<br>这里消息就是调用请求</p>
-<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjchkb5rs001maejxjir3iiwq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjchkxi97001kcsjxsgdsz8xg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -659,6 +670,10 @@
           </li>
         
           <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
             <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
           </li>
         
@@ -668,10 +683,6 @@
         
           <li>
             <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
           </li>
         
       </ul>

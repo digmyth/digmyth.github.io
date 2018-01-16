@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/16/hello-world/" class="article-date">
-  <time datetime="2018-01-16T11:35:43.806Z" itemprop="datePublished">2018-01-16</time>
+  <time datetime="2018-01-16T11:53:06.420Z" itemprop="datePublished">2018-01-16</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,67 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/16/hello-world/" data-id="cjchkb5q7000laejxhcx73m20" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/16/hello-world/" data-id="cjchkxi7p000lcsjx8o4x76ig" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-django-24-Django中间件" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/26/web-django-24-Django中间件/" class="article-date">
+  <time datetime="2017-12-26T12:26:37.000Z" itemprop="datePublished">2017-12-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>官方解释</li>
+<li>Django默认</li>
+<li>定义中间件</li>
+<li>示例</li>
+<li>总结</li>
+</ul>
+<p>Django中间件学习</p>
+<h2 id="官方解释"><a href="#官方解释" class="headerlink" title="官方解释"></a>官方解释</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">This document explains all middleware components that come with Django.</div><div class="line">For information on how to use them and how to write your own middleware, see the middleware usage guide.</div><div class="line">Middleware is a framework of hooks into Django’s request/response processing.</div><div class="line">It’s a light, low-level “plugin” system for globally altering Django’s input or output.</div></pre></td></tr></table></figure>
+<p> Django 中间件是一个钩进request/response处理过程的框架，轻量且较为底层的插件系统，全局改变Django输入输出。</p>
+<h2 id="Django默认"><a href="#Django默认" class="headerlink" title="Django默认"></a>Django默认</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Django默认中间件</div><div class="line">MIDDLEWARE = [</div><div class="line">    &apos;django.middleware.security.SecurityMiddleware&apos;,</div><div class="line">    &apos;django.contrib.sessions.middleware.SessionMiddleware&apos;,</div><div class="line">    &apos;django.middleware.common.CommonMiddleware&apos;,</div><div class="line">    &apos;django.middleware.csrf.CsrfViewMiddleware&apos;,</div><div class="line">    &apos;django.contrib.auth.middleware.AuthenticationMiddleware&apos;,</div><div class="line">    &apos;django.contrib.messages.middleware.MessageMiddleware&apos;,</div><div class="line">    &apos;django.middleware.clickjacking.XFrameOptionsMiddleware&apos;,</div><div class="line">]</div></pre></td></tr></table></figure>
+<h2 id="定义中间件"><a href="#定义中间件" class="headerlink" title="定义中间件"></a>定义中间件</h2><p>在Django中就表现为一个类.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">m1.process_exception(self, request, exception):</div><div class="line">    print(&quot;m1.process_exception1&quot;)</div><div class="line"></div><div class="line">m1.process_request</div><div class="line">m2.process_request</div><div class="line">m1.process_view</div><div class="line">m2.process_view</div><div class="line">views.py</div><div class="line">m2.process_exception</div><div class="line">m1.process_exception</div><div class="line">m2.process_response</div><div class="line">m1.process_response</div></pre></td></tr></table></figure></p>
+<p>中间件流<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">process_request  process_view process_exception process_response</div><div class="line">process_request  process_view process_exception process_response</div><div class="line">process_request  process_view process_exception process_response</div><div class="line">process_request  process_view process_exception process_response</div></pre></td></tr></table></figure></p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">...</div></pre></td></tr></table></figure>
+<p>总结：<br>基于Django中间件我们能实现一些功能，这些处理是在请求到来之前或views视图函数处理过后。</p>
+<ul>
+<li>process_request可以有返回值，也可以没有返回值。</li>
+<li>process_response必须有返回值。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjchkxib4002ycsjx0xrw3kh8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -166,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjchkb5sy002kaejxf864kzf3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjchkxiak002kcsjxp4w8hkil" class="article-share-link">Share</a>
       
       
     </footer>
@@ -215,7 +275,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjchkb5ta002waejx295fu7ij" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjchkxib1002wcsjxnhcqjn7k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,7 +333,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjchkb5t6002saejx5i2vga1l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjchkxiaw002scsjx69uk7rn3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -337,7 +397,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjchkb5t4002qaejxrmhpg8fr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjchkxiat002qcsjx4inbp05s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -390,7 +450,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjchkb5q4000iaejxjw4d4do0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjchkxi7l000icsjx1dagiy72" class="article-share-link">Share</a>
       
       
     </footer>
@@ -459,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjchkb5qa000oaejxug9i1l9e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjchkxi7s000ocsjxxli4p75c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -551,7 +611,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjchkb5qp000yaejxzpbklpik" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjchkxi86000ycsjxx6brgv66" class="article-share-link">Share</a>
       
       
     </footer>
@@ -601,74 +661,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjchkb5t8002uaejxk966j315" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-mysql-Galera" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/08/mysql-Galera/" class="article-date">
-  <time datetime="2017-11-08T01:41:54.000Z" itemprop="datePublished">2017-11-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>wsrep简介</li>
-<li>Galera集群搭建</li>
-</ul>
-<h2 id="wsrep简介"><a href="#wsrep简介" class="headerlink" title="wsrep简介"></a>wsrep简介</h2><p><code>wsrep</code>是<code>writeset replication</code>的简称，是一种API，在底层调用各库实现数据库同步写.通过wsrep协议在全局实现复制,任何一节点都可读写.</p>
-<p>基于wsrep协议提供的一种底层复制机制，实现了<code>Galera cluster</code>数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，才能借住于wsrep协议实现复制机制.</p>
-<p>多个节点之上有了信息层，上层应用完成高可用，研发时调用信息层所提供的api去开发，并基于这个api去完成集群事务决策，不然就要自行加入中间层称资源管理器crm，如pacemaker</p>
-<p>galera cluster不是专为数据库提供的，只是一个工作在较为底层能够为你的服务提供数据复制功能的底层组件.</p>
-<p>mysql只有在研发时调用了galera cluster api写的mysql才能利用galera cluster完成复制,它的复制不再是让其它节点通过读取主节点二进制日志文件在本地重放，而是你指明了复制哪个数据库文件，由galera cluster自己在底层完成同步，mysql本身不感知.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">percona-cluster 版本支持galera cluster</div><div class="line">MariaDB-cluster 版本支持galera cluster</div></pre></td></tr></table></figure>
-<p>复制的问题和解决方案:<br>(1) 数据损坏或丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">语句或行记录二进制日志，从而在从服务器上重放，重放机制也可能主从不一致的情况硬件故障、软件bug也会有数据损坏或丢失</div><div class="line">Master: MHA + semi replication(至少有一个从节点接收到了提交的binlog事件才返回成功，也是半同步复制)</div><div class="line">如果主节点数据损坏或丢失，就必须手动在从节点通过gtid来判断出己经提交的所有应用或事务，然后合并出一个较新的从节点提升为主节点</div><div class="line">Slave: 重新复制数据即可</div></pre></td></tr></table></figure></p>
-<p>(2) 运维部署注意事项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">关键业务监控</div><div class="line">重要数据要备份和冗余</div><div class="line">不能混合使用存储引警</div><div class="line">MyISM: 不支持事务</div><div class="line">InnoDB: 支持事务</div></pre></td></tr></table></figure></p>
-<p>(3) 设置了不唯一的server ID<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">不唯一，整个复制集群数据产生错乱，每一个服务节点都不会在本地重放由同一个server ID 所产生的事件</div><div class="line">会导致重新复制数据</div></pre></td></tr></table></figure></p>
-<p>(4) 复制延迟<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">需要额外监控工具的辅助</div><div class="line">自写一些脚本监控</div><div class="line">从节点有一个落后于主节点的时间判定，这个时间不为0时，尝试重启从节点服务</div><div class="line">对于从服务器延迟，主节点的事务是可以并发的，往二进制写入是单线程的，有先有后，从服务器重放也是单线程的，从服务器延迟落后也是必然的</div><div class="line">mysql5.6/mariadb 10以后引入了多线程复制机制，三节点集群可设置wsrep_slave_threads = 4</div></pre></td></tr></table></figure></p>
-<p>数据库服务衡量指标<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">qps : query per second 查询量</div><div class="line">tps: transaction per second 事务量</div></pre></td></tr></table></figure></p>
-<h2 id="Galera集群搭建"><a href="#Galera集群搭建" class="headerlink" title="Galera集群搭建"></a>Galera集群搭建</h2><p>最新文档请参考<a href="https://mariadb.com/kb/en/library/getting-started-with-mariadb-galera-cluster/#bootstrapping-a-new-cluster" target="_blank" rel="external">Galera 集群官方链接</a></p>
-<h3 id="一-准备工作"><a href="#一-准备工作" class="headerlink" title="一 准备工作"></a>一 准备工作</h3><p>1  关闭防火墙<br>2  关闭selinux<br>3  同步主机时间<br>4  设置hosts文件</p>
-<h3 id="二-MariaDB源"><a href="#二-MariaDB源" class="headerlink" title="二  MariaDB源"></a>二  MariaDB源</h3><p>在MariaDB 10.1以前需要卸载<code>mariadb</code>包，单独准备<code>MariaDB-Galera-server源</code>来安装MariaDB-Galera-server包<br>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">yum list all | grep -i galera</div><div class="line">yum remove mariadb*</div><div class="line">yum -y install MariaDB-Galera-server.rpm galera-25.3</div><div class="line">rpm -ql MariaDB-Galera-server</div><div class="line">rpm -qa | grep MariaDB</div><div class="line">	 MariaDB-common-10.0.32-1.el7.centos.x86_64</div><div class="line">	 MariaDB-shared-10.0.32-1.el7.centos.x86_64</div><div class="line">	 MariaDB-Galera-server-10.0.32-1.el7.centos.x86_64</div><div class="line">	 MariaDB-client-10.0.32-1.el7.centos.x86_64</div><div class="line">vim /etc/my.cnf.d/server.cnf</div><div class="line">[galera]</div><div class="line">...</div></pre></td></tr></table></figure></p>
-<p>而在MariaDB 10.1以后MariaDB-server己经自带Galera集群了，不必单独安装<code>MariaDB-Galera-server</code>包，只需准备如下源</p>
-<p>编辑/etc/yum.repos.d/Mariadb.repo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># MariaDB 10.2 CentOS repository list - created 2017-11-07 12:07 UTC</div><div class="line"># http://downloads.mariadb.org/mariadb/repositories/</div><div class="line">[mariadb]</div><div class="line">name = MariaDB</div><div class="line">baseurl = http://yum.mariadb.org/10.2/centos7-amd64</div><div class="line">gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</div><div class="line">gpgcheck=1</div></pre></td></tr></table></figure></p>
-<h3 id="三-软件安装"><a href="#三-软件安装" class="headerlink" title="三 软件安装"></a>三 软件安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install MariaDB-server MariaDB-client</div></pre></td></tr></table></figure>
-<h3 id="四-修改配置"><a href="#四-修改配置" class="headerlink" title="四  修改配置"></a>四  修改配置</h3><p>编辑/etc/my.cnf.d/server.cnf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[galera]</div><div class="line">#Mandatory settings</div><div class="line">wsrep_provider=/usr/lib64/galera/libgalera_smm.so  # 可查rpm -ql galera | grep -i smm.so</div><div class="line">wsrep_cluster_address = &apos;gcomm://172.16.100.67,172.16.100.68,172.16.100.69&apos;</div><div class="line">wsrep_cluster_name = &apos;cluster&apos;</div><div class="line">wsrep_node_name = &apos;node1&apos;</div><div class="line">wsrep_node_address= &apos;172.16.100.67&apos;</div><div class="line">binlog_format = row</div><div class="line">default_storage_engine = InnoDB</div><div class="line">innodb_autoinc_lock_mode = 2</div><div class="line">bind-address = 0.0.0.0</div><div class="line">wsrep_on=ON</div></pre></td></tr></table></figure></p>
-<h3 id="五-启动服务"><a href="#五-启动服务" class="headerlink" title="五 启动服务"></a>五 启动服务</h3><p>任意一个节点启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/etc/init.d/mysql start --wsrep-new-cluster</div><div class="line">或service mysql bootstrap</div><div class="line">或systemctl  start mariadb --wsrep-new-cluster</div></pre></td></tr></table></figure></p>
-<p>然后在其它节点正常启动即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl  start mariadb</div><div class="line">MariaDB [(none)]&gt; show status like &apos;%wsrep%&apos;;</div></pre></td></tr></table></figure></p>
-<p>简单验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">create database mydb;</div><div class="line">use mydb</div><div class="line">create table tb1 (id int, name char(10));</div><div class="line">desc tb1;</div><div class="line">create table tb2 (id int unsigend auto_increment not null primary key, name char(30));</div><div class="line">insert into tb2(name) values (&apos;hi&apos;, &apos;hello&apos;)</div><div class="line">select * from tb2;</div></pre></td></tr></table></figure></p>
-<p>有关认证及集群检测自行研究<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">wsrep_sst_method = xtrabackup-v2</div><div class="line">wsrep_sst_auth = root:NtEXLlZGF9KeXYUE79e7H8N5C9Vdy0EkHlBfFPtr</div><div class="line">wsrep_slave_threads = 4</div><div class="line">wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh   # 注意定义这个脚本</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjchkb5ql000vaejxlj8dza7n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjchkxiaz002ucsjx4m8oc091" class="article-share-link">Share</a>
       
       
     </footer>
@@ -723,6 +716,10 @@
           </li>
         
           <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
             <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
           </li>
         
@@ -732,10 +729,6 @@
         
           <li>
             <a href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
-          </li>
-        
-          <li>
-            <a href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
           </li>
         
       </ul>
