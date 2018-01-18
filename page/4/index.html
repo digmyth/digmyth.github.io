@@ -61,6 +61,79 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-cephfs-Ganesha" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/05/cephfs-Ganesha/" class="article-date">
+  <time datetime="2017-06-05T01:41:54.000Z" itemprop="datePublished">2017-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/05/cephfs-Ganesha/">cephfs-Ganesha</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="nfs-ganesha简介"><a href="#nfs-ganesha简介" class="headerlink" title="nfs-ganesha简介"></a>nfs-ganesha简介</h2><p>因工作需要调研了cephfs 导为nfs,目前有两种方法：</p>
+<ul>
+<li>方法一：内核mount挂载或 ceph-fuse 挂载至NFS server，如/data再正常搭建NFS-server即可。</li>
+<li>方法二 :   借用nfs-ganesha协议转换间接存储在cephfs集群中。</li>
+</ul>
+<p>nfs-ganesha不仅可以导 cephfs,也可以导RGW.<br>ceph RGW理解:   相当于协议转换层，把符合S3和swift协议的 restFul API 请求转换为rados存储在ceph对象存储中.</p>
+<p>换一种说法： Ceph 导出为 NFS，一种通过 RGW，一种通过 CephFS，通过 FSAL 模块 连接到 RGW 或者 CephFS</p>
+<ul>
+<li>FSAL_RGW 调用 librgw2 将 NFS 协议转义为 S3 协议再通过 RGW 存入到 Ceph 中.</li>
+<li>FSAL_CEPH 调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</li>
+</ul>
+<p>FSAL： File System Abstraction Layer  文件系统抽像层</p>
+<p>题外话，openstack项目manila后端存储驱动，其中一种就是Ganesha Driver<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">## manila 4驱动</div><div class="line">Default Driver: 使用 RBD 作为 Manila Service VM 的后端，在 VM 上启动 NFS 实例提供服务</div><div class="line">Ganesha Driver: 使用 Ganesha 将 CephFS 重新 Reexport 出去</div><div class="line">Native CephFS Driver: 在 Guest VM 上直接使用原生 CephFS Module 访问</div><div class="line">VirtFS Driver: 将 CephFS 挂载在 Host 端，VM 通过 VirtFS 访问</div></pre></td></tr></table></figure></p>
+<h2 id="nfs-ganesha安装"><a href="#nfs-ganesha安装" class="headerlink" title="nfs-ganesha安装"></a>nfs-ganesha安装</h2><p>在CentOS7系统中有nfs-ganesha rpm软件包，但没有ceph相关模块，所以我这里是编译安装，把FSAL_RGW 模块/FSAL_CEPH 模块编译进去。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone -b V2.4-stable https://github.com/nfs-ganesha/nfs-ganesha.git --recursive</div></pre></td></tr></table></figure>
+<p>由于ceph-jewel版本才有libcephfs1-devel软件包，所以这里ganesha客户端 ceph用 jewel版本，服务器ceph版本Luminous<br>ceph-jewel源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@ ganesha]# cat  /etc/yum.repos.d/ceph.repo </div><div class="line">[ceph]</div><div class="line">name=ceph</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/x86_64/</div><div class="line">gpgcheck=0</div><div class="line">[ceph-noarch]</div><div class="line">name=cephnoarch</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/noarch/</div><div class="line">gpgcheck=0</div></pre></td></tr></table></figure></p>
+<p>软件安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</div><div class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</div><div class="line">yum install librgw2-devel -y </div><div class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</div><div class="line">yum install libcephfs1-devel -y</div></pre></td></tr></table></figure></p>
+<ul>
+<li>如果需要生成 FSAL_RGW 模块，则在编译选项中添加： -DUSE_FSAL_RGW=ON</li>
+<li>如果需要生成 FSAL_CEPH 模块，则在编译选项中添加： -DUSE_FSAL_CEPH=ON</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir /opt/build/</div><div class="line">cd /opt/build/</div><div class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure>
+<p>在cmake输出中确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">-- USE_FSAL_CEPH = ON</div><div class="line">-- USE_FSAL_CEPH_MKNOD = OFF</div><div class="line">-- USE_FSAL_CEPH_SETLK = OFF</div><div class="line">-- USE_FSAL_CEPH_LL_LOOKUP_ROOT = ON</div><div class="line">-- USE_FSAL_RGW = ON</div></pre></td></tr></table></figure></p>
+<p>确保： – USE_FSAL_CEPH 为 ON,以及 – USE_FSAL_RGW 为 ON。</p>
+<p>如果过程中出错，请删除/tmp/build/* 及/tmp/build/CMakeCache.txt重新编译</p>
+<p>make install成功输出中有:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/rgw.conf</div><div class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/ceph.conf</div></pre></td></tr></table></figure></p>
+<p>这两个文件就是配置将 RGW 和 CephFS 配置为 nfs-ganesha的配置模板。</p>
+<h2 id="nfs-ganesha-配置"><a href="#nfs-ganesha-配置" class="headerlink" title="nfs-ganesha 配置"></a>nfs-ganesha 配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">cat /etc/ganesha/ganesha.conf</div><div class="line">EXPORT</div><div class="line">&#123;</div><div class="line">        Export_ID=1;</div><div class="line">        Path = /;</div><div class="line">        Pseudo = /cephfs;</div><div class="line">        Access_Type = RW;</div><div class="line">        NFS_Protocols = 4;</div><div class="line">        Transport_Protocols = TCP;</div><div class="line">        Squash = No_Root_Squash;</div><div class="line">        FSAL &#123;</div><div class="line">                Name = CEPH;</div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line">EXPORT</div><div class="line">&#123;</div><div class="line">        Export_ID=2;</div><div class="line">        Path = /;</div><div class="line">        Pseudo = /rgw;</div><div class="line">        Access_Type = RW;</div><div class="line">        Squash = No_root_squash;</div><div class="line">        NFS_Protocols = 4;</div><div class="line">        Transport_Protocols = TCP;</div><div class="line">        FSAL &#123;</div><div class="line">                Name = RGW;</div><div class="line">                User_Id = &quot;admin&quot;;</div><div class="line">                Access_Key_Id =&quot;RDS4VW60OA48ZW1HSU61&quot;;</div><div class="line">                Secret_Access_Key = &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;;</div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line">RGW &#123;</div><div class="line">    ceph_conf = &quot;/etc/ceph/ceph.conf&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  其中<code>Access_Key_Id</code> <code>Secret_Access_Key</code>部份在ceph-rgw中读取<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">  (ceph-mon)[root@pike-vm /]# radosgw-admin user info --uid=admin</div><div class="line">&#123;</div><div class="line">    &quot;user_id&quot;: &quot;admin&quot;,</div><div class="line">    &quot;display_name&quot;: &quot;admin&quot;,</div><div class="line">    &quot;email&quot;: &quot;&quot;,</div><div class="line">    &quot;suspended&quot;: 0,</div><div class="line">    &quot;max_buckets&quot;: 1000,</div><div class="line">    &quot;auid&quot;: 0,</div><div class="line">    &quot;subusers&quot;: [],</div><div class="line">    &quot;keys&quot;: [</div><div class="line">        &#123;</div><div class="line">            &quot;user&quot;: &quot;admin&quot;,</div><div class="line">            &quot;access_key&quot;: &quot;RDS4VW60OA48ZW1HSU61&quot;,</div><div class="line">            &quot;secret_key&quot;: &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<h2 id="启动nfs-ganesha"><a href="#启动nfs-ganesha" class="headerlink" title="启动nfs-ganesha"></a>启动nfs-ganesha</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ganesha.nfsd -L /var/log/ganesha.log</div></pre></td></tr></table></figure>
+<h2 id="挂载使用"><a href="#挂载使用" class="headerlink" title="挂载使用"></a>挂载使用</h2><p>在客户端进行挂载使用：<br>1  安装<code>ceph-common</code> <code>ceph-fuse</code> <code>libcephfs1-devel</code> <code>librgw2-devel</code><br>2 拷贝ceph.conf配置文件及keyring文件至/etc/ceph<br>3 挂载：<code>mount -t nfs4 {$ganesha-server-ip}:/  /mnt</code><br>如果出现I/O error,请ceph-fuse  -m 172.18.23.17:6789 /mnt 挂载一遍，就是这么神奇，不要问我为什么。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@-3 mnt]# ls</div><div class="line">ls: reading directory .: Remote I/O error</div></pre></td></tr></table></figure></p>
+<p>成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@-3 cephfs]# ll /mnt/</div><div class="line">total 1</div><div class="line">drwxrwxrwx 1 root root 33 Nov 14 08:31 cephfs</div><div class="line">[root@-3 cephfs]# echo &quot;99cloud new data...&quot; &gt; cephfs.txt </div><div class="line">[root@-3 cephfs]# cat cephfs.txt </div><div class="line">cephfs data...</div></pre></td></tr></table></figure></p>
+<p>在cephfs集群中我们可以看到客户端写入的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@-3 ~]# ceph-fuse  -m 172.18.23.17:6789 /data/</div><div class="line">ceph-fuse[4579]: starting ceph client</div><div class="line">ceph-fuse[4579]: starting fuse</div><div class="line">[root@-3 ~]# cd /data/</div><div class="line">[root@-3 data]# ls</div><div class="line">cephfs.txt</div><div class="line">[root@3 data]# cat cephfs.txt </div><div class="line">cephfs data...</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjcjxycyg000851jxhqlnyx4t" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
@@ -93,7 +166,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjcjxl9nc002c36jx3k22w4al" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjcjxyd3m002f51jxsy6ko0it" class="article-share-link">Share</a>
       
       
     </footer>
@@ -141,7 +214,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjcjxl9m0001w36jxcvbodqzz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjcjxyd2x001w51jxwtt3b0tt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -200,62 +273,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjcjxl9js000w36jxkzqvuipu" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
-</ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</div></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</div><div class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</div></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">from django.urls import reverse</div><div class="line">def login(request):</div><div class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</div><div class="line">    return redirect(url)</div></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</div></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</div></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjcjxl9nf002e36jxcuu2qd4y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjcjxyd1k001051jxa29wcq00" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +328,62 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjcjxl9n6002a36jxq8vbral6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjcjxyd3j002d51jxg10buosy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>别名设置</li>
+<li>namespace设置</li>
+<li>reverse</li>
+<li>include本质</li>
+</ul>
+<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</div></pre></td></tr></table></figure></p>
+<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</div><div class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</div></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">from django.urls import reverse</div><div class="line">def login(request):</div><div class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</div><div class="line">    return redirect(url)</div></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</div></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</div></pre></td></tr></table></figure></p>
+<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjcjxyd3p002h51jx8gtwpl2y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -362,7 +435,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjcjxl9ox003236jxckduojqy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjcjxyd4m003551jx8imeyizf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -406,7 +479,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjcjxl9lq001s36jx2r3d3ndh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjcjxyd2v001u51jxde4vi8rf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -453,7 +526,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjcjxl9ln001q36jx375vnwbr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-02-异常/" data-id="cjcjxyd2o001q51jxg67fhsvg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -497,89 +570,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjcjxl9lw001u36jxa48i9g9z" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-01-入门" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/20/web-django-01-入门/" class="article-date">
-  <time datetime="2017-03-20T12:26:37.000Z" itemprop="datePublished">2017-03-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/20/web-django-01-入门/">web-Django-01-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>什么是WSGI</li>
-<li>什么是mvc/mtv模型</li>
-<li>orm如何工作</li>
-<li>Django安装</li>
-</ul>
-<h1 id="一、什么是WSGI"><a href="#一、什么是WSGI" class="headerlink" title="一、什么是WSGI"></a>一、什么是WSGI</h1><p>对浏览器而言，远端是服务器程序和应用程序，而服务器程序就是socket Server,用于接收用户请求，解析用户请求，响应用户请求，这部份工作永远不变的。<br>可变的是应用程序，那么服务器程序与应用程序解耦偶就有了必要。</p>
-<p>接收用户请求，解析用户请求，响应用户请求这些封装为WSGI接口简化开发。</p>
-<p>定义web app与web server之间接口解耦规则就是WSGI.</p>
-<p>Python标准库提供的独立wsgi服务器称为wsgiref</p>
-<h1 id="二、什么是mvc-mtv模型"><a href="#二、什么是mvc-mtv模型" class="headerlink" title="二、什么是mvc/mtv模型"></a>二、什么是mvc/mtv模型</h1><p>init.py: 告诉python它不是一个目录文件夹而是一个包</p>
-<p>mvc:  model(数据库交互) view(模板)  control (业务处理逻辑)</p>
-<p>mtv:  model（数据库交互）view(视图，业务逻辑处理)  templates(模板）</p>
-<p>注： templates模板可以放在项目下或各个app下</p>
-<h1 id="三、orm如何工作"><a href="#三、orm如何工作" class="headerlink" title="三、orm如何工作"></a>三、orm如何工作</h1><p>一个类对应一张表<br>一个类对象对应一行表记录<br>一个类属性对应记录字段值</p>
-<p>自动路由： 反射应用，自定义扩展</p>
-<h1 id="四、Django安装"><a href="#四、Django安装" class="headerlink" title="四、Django安装"></a>四、Django安装</h1><p>安装Django<br>pip3 install django  pika  pymysql</p>
-<p>查看安装<br>pip3 list</p>
-<p>创建一个Django项目<br>cd /opt<br>mkdir /opt/templates   # 用于整个项目存放模板文件<br>django-admin startproject Mysite  #创建一个项目</p>
-<p>生成目录结构如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">/opt/Mysite</div><div class="line">    - Mysite        # 还有一个与项目同名的文件夹/opt/Mysite/Mysite，对整个程序进行配置</div><div class="line">        - __init__.py</div><div class="line">        - settings.py  # 配置文件</div><div class="line">        - urls.py      # URL对应关系</div><div class="line">        - wsgi.py      # 遵循WSGI规范，一般使用 uwsgi + nginx</div><div class="line">    - manage.py        # /opt/Mysite/manage.py管理Django程序：如下</div><div class="line">              - python manage.py  runserver # 运行程序</div><div class="line">              - python manage.py startapp xx  # 创建app</div><div class="line">              # Django的orm框架</div><div class="line">              - python manage.py makemigrations  </div><div class="line">              - python manage.py migrate</div></pre></td></tr></table></figure></p>
-<p>创建一个应用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">cd /opt/Mysite</div><div class="line">python manage.py startapp app01</div><div class="line">生成/opt/Mysite/app01目录结构如下：</div><div class="line">/opt/Mysite/app01/__init__.py # 说明app01是一个包</div><div class="line">/opt/Mysite/app01/migrations  # django orm框架，修改表结构的操作记录（差异化）</div><div class="line">/opt/Mysite/app01/admin.py    # Django提供的后台管理程序</div><div class="line">/opt/Mysite/app01/apps.py     # 配置当前app</div><div class="line">/opt/Mysite/app01/models.py   # 数据库交互：orm-写指定的类，通过命令可以创建数据库结构</div><div class="line">/opt/Mysite/app01/views.py    # 视图函数，业务逻辑处理</div><div class="line">/opt/Mysite/app01/test.py     # 单元测试</div></pre></td></tr></table></figure></p>
-<p>初始练习：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Mysite/Mysite/urls.py (导入from blog import views及编写业务逻辑url(r&apos;^index&apos;,views.index)</div><div class="line">) ---&gt; 练习各种例子。。。</div></pre></td></tr></table></figure></p>
-<p>URLS别名用法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^/login$&apos;, views.login, name=&quot;LOGIN&quot;)</div><div class="line"></div><div class="line">那么前端templates中的html代码需要用别名方式，语法如下：</div><div class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt; 改为</div><div class="line">&lt;form action=&quot;&#123;% url &apos;LOGIN&apos; %&#125;&quot; mothod=&quot;post&quot;&gt;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">urls</div><div class="line">	url(正则表达式 视图函数，参数，别名）</div><div class="line"></div><div class="line">正则这里匹配到的或者说捕获到的数据都是字符串类型，</div><div class="line">post提交的数据</div><div class="line"></div><div class="line">get post都可以向server端发送数据，区别是提交数据的方式不同：格式如下</div><div class="line">get ?id=2&amp;page=3</div><div class="line">post 数据在body里</div><div class="line">	</div><div class="line"></div><div class="line">无命名分组   位置参数</div><div class="line"></div><div class="line">有命名分组   关键字参数--在函数定义时，只能用命名的key，这一点是要注意的</div><div class="line"></div><div class="line"></div><div class="line">获取登录首页是以GET方法提交              -----GET</div><div class="line">用户名，密码表单submit时是以POST方式提交 -----POST</div><div class="line"></div><div class="line">时间表达：</div><div class="line">1 时间戳</div><div class="line">2 字符串</div><div class="line">3 结构化时间</div></pre></td></tr></table></figure>
-<h1 id="五、Django生命周期"><a href="#五、Django生命周期" class="headerlink" title="五、Django生命周期"></a>五、Django生命周期</h1><p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150927926423.png" alt="Django生命周期"></p>
-<h2 id="5-1-路由系统URLS"><a href="#5-1-路由系统URLS" class="headerlink" title="5.1 路由系统URLS"></a>5.1 路由系统URLS</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1  /index/                     -&gt; def index(request)</div><div class="line">2  /detail-(\d+)/               -&gt; def detail(request, nid)</div><div class="line">  /detail-(?P&lt;nid&gt;\d+)/        -&gt; def detail(request,nid)</div><div class="line"></div><div class="line">3 </div><div class="line">    /index/          -&gt; def index(request)   name=n1</div><div class="line">    </div><div class="line">    使用别名生成URL：</div><div class="line">        模板语言：     &#123;% url  n1 %&#125;   -&gt; /index/</div><div class="line">        </div><div class="line">        视图函数：（需要导入reverse模块）    reverse(name=&quot;n1&quot;)  --&gt; /index/</div><div class="line"></div><div class="line"> 4  /web/   include(&quot;app01.urls&quot;)</div></pre></td></tr></table></figure>
-<h2 id="5-2-视图函数"><a href="#5-2-视图函数" class="headerlink" title="5.2 视图函数"></a>5.2 视图函数</h2><p>1 函数至少一个参数 request<br>2 request<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">request.method     # 请求方法</div><div class="line">request.GET        # 请求方法为GET的数据</div><div class="line">request.POST       # 请求方法为POST的数据</div><div class="line">    注：      如何获取request.post数据的呢，如果有请求头</div><div class="line">             （Content-Type:application/x-www-form-urlencoded; charset=UTF-8），</div><div class="line">              则从request.body里取出post数据</div><div class="line">request.body       #   请求时发送的所有数据</div><div class="line">request.FILES      #   请求时发送的文件数据</div></pre></td></tr></table></figure></p>
-<p>注意:<br>form表单提交方法只能是get或post<br>当提交文件时特别注明<code>enctype=&quot;multipart/form-data&quot;</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;&quot;  method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</div><div class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;&gt;</div><div class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;&gt;</div><div class="line">    &lt;input type=&quot;file&quot; name=&quot;filename&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<p>3 返回方式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">HttpResponse()</div><div class="line">render(request,)</div><div class="line">redirect()</div></pre></td></tr></table></figure></p>
-<h2 id="5-3-ORM操作"><a href="#5-3-ORM操作" class="headerlink" title="5.3 ORM操作"></a>5.3 ORM操作</h2><p>各数据库操作是一种外对sql api接口的封装</p>
-<ul>
-<li>第一层封装：数据库存储最底层是db驱动，对外开放SQL API用于操作数据库</li>
-<li>第二层封装：python3 中操作mysql数据库的库为pymysql,是对SQL API之上的一层封装</li>
-<li>第三层封装: orm操作是最高级封装，pymsql之上的一层封装</li>
-<li>最终：orm翻译成pymsql,pymysql再翻译成sql语句</li>
-</ul>
-<p>Django 数据库操作具体语法介绍<a href="http://www.digmyth.com/2017/05/20/web-django-17-sql/">请参考</a></p>
-<h2 id="5-4-模板引警"><a href="#5-4-模板引警" class="headerlink" title="5.4 模板引警"></a>5.4 模板引警</h2><p>Django对template中html的渲染有着一套语法,我有专门一篇博客讲解模板渲染语法<br><a href="http://www.digmyth.com/2017/06/20/web-django-17-1%E6%A8%A1%E6%9D%BF%E6%B8%B2%E6%9F%93/">渲染语法博客参考</a></p>
-<p>1 基本方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</div><div class="line">   x.html</div><div class="line">    &#123;&#123; k.2  &#125;&#125;</div><div class="line"></div><div class="line">   &#123;% for i in d %&#125;</div><div class="line">     &#123;&#123; i &#125;&#125;  --key</div><div class="line">   &#123;% endfor %&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">   &#123;% for k,v in d.items %&#125;</div><div class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</div><div class="line">   &#123;% endfor %&#125;</div></pre></td></tr></table></figure></p>
-<p>2  函数</p>
-<p>Django 提供的函数:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">simple_tag 可以有多个参数</div><div class="line">filter     只能有2个参数，并且可以做条件语句的条件</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjcjxl9n2002836jxw0csm4ty" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjcjxyd2q001s51jx0pfvrb9x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -602,7 +593,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
     </div>
   </div>
 
@@ -634,6 +625,10 @@
           </li>
         
           <li>
+            <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
+          </li>
+        
+          <li>
             <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
           </li>
         
@@ -643,10 +638,6 @@
         
           <li>
             <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/15/web-get_post_contentype知识/">03-GET/POST/ContentType知识</a>
           </li>
         
       </ul>
