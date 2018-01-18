@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>03-GET/POST/ContentType知识 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言
+requests发送get/post请求分析
+ContentType知识
+
+##GET/POST/ContentType知识
+一、 requests发送get/post请求分析分析知识点
+
+分析如何组装数据发送
+分析get/post请求组装数据方式的不同
+分析get/post方式不同，requests参数写法上的不同
+
+大家都知道请求头之间用\r\n分隔，请求头与请求体用\r\n\r\n分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="03-GET/POST/ContentType知识">
+<meta property="og:url" content="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="前言
+requests发送get/post请求分析
+ContentType知识
+
+##GET/POST/ContentType知识
+一、 requests发送get/post请求分析分析知识点
+
+分析如何组装数据发送
+分析get/post请求组装数据方式的不同
+分析get/post方式不同，requests参数写法上的不同
+
+大家都知道请求头之间用\r\n分隔，请求头与请求体用\r\n\r\n分">
+<meta property="og:updated_time" content="2018-01-18T03:21:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="03-GET/POST/ContentType知识">
+<meta name="twitter:description" content="前言
+requests发送get/post请求分析
+ContentType知识
+
+##GET/POST/ContentType知识
+一、 requests发送get/post请求分析分析知识点
+
+分析如何组装数据发送
+分析get/post请求组装数据方式的不同
+分析get/post方式不同，requests参数写法上的不同
+
+大家都知道请求头之间用\r\n分隔，请求头与请求体用\r\n\r\n分">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-web-get_post_contentype知识" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/15/web-get_post_contentype知识/" class="article-date">
+  <time datetime="2017-12-15T12:51:41.000Z" itemprop="datePublished">2017-12-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web爬虫开发/">Web爬虫开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      03-GET/POST/ContentType知识
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>前言</li>
+<li>requests发送get/post请求分析</li>
+<li>ContentType知识</li>
+</ul>
+<p>##GET/POST/ContentType知识</p>
+<h2 id="一、-requests发送get-post请求分析"><a href="#一、-requests发送get-post请求分析" class="headerlink" title="一、 requests发送get/post请求分析"></a>一、 requests发送get/post请求分析</h2><p>分析知识点</p>
+<ul>
+<li>分析如何组装数据发送</li>
+<li>分析get/post请求组装数据方式的不同</li>
+<li>分析get/post方式不同，requests参数写法上的不同</li>
+</ul>
+<p>大家都知道请求头之间用<code>\r\n</code>分隔，请求头与请求体用<code>\r\n\r\n</code>分隔。</p>
+<h4 id="GET请求头"><a href="#GET请求头" class="headerlink" title="GET请求头"></a>GET请求头</h4><p>get请求发送数据封装在请求头，形如<a href="http://www.baidu.com/?a=1&amp;b=2" target="_blank" rel="external">http://www.baidu.com/?a=1&amp;b=2</a></p>
+<p>get请求发送数据用<code>params</code>,params中的数据会组装在请求头上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">requests.get(url=&quot;http://www.baidu.com/&quot;,params=&#123;&apos;a&apos;:1,&apos;b&apos;:2&#125;)</div><div class="line">data=&quot;http GET /index?a=1&amp;b=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\n&quot;</div></pre></td></tr></table></figure></p>
+<h4 id="POST请求头"><a href="#POST请求头" class="headerlink" title="POST请求头"></a>POST请求头</h4><p>post请求发送数据可以像get一样<code>?a=1&amp;b=2</code>封装在请求头，但决大多数情况封装在请求体，形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">data=&quot;http POST /index?a=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\nname=wxq&amp;age=18&quot;</div></pre></td></tr></table></figure></p>
+<p>post时可以data传参，数据在请求体里，封装为<code>name=wxq&amp;age=18</code>,请求头<br>ContentType为application/x-www-form-urlencoded<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">requests.post(url=&quot;http://www.baidu.com/&quot;,params=&#123;&apos;a&apos;:1&#125;,data=&#123;&apos;name&apos;:&apos;wxq&apos;,&apos;age&apos;:18&#125;)</div><div class="line"># data=&quot;http POST /index?a=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\nname=wxq&amp;age=18&quot;</div></pre></td></tr></table></figure></p>
+<p>post时也可以json传参,数据在请求体里，封装为json.dumps({‘name’:’wxq’,’age’:18})后的字符串。请求头ContentType为application/json<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">requests.post(url=&quot;http://www.baidu.com/&quot;,params=&#123;&apos;a&apos;:1&#125;,json=&#123;&apos;name&apos;:&apos;wxq&apos;,&apos;age&apos;:18&#125;)</div><div class="line"># data=&quot;http POST /index?a=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\n&#123;&quot;name&quot;: &quot;wxq&quot;, &quot;age&quot;: 18&#125;&quot;</div></pre></td></tr></table></figure></p>
+<h4 id="服务器解析"><a href="#服务器解析" class="headerlink" title="服务器解析"></a>服务器解析</h4><p>当服务器接收到客户端发来的数据，所有的数据会放到<code>request.FILES</code>或<code>request.body</code>里，再跟据ContentType的不同放到相应变量里,<br>如request.POST里是<code>Content-Type:application/x-www-form-urlencoded; charset=UTF-8</code>,也就是data而非json格式发来的数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">request.method     # 请求方法</div><div class="line">request.GET        # 请求方法为GET的数据</div><div class="line">request.POST       # 请求方法为POST的数据</div><div class="line">    注：      如何获取request.post数据的呢，如果有请求头</div><div class="line">             （Content-Type:application/x-www-form-urlencoded; charset=UTF-8），</div><div class="line">              则从request.body里取出post数据</div><div class="line">request.body       #   请求时发送的所有数据</div><div class="line">request.FILES      #   请求时发送的文件数据</div></pre></td></tr></table></figure>
+<h2 id="二、ContentType"><a href="#二、ContentType" class="headerlink" title="二、ContentType"></a>二、ContentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
+<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
+<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
+<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
+<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
+<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjcjxl9oz003436jx2k6spfjk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/20/web-django-17-ModelForm/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          web-Django-17-ModelForm
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/12/01/web-django-23-Django序列化/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">web-Django-23-Django序列化</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/18/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/20/web-django-17-ModelForm/">web-Django-17-ModelForm</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/15/web-get_post_contentype知识/">03-GET/POST/ContentType知识</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

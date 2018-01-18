@@ -61,6 +61,66 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-cephfs-manila" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/05/cephfs-manila/" class="article-date">
+  <time datetime="2017-08-05T01:41:54.000Z" itemprop="datePublished">2017-08-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/05/cephfs-manila/">cephfs-ganesha-manila</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>openstack manila项目最近很活跃，ceph刚好发布luminous版,具说cephfs性能得到很大提升，那么manila 后端存储cephfs找到了着力点，得到在大力发展。这里对manila cephfs实验做下记录。<a href="https://docs.openstack.org/manila/pike/contributor/cephfs_driver.html#authorize-ceph-driver" target="_blank" rel="external">官网链接参考</a></p>
+<h2 id="驱动简介"><a href="#驱动简介" class="headerlink" title="驱动简介"></a>驱动简介</h2><p>manila cephfs驱动分为两种：<br>一种：  cephfs native share<br>相当于租户虚机直接连接cephfs集群，存在安全问题，生产环境中很难推行。</p>
+<p>1  <code>ceph-common</code>包安装在<code>manila-share</code>中<br>2  ceph-common/ceph-fuse 软件安装在租户虚机Guest里<br>3  ceph集群与manila-share网络打通<br>4  ceph集群与租户虚机网络打通</p>
+<p>二种： cephfs nfs share<br>官网说明<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">1 Pike or later versions of manila.</div><div class="line">2 Kraken or later versions of Ceph.</div><div class="line">3 2.5 or later versions of NFS-Ganesha.</div><div class="line">4 A Ceph cluster with a filesystem configured</div><div class="line">5 ceph-common package installed in the servers running the manila-share service.</div><div class="line">6 NFS client installed in the guest.</div><div class="line">7 Network connectivity between your Ceph cluster’s public network and the servers running the manila-share service.</div><div class="line">8 Network connectivity between your Ceph cluster’s public network and NFS-Ganesha server.</div><div class="line">9 Network connectivity between your NFS-Ganesha server and the manila guest.</div></pre></td></tr></table></figure></p>
+<p>在cephfs nfs share驱动，借住nfs-Ganesha解决了网络安全性问题，避免ceph public网直接暴露。<br>直观的理解就是Ganesha为协议转换层，FSAL_CEPH把guest vm的NFS协议调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</p>
+<h2 id="安装openstack-ceph"><a href="#安装openstack-ceph" class="headerlink" title="安装openstack+ceph"></a>安装openstack+ceph</h2><p>跟据官网所说准备一套openstack pike + ceph  luminous 环境，安装过程略。。。。</p>
+<p>ceph  luminous 源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[ceph]</div><div class="line">name=ceph</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/x86_64/</div><div class="line">gpgcheck=0</div><div class="line">[ceph-noarch]</div><div class="line">name=cephnoarch</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/noarch/</div><div class="line">gpgcheck=0</div></pre></td></tr></table></figure></p>
+<h2 id="安装nfs-ganesha"><a href="#安装nfs-ganesha" class="headerlink" title="安装nfs-ganesha"></a>安装nfs-ganesha</h2><p> 需要nfs-ganesha 版本为2.5以上，只能编译安装了,具体[请参考(<a href="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/">http://www.digmyth.com/2017/06/05/cephfs-Ganesha/</a>)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</div><div class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</div><div class="line">yum install librgw2-devel -y </div><div class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</div><div class="line">yum install libcephfs1-devel -y</div><div class="line">cd /opt</div><div class="line">git clone --recursive git://github.com/nfs-ganesha/nfs-ganesha.git</div><div class="line">mkdir /opt/build &amp;&amp; cd /opt/build</div><div class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure></p>
+<h2 id="配置manila-share"><a href="#配置manila-share" class="headerlink" title="配置manila-share"></a>配置manila-share</h2><p>必要客户端安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum instal ceph ceph-fuse ceph-common libcephfs1-devel librgw2-devel</div><div class="line">scp ceph_mon:/etc/ceph/* /etc/ceph    #^# 复制相关配置文件</div><div class="line"></div><div class="line">```</div></pre></td></tr></table></figure>
+<h2 id="ceph授权"><a href="#ceph授权" class="headerlink" title="ceph授权"></a>ceph授权</h2><p> 如下命令会生成<code>manila.keyring</code>文件，一并复制到 manila-share的/etc/ceph目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">read -d &apos;&apos; MON_CAPS &lt;&lt; EOF</div><div class="line">allow r,</div><div class="line">allow command &quot;auth del&quot;,</div><div class="line">allow command &quot;auth caps&quot;,</div><div class="line">allow command &quot;auth get&quot;,</div><div class="line">allow command &quot;auth get-or-create&quot;</div><div class="line">EOF</div><div class="line"></div><div class="line">ceph auth get-or-create client.manila -o manila.keyring \</div><div class="line">mds &apos;allow *&apos; \</div><div class="line">osd &apos;allow rw&apos; \</div><div class="line">mon &quot;$MON_CAPS&quot;</div></pre></td></tr></table></figure></p>
+<p>编辑manila-share的/etc/ceph/ceph.conf 添加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">[client.manila]</div><div class="line">client mount uid = 0</div><div class="line">client mount gid = 0</div><div class="line">log file = /var/logs/ceph-client.manila.log</div><div class="line">admin socket = /run/ceph/ceph-mon.172.18.23.17.asok</div><div class="line">keyring = /etc/ceph/manila.keyring</div></pre></td></tr></table></figure></p>
+<p>允许快照支持<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph mds set allow_new_snaps true --yes-i-really-mean-it</div></pre></td></tr></table></figure></p>
+<p>编辑manila-share的/etc/manila/manila.conf 添加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[DEFAULT]</div><div class="line">...</div><div class="line">enabled_share_backends = generic, cephfsnfs1</div><div class="line">default_share_type = default_share_type</div><div class="line">enabled_share_protocols = NFS,CIFS,CEPHFS</div><div class="line">[cephfsnfs1]</div><div class="line">driver_handles_share_servers = False</div><div class="line">share_backend_name = CEPHFSNFS1</div><div class="line">share_driver = manila.share.drivers.cephfs.driver.CephFSDriver</div><div class="line">cephfs_protocol_helper_type = NFS</div><div class="line">cephfs_conf_path = /etc/ceph/ceph.conf</div><div class="line">cephfs_auth_id = manila</div><div class="line">cephfs_cluster_name = ceph</div><div class="line">cephfs_enable_snapshots = False</div><div class="line">cephfs_ganesha_server_is_remote= False</div><div class="line">cephfs_ganesha_server_ip = 172.18.23.17   # 指明nfs-ganesha服务器位置</div></pre></td></tr></table></figure></p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>服务验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">(manila-share)[root@pike-vm /]# manila service-list</div><div class="line"></div><div class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</div><div class="line">| Id | Binary           | Host               | Zone | Status  | State | Updated_at                 |</div><div class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</div><div class="line">| 1  | manila-data      | pike-vm            | nova | enabled | up    | 2017-11-15T10:14:37.000000 |</div><div class="line">| 2  | manila-scheduler | pike-vm            | nova | enabled | up    | 2017-11-15T10:14:38.000000 |</div><div class="line">| 3  | manila-share     | pike-vm@generic    | nova | enabled | up    | 2017-11-15T10:14:40.000000 |</div><div class="line">| 4  | manila-share     | pike-vm@cephfsnfs1 | nova | enabled | up    | 2017-11-15T10:14:40.000000 |</div><div class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</div></pre></td></tr></table></figure></p>
+<p>创建manila实例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">manila type-create cephfsnfstype false</div><div class="line">manila type-key cephfsnfstype set vendor_name=Ceph storage_protocol=NFS</div><div class="line">manila create --share-type cephfsnfstype --name cephnfsshare1 nfs 1</div></pre></td></tr></table></figure></p>
+<p>查看共享路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">(manila-share)[root@pike-vm /]# manila share-export-location-list cephnfsshare1</div><div class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</div><div class="line">| ID                                   | Path                                                                | Preferred |</div><div class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</div><div class="line">| 18cf503a-9357-40e2-925a-53333031a3e6 | 172.18.23.17:/volumes/_nogroup/7f53c663-57c5-4740-977b-039e4df7fc86 | False     |</div><div class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</div></pre></td></tr></table></figure></p>
+<p>权限管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">manila access-allow cephnfsshare1 ip 172.24.4.225</div></pre></td></tr></table></figure>
+<h2 id="guest-vm-挂载"><a href="#guest-vm-挂载" class="headerlink" title="guest vm 挂载"></a>guest vm 挂载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mount -t nfs 172.18.23.17:/volumes/_nogroup/7f53c663-57c5-4740-977b-039e4df7fc86 /mnt/nfs/</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjcjxl9ic000a36jxvct2fzsz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-web-django-16-Form" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/20/web-django-16-Form/" class="article-date">
@@ -118,7 +178,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjchlyulw002ihijx6udpby89" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjcjxl9nl002i36jxv7bf8zuc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +250,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjchlyun2003bhijx2rqyz6wl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjcjxl9pb003e36jxczhp7089" class="article-share-link">Share</a>
       
       
     </footer>
@@ -254,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjchlyulv002ghijx8ra7sh4t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjcjxl9ni002g36jxol2r2xwn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -328,7 +388,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjchlyumr0036hijxd4d1ffvf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjcjxl9p5003936jx8wwilaq3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -382,18 +442,11 @@
 <p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
 <p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
 <p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
-<h2 id="contentType"><a href="#contentType" class="headerlink" title="contentType"></a>contentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
-<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
-<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
-<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
-<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
-<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjchlyulg0026hijxj4e0uaff" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjcjxl9m2001y36jxf4u26utj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -440,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjchlyuhg000thijxlfps40ou" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjcjxl9jb000r36jxbdoidhf8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -498,7 +551,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjchlyugy000fhijx6mnnpmv9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjcjxl9ii000c36jxnmkxnys0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -556,7 +609,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjchlyujk0012hijxri8yoc8o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjcjxl9jz001036jxngfmszrl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -629,49 +682,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjchlyugj0008hijx1ziscitl" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
-  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web开发/">Web开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/20/web-django-03-分页示例/">web-Django-02-分页示例</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-django-分页功能"><a href="#1-django-分页功能" class="headerlink" title="1 django 分页功能"></a>1 django 分页功能</h3><p>app01/views.py Paginator模块的使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">def users(request):</div><div class="line">    from django.core.paginator import  Paginator,EmptyPage,PageNotAnInteger</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    paginator = Paginator(user_list,10)</div><div class="line">    # paginator.per_page         每页显示条目数量</div><div class="line">    # paginator.count            数据总个数  </div><div class="line">    # paginator.num_pages        总页数</div><div class="line">    # paginator.page_range       总页数的索引范围，如(1,10),(1,20)</div><div class="line">    current_page = request.GET.get(&apos;p&apos;)</div><div class="line">    try:</div><div class="line">        page_obj=paginator.page(current_page)</div><div class="line">    except EmptyPage  as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    except PageNotAnInteger as e:</div><div class="line">        page_obj = paginator.page(1)</div><div class="line">    # page_obj.has_next()                 是否有下一页</div><div class="line">    # page_obj.next_page_number()         下一页页码</div><div class="line">    # page_obj.has_previous()             是否有上一页</div><div class="line">    # page_obj.previous_page_number()     上一页页码</div><div class="line">    # page_obj.object_list                分页之后的数据列表</div><div class="line">    # page_obj.number                     当前页</div><div class="line">    # page_obj.paginator                  paginator对象</div><div class="line"></div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;page_obj&apos;:page_obj&#125;)</div></pre></td></tr></table></figure></p>
-<p>templates/users.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&#123;% if page_obj.has_previous %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.previous_page_number &#125;&#125;&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;上一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line"></div><div class="line">&#123;% for i in page_obj.paginator.page_range %&#125;</div><div class="line">     &lt;a href=&quot;/users?p=&#123;&#123; i &#125;&#125;&quot;&gt;&#123;&#123; i &#125;&#125;&lt;/a&gt;</div><div class="line">&#123;% endfor %&#125;</div><div class="line"></div><div class="line">&#123;% if page_obj.has_next %&#125;</div><div class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.next_page_number &#125;&#125;&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% else %&#125;</div><div class="line">    &lt;a href=&quot;#&quot;&gt;下一页&lt;/a&gt;</div><div class="line">&#123;% endif %&#125;</div><div class="line">&lt;span&gt;</div><div class="line">    &lt;a&gt;&#123;&#123;  page_obj.number &#125;&#125;/&#123;&#123; page_obj.paginator.num_pages &#125;&#125;&lt;/a&gt;</div><div class="line">&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjchlyulp002chijxmfm2841g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjcjxl9gx000036jxqaffpmzb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -694,7 +705,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
     </div>
   </div>
 
@@ -722,7 +733,7 @@
       <ul>
         
           <li>
-            <a href="/2018/01/16/hello-world/">Hello World</a>
+            <a href="/2018/01/18/hello-world/">Hello World</a>
           </li>
         
           <li>
@@ -738,7 +749,7 @@
           </li>
         
           <li>
-            <a href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
+            <a href="/2017/12/15/web-get_post_contentype知识/">03-GET/POST/ContentType知识</a>
           </li>
         
       </ul>
