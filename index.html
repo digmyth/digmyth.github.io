@@ -63,8 +63,8 @@
   
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/01/18/hello-world/" class="article-date">
-  <time datetime="2018-01-18T03:54:51.202Z" itemprop="datePublished">2018-01-18</time>
+    <a href="/2018/01/19/hello-world/" class="article-date">
+  <time datetime="2018-01-19T07:02:35.658Z" itemprop="datePublished">2018-01-19</time>
 </a>
     
   <div class="article-category">
@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/18/hello-world/">Hello World</a>
+      <a class="article-title" href="/2018/01/19/hello-world/">Hello World</a>
     </h1>
   
 
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/18/hello-world/" data-id="cjcjyq66b000ll2jxwofuvahy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/19/hello-world/" data-id="cjclkvgjv000oyhjxh5ia5999" class="article-share-link">Share</a>
       
       
     </footer>
@@ -140,7 +140,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjcjyq68w0028l2jx112tc2o8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjclkvgo60026yhjxu5xt9sty" class="article-share-link">Share</a>
       
       
     </footer>
@@ -213,7 +213,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjcjyq6bt0033l2jx9rkep47f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjclkvgp2002xyhjxgzpytygu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,7 +273,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjcjyq6bq0031l2jx3unptbts" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjclkvgp90033yhjx2wmtelh9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -339,7 +339,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjcjyq6b6002nl2jxckofh9tj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjclkvgoo002lyhjx388yo107" class="article-share-link">Share</a>
       
       
     </footer>
@@ -377,11 +377,20 @@ print(v1.site.name)
       
         <ul>
 <li>前言</li>
-<li>requests发送get/post请求分析</li>
 <li>ContentType知识</li>
+<li>requests发送get/post请求分析</li>
+<li>requests发送get/post请求示例</li>
+<li>表格总结</li>
 </ul>
 <p>##GET/POST/ContentType知识</p>
-<h2 id="一、-requests发送get-post请求分析"><a href="#一、-requests发送get-post请求分析" class="headerlink" title="一、 requests发送get/post请求分析"></a>一、 requests发送get/post请求分析</h2><p>分析知识点</p>
+<h2 id="一、ContentType"><a href="#一、ContentType" class="headerlink" title="一、ContentType"></a>一、ContentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
+<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
+<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
+<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
+<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
+<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
+<h2 id="二、-requests发送get-post请求分析"><a href="#二、-requests发送get-post请求分析" class="headerlink" title="二、 requests发送get/post请求分析"></a>二、 requests发送get/post请求分析</h2><p>分析知识点</p>
 <ul>
 <li>分析如何组装数据发送</li>
 <li>分析get/post请求组装数据方式的不同</li>
@@ -395,18 +404,46 @@ print(v1.site.name)
 <p>post时也可以json传参,数据在请求体里，封装为json.dumps({‘name’:’wxq’,’age’:18})后的字符串。请求头ContentType为application/json<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">requests.post(url=&quot;http://www.baidu.com/&quot;,params=&#123;&apos;a&apos;:1&#125;,json=&#123;&apos;name&apos;:&apos;wxq&apos;,&apos;age&apos;:18&#125;)</div><div class="line"># data=&quot;http POST /index?a=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\n&#123;&quot;name&quot;: &quot;wxq&quot;, &quot;age&quot;: 18&#125;&quot;</div></pre></td></tr></table></figure></p>
 <h4 id="服务器解析"><a href="#服务器解析" class="headerlink" title="服务器解析"></a>服务器解析</h4><p>当服务器接收到客户端发来的数据，所有的数据会放到<code>request.FILES</code>或<code>request.body</code>里，再跟据ContentType的不同放到相应变量里,<br>如request.POST里是<code>Content-Type:application/x-www-form-urlencoded; charset=UTF-8</code>,也就是data而非json格式发来的数据。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">request.method     # 请求方法</div><div class="line">request.GET        # 请求方法为GET的数据</div><div class="line">request.POST       # 请求方法为POST的数据</div><div class="line">    注：      如何获取request.post数据的呢，如果有请求头</div><div class="line">             （Content-Type:application/x-www-form-urlencoded; charset=UTF-8），</div><div class="line">              则从request.body里取出post数据</div><div class="line">request.body       #   请求时发送的所有数据</div><div class="line">request.FILES      #   请求时发送的文件数据</div></pre></td></tr></table></figure>
-<h2 id="二、ContentType"><a href="#二、ContentType" class="headerlink" title="二、ContentType"></a>二、ContentType</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
-<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</div><div class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</div></pre></td></tr></table></figure></p>
-<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</div></pre></td></tr></table></figure>
-<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
-<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">application/json </div><div class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</div><div class="line">s=request.body.decode(&quot;utf8&quot;)</div><div class="line">d=json.loads(s)             # 后端以json格式解数据</div><div class="line">d[&apos;name&apos;]</div></pre></td></tr></table></figure></p>
-<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
+<h2 id="三、requests发送get-post请求示例"><a href="#三、requests发送get-post请求示例" class="headerlink" title="三、requests发送get/post请求示例"></a>三、requests发送get/post请求示例</h2><h4 id="data传参"><a href="#data传参" class="headerlink" title="data传参"></a>data传参</h4><p>可以是字典<br>可以是字符串<br>可以是字节<br>可以是文件对象<br>1 requests.request(method=”post”,data=字典)<br>默认加<code>headers={&#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requests.post(url=&quot;xxx&quot;,data=&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;:123&#125;)</div></pre></td></tr></table></figure></p>
+<p>2 requests.request(method=”post”,data=字符串)<br>默认加<code>headers={&#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">requests.post(url=&quot;xxx&quot;,data=&quot;name=wxq&amp;pwd=123&quot;) # 或</div><div class="line">requests.post(url=&quot;xxx&quot;,data=&quot;name=wxq;pwd=123&quot;)</div></pre></td></tr></table></figure></p>
+<p>基于HTTP本质，上面2种数据最终转为请求体\r\n\r\n<code>name=wxq&amp;pwd=123</code></p>
+<p>3   手动构建json字符串发送<br>手动加<code>headers={&#39;Content-Type&#39;: &#39;application/json&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">requests.post(</div><div class="line">			url=&quot;xxx&quot;,</div><div class="line">			data=json.dumps(&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;:123&#125;),</div><div class="line">			headers=&#123;&apos;Content-Type&apos;: &apos;application/json&apos;&#125;)</div></pre></td></tr></table></figure></p>
+<h4 id="json传参"><a href="#json传参" class="headerlink" title="json传参"></a>json传参</h4><p>requests.request(method=”post”,json=…)<br>1) 将json中对应的数据进行序列化成一个字符串，json.dumps(…)<br>2) 然后发送到服务器端的body中<br>3) 并且自动Content-Type是 {‘Content-Type’: ‘application/json’}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def param_json():</div><div class="line">    requests.request(method=&apos;POST&apos;,</div><div class="line">                     url=&apos;http://127.0.0.1:8000/test/&apos;,</div><div class="line">                     json=&#123;&apos;k1&apos;: &apos;v1&apos;, &apos;k2&apos;: &apos;水电费&apos;&#125;)</div></pre></td></tr></table></figure></p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><table>
+<thead>
+<tr>
+<th>methond</th>
+<th>传参</th>
+<th>解析为</th>
+<th>浏览器显示标识名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>params</td>
+<td>?page=1&amp;k1=v1</td>
+<td>Query String Parameter </td>
+</tr>
+<tr>
+<td>POST</td>
+<td>data</td>
+<td>\r\n\r\nname=wxq&amp;pwd=123</td>
+<td>Form Data</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>json</td>
+<td>\r\n\r\n{“name”:”wxq”,”age”:18}”</td>
+<td>Request Payload</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjcjyq6c4003bl2jxa1nbj53r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjclkvgpy003gyhjxlw0woi1o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -455,7 +492,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjcjyq6bp002zl2jx4cqvy9uw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjclkvgoy002tyhjxe5rqernw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -513,7 +550,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjcjyq6bk002vl2jxx2de2tf6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjclkvgp0002vyhjxzbqi648c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -577,7 +614,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjcjyq6bh002tl2jxh003pw29" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjclkvgos002pyhjxoeaiyspy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -630,7 +667,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjcjyq666000il2jxdmmwgrsk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjclkvgjp000lyhjxd4wlohni" class="article-share-link">Share</a>
       
       
     </footer>
@@ -681,7 +718,7 @@ print(v1.site.name)
       <ul>
         
           <li>
-            <a href="/2018/01/18/hello-world/">Hello World</a>
+            <a href="/2018/01/19/hello-world/">Hello World</a>
           </li>
         
           <li>
