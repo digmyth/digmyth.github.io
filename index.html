@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/19/hello-world/" class="article-date">
-  <time datetime="2018-01-19T07:05:37.331Z" itemprop="datePublished">2018-01-19</time>
+  <time datetime="2018-01-19T07:08:36.332Z" itemprop="datePublished">2018-01-19</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/19/hello-world/" data-id="cjclkzcqc000lzojxuda5umzb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/19/hello-world/" data-id="cjcll36uk000l09jxukjmdoh6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -140,7 +140,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjclkzcsr0028zojx37dhmm2o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjcll36wu002809jxchzykvjl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -213,7 +213,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjclkzctx0033zojxbtq0bgl2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjcll36xr003309jxozjtpy03" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,7 +273,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjclkzctv0031zojx9jnz6jcb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjcll36xp003109jx9a7514l9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -339,7 +339,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjclkzct9002nzojxkpcw8jmc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjcll36x8002n09jxg8nlhl45" class="article-share-link">Share</a>
       
       
     </footer>
@@ -406,43 +406,14 @@ print(v1.site.name)
 <h2 id="三、requests发送get-post请求示例"><a href="#三、requests发送get-post请求示例" class="headerlink" title="三、requests发送get/post请求示例"></a>三、requests发送get/post请求示例</h2><h4 id="data传参"><a href="#data传参" class="headerlink" title="data传参"></a>data传参</h4><p>可以是字典<br>可以是字符串<br>可以是字节<br>可以是文件对象<br>1 requests.request(method=”post”,data=字典)<br>默认加<code>headers={&#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requests.post(url=&quot;xxx&quot;,data=&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;:123&#125;)</div></pre></td></tr></table></figure></p>
 <p>2 requests.request(method=”post”,data=字符串)<br>默认加<code>headers={&#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">requests.post(url=&quot;xxx&quot;,data=&quot;name=wxq&amp;pwd=123&quot;) # 或</div><div class="line">requests.post(url=&quot;xxx&quot;,data=&quot;name=wxq;pwd=123&quot;)</div></pre></td></tr></table></figure></p>
 <p>基于HTTP本质，上面2种数据最终转为请求体\r\n\r\n<code>name=wxq&amp;pwd=123</code></p>
-<p>3   手动构建json字符串发送<br>手动加<code>headers={&#39;Content-Type&#39;: &#39;application/json&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">requests.post(</div><div class="line">			url=&quot;xxx&quot;,</div><div class="line">			data=json.dumps(&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;:123&#125;),</div><div class="line">			headers=&#123;&apos;Content-Type&apos;: &apos;application/json&apos;&#125;)</div></pre></td></tr></table></figure></p>
-<h4 id="json传参"><a href="#json传参" class="headerlink" title="json传参"></a>json传参</h4><p>requests.request(method=”post”,json=…)<br>1) 将json中对应的数据进行序列化成一个字符串，json.dumps(…)<br>2) 然后发送到服务器端的body中<br>3) 并且自动Content-Type是 {‘Content-Type’: ‘application/json’}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def param_json():</div><div class="line">    requests.request(method=&apos;POST&apos;,</div><div class="line">         url=&apos;http://127.0.0.1:8000/test/&apos;,</div><div class="line">         json=&#123;&apos;k1&apos;: &apos;v1&apos;, &apos;k2&apos;: &apos;水电费&apos;&#125;)</div></pre></td></tr></table></figure></p>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><table>
-<thead>
-<tr>
-<th>methond</th>
-<th>传参</th>
-<th>解析为</th>
-<th>浏览器显示标识名</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>GET</td>
-<td>params</td>
-<td>?page=1&amp;k1=v1</td>
-<td>Query String Parameter </td>
-</tr>
-<tr>
-<td>POST</td>
-<td>data</td>
-<td>\r\n\r\nname=wxq&amp;pwd=123</td>
-<td>Form Data</td>
-</tr>
-<tr>
-<td>POST</td>
-<td>json</td>
-<td>\r\n\r\n{“name”:”wxq”,”age”:18}”</td>
-<td>Request Payload</td>
-</tr>
-</tbody>
-</table>
+<p>3   手动构建json字符串发送<br>手动加<code>headers={&#39;Content-Type&#39;: &#39;application/json&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">requests.post(</div><div class="line">	url=&quot;xxx&quot;,</div><div class="line">	data=json.dumps(&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;:123&#125;),</div><div class="line">	headers=&#123;&apos;Content-Type&apos;: &apos;application/json&apos;&#125;)</div></pre></td></tr></table></figure></p>
+<h4 id="json传参"><a href="#json传参" class="headerlink" title="json传参"></a>json传参</h4><p>requests.request(method=”post”,json=…)<br>1) 将json中对应的数据进行序列化成一个字符串，json.dumps(…)<br>2) 然后发送到服务器端的body中<br>3) 并且自动Content-Type是 {‘Content-Type’: ‘application/json’}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def param_json():</div><div class="line">    requests.request(method=&apos;POST&apos;,</div><div class="line">    		     url=&apos;http://127.0.0.1:8000/test/&apos;,</div><div class="line">                     json=&#123;&apos;k1&apos;: &apos;v1&apos;, &apos;k2&apos;: &apos;水电费&apos;&#125;)</div></pre></td></tr></table></figure></p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>|——-|——— | ——- |   —–|<br>| methond | 传参   |  解析为 | 浏览器显示标识名 |<br>|——-|——— | ——- |   —–|<br>|   GET | params|?page=1&amp;k1=v1   |  Query String Parameter|<br>|——-|——— | ——- |   —–|<br>|   POST| data |  \r\n\r\nname=wxq&amp;pwd=123  | Form Data |<br>|——-|——— | ——- |   —–|<br>|   POST| json | \r\n\r\n{“name”:”wxq”,”age”:18}”|Request Payload|<br>|——-|——— | ——- |   —–|</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjclkzcud003bzojx2s5p1fk8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjcll36y4003b09jxlqc6cfnx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -491,7 +462,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjclkzctt002zzojxd8249789" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjcll36xn002z09jxl18ql1zr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -549,7 +520,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjclkzctm002vzojxzvphe8ct" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjcll36xh002v09jx6iewdm4p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -613,7 +584,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjclkzctj002tzojxd4dk9op7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjcll36xf002t09jx6p4znf1s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -666,7 +637,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjclkzcq7000izojxznvvgpux" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjcll36uh000i09jxyvxfp7uy" class="article-share-link">Share</a>
       
       
     </footer>
