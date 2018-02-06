@@ -133,7 +133,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdbe9zdf002bd2jxovvnmtz7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdbeffmq0028drjx86mgu45a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,10 +206,10 @@
 <p>前面实例化对象的结论是<code>__new__</code>什么也没有干，只是有了一块内存地址或对象地址用于返回给<code>__init__()</code>，<br>再<code>__init__()</code>执行。那么type创建Foo对象(类)也是这个流程，因为是Type实例化Foo类，MyType执行<code>__new__</code><br>创建Foo,返回给<code>MyType.__init__()</code>执行，当f=Foo() 实例化对象也就是加()调用<code>MyType.__call__()</code>方法,<br><code>__call__()</code>方法来执行实例化，实例化过程又是执行<code>Foo.__new__()</code>返回给<code>Foo.__init__()</code>，完成实例化。</p>
 <h2 id="importlib字符串模块导入"><a href="#importlib字符串模块导入" class="headerlink" title="importlib字符串模块导入"></a>importlib字符串模块导入</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import importlib</div><div class="line">x=&apos;scrapy.crawler.CrawlerProcess&apos;</div><div class="line">model_path,model_name = x.rsplit(&apos;.&apos;,maxsplit=1)</div><div class="line">md=importlib.import_module(model_path)    # 字符串形式模块导入</div><div class="line">cls=getattr(md,model_name)</div><div class="line">print(cls)</div></pre></td></tr></table></figure>
 <h2 id="字符串形式运行函数"><a href="#字符串形式运行函数" class="headerlink" title="字符串形式运行函数"></a>字符串形式运行函数</h2><p>1 eval(字符串)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def func(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">eval(&apos;func(&quot;hello wolrd&quot;)&apos;)</div></pre></td></tr></table></figure></p>
-<p>2  sys.modules获取函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line"></div><div class="line">def process(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">f=&quot;process&quot;</div><div class="line"></div><div class="line">func=getattr(sys.modules[__name__], f)  # 获取函数</div><div class="line"></div><div class="line">ret=func(&apos;hello world&apos;)</div><div class="line">print(ret)</div><div class="line">```  </div><div class="line"></div><div class="line">3  运用类中`getattr`</div></pre></td></tr></table></figure></p>
+<p>2  sys.modules获取函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line"></div><div class="line">def process(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">f=&quot;process&quot;</div><div class="line"></div><div class="line">func=getattr(sys.modules[__name__], f)  # 获取函数</div><div class="line"></div><div class="line">ret=func(&apos;hello world&apos;)</div><div class="line">print(ret)</div><div class="line">```  </div><div class="line"></div><div class="line">3  运用类中getattr</div></pre></td></tr></table></figure></p>
 <p>class Foo():<br>    def f1(self):<br>        return “hello world”</p>
 <p>obj = Foo()<br>x=”f1”</p>
-<p>func=getattr(obj,x)<br>print(func())<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">## staticmethod</div><div class="line"></div><div class="line">几个魔法方法说明：</div><div class="line"></div><div class="line">`@classmethod`   `@staticmethod`</div><div class="line">不依赖任何具体的对象来执行类当中是方法，这个方法要么是静态方法， 要么是类方法，要么是属性</div></pre></td></tr></table></figure></p>
+<p>func=getattr(obj,x)<br>print(func())<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">## staticmethod</div><div class="line"></div><div class="line">几个魔法方法说明：</div><div class="line"></div><div class="line">`@classmethod`   `@staticmethod`</div><div class="line">不依赖任何具体的对象来执行类当中是方法，这个方法要么是静态方法， 要么是类方法，要么是属性</div></pre></td></tr></table></figure></p>
 <p>@classmethod<br>def test_func(cls):   # 类方法传入cls参数（类本身）<br>    pass</p>
 <p>@staticmethod<br>def test_func():    # 静态方法时没有任何变量<br>    pass</p>
 <p>def test_func(self):  # 普通实例方法时传入self参数（实例本身）<br>    pass<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">`staticmethod`语法</div></pre></td></tr></table></figure></p>
@@ -244,7 +244,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbe9zcw001od2jxdlqmdh66" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbeffm9001odrjxfhk12squ" class="article-share-link">Share</a>
       
       
     </footer>
@@ -313,7 +313,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdbe9zcu001kd2jx6mlr7674" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdbeffm8001mdrjxez1yj268" class="article-share-link">Share</a>
       
       
     </footer>
@@ -387,7 +387,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjdbe9zcv001md2jxku7zizij" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjdbeffm4001idrjxfydn3h6h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -598,7 +598,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdbe9zcs001id2jx8y4cr8v5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdbeffm7001kdrjx4str140o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -681,7 +681,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdbe9zcq001gd2jxpssn3bd6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdbeffm3001gdrjxg2dkrrwq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -753,7 +753,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdbe9zda0023d2jxyo1oig3d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdbeffmk0020drjx0gq60bei" class="article-share-link">Share</a>
       
       
     </footer>
@@ -836,7 +836,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdbe9zco001ed2jxcgt8ghxv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdbeffm1001edrjx42fahwdk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -880,7 +880,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdbe9zd5001yd2jxldrecn2o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdbeffms002adrjx2vwu4rhe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -971,7 +971,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjdbe9zce0014d2jxdl8nbh67" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjdbefflq0014drjxb51burjw" class="article-share-link">Share</a>
       
       
     </footer>
