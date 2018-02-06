@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>python-08-02-面象对象高级编程 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录(魔法方法)
+类内置方法
+构造方法
+@property
+getattr系列
+getitem系列
+metaclass系列
+importlib
+字符串形式运行函数
+staticmethod
+classmethod
+
+importlib字符串模块导入import importlibx=’scrapy.crawler.CrawlerProcess’model_path,model_name = x.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python-08-02-面象对象高级编程">
+<meta property="og:url" content="http://www.digmyth.com/2017/03/26/python-08-02-面象对象高级编程/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录(魔法方法)
+类内置方法
+构造方法
+@property
+getattr系列
+getitem系列
+metaclass系列
+importlib
+字符串形式运行函数
+staticmethod
+classmethod
+
+importlib字符串模块导入import importlibx=’scrapy.crawler.CrawlerProcess’model_path,model_name = x.">
+<meta property="og:updated_time" content="2018-02-06T08:54:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python-08-02-面象对象高级编程">
+<meta name="twitter:description" content="目录(魔法方法)
+类内置方法
+构造方法
+@property
+getattr系列
+getitem系列
+metaclass系列
+importlib
+字符串形式运行函数
+staticmethod
+classmethod
+
+importlib字符串模块导入import importlibx=’scrapy.crawler.CrawlerProcess’model_path,model_name = x.">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python-08-02-面象对象高级编程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/26/python-08-02-面象对象高级编程/" class="article-date">
+  <time datetime="2017-03-26T13:28:41.000Z" itemprop="datePublished">2017-03-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      python-08-02-面象对象高级编程
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录(魔法方法)</li>
+<li>类内置方法</li>
+<li>构造方法</li>
+<li>@property</li>
+<li>getattr系列</li>
+<li>getitem系列</li>
+<li>metaclass系列</li>
+<li>importlib</li>
+<li>字符串形式运行函数</li>
+<li>staticmethod</li>
+<li>classmethod</li>
+</ul>
+<h2 id="importlib字符串模块导入"><a href="#importlib字符串模块导入" class="headerlink" title="importlib字符串模块导入"></a>importlib字符串模块导入</h2><p>import importlib<br>x=’scrapy.crawler.CrawlerProcess’<br>model_path,model_name = x.rsplit(‘.’,maxsplit=1)<br>md=importlib.import_module(model_path)    # 字符串形式模块导入<br>cls=getattr(md,model_name)<br>print(cls)</p>
+<h2 id="字符串形式运行函数"><a href="#字符串形式运行函数" class="headerlink" title="字符串形式运行函数"></a>字符串形式运行函数</h2><p>1 eval(字符串)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def func(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">eval(&apos;func(&quot;hello wolrd&quot;)&apos;)</div></pre></td></tr></table></figure></p>
+<p>2  sys.modules获取函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line"></div><div class="line">def process(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">f=&quot;process&quot;</div><div class="line"></div><div class="line">func=getattr(sys.modules[__name__], f)  # 获取函数</div><div class="line"></div><div class="line">ret=func(&apos;hello world&apos;)</div><div class="line">print(ret)</div><div class="line">```  </div><div class="line"></div><div class="line">3  运用类中getattr</div></pre></td></tr></table></figure></p>
+<p>class Foo():<br>    def f1(self):<br>        return “hello world”</p>
+<p>obj = Foo()<br>x=”f1”</p>
+<p>func=getattr(obj,x)<br>print(func())<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">## staticmethod</div><div class="line"></div><div class="line">几个魔法方法说明：</div><div class="line"></div><div class="line">`@classmethod`   `@staticmethod`</div><div class="line">不依赖任何具体的对象来执行类当中是方法，这个方法要么是静态方法， 要么是类方法，要么是属性</div></pre></td></tr></table></figure></p>
+<p>@classmethod<br>def test_func(cls):   # 类方法传入cls参数（类本身）<br>    pass</p>
+<p>@staticmethod<br>def test_func():    # 静态方法时没有任何变量<br>    pass</p>
+<p>def test_func(self):  # 普通实例方法时传入self参数（实例本身）<br>    pass<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">`staticmethod`语法</div></pre></td></tr></table></figure></p>
+<p>In [4]: class Foo(object):<br>   …:     @staticmethod<br>   …:     def spam(x,y,z):   # 静态方法时方法定义不写self<br>   …:         print(x,y,z)</p>
+<p>In [5]:<br>In [5]: Foo.spam(1,2,3)      # 静态方法属于类的，用类名调用。虽然实例能调用，但不要那样混用,不规范<br>1 2 3<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">`staticmethod`用法场景</div></pre></td></tr></table></figure></p>
+<p>In [7]: import time<br>In [6]: class Date(object):<br>   …:     def <strong>init</strong>(self,year,mon, day):<br>   …:         self.year = year<br>   …:         self.mon = mon<br>   …:         self.day = day<br>   …:     @staticmethod<br>   …:     def now():<br>   …:         t = time.localtime()<br>   …:         return Date(t.tm_year, t.tm_mon, t.tm_mday)<br>   …:     </p>
+<p>In [8]: d1 = Date(1989, 8,20)    # 获得一个对象</p>
+<p>In [9]: d2 = Date.now()   # 这里也能获得一个对象</p>
+<p>In [10]: d1.day<br>Out[10]: 20</p>
+<p>In [11]: d2.day<br>Out[11]: 12<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## classmethod</div><div class="line">` @classmethod`语法</div></pre></td></tr></table></figure></p>
+<p>In [12]: class C1(object):<br>   ….:     name = ‘wxq’<br>   ….:     @classmethod<br>   ….:     def test(cls):    # 这里需要传入cls, 谁调用谁就是cls<br>   ….:         print(cls, cls.name)<br>   ….:         </p>
+<p>In [14]: C1.test()     # 这里cls就是C1</p>
+<p><class '__main__.c1'=""> wxq</class></p>
+<p>In [13]: c = C1()   # 正常实例化对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">` @classmethod`用法场景</div></pre></td></tr></table></figure></p>
+<p>In [2]: import time</p>
+<p>In [3]: class Date(object):<br>   …:     def <strong>init</strong>(self, year, mon,day):<br>   …:         self.year = year<br>   …:         self.mon = mon<br>   …:         self.day = day<br>   …:     @classmethod<br>   …:     def now(cls):<br>   …:         t = time.localtime()<br>   …:         return cls(t.tm_year, t.tm_mon, t.tm_mday)<br>   …:     </p>
+<p>In [4]: d = Date.now()</p>
+<p>In [5]: print(d.year,d.mon, d.day)<br>2017 3 12<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">`staticmethod`与`classmethod`区别的牛逼之处</div></pre></td></tr></table></figure></p>
+<p>root@ubuntu:~# cat method.py </p>
+<p>#!/usr/bin/env python3<br>import time<br>class Date(object):<br>    def <strong>init</strong>(self, year,mon,day):<br>        self.year = year<br>        self.mon = mon<br>        self.day = day<br>    @staticmethod<br>    def now():<br>        t = time.localtime()<br>        return Date(t.tm_year, t.tm_mon, t.tm_mday)</p>
+<p>class EuroDate(Date):<br>     def <strong>str</strong>(self):<br>       return ‘year: %s mon:%s day:%s’ % (self.year, self.mon,self.day)</p>
+<p>e = EuroDate.now()<br>print(e)<br>root@ubuntu:~# python3 method.py </p>
+<p><__main__.date object="" at="" 0x7f5514658940=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">上面并没有我们想要的结果</div><div class="line">分析：</div><div class="line">`e = EuroDate.now()`实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。</div><div class="line">也就是`return Date(t.tm_year, t.tm_mon, t.tm_mday)`, 实例print时调Date类的`__str__`方法，故打印`return Date(t.tm_year, t.tm_mon, t.tm_mday)`后的内存地址，不会打印`EuroDate`类中定义的`__str__`方法</div></pre></td></tr></table></figure></__main__.date></p>
+<p>root@ubuntu:~# cat goodmethod.py </p>
+<p>#!/usr/bin/env python3<br>import time<br>class Date(object):<br>    def <strong>init</strong>(self, year,mon,day):<br>        self.year = year<br>        self.mon = mon<br>        self.day = day<br>    @classmethod<br>    def now(cls):<br>        t = time.localtime()<br>        return cls(t.tm_year, t.tm_mon, t.tm_mday)</p>
+<p>class EuroDate(Date):<br>     def <strong>str</strong>(self):<br>       return ‘year: %s mon:%s day:%s’ % (self.year, self.mon,self.day)</p>
+<p>e = EuroDate.now()<br>print(e)<br>root@ubuntu:~# python3 goodmethod.py<br>year: 2017 mon:3 day:12<br>```</p>
+<p>这样才是我们想要的结果，好象参悟了点什么<br>分析:<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。这一点和上面是一致的。但此时<code>return cls(t.tm_year, t.tm_mon, t.tm_mday)</code>中的cls不是Date,而是EuroDate,符合谁调谁就是cls的原则。这样实例化<code>e = EuroDate.now()</code>时print(e)就会去调EuroDate中的<code>__str__</code>方法，得到我们想要的结果</p>
+<p>小结：<br><code>staticmethod</code>与<code>classmethod</code>在一定场景中是有区别的。细节参照上面的例子练习</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象高级编程/" data-id="cjdbetdlb001shsjxd88myfb2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/03/31/python-10-02-网络编程/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          python-09-02-网络编程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/03/25/python-08-02-异常/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">python-08-02-异常</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/02/06/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
