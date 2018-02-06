@@ -133,7 +133,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdbe6rr4002bchjx5fd25q93" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdbe9zdf002bd2jxovvnmtz7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -188,57 +188,25 @@
 <h2 id="property属性方法"><a href="#property属性方法" class="headerlink" title="@property属性方法"></a>@property属性方法</h2><p>把一个类方法变为属性来用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class Dog(object):</div><div class="line">    def __init__(self,name):</div><div class="line">        self.name = name</div><div class="line">        self.__food = None</div><div class="line">    @property</div><div class="line">    def eat(self):</div><div class="line">        print(&quot;%s is eating %s&quot; %(self.name, self.__food))</div><div class="line">    @eat.setter  # 赋值调用属性，调这个方法</div><div class="line">    def eat(self,food):</div><div class="line">        print(&quot;set to food:&quot;,food)</div><div class="line">        self.__food = food</div><div class="line">    @eat.deleter  # 删除属性</div><div class="line">    def eat(self):</div><div class="line">        del self.__food</div><div class="line">        print(&quot;Delete the finished&quot;)</div><div class="line"></div><div class="line">obj=Dog(&apos;w..w&apos;)</div><div class="line">obj.eat = &quot;fish&quot;    # 自动调用@eat.setter赋值</div><div class="line">obj.eat</div></pre></td></tr></table></figure></p>
 <p>property 原理就是property类里定义了<code>__get__()</code>  <code>__set__()</code>  <code>__delete__()</code>方法，是描述符的运用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">定义： 描述符就是将某种特殊类的实例指派给另一个类的属性，__get__   __set__  __delete__实现了</div><div class="line">       描述符协议，用于property描述符编写。</div><div class="line">一种调用方式之一： property(fget=None, fset=None, fdel=None, doc=None)</div><div class="line">__get__(self, instance, owner)    #用于访问属性，它返回属性的值</div><div class="line">__set__(self, instance, value)    #将在属性分配操作中调用，不返回任何内容</div><div class="line">__delete__(self, instance)	# 控制删除操作，不返回任何内容</div></pre></td></tr></table></figure></p>
 <h2 id="getattr-setattr-hasattr-delattr"><a href="#getattr-setattr-hasattr-delattr" class="headerlink" title="__getattr__  __setattr__  __hasattr__ __delattr__"></a><code>__getattr__</code>  <code>__setattr__</code>  <code>__hasattr__</code> <code>__delattr__</code></h2><p>用于属性操作, 如 :</p>
-<p> <code>obj,name</code>调用<code>__getattr__()</code>方法<br> <code>obj.name = &#39;wxq&#39; 调用</code> <strong>setattr</strong>()`方法</p>
+<p><code>obj,name</code>调用<code>__getattr__()</code>方法<br><code>obj.name = &#39;wxq&#39; 调用 `` __setattr__()</code>方法</p>
 <p>示例一：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,path=&apos;&apos;):</div><div class="line">        self.path = path</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        return Foo(&quot;%s/%s&quot;%(self.path, item))</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.path</div><div class="line"></div><div class="line">obj = Foo(&quot;www&quot;).bai.com</div><div class="line">print(obj)     # 打印 www/bai/com</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> </div><div class="line"></div><div class="line">示例二：</div></pre></td></tr></table></figure>
-<p>def func1(self):<br>    print(self.name,’say Hi’)<br>    return “func”</p>
-<p>class Foo(object):<br>    def <strong>init</strong>(self):<br>        self.name = ‘fgf’<br>    def func2(self):<br>        print(self.name,’say fu’)<br>        return “func”<br>obj = Foo()</p>
-<p>choice = input(“请输入调用方法名[func1|func2]：”)<br>if hasattr(obj,choice):  # 实例中有这个方法，执行实例中的方法<br>    print(getattr(obj,choice))<br>else:                    # 动态加载函数封装到类中<br>    setattr(obj,choice,func1)<br>    func = getattr(obj,choice)<br>    func(obj)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## `__getitem__`  ` __setitem__`  `__delitem__`</div><div class="line"></div><div class="line">用于索引操作，</div><div class="line">如字典形式：`obj[&apos;k1&apos;]`  </div><div class="line">如Session设置 `request.session[&apos; user_info&apos;] =  &apos;user&apos;`</div></pre></td></tr></table></figure></p>
-<p>class Foo(object):<br>    def <strong>init</strong>(self,attrs={}):<br>        self.attrs = attrs<br>    def <strong>getitem</strong>(self, key):<br>        print(‘<strong>getitem</strong>‘,key)<br>        return self.attrs.get(key)<br>    def <strong>setitem</strong>(self, key, value):<br>        print(‘<strong>setitem</strong>‘,key,value)<br>        self.attrs[key] = value<br>    def <strong>delitem</strong>(self, key):<br>        print(‘<strong>delitem</strong>‘,key)<br>        del self.attrs[key]<br>        print(self.attrs)</p>
-<p>obj = Foo({‘name’:’wxq’})</p>
-<p>obj[‘k1’] = ‘v1’   # 设置，自动触发执行 <strong>setitem</strong><br>print(obj.attrs)<br>print(obj[‘k1’])     # 获取值，自动触发执行 <strong>getitem</strong><br>del obj[‘name’]        # 触发<strong>delitem</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">## `__new__和 __metaclass__`</div><div class="line"></div><div class="line">### `__new__`与实例化对象相关</div></pre></td></tr></table></figure></p>
-<p>class Foo():<br>    def <strong>init</strong>(self,name):<br>        print(“Foo <strong>init</strong>“)<br>        self.name = name</p>
-<pre><code>def __new__(cls, *args, **kwargs):  # 其实是运行了__new__(),不再调用__init__()方法了
-    print(&quot;Foo __new__&quot;)
-</code></pre><p>obj = Foo(‘wxq’)   # 打印 Foo <strong>new</strong>,这里obj是None<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">这里可以看出实例化是先运行的__new__()方法，如果__new__()没有返回值，Foo.__init__()就不会运行了，obj也就为None了</div><div class="line">要想运行Foo.__init__(), 那么__new__()必须有返回值</div></pre></td></tr></table></figure></p>
-<p>class Foo():<br>    def <strong>init</strong>(self,name):<br>        print(“Foo <strong>init</strong>“)<br>        self.name = name</p>
-<pre><code>def __new__(cls, *args, **kwargs):
-    print(&quot;Foo __new__&quot;)
-    return object.__new__(cls)
-</code></pre><p>obj = Foo(‘wxq’)<br>print(obj)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">### 总结</div><div class="line">实例化过程</div><div class="line"></div><div class="line">看起来`__new__`什么也没有干，只是有了一块内存地址或对象地址用于返回给`__init__()`，再`__init__()`执行。</div><div class="line"></div><div class="line"></div><div class="line">### `__metaclass__`与类的创建相关</div></pre></td></tr></table></figure></p>
-<p>print type(f) # 输出：<class '__main__.foo'="">     表示，obj 对象由Foo类创建<br>print type(Foo) # 输出：<type 'type'="">            表示，Foo类对象由 type 类创建<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">培析类 的创建过程</div></pre></td></tr></table></figure></type></class></p>
-<p>def func(self):<br>    print(‘hello fgf’)</p>
-<p>Foo = type(‘Foo’,(object,), {‘talk’: func})</p>
-<h1 id="type第一个参数：类名"><a href="#type第一个参数：类名" class="headerlink" title="type第一个参数：类名"></a>type第一个参数：类名</h1><h1 id="type第二个参数：当前类的基类"><a href="#type第二个参数：当前类的基类" class="headerlink" title="type第二个参数：当前类的基类"></a>type第二个参数：当前类的基类</h1><h1 id="type第三个参数：类的成员"><a href="#type第三个参数：类的成员" class="headerlink" title="type第三个参数：类的成员"></a>type第三个参数：类的成员</h1><p>f = Foo()<br>f.talk()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
-<p>def func(self):<br>    print(“hello %s %s”%(self.name,self.age))</p>
-<p>def <strong>init</strong>(self,name,age):<br>    self.name = name<br>    self.age = age<br>Foo = type(‘Foo’,(object,),{‘func’:func, ‘<strong>init</strong>‘:<strong>init</strong>})   # 用type创建出Foo这个对象（类）</p>
-<p>f = Foo(“wxq”,25)    # 再用Foo对象创建f对象<br>f.func()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Metaclass元类创建过程</div></pre></td></tr></table></figure></p>
-<p>#print(globals())</p>
-<p>class MyType(type):<br>    def <strong>init</strong>(self,<em>args,**kwargs):<br>        print(“MyType <strong>init</strong>“,self,</em>args,**kwargs)</p>
-<pre><code>def __call__(self, *args, **kwargs):
-    print(&quot;MyType __call__&quot;,self, *args, **kwargs)
-    obj = self.__new__(self)
-    self.__init__(obj, *args, **kwargs)
-    obj.age= 25
-    return obj
-def __new__(cls, *args, **kwargs):
-    print(&quot;MyType  __new__&quot;,cls, *args, **kwargs)
-    obj = type.__new__(cls, *args, **kwargs)
-    return obj
-</code></pre><p>class Foo(object,metaclass=MyType):<br>    def <strong>init</strong>(self, name):<br>        self.name = name<br>        print(“Foo <strong>init</strong>“)</p>
-<pre><code>def __call__(self, *args, **kwargs):
-    print(&quot;call...&quot;)
-</code></pre><p>#print(globals()</p>
-<p>f = Foo(“test”)<br>print(f.name,f.age)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">### 总结</div><div class="line">Type创建类过程</div><div class="line"></div><div class="line">前面实例化对象的结论是`__new__`什么也没有干，只是有了一块内存地址或对象地址用于返回给`__init__()`，</div><div class="line">再`__init__()`执行。那么type创建Foo对象(类)也是这个流程，因为是Type实例化Foo类，MyType执行`__new__`</div><div class="line">创建Foo,返回给`MyType.__init__()`执行，当f=Foo() 实例化对象也就是加()调用`MyType.__call__()`方法,</div><div class="line">`__call__()`方法来执行实例化，实例化过程又是执行`Foo.__new__() `返回给`Foo.__init__()`，完成实例化。</div><div class="line"></div><div class="line"></div><div class="line">## importlib字符串模块导入</div></pre></td></tr></table></figure></p>
-<p>import importlib<br>x=’scrapy.crawler.CrawlerProcess’<br>model_path,model_name = x.rsplit(‘.’,maxsplit=1)<br>md=importlib.import_module(model_path)    # 字符串形式模块导入<br>cls=getattr(md,model_name)<br>print(cls)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 字符串形式运行函数</div><div class="line">1 eval(字符串)</div></pre></td></tr></table></figure></p>
-<p>def func(arg):<br>    return arg</p>
-<p>eval(‘func(“hello wolrd”)’)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">2  sys.modules获取函数</div></pre></td></tr></table></figure></p>
-<p>import sys</p>
-<p>def process(arg):<br>    return arg</p>
-<p>f=”process”</p>
-<p>func=getattr(sys.modules[<strong>name</strong>], f)  # 获取函数</p>
-<p>ret=func(‘hello world’)<br>print(ret)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">3  运用类中`getattr`</div></pre></td></tr></table></figure></p>
+<p>示例二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">def func1(self):</div><div class="line">    print(self.name,&apos;say Hi&apos;)</div><div class="line">    return &quot;func&quot;</div><div class="line"></div><div class="line">class Foo(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.name = &apos;fgf&apos;</div><div class="line">    def func2(self):</div><div class="line">        print(self.name,&apos;say fu&apos;)</div><div class="line">        return &quot;func&quot;</div><div class="line">obj = Foo()</div><div class="line"></div><div class="line">choice = input(&quot;请输入调用方法名[func1|func2]：&quot;)</div><div class="line">if hasattr(obj,choice):  # 实例中有这个方法，执行实例中的方法</div><div class="line">    print(getattr(obj,choice))</div><div class="line">else:                    # 动态加载函数封装到类中</div><div class="line">    setattr(obj,choice,func1)</div><div class="line">    func = getattr(obj,choice)</div><div class="line">    func(obj)</div></pre></td></tr></table></figure></p>
+<h2 id="getitem-setitem-delitem"><a href="#getitem-setitem-delitem" class="headerlink" title="__getitem__  __setitem__  __delitem__"></a><code>__getitem__</code>  <code>__setitem__</code>  <code>__delitem__</code></h2><p>用于索引操作，<br>如字典形式：<code>obj[&#39;k1&#39;]</code><br>如Session设置 <code>request.session[&#39; user_info&#39;] =  &#39;user&#39;</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">class Foo(object):</div><div class="line">    def __init__(self,attrs=&#123;&#125;):</div><div class="line">        self.attrs = attrs</div><div class="line">    def __getitem__(self, key):</div><div class="line">        print(&apos;__getitem__&apos;,key)</div><div class="line">        return self.attrs.get(key)</div><div class="line">    def __setitem__(self, key, value):</div><div class="line">        print(&apos;__setitem__&apos;,key,value)</div><div class="line">        self.attrs[key] = value</div><div class="line">    def __delitem__(self, key):</div><div class="line">        print(&apos;__delitem__&apos;,key)</div><div class="line">        del self.attrs[key]</div><div class="line">        print(self.attrs)</div><div class="line">        </div><div class="line">obj = Foo(&#123;&apos;name&apos;:&apos;wxq&apos;&#125;)</div><div class="line"></div><div class="line">obj[&apos;k1&apos;] = &apos;v1&apos;   # 设置，自动触发执行 __setitem__</div><div class="line">print(obj.attrs)</div><div class="line">print(obj[&apos;k1&apos;])     # 获取值，自动触发执行 __getitem__</div><div class="line">del obj[&apos;name&apos;]        # 触发__delitem__</div></pre></td></tr></table></figure>
+<h2 id="new-和-metaclass"><a href="#new-和-metaclass" class="headerlink" title="__new__和 __metaclass__"></a><code>__new__和 __metaclass__</code></h2><h3 id="new-与实例化对象相关"><a href="#new-与实例化对象相关" class="headerlink" title="__new__与实例化对象相关"></a><code>__new__</code>与实例化对象相关</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,name):</div><div class="line">        print(&quot;Foo __init__&quot;)</div><div class="line">        self.name = name</div><div class="line"></div><div class="line">    def __new__(cls, *args, **kwargs):  # 其实是运行了__new__(),不再调用__init__()方法了</div><div class="line">        print(&quot;Foo __new__&quot;)</div><div class="line"></div><div class="line">obj = Foo(&apos;wxq&apos;)   # 打印 Foo __new__,这里obj是None</div></pre></td></tr></table></figure>
+<p>这里可以看出实例化是先运行的<strong>new</strong>()方法，如果<strong>new</strong>()没有返回值，Foo.<strong>init</strong>()就不会运行了，obj也就为None了<br>要想运行Foo.<strong>init</strong>(), 那么<strong>new</strong>()必须有返回值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,name):</div><div class="line">        print(&quot;Foo __init__&quot;)</div><div class="line">        self.name = name</div><div class="line"></div><div class="line">    def __new__(cls, *args, **kwargs):</div><div class="line">        print(&quot;Foo __new__&quot;)</div><div class="line">        return object.__new__(cls)</div><div class="line"></div><div class="line">obj = Foo(&apos;wxq&apos;)</div><div class="line">print(obj)</div></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>实例化过程</p>
+<p>看起来<code>__new__</code>什么也没有干，只是有了一块内存地址或对象地址用于返回给<code>__init__()</code>，再<code>__init__()</code>执行。</p>
+<h3 id="metaclass-与类的创建相关"><a href="#metaclass-与类的创建相关" class="headerlink" title="__metaclass__与类的创建相关"></a><code>__metaclass__</code>与类的创建相关</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print type(f) # 输出：&lt;class &apos;__main__.Foo&apos;&gt;     表示，obj 对象由Foo类创建</div><div class="line">print type(Foo) # 输出：&lt;type &apos;type&apos;&gt;            表示，Foo类对象由 type 类创建</div></pre></td></tr></table></figure>
+<p>培析类 的创建过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">def func(self):</div><div class="line">    print(&apos;hello fgf&apos;)</div><div class="line"></div><div class="line">Foo = type(&apos;Foo&apos;,(object,), &#123;&apos;talk&apos;: func&#125;)</div><div class="line"># type第一个参数：类名</div><div class="line"># type第二个参数：当前类的基类</div><div class="line"># type第三个参数：类的成员</div><div class="line">f = Foo()</div><div class="line">f.talk()</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">def func(self):</div><div class="line">    print(&quot;hello %s %s&quot;%(self.name,self.age))</div><div class="line"></div><div class="line">def __init__(self,name,age):</div><div class="line">    self.name = name</div><div class="line">    self.age = age</div><div class="line">Foo = type(&apos;Foo&apos;,(object,),&#123;&apos;func&apos;:func, &apos;__init__&apos;:__init__&#125;)   # 用type创建出Foo这个对象（类）</div><div class="line"></div><div class="line">f = Foo(&quot;wxq&quot;,25)    # 再用Foo对象创建f对象</div><div class="line">f.func()</div></pre></td></tr></table></figure>
+<p>Metaclass元类创建过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">#print(globals())</div><div class="line"></div><div class="line">class MyType(type):</div><div class="line">    def __init__(self,*args,**kwargs):</div><div class="line">        print(&quot;MyType __init__&quot;,self,*args,**kwargs)</div><div class="line"></div><div class="line">    def __call__(self, *args, **kwargs):</div><div class="line">        print(&quot;MyType __call__&quot;,self, *args, **kwargs)</div><div class="line">        obj = self.__new__(self)</div><div class="line">        self.__init__(obj, *args, **kwargs)</div><div class="line">        obj.age= 25</div><div class="line">        return obj</div><div class="line">    def __new__(cls, *args, **kwargs):</div><div class="line">        print(&quot;MyType  __new__&quot;,cls, *args, **kwargs)</div><div class="line">        obj = type.__new__(cls, *args, **kwargs)</div><div class="line">        return obj</div><div class="line"></div><div class="line">class Foo(object,metaclass=MyType):</div><div class="line">    def __init__(self, name):</div><div class="line">        self.name = name</div><div class="line">        print(&quot;Foo __init__&quot;)</div><div class="line"></div><div class="line">    def __call__(self, *args, **kwargs):</div><div class="line">        print(&quot;call...&quot;)</div><div class="line"></div><div class="line">#print(globals()</div><div class="line"></div><div class="line">f = Foo(&quot;test&quot;)</div><div class="line">print(f.name,f.age)</div></pre></td></tr></table></figure></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>Type创建类过程</p>
+<p>前面实例化对象的结论是<code>__new__</code>什么也没有干，只是有了一块内存地址或对象地址用于返回给<code>__init__()</code>，<br>再<code>__init__()</code>执行。那么type创建Foo对象(类)也是这个流程，因为是Type实例化Foo类，MyType执行<code>__new__</code><br>创建Foo,返回给<code>MyType.__init__()</code>执行，当f=Foo() 实例化对象也就是加()调用<code>MyType.__call__()</code>方法,<br><code>__call__()</code>方法来执行实例化，实例化过程又是执行<code>Foo.__new__()</code>返回给<code>Foo.__init__()</code>，完成实例化。</p>
+<h2 id="importlib字符串模块导入"><a href="#importlib字符串模块导入" class="headerlink" title="importlib字符串模块导入"></a>importlib字符串模块导入</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import importlib</div><div class="line">x=&apos;scrapy.crawler.CrawlerProcess&apos;</div><div class="line">model_path,model_name = x.rsplit(&apos;.&apos;,maxsplit=1)</div><div class="line">md=importlib.import_module(model_path)    # 字符串形式模块导入</div><div class="line">cls=getattr(md,model_name)</div><div class="line">print(cls)</div></pre></td></tr></table></figure>
+<h2 id="字符串形式运行函数"><a href="#字符串形式运行函数" class="headerlink" title="字符串形式运行函数"></a>字符串形式运行函数</h2><p>1 eval(字符串)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def func(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">eval(&apos;func(&quot;hello wolrd&quot;)&apos;)</div></pre></td></tr></table></figure></p>
+<p>2  sys.modules获取函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line"></div><div class="line">def process(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">f=&quot;process&quot;</div><div class="line"></div><div class="line">func=getattr(sys.modules[__name__], f)  # 获取函数</div><div class="line"></div><div class="line">ret=func(&apos;hello world&apos;)</div><div class="line">print(ret)</div><div class="line">```  </div><div class="line"></div><div class="line">3  运用类中`getattr`</div></pre></td></tr></table></figure></p>
 <p>class Foo():<br>    def f1(self):<br>        return “hello world”</p>
 <p>obj = Foo()<br>x=”f1”</p>
 <p>func=getattr(obj,x)<br>print(func())<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">## staticmethod</div><div class="line"></div><div class="line">几个魔法方法说明：</div><div class="line"></div><div class="line">`@classmethod`   `@staticmethod`</div><div class="line">不依赖任何具体的对象来执行类当中是方法，这个方法要么是静态方法， 要么是类方法，要么是属性</div></pre></td></tr></table></figure></p>
@@ -276,7 +244,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbe6rqn001ochjxu0arz8ls" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbe9zcw001od2jxdlqmdh66" class="article-share-link">Share</a>
       
       
     </footer>
@@ -345,7 +313,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdbe6rql001kchjxa7wnlo33" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdbe9zcu001kd2jx6mlr7674" class="article-share-link">Share</a>
       
       
     </footer>
@@ -419,7 +387,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjdbe6rqm001mchjxyucdcoqf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjdbe9zcv001md2jxku7zizij" class="article-share-link">Share</a>
       
       
     </footer>
@@ -630,7 +598,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdbe6rqj001ichjxo7cz4tr0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdbe9zcs001id2jx8y4cr8v5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -713,7 +681,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdbe6rqh001gchjxaqyhv80d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdbe9zcq001gd2jxpssn3bd6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -785,7 +753,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdbe6rr00023chjxc1dhhd82" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdbe9zda0023d2jxyo1oig3d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -868,7 +836,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdbe6rqf001echjxi7m0na7g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdbe9zco001ed2jxcgt8ghxv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -912,7 +880,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdbe6rqv001ychjxvoqwirp1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdbe9zd5001yd2jxldrecn2o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1003,7 +971,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjdbe6rq50014chjxebmn5rvm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjdbe9zce0014d2jxdl8nbh67" class="article-share-link">Share</a>
       
       
     </footer>
