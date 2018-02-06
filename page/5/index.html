@@ -133,7 +133,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdbeizpa002bedjxjkrpby52" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdbekyva002beyjx9leeoa32" class="article-share-link">Share</a>
       
       
     </footer>
@@ -204,7 +204,7 @@
 <p>Metaclass元类创建过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">#print(globals())</div><div class="line"></div><div class="line">class MyType(type):</div><div class="line">    def __init__(self,*args,**kwargs):</div><div class="line">        print(&quot;MyType __init__&quot;,self,*args,**kwargs)</div><div class="line"></div><div class="line">    def __call__(self, *args, **kwargs):</div><div class="line">        print(&quot;MyType __call__&quot;,self, *args, **kwargs)</div><div class="line">        obj = self.__new__(self)</div><div class="line">        self.__init__(obj, *args, **kwargs)</div><div class="line">        obj.age= 25</div><div class="line">        return obj</div><div class="line">    def __new__(cls, *args, **kwargs):</div><div class="line">        print(&quot;MyType  __new__&quot;,cls, *args, **kwargs)</div><div class="line">        obj = type.__new__(cls, *args, **kwargs)</div><div class="line">        return obj</div><div class="line"></div><div class="line">class Foo(object,metaclass=MyType):</div><div class="line">    def __init__(self, name):</div><div class="line">        self.name = name</div><div class="line">        print(&quot;Foo __init__&quot;)</div><div class="line"></div><div class="line">    def __call__(self, *args, **kwargs):</div><div class="line">        print(&quot;call...&quot;)</div><div class="line"></div><div class="line">#print(globals()</div><div class="line"></div><div class="line">f = Foo(&quot;test&quot;)</div><div class="line">print(f.name,f.age)</div></pre></td></tr></table></figure></p>
 <h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>Type创建类过程</p>
 <p>前面实例化对象的结论是<code>__new__</code>什么也没有干，只是有了一块内存地址或对象地址用于返回给<code>__init__()</code>，<br>再<code>__init__()</code>执行。那么type创建Foo对象(类)也是这个流程，因为是Type实例化Foo类，MyType执行<code>__new__</code><br>创建Foo,返回给<code>MyType.__init__()</code>执行，当f=Foo() 实例化对象也就是加()调用<code>MyType.__call__()</code>方法,<br><code>__call__()</code>方法来执行实例化，实例化过程又是执行<code>Foo.__new__()</code>返回给<code>Foo.__init__()</code>，完成实例化。</p>
-<h2 id="importlib字符串模块导入"><a href="#importlib字符串模块导入" class="headerlink" title="importlib字符串模块导入"></a>importlib字符串模块导入</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import importlib</div><div class="line">x=&apos;scrapy.crawler.CrawlerProcess&apos;</div><div class="line">model_path,model_name = x.rsplit(&apos;.&apos;,maxsplit=1)</div><div class="line">md=importlib.import_module(model_path)    # 字符串形式模块导入</div><div class="line">cls=getattr(md,model_name)</div><div class="line">print(cls)</div></pre></td></tr></table></figure>
+<h2 id="importlib字符串模块导入"><a href="#importlib字符串模块导入" class="headerlink" title="importlib字符串模块导入"></a>importlib字符串模块导入</h2><p>import importlib<br>x=’scrapy.crawler.CrawlerProcess’<br>model_path,model_name = x.rsplit(‘.’,maxsplit=1)<br>md=importlib.import_module(model_path)    # 字符串形式模块导入<br>cls=getattr(md,model_name)<br>print(cls)</p>
 <h2 id="字符串形式运行函数"><a href="#字符串形式运行函数" class="headerlink" title="字符串形式运行函数"></a>字符串形式运行函数</h2><p>1 eval(字符串)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def func(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">eval(&apos;func(&quot;hello wolrd&quot;)&apos;)</div></pre></td></tr></table></figure></p>
 <p>2  sys.modules获取函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line"></div><div class="line">def process(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">f=&quot;process&quot;</div><div class="line"></div><div class="line">func=getattr(sys.modules[__name__], f)  # 获取函数</div><div class="line"></div><div class="line">ret=func(&apos;hello world&apos;)</div><div class="line">print(ret)</div><div class="line">```  </div><div class="line"></div><div class="line">3  运用类中getattr</div></pre></td></tr></table></figure></p>
 <p>class Foo():<br>    def f1(self):<br>        return “hello world”</p>
@@ -243,7 +243,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbeizos001oedjxd2hwrkbh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbekyum001qeyjx1w0qyd7i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -312,7 +312,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdbeizop001kedjxfvrdaagv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdbekyug001keyjxxuse82xj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -386,7 +386,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjdbeizor001medjxrqwd4in4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程/" data-id="cjdbekyui001meyjxp05d0dhi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -597,7 +597,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdbeizon001iedjxj6zj2czx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdbekyue001ieyjxdc4xqbm0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -680,7 +680,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdbeizol001gedjxeuxacp99" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdbekyuc001geyjxsp53kpgh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -752,7 +752,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdbeizp60023edjxrhdnngv0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdbekyv20023eyjx6yd46efe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -835,7 +835,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdbeizok001eedjxadwxq0x8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdbekyu9001eeyjxhf37588k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -879,7 +879,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdbeizp0001yedjxozuqi3xu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdbekyuv001yeyjx8l311w0l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -970,7 +970,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjdbeizoa0014edjxemiqlq27" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjdbekyty0014eyjxko4x9hk5" class="article-share-link">Share</a>
       
       
     </footer>
