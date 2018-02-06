@@ -35,7 +35,7 @@ staticmethod
 classmethod
 
 内置方法1234567891 Foo.__name__ 字符串形式的类名2 Foo.__doc__ Foo的文档字符串3 Foo.__bases__ 父类组成的元组4 Foo.__c">
-<meta property="og:updated_time" content="2018-02-06T08:35:09.000Z">
+<meta property="og:updated_time" content="2018-02-06T08:37:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-08-01-面象对象高级编程">
 <meta name="twitter:description" content="目录(魔法方法)
@@ -146,7 +146,8 @@ classmethod
 <h2 id="getattr-setattr-hasattr-delattr"><a href="#getattr-setattr-hasattr-delattr" class="headerlink" title="__getattr__  __setattr__  __hasattr__ __delattr__"></a><code>__getattr__</code>  <code>__setattr__</code>  <code>__hasattr__</code> <code>__delattr__</code></h2><p>用于属性操作, 如 :</p>
 <p> <code>obj,name</code>调用<code>__getattr__()</code>方法<br> <code>obj.name = &#39;wxq&#39; 调用</code> <strong>setattr</strong>()`方法</p>
 <p>示例一：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,path=&apos;&apos;):</div><div class="line">        self.path = path</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        return Foo(&quot;%s/%s&quot;%(self.path, item))</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.path</div><div class="line"></div><div class="line">obj = Foo(&quot;www&quot;).bai.com</div><div class="line">print(obj)     # 打印 www/bai/com</div><div class="line"></div><div class="line">``` </div><div class="line"></div><div class="line">示例二：</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,path=&apos;&apos;):</div><div class="line">        self.path = path</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        return Foo(&quot;%s/%s&quot;%(self.path, item))</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.path</div><div class="line"></div><div class="line">obj = Foo(&quot;www&quot;).bai.com</div><div class="line">print(obj)     # 打印 www/bai/com</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> </div><div class="line"></div><div class="line">示例二：</div></pre></td></tr></table></figure>
 <p>def func1(self):<br>    print(self.name,’say Hi’)<br>    return “func”</p>
 <p>class Foo(object):<br>    def <strong>init</strong>(self):<br>        self.name = ‘fgf’<br>    def func2(self):<br>        print(self.name,’say fu’)<br>        return “func”<br>obj = Foo()</p>
 <p>choice = input(“请输入调用方法名[func1|func2]：”)<br>if hasattr(obj,choice):  # 实例中有这个方法，执行实例中的方法<br>    print(getattr(obj,choice))<br>else:                    # 动态加载函数封装到类中<br>    setattr(obj,choice,func1)<br>    func = getattr(obj,choice)<br>    func(obj)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## `__getitem__`  ` __setitem__`  `__delitem__`</div><div class="line"></div><div class="line">用于索引操作，</div><div class="line">如字典形式：`obj[&apos;k1&apos;]`  </div><div class="line">如Session设置 `request.session[&apos; user_info&apos;] =  &apos;user&apos;`</div></pre></td></tr></table></figure></p>
@@ -231,7 +232,7 @@ def __new__(cls, *args, **kwargs):
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbe3xbt001oanjx3nwc92ez" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbe6rqn001ochjxu0arz8ls" class="article-share-link">Share</a>
       
       
     </footer>
