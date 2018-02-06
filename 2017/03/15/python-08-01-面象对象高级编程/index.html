@@ -35,7 +35,7 @@ staticmethod
 classmethod
 
 内置方法1234567891 Foo.__name__ 字符串形式的类名2 Foo.__doc__ Foo的文档字符串3 Foo.__bases__ 父类组成的元组4 Foo.__c">
-<meta property="og:updated_time" content="2018-02-06T08:44:08.000Z">
+<meta property="og:updated_time" content="2018-02-06T08:46:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-08-01-面象对象高级编程">
 <meta name="twitter:description" content="目录(魔法方法)
@@ -188,19 +188,18 @@ classmethod
 <p>#!/usr/bin/env python3<br>import time<br>class Date(object):<br>    def <strong>init</strong>(self, year,mon,day):<br>        self.year = year<br>        self.mon = mon<br>        self.day = day<br>    @staticmethod<br>    def now():<br>        t = time.localtime()<br>        return Date(t.tm_year, t.tm_mon, t.tm_mday)</p>
 <p>class EuroDate(Date):<br>     def <strong>str</strong>(self):<br>       return ‘year: %s mon:%s day:%s’ % (self.year, self.mon,self.day)</p>
 <p>e = EuroDate.now()<br>print(e)<br>root@ubuntu:~# python3 method.py </p>
-<p><__main__.date object="" at="" 0x7f5514658940=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">上面并没有我们想要的结果</div><div class="line">分析：</div><div class="line">`e = EuroDate.now()`实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。</div><div class="line">也就是`return Date(t.tm_year, t.tm_mon, t.tm_mday)`, 实例print时调Date类的`__str__`方法，故打印`return Date(t.tm_year, t.tm_mon, t.tm_mday)`后的内存地址，不会打印`EuroDate`类中定义的`__str__`方法</div></pre></td></tr></table></figure></__main__.date></p>
+<p><__main__.date object="" at="" 0x7f5514658940=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">上面并没有我们想要的结果</div><div class="line">分析：</div><div class="line">`e = EuroDate.now()`实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。</div><div class="line">也就是`return Date(t.tm_year, t.tm_mon, t.tm_mday)`, 实例print时调Date类的`__str__`方法，故打印`return Date(t.tm_year, t.tm_mon, t.tm_mday)`后的内存地址，不会打印`EuroDate`类中定义的`__str__`方法</div></pre></td></tr></table></figure></__main__.date></p>
 <p>root@ubuntu:~# cat goodmethod.py </p>
 <p>#!/usr/bin/env python3<br>import time<br>class Date(object):<br>    def <strong>init</strong>(self, year,mon,day):<br>        self.year = year<br>        self.mon = mon<br>        self.day = day<br>    @classmethod<br>    def now(cls):<br>        t = time.localtime()<br>        return cls(t.tm_year, t.tm_mon, t.tm_mday)</p>
 <p>class EuroDate(Date):<br>     def <strong>str</strong>(self):<br>       return ‘year: %s mon:%s day:%s’ % (self.year, self.mon,self.day)</p>
-<p>e = EuroDate.now()<br>print(e)<br>root@ubuntu:~# python3 goodmethod.py<br>year: 2017 mon:3 day:12<br><code>``
-这样才是我们想要的结果，好象参悟了点什么
-分析:</code>e = EuroDate.now()<code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。这一点和上面是一致的。但此时</code>return cls(t.tm_year, t.tm_mon, t.tm_mday)<code>中的cls不是Date,而是EuroDate,符合谁调谁就是cls的原则。这样实例化</code>e = EuroDate.now()<code>时print(e)就会去调EuroDate中的</code><strong>str</strong>`方法，得到我们想要的结果</p>
+<p>e = EuroDate.now()<br>print(e)<br>root@ubuntu:~# python3 goodmethod.py<br>year: 2017 mon:3 day:12<br>```</p>
+<p>这样才是我们想要的结果，好象参悟了点什么<br>分析:<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。这一点和上面是一致的。但此时<code>return cls(t.tm_year, t.tm_mon, t.tm_mday)</code>中的cls不是Date,而是EuroDate,符合谁调谁就是cls的原则。这样实例化<code>e = EuroDate.now()</code>时print(e)就会去调EuroDate中的<code>__str__</code>方法，得到我们想要的结果</p>
 <p>小结：<br><code>staticmethod</code>与<code>classmethod</code>在一定场景中是有区别的。细节参照上面的例子练习</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbeffm9001odrjxfhk12squ" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-01-面象对象高级编程/" data-id="cjdbeizos001oedjxd2hwrkbh" class="article-share-link">Share</a>
       
       
     </footer>
