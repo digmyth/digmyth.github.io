@@ -31,7 +31,7 @@ importlib
 字符串形式运行函数
 
 内置方法1234567891 Foo.__name__ 字符串形式的类名2 Foo.__doc__ Foo的文档字符串3 Foo.__bases__ 父类组成的元组4 Foo.__class__ Foo类所在5 Foo.__base">
-<meta property="og:updated_time" content="2018-02-07T07:29:35.000Z">
+<meta property="og:updated_time" content="2018-02-07T07:37:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-08-03-面象对象编程高级">
 <meta name="twitter:description" content="目录(魔法方法)
@@ -155,21 +155,15 @@ importlib
 <h2 id="importlib字符串模块导入"><a href="#importlib字符串模块导入" class="headerlink" title="importlib字符串模块导入"></a>importlib字符串模块导入</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import importlib</div><div class="line">x=&apos;scrapy.crawler.CrawlerProcess&apos;</div><div class="line">model_path,model_name = x.rsplit(&apos;.&apos;,maxsplit=1)</div><div class="line">md=importlib.import_module(model_path)    # 字符串形式模块导入</div><div class="line">cls=getattr(md,model_name)</div><div class="line">print(cls)</div></pre></td></tr></table></figure>
 <h2 id="字符串形式运行函数"><a href="#字符串形式运行函数" class="headerlink" title="字符串形式运行函数"></a>字符串形式运行函数</h2><p>1 eval(字符串)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">def func(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">eval(&apos;func(&quot;hello wolrd&quot;)&apos;)</div></pre></td></tr></table></figure></p>
 <p>Tornado编写session组件会用到这个知识点，结合工厂设计模式</p>
-<p>2 eval<br>eval获取函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">def f1(arg):</div><div class="line">    print(arg)</div><div class="line"></div><div class="line">x=&quot;f1&quot;</div><div class="line"></div><div class="line">func=eval(x)  # 获取函数</div><div class="line">func(&quot;wxq&quot;)</div><div class="line">``` </div><div class="line"></div><div class="line">3 sys.modules获取函数</div></pre></td></tr></table></figure></p>
-<p>import sys</p>
-<p>def process(arg):<br>    return arg</p>
-<p>f=”process”</p>
-<p>func=getattr(sys.modules[<strong>name</strong>], f)  # 获取函数</p>
-<p>ret=func(‘hello world’)<br>print(ret)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">4 运用类中getattr</div></pre></td></tr></table></figure></p>
-<p>class Foo():<br>    def f1(self):<br>        return “hello world”</p>
-<p>obj = Foo()<br>x=”f1”</p>
-<p>func=getattr(obj,x)<br>print(func())<br>```</p>
+<p>2 eval获取函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">def f1(arg):</div><div class="line">    print(arg)</div><div class="line"></div><div class="line">x=&quot;f1&quot;</div><div class="line"></div><div class="line">func=eval(x)  # 获取函数</div><div class="line">func(&quot;wxq&quot;)</div></pre></td></tr></table></figure></p>
+<p>3 sys.modules获取函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import sys</div><div class="line"></div><div class="line">def process(arg):</div><div class="line">    return arg</div><div class="line"></div><div class="line">f=&quot;process&quot;</div><div class="line"></div><div class="line">func=getattr(sys.modules[__name__], f)  # 获取函数</div><div class="line"></div><div class="line">ret=func(&apos;hello world&apos;)</div><div class="line">print(ret)</div></pre></td></tr></table></figure></p>
+<p>4 运用类中getattr<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def f1(self):</div><div class="line">        return &quot;hello world&quot;</div><div class="line">        </div><div class="line">obj = Foo()</div><div class="line">x=&quot;f1&quot;</div><div class="line"></div><div class="line">func=getattr(obj,x)</div><div class="line">print(func())</div></pre></td></tr></table></figure></p>
 <p>&lt;完结&gt;</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdcrffro001ky2jxrb5fjysj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdcrhl7x001qynjxotykvte7" class="article-share-link">Share</a>
       
       
     </footer>
