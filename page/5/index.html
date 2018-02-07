@@ -144,7 +144,7 @@
 <p>单独协程没什么用，结合协程切换特性+IO+select+socket可以编写出牛逼的异步IO模块或异步非阻塞框架</p>
 <p>gevent就是基于greenlet+libvent+IO二次加工实现的python异步模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 instal gevent</div></pre></td></tr></table></figure></p>
 <p>示例：<br>和多线程不同，这里是单线程并发IO任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">import gevent</div><div class="line">import requests</div><div class="line"></div><div class="line">def func(url):</div><div class="line">    response = requests.get(url)</div><div class="line">    print(response.url)</div><div class="line"></div><div class="line">gevent.joinall([</div><div class="line">    gevent.spawn(func,&apos;http://www.baidu.com&apos;),</div><div class="line">    gevent.spawn(func,&apos;http://www.digmyth.com&apos;),</div><div class="line">    gevent.spawn(func,&apos;http://www.github.com&apos;),</div><div class="line">])</div></pre></td></tr></table></figure></p>
-<p>当然我们也可以自己IO多路复用select来写</p>
+<p>当然我们也可以自己用select来写IO多路复实现并发</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>即使有了多进程多线程或进程池，线程池处理多任务，但如果一个任务在执行的过程中大部分时间都在等待IO操作，单进程单线程模型也只能处理一个任务，无法并发执行。</p>
 <p>还好现代操作系统支持异步IO，这是一个很牛逼的东东，单进程单线程模型并发执行任务得以实现。这种称为事件驱动模型，Nginx就是支持异步IO的Web服务器。</p>
 <p>单线程的异步编程或异步IO多路复用会是趋势，可以基于事件驱动编写高效的多任务程序。Twisted,Tornado之所以牛逼，就是因为它们的高性能也是基于事件驱动，基于异步IO多路复用。</p>
@@ -152,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdcrp7s3001uzujx3uwo04re" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdcrt5im001s0fjxqzxbie9o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -234,7 +234,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdcrp7sj002dzujxjs2ait0g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdcrt5j4002d0fjxkyail2no" class="article-share-link">Share</a>
       
       
     </footer>
@@ -314,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdcrp7rz001qzujxg0cpyn82" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdcrt5il001q0fjxk3c8kkgi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -383,7 +383,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdcrp7rv001kzujxepq2lmqy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdcrt5ig001k0fjxlktwfxp3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -457,7 +457,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjdcrp7rw001mzujxdjug784b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjdcrt5ih001m0fjxybgiyqck" class="article-share-link">Share</a>
       
       
     </footer>
@@ -668,7 +668,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdcrp7rt001izujxsprzu91g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdcrt5ie001i0fjxkad9b57y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -751,7 +751,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdcrp7rq001gzujxf9pves2r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdcrt5ic001g0fjxjacgh90n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -823,7 +823,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdcrp7sc0025zujxhbp6fgae" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdcrt5ix00250fjx498p0hkg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -906,7 +906,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdcrp7rp001ezujxujingglp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdcrt5ib001e0fjx9udnwhkl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -950,7 +950,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdcrp7s80020zujxmt3n1pf6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdcrt5iu00200fjx434hk3bz" class="article-share-link">Share</a>
       
       
     </footer>
