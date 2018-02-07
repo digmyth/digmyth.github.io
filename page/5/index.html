@@ -124,44 +124,27 @@
 <p>一个进程可以有多个线程，线程间共享内存数据，一个线程挂了，其它线程也会崩溃，线程切换开销较进程小一些。</p>
 <p>多线程： 用于解决IO密集型任务的多并发</p>
 <p>线程池： 内部维护一个线程序列.  (与进程池同理)</p>
-<p>线程示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line">def task(arg):</div><div class="line">    time.sleep(1)</div><div class="line">    print(arg)</div><div class="line">for i in range(5):</div><div class="line">	t = threading.Thread(target=task,args=(i,))</div><div class="line">	t.setDaemon(False)  # 等子线程完成后再结束主线程</div><div class="line">	t.start()</div><div class="line">	t.join()  # 变为串行,一直等</div><div class="line">	t.join(3)  # 变为串行,只等3秒</div><div class="line">print(&quot;end&quot;)  # 先打印主线程的end,再一起打印子线程的i</div><div class="line">``` </div><div class="line"></div><div class="line">自定义线程类示例</div></pre></td></tr></table></figure></p>
-<p>import threading<br>import time</p>
-<p>class MyThread(threading.Thread):<br>    def <strong>init</strong>(self,target=None,args=(),<strong>kwargs):<br>        super(MyThread,self).<strong>init</strong>(target=None,args=(),</strong>kwargs)<br>        self.target =target<br>        self._args = args<br>    def run(self,):<br>        return self.target(*self._args)</p>
-<p>def task(arg):<br>    time.sleep(1)<br>    print(arg)</p>
-<p>t = MyThread(target=task, args=(123,))<br>t.run()<br>print(“end”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">线程锁</div><div class="line">线程共享数据，共同修改一份数据是有问题的，pycharm环境下可能看不出效果，</div><div class="line">cmd命令行下可以看到数据修改混乱了。</div></pre></td></tr></table></figure></p>
-<p>import threading<br>import time<br>v=10<br>def task(arg):<br>    global  v<br>    v-=1<br>    print(v)</p>
-<p>for i in range(10):<br>    t=threading.Thread(target=task,args=(i,))<br>    t.start()<br>print(“end”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">数据修改乱了，就要加锁了：普通锁，递归锁RLock,事件锁、条件锁，互斥锁</div><div class="line">普通锁</div></pre></td></tr></table></figure></p>
-<p>import threading<br>import time<br>v=10<br>lock = threading.Lock()</p>
-<p>def task(arg):<br>    lock.acquire() # 申请锁<br>    global  v<br>    v-=1<br>    print(v)<br>    lock.release() # 释放锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">普通锁不能开多重没锁，如果是下面这种设置会造成死锁</div></pre></td></tr></table></figure></p>
-<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><p>lock = threading.Lock()<br>lock.acquire() # 申请锁<br>lock.acquire() # 申请锁<br>lock.release() # 释放锁<br>lock.release() # 释放锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">递归锁RLock</div><div class="line">递归锁RLock可以开多重锁，不会造成死锁</div></pre></td></tr></table></figure></p>
-<h1 id="不会死锁"><a href="#不会死锁" class="headerlink" title="不会死锁"></a>不会死锁</h1><p>lock = threading.RLock()<br>lock.acquire() # 申请锁<br>lock.acquire() # 申请锁<br>lock.release() # 释放锁<br>lock.release() # 释放锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">信号量BoundedSemaphore</div><div class="line">多个线程同时使用锁，当然这里3个同时修改数据也可能混乱。</div></pre></td></tr></table></figure></p>
-<p>import threading<br>import time<br>v=10<br>lock = threading.BoundedSemaphore(3)</p>
-<p>def task(arg):<br>    lock.acquire() # 申请锁<br>    time.sleep(1)<br>    global  v<br>    v-=1<br>    print(v)<br>    lock.release() # 释放锁<br>for i in range(10):<br>    t=threading.Thread(target=task,args=(i,))<br>    t.start()<br>print(“end”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">事件锁</div><div class="line">条件式批量解锁</div></pre></td></tr></table></figure></p>
-<p>import threading<br>import time<br>lock = threading.Event()</p>
-<p>def task(arg):<br>    time.sleep(1)<br>    lock.wait()    #锁住所有线程<br>    print(arg)</p>
-<p>for i in range(10):<br>    t=threading.Thread(target=task,args=(i,))<br>    t.start()<br>while True:<br>    value =  input(“&gt;&gt;&gt;”)<br>    if value == ‘1’:<br>        lock.set()   # 解锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">条件锁</div></pre></td></tr></table></figure></p>
-<p>import threading<br>import time<br>lock = threading.Condition()<br>def task(arg):<br>    time.sleep(1)<br>    lock.acquire()<br>    lock.wait()    #锁住所有线程<br>    print(‘线程’,arg)<br>    lock.release()</p>
-<p>for i in range(10):<br>    t=threading.Thread(target=task,args=(i,))<br>    t.start()<br>while True:<br>    value =  int(input(“&gt;&gt;&gt;”))<br>    lock.acquire()<br>    lock.notify(value)  # 传几就解几个锁<br>    lock.release()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">线程池</div><div class="line">`pool.submit(download,url)`取出一个线程执行任务，返回future对象</div><div class="line">`future.add_done_callback(write)`future对象有一个`add_done_callback`方法，传入我们自己写的回调函数write,  future对象也会自动传给write回调函数。</div><div class="line">`download` 函数的返回值=`future.result()`</div></pre></td></tr></table></figure></p>
-<p>import  requests<br>from concurrent.futures import ThreadPoolExecutor</p>
-<p>def write(future):<br>    response = future.result()<br>    f=open(‘xx.txt’,’wb+’)<br>    f.write(response.content)<br>    f.close()</p>
-<p>url_list = [<br>    ‘<a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a>‘,<br>    ‘<a href="http://www.digmyth.com">http://www.digmyth.com</a>‘,<br>    ‘<a href="http://www.github.com" target="_blank" rel="external">http://www.github.com</a>‘,<br>]<br>def download(url):<br>    response=requests.get(url)<br>    print(“得到结果”,url)<br>    return response</p>
-<p>pool = ThreadPoolExecutor(2)<br>for url in url_list:<br>    print(“开始请求：”,url)<br>    future=pool.submit(download,url)  # 池中取一个连接</p>
-<pre><code># ruture自动传给write调函数:write(future)
-future.add_done_callback(write)
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">封装</div></pre></td></tr></table></figure>
-<p>import requests<br>from  concurrent.futures import ThreadPoolExecutor</p>
-<p>def download(url):<br>    response=requests.get(url)<br>    return response</p>
-<p>def run(url_list=None):<br>    pool = ThreadPoolExecutor(2)<br>    for item in url_list:<br>        url = item[‘url’]<br>        callback = item[‘callback’]<br>        future=pool.submit(download, url)<br>        future.add_done_callback(callback)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
-<p>def f1(future):<br>    print(future.result().content)</p>
-<p>def f2(arg):<br>    print(“future”)</p>
-<p>def f3(future):<br>    print(“future”)</p>
-<p>url_list = [<br>    {‘url’:’<a href="http://www.baidu.com&#39;,&#39;callback&#39;:f1}" target="_blank" rel="external">http://www.baidu.com&#39;,&#39;callback&#39;:f1}</a>,<br>    {‘url’:’<a href="http://www.digmyth.com&#39;,&#39;callback&#39;:f2}">http://www.digmyth.com&#39;,&#39;callback&#39;:f2}</a>,<br>    {‘url’:’<a href="http://www.github.com&#39;,&#39;callback&#39;:f3}" target="_blank" rel="external">http://www.github.com&#39;,&#39;callback&#39;:f3}</a>,<br>]</p>
-<p>import nb_thread<br>nb_thread.run(url_list)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">## 协程</div><div class="line">协程定义： 协程不同于进程，线程对于操作系统可见且是一种资源，协程只是代码层面的来回切换，对于操作系统不可见且并非是一种资源。</div></pre></td></tr></table></figure></p>
-<p>pip3 install greenlet  # python中原生协程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">单独协程没什么用，结合协程切换特性+IO+select+socket可以编写出牛逼的异步IO模块或异步非阻塞框架</div><div class="line"></div><div class="line">gevent就是基于greenlet+libvent+IO二次加工实现的python异步模块</div></pre></td></tr></table></figure></p>
-<p>pip3 instal gevent<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">示例：</div><div class="line">和多线程不同，这里是单线程并发IO任务</div></pre></td></tr></table></figure></p>
-<p>import gevent<br>import requests</p>
-<p>def func(url):<br>    response = requests.get(url)<br>    print(response.url)</p>
-<p>gevent.joinall([<br>    gevent.spawn(func,’<a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a>‘),<br>    gevent.spawn(func,’<a href="http://www.digmyth.com">http://www.digmyth.com</a>‘),<br>    gevent.spawn(func,’<a href="http://www.github.com" target="_blank" rel="external">http://www.github.com</a>‘),<br>])<br>```<br>当然我们也可以自己IO多路复用select来写</p>
+<p>线程示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line">def task(arg):</div><div class="line">    time.sleep(1)</div><div class="line">    print(arg)</div><div class="line">for i in range(5):</div><div class="line">	t = threading.Thread(target=task,args=(i,))</div><div class="line">	t.setDaemon(False)  # 等子线程完成后再结束主线程</div><div class="line">	t.start()</div><div class="line">	t.join()  # 变为串行,一直等</div><div class="line">	t.join(3)  # 变为串行,只等3秒</div><div class="line">print(&quot;end&quot;)  # 先打印主线程的end,再一起打印子线程的i</div></pre></td></tr></table></figure></p>
+<p>自定义线程类示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line"></div><div class="line">class MyThread(threading.Thread):</div><div class="line">    def __init__(self,target=None,args=(),**kwargs):</div><div class="line">        super(MyThread,self).__init__(target=None,args=(),**kwargs)</div><div class="line">        self.target =target</div><div class="line">        self._args = args</div><div class="line">    def run(self,):</div><div class="line">        return self.target(*self._args)</div><div class="line"></div><div class="line">def task(arg):</div><div class="line">    time.sleep(1)</div><div class="line">    print(arg)</div><div class="line"></div><div class="line">t = MyThread(target=task, args=(123,))</div><div class="line">t.run()</div><div class="line">print(&quot;end&quot;)</div></pre></td></tr></table></figure></p>
+<p>线程锁<br>线程共享数据，共同修改一份数据是有问题的，pycharm环境下可能看不出效果，<br>cmd命令行下可以看到数据修改混乱了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line">v=10</div><div class="line">def task(arg):</div><div class="line">    global  v</div><div class="line">    v-=1</div><div class="line">    print(v)</div><div class="line"></div><div class="line">for i in range(10):</div><div class="line">    t=threading.Thread(target=task,args=(i,))</div><div class="line">    t.start()</div><div class="line">print(&quot;end&quot;)</div></pre></td></tr></table></figure></p>
+<p>数据修改乱了，就要加锁了：普通锁，递归锁RLock,事件锁、条件锁，互斥锁<br>普通锁</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line">v=10</div><div class="line">lock = threading.Lock()</div><div class="line"></div><div class="line">def task(arg):</div><div class="line">    lock.acquire() # 申请锁</div><div class="line">    global  v</div><div class="line">    v-=1</div><div class="line">    print(v)</div><div class="line">    lock.release() # 释放锁</div></pre></td></tr></table></figure>
+<p>普通锁不能开多重没锁，如果是下面这种设置会造成死锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 死锁</div><div class="line">lock = threading.Lock()</div><div class="line">lock.acquire() # 申请锁</div><div class="line">lock.acquire() # 申请锁</div><div class="line">lock.release() # 释放锁</div><div class="line">lock.release() # 释放锁</div></pre></td></tr></table></figure></p>
+<p>递归锁RLock<br>递归锁RLock可以开多重锁，不会造成死锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 不会死锁</div><div class="line">lock = threading.RLock()</div><div class="line">lock.acquire() # 申请锁</div><div class="line">lock.acquire() # 申请锁</div><div class="line">lock.release() # 释放锁</div><div class="line">lock.release() # 释放锁</div></pre></td></tr></table></figure></p>
+<p>信号量BoundedSemaphore<br>多个线程同时使用锁，当然这里3个同时修改数据也可能混乱。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line">v=10</div><div class="line">lock = threading.BoundedSemaphore(3)</div><div class="line"></div><div class="line">def task(arg):</div><div class="line">    lock.acquire() # 申请锁</div><div class="line">    time.sleep(1)</div><div class="line">    global  v</div><div class="line">    v-=1</div><div class="line">    print(v)</div><div class="line">    lock.release() # 释放锁</div><div class="line">for i in range(10):</div><div class="line">    t=threading.Thread(target=task,args=(i,))</div><div class="line">    t.start()</div><div class="line">print(&quot;end&quot;)</div></pre></td></tr></table></figure>
+<p>事件锁<br>条件式批量解锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line">lock = threading.Event()</div><div class="line"></div><div class="line">def task(arg):</div><div class="line">    time.sleep(1)</div><div class="line">    lock.wait()    #锁住所有线程</div><div class="line">    print(arg)</div><div class="line"></div><div class="line">for i in range(10):</div><div class="line">    t=threading.Thread(target=task,args=(i,))</div><div class="line">    t.start()</div><div class="line">while True:</div><div class="line">    value =  input(&quot;&gt;&gt;&gt;&quot;)</div><div class="line">    if value == &apos;1&apos;:</div><div class="line">        lock.set()   # 解锁</div></pre></td></tr></table></figure></p>
+<p>条件锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line">lock = threading.Condition()</div><div class="line">def task(arg):</div><div class="line">    time.sleep(1)</div><div class="line">    lock.acquire()</div><div class="line">    lock.wait()    #锁住所有线程</div><div class="line">    print(&apos;线程&apos;,arg)</div><div class="line">    lock.release()</div><div class="line"></div><div class="line">for i in range(10):</div><div class="line">    t=threading.Thread(target=task,args=(i,))</div><div class="line">    t.start()</div><div class="line">while True:</div><div class="line">    value =  int(input(&quot;&gt;&gt;&gt;&quot;))  </div><div class="line">    lock.acquire()</div><div class="line">    lock.notify(value)  # 传几就解几个锁</div><div class="line">    lock.release()</div></pre></td></tr></table></figure></p>
+<p>线程池<br><code>pool.submit(download,url)</code>取出一个线程执行任务，返回future对象<br><code>future.add_done_callback(write)</code>future对象有一个<code>add_done_callback</code>方法，传入我们自己写的回调函数write,  future对象也会自动传给write回调函数。<br><code>download</code> 函数的返回值=<code>future.result()</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">import  requests</div><div class="line">from concurrent.futures import ThreadPoolExecutor</div><div class="line"></div><div class="line">def write(future):</div><div class="line">    response = future.result()</div><div class="line">    f=open(&apos;xx.txt&apos;,&apos;wb+&apos;)</div><div class="line">    f.write(response.content)</div><div class="line">    f.close()</div><div class="line"></div><div class="line">url_list = [</div><div class="line">    &apos;http://www.baidu.com&apos;,</div><div class="line">    &apos;http://www.digmyth.com&apos;,</div><div class="line">    &apos;http://www.github.com&apos;,</div><div class="line">]</div><div class="line">def download(url):</div><div class="line">    response=requests.get(url)</div><div class="line">    print(&quot;得到结果&quot;,url)</div><div class="line">    return response</div><div class="line"></div><div class="line">pool = ThreadPoolExecutor(2)</div><div class="line">for url in url_list:</div><div class="line">    print(&quot;开始请求：&quot;,url)</div><div class="line">    future=pool.submit(download,url)  # 池中取一个连接</div><div class="line">    # ruture自动传给write调函数:write(future)</div><div class="line">    future.add_done_callback(write)</div></pre></td></tr></table></figure>
+<p>封装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import requests</div><div class="line">from  concurrent.futures import ThreadPoolExecutor</div><div class="line"></div><div class="line">def download(url):</div><div class="line">    response=requests.get(url)</div><div class="line">    return response</div><div class="line"></div><div class="line">def run(url_list=None):</div><div class="line">    pool = ThreadPoolExecutor(2)</div><div class="line">    for item in url_list:</div><div class="line">        url = item[&apos;url&apos;]</div><div class="line">        callback = item[&apos;callback&apos;]</div><div class="line">        future=pool.submit(download, url)</div><div class="line">        future.add_done_callback(callback)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">def f1(future):</div><div class="line">    print(future.result().content)</div><div class="line"></div><div class="line">def f2(arg):</div><div class="line">    print(&quot;future&quot;)</div><div class="line"></div><div class="line">def f3(future):</div><div class="line">    print(&quot;future&quot;)</div><div class="line"></div><div class="line">url_list = [</div><div class="line">    &#123;&apos;url&apos;:&apos;http://www.baidu.com&apos;,&apos;callback&apos;:f1&#125;,</div><div class="line">    &#123;&apos;url&apos;:&apos;http://www.digmyth.com&apos;,&apos;callback&apos;:f2&#125;,</div><div class="line">    &#123;&apos;url&apos;:&apos;http://www.github.com&apos;,&apos;callback&apos;:f3&#125;,</div><div class="line">]</div><div class="line"></div><div class="line">import nb_thread</div><div class="line">nb_thread.run(url_list)</div></pre></td></tr></table></figure>
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><p>协程定义： 协程不同于进程，线程对于操作系统可见且是一种资源，协程只是代码层面的来回切换，对于操作系统不可见且并非是一种资源。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 install greenlet  # python中原生协程</div></pre></td></tr></table></figure>
+<p>单独协程没什么用，结合协程切换特性+IO+select+socket可以编写出牛逼的异步IO模块或异步非阻塞框架</p>
+<p>gevent就是基于greenlet+libvent+IO二次加工实现的python异步模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip3 instal gevent</div></pre></td></tr></table></figure></p>
+<p>示例：<br>和多线程不同，这里是单线程并发IO任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">import gevent</div><div class="line">import requests</div><div class="line"></div><div class="line">def func(url):</div><div class="line">    response = requests.get(url)</div><div class="line">    print(response.url)</div><div class="line"></div><div class="line">gevent.joinall([</div><div class="line">    gevent.spawn(func,&apos;http://www.baidu.com&apos;),</div><div class="line">    gevent.spawn(func,&apos;http://www.digmyth.com&apos;),</div><div class="line">    gevent.spawn(func,&apos;http://www.github.com&apos;),</div><div class="line">])</div></pre></td></tr></table></figure></p>
+<p>当然我们也可以自己IO多路复用select来写</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>即使有了多进程多线程或进程池，线程池处理多任务，但如果一个任务在执行的过程中大部分时间都在等待IO操作，单进程单线程模型也只能处理一个任务，无法并发执行。</p>
 <p>还好现代操作系统支持异步IO，这是一个很牛逼的东东，单进程单线程模型并发执行任务得以实现。这种称为事件驱动模型，Nginx就是支持异步IO的Web服务器。</p>
 <p>单线程的异步编程或异步IO多路复用会是趋势，可以基于事件驱动编写高效的多任务程序。Twisted,Tornado之所以牛逼，就是因为它们的高性能也是基于事件驱动，基于异步IO多路复用。</p>
@@ -169,7 +152,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdcrlfb0001uz8jx25905x1o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdcrp7s3001uzujx3uwo04re" class="article-share-link">Share</a>
       
       
     </footer>
@@ -251,7 +234,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdcrlfbd002dz8jxbbin6aes" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdcrp7sj002dzujxjs2ait0g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -331,7 +314,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdcrlfaw001qz8jxupr0gyso" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdcrp7rz001qzujxg0cpyn82" class="article-share-link">Share</a>
       
       
     </footer>
@@ -400,7 +383,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdcrlfas001kz8jx153es8d0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdcrp7rv001kzujxepq2lmqy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -474,7 +457,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjdcrlfat001mz8jxrmxkxhgf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjdcrp7rw001mzujxdjug784b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -685,7 +668,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdcrlfaq001iz8jx4yzdhc43" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdcrp7rt001izujxsprzu91g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -768,7 +751,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdcrlfan001gz8jx43tslp2n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdcrp7rq001gzujxf9pves2r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -840,7 +823,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdcrlfb80025z8jx42y4p3qi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdcrp7sc0025zujxhbp6fgae" class="article-share-link">Share</a>
       
       
     </footer>
@@ -923,7 +906,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdcrlfam001ez8jxyx14pe47" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjdcrp7rp001ezujxujingglp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -967,7 +950,7 @@ future.add_done_callback(write)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdcrlfb50020z8jx7uf0lj7e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjdcrp7s80020zujxmt3n1pf6" class="article-share-link">Share</a>
       
       
     </footer>
