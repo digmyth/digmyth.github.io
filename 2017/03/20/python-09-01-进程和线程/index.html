@@ -5,16 +5,40 @@
   
   <title>python-09-01-进程和线程 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录">
+  <meta name="description" content="目录
+基本概念
+进程
+线程
+协程
+总结
+
+基本概念我们都知道现代操作是支持“多任务”的，什么叫“多任务”呢？。简单地说，就是操作系统可以同时运行多个任务。打个比方一边微信一边QQ。
+单核cpu是如何执行“多任务”的？简单的说，就是cpu时间分片，同一时间单核cpu只能执行一个任务，cpu计算时间分片到每个任务交替运行，进程切换或上下文切换时间很短，我们无法感知而己。真正并发执行多任务还要靠多核c">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python-09-01-进程和线程">
 <meta property="og:url" content="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="目录">
-<meta property="og:updated_time" content="2017-03-12T10:11:15.000Z">
+<meta property="og:description" content="目录
+基本概念
+进程
+线程
+协程
+总结
+
+基本概念我们都知道现代操作是支持“多任务”的，什么叫“多任务”呢？。简单地说，就是操作系统可以同时运行多个任务。打个比方一边微信一边QQ。
+单核cpu是如何执行“多任务”的？简单的说，就是cpu时间分片，同一时间单核cpu只能执行一个任务，cpu计算时间分片到每个任务交替运行，进程切换或上下文切换时间很短，我们无法感知而己。真正并发执行多任务还要靠多核c">
+<meta property="og:updated_time" content="2018-02-07T07:35:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-09-01-进程和线程">
-<meta name="twitter:description" content="目录">
+<meta name="twitter:description" content="目录
+基本概念
+进程
+线程
+协程
+总结
+
+基本概念我们都知道现代操作是支持“多任务”的，什么叫“多任务”呢？。简单地说，就是操作系统可以同时运行多个任务。打个比方一边微信一边QQ。
+单核cpu是如何执行“多任务”的？简单的说，就是cpu时间分片，同一时间单核cpu只能执行一个任务，cpu计算时间分片到每个任务交替运行，进程切换或上下文切换时间很短，我们无法感知而己。真正并发执行多任务还要靠多核c">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -91,13 +115,87 @@
       
         <ul>
 <li>目录</li>
-<li></li>
+<li>基本概念</li>
+<li>进程</li>
+<li>线程</li>
+<li>协程</li>
+<li>总结</li>
 </ul>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>我们都知道现代操作是支持“多任务”的，什么叫“多任务”呢？。<br>简单地说，就是操作系统可以同时运行多个任务。打个比方一边微信一边QQ。</p>
+<p>单核cpu是如何执行“多任务”的？<br>简单的说，就是cpu时间分片，同一时间单核cpu只能执行一个任务，cpu计算时间分片到每个任务交替运行，进程切换或上下文切换时间很短，我们无法感知而己。真正并发执行多任务还要靠多核cpu来完成。</p>
+<p>并发执行任务方案，</p>
+<ul>
+<li>多进程</li>
+<li>多线程</li>
+<li>多进程+多线程</li>
+</ul>
+<p>Python线程有GIL(Global Interpreter Lock), 这种锁在单核cpu单进程里同一时间只能有一个线程被cpu调度。</p>
+<p>那么多线程并发就没有用了吗？<br>计算密集型多进程不就解决了<br>IO密集型多线程不就解决了，同一时间只有一个线程调度，其它时间线程处理IO啊</p>
+<h2 id="进程，多进程，进程池"><a href="#进程，多进程，进程池" class="headerlink" title="进程，多进程，进程池"></a>进程，多进程，进程池</h2><p>进程定义: 程序由指令+数据组成，进程就是这样一种描述的实体(process),简单的认为一个任务就是一个进程。</p>
+<p>一个进程至少一个线程，进程间相互隔离（数据不共享），一个子进程挂了并不影响程序运行，当然主进程挂了程序也就挂了，进程切换开销较大。</p>
+<p>多进程： 用于解决计算密集型作务的多并发。</p>
+<p>进程池： 内部维护一个进程序列，当使用时创建一个新的进程放入池中，再从池中取出来使用，当达到进程池个数时，不再创建进程，请求直接从进程池中取出来用，其它请求只能等待直到进程池中有进程可用。</p>
+<p>进程示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">from multiprocessing import Process</div><div class="line">import time</div><div class="line">def task(arg):</div><div class="line">    time.sleep(arg)</div><div class="line">    print(arg)</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    for i in range(10):</div><div class="line">        p  = Process(target=task, args=(i,))</div><div class="line">        # p.daemon=True</div><div class="line">        p.start()</div><div class="line">        p.join(0.5)</div><div class="line">    print(&quot;end&quot;)</div></pre></td></tr></table></figure></p>
+<p>进程池与线程池用法一样，细节不展开<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">from concurrent.futures  import ProcessPoolExecutor</div></pre></td></tr></table></figure></p>
+<p>进程锁也是和线程锁一样的用法，细节不展开</p>
+<p>进程与线程不同的是进程数据不共享，那如何实现数据交互，方法很多<code>rpc</code>,<code>Queue</code>,<code>pipe</code>,自己实现socket也可以实现 ,借住第三方工具，python本身也可以实现，2种方法：</p>
+<ul>
+<li>Array  (基于C语言数据类型)</li>
+<li>Manager (基于socket)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">from multiprocessing import Process</div><div class="line"></div><div class="line">def task(num,li):</div><div class="line">    li.append(num)</div><div class="line">    print(li)</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    v = []</div><div class="line">    for i in range(10):</div><div class="line">        p = Process(target=task,args=(i, v))  #每个进程数据独立存在</div><div class="line">        p.start()</div></pre></td></tr></table></figure>
+<p>C语言里Array存的元素是定义时定死的，和python 的列表有很大不同。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">from multiprocessing import Process,Array</div><div class="line"></div><div class="line">def task(num,li):</div><div class="line">    li[num] = 1</div><div class="line">    print(list(li))</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    v = Array(&apos;i&apos;, 10)   #i在c语言是的int，10表示长度</div><div class="line">    for i in range(10):</div><div class="line">        p = Process(target=task,args=(i, v))</div><div class="line">        p.start()</div></pre></td></tr></table></figure></p>
+<p>Manger().list()   Manger().dict()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">from multiprocessing import Process,Array,Manager</div><div class="line"></div><div class="line">def task(num,li):</div><div class="line">    li.append(num)</div><div class="line">    print(li)</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">   # dic = Manager().dict()</div><div class="line">    v = Manager().list()</div><div class="line">    for i in range(10):</div><div class="line">        p = Process(target=task,args=(i, v))</div><div class="line">        p.start()</div><div class="line">        p.join()</div></pre></td></tr></table></figure></p>
+<h2 id="线程，多线程，线程池"><a href="#线程，多线程，线程池" class="headerlink" title="线程，多线程，线程池"></a>线程，多线程，线程池</h2><p>线程定义：一个任务可以再划分为多个小任务，进程内独立执行这些小任务的最小单元。</p>
+<p>一个进程可以有多个线程，线程间共享内存数据，一个线程挂了，其它线程也会崩溃，线程切换开销较进程小一些。</p>
+<p>多线程： 用于解决IO密集型任务的多并发</p>
+<p>线程池： 内部维护一个线程序列.  (与进程池同理)</p>
+<p>线程示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import time</div><div class="line">def task(arg):</div><div class="line">    time.sleep(1)</div><div class="line">    print(arg)</div><div class="line">for i in range(5):</div><div class="line">	t = threading.Thread(target=task,args=(i,))</div><div class="line">	t.setDaemon(False)  # 等子线程完成后再结束主线程</div><div class="line">	t.start()</div><div class="line">	t.join()  # 变为串行,一直等</div><div class="line">	t.join(3)  # 变为串行,只等3秒</div><div class="line">print(&quot;end&quot;)  # 先打印主线程的end,再一起打印子线程的i</div><div class="line">``` </div><div class="line"></div><div class="line">自定义线程类示例</div></pre></td></tr></table></figure></p>
+<p>import threading<br>import time</p>
+<p>class MyThread(threading.Thread):<br>    def <strong>init</strong>(self,target=None,args=(),<strong>kwargs):<br>        super(MyThread,self).<strong>init</strong>(target=None,args=(),</strong>kwargs)<br>        self.target =target<br>        self._args = args<br>    def run(self,):<br>        return self.target(*self._args)</p>
+<p>def task(arg):<br>    time.sleep(1)<br>    print(arg)</p>
+<p>t = MyThread(target=task, args=(123,))<br>t.run()<br>print(“end”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">线程锁</div><div class="line">线程共享数据，共同修改一份数据是有问题的，pycharm环境下可能看不出效果，</div><div class="line">cmd命令行下可以看到数据修改混乱了。</div></pre></td></tr></table></figure></p>
+<p>import threading<br>import time<br>v=10<br>def task(arg):<br>    global  v<br>    v-=1<br>    print(v)</p>
+<p>for i in range(10):<br>    t=threading.Thread(target=task,args=(i,))<br>    t.start()<br>print(“end”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">数据修改乱了，就要加锁了：普通锁，递归锁RLock,事件锁、条件锁，互斥锁</div><div class="line">普通锁</div></pre></td></tr></table></figure></p>
+<p>import threading<br>import time<br>v=10<br>lock = threading.Lock()</p>
+<p>def task(arg):<br>    lock.acquire() # 申请锁<br>    global  v<br>    v-=1<br>    print(v)<br>    lock.release() # 释放锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">普通锁不能开多重没锁，如果是下面这种设置会造成死锁</div></pre></td></tr></table></figure></p>
+<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><p>lock = threading.Lock()<br>lock.acquire() # 申请锁<br>lock.acquire() # 申请锁<br>lock.release() # 释放锁<br>lock.release() # 释放锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">递归锁RLock</div><div class="line">递归锁RLock可以开多重锁，不会造成死锁</div></pre></td></tr></table></figure></p>
+<h1 id="不会死锁"><a href="#不会死锁" class="headerlink" title="不会死锁"></a>不会死锁</h1><p>lock = threading.RLock()<br>lock.acquire() # 申请锁<br>lock.acquire() # 申请锁<br>lock.release() # 释放锁<br>lock.release() # 释放锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">信号量BoundedSemaphore</div><div class="line">多个线程同时使用锁，当然这里3个同时修改数据也可能混乱。</div></pre></td></tr></table></figure></p>
+<p>import threading<br>import time<br>v=10<br>lock = threading.BoundedSemaphore(3)</p>
+<p>def task(arg):<br>    lock.acquire() # 申请锁<br>    time.sleep(1)<br>    global  v<br>    v-=1<br>    print(v)<br>    lock.release() # 释放锁<br>for i in range(10):<br>    t=threading.Thread(target=task,args=(i,))<br>    t.start()<br>print(“end”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">事件锁</div><div class="line">条件式批量解锁</div></pre></td></tr></table></figure></p>
+<p>import threading<br>import time<br>lock = threading.Event()</p>
+<p>def task(arg):<br>    time.sleep(1)<br>    lock.wait()    #锁住所有线程<br>    print(arg)</p>
+<p>for i in range(10):<br>    t=threading.Thread(target=task,args=(i,))<br>    t.start()<br>while True:<br>    value =  input(“&gt;&gt;&gt;”)<br>    if value == ‘1’:<br>        lock.set()   # 解锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">条件锁</div></pre></td></tr></table></figure></p>
+<p>import threading<br>import time<br>lock = threading.Condition()<br>def task(arg):<br>    time.sleep(1)<br>    lock.acquire()<br>    lock.wait()    #锁住所有线程<br>    print(‘线程’,arg)<br>    lock.release()</p>
+<p>for i in range(10):<br>    t=threading.Thread(target=task,args=(i,))<br>    t.start()<br>while True:<br>    value =  int(input(“&gt;&gt;&gt;”))<br>    lock.acquire()<br>    lock.notify(value)  # 传几就解几个锁<br>    lock.release()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">线程池</div><div class="line">`pool.submit(download,url)`取出一个线程执行任务，返回future对象</div><div class="line">`future.add_done_callback(write)`future对象有一个`add_done_callback`方法，传入我们自己写的回调函数write,  future对象也会自动传给write回调函数。</div><div class="line">`download` 函数的返回值=`future.result()`</div></pre></td></tr></table></figure></p>
+<p>import  requests<br>from concurrent.futures import ThreadPoolExecutor</p>
+<p>def write(future):<br>    response = future.result()<br>    f=open(‘xx.txt’,’wb+’)<br>    f.write(response.content)<br>    f.close()</p>
+<p>url_list = [<br>    ‘<a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a>‘,<br>    ‘<a href="http://www.digmyth.com">http://www.digmyth.com</a>‘,<br>    ‘<a href="http://www.github.com" target="_blank" rel="external">http://www.github.com</a>‘,<br>]<br>def download(url):<br>    response=requests.get(url)<br>    print(“得到结果”,url)<br>    return response</p>
+<p>pool = ThreadPoolExecutor(2)<br>for url in url_list:<br>    print(“开始请求：”,url)<br>    future=pool.submit(download,url)  # 池中取一个连接</p>
+<pre><code># ruture自动传给write调函数:write(future)
+future.add_done_callback(write)   
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">封装</div></pre></td></tr></table></figure>
+<p>import requests<br>from  concurrent.futures import ThreadPoolExecutor</p>
+<p>def download(url):<br>    response=requests.get(url)<br>    return response</p>
+<p>def run(url_list=None):<br>    pool = ThreadPoolExecutor(2)<br>    for item in url_list:<br>        url = item[‘url’]<br>        callback = item[‘callback’]<br>        future=pool.submit(download, url)<br>        future.add_done_callback(callback)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>def f1(future):<br>    print(future.result().content)</p>
+<p>def f2(arg):<br>    print(“future”)</p>
+<p>def f3(future):<br>    print(“future”)</p>
+<p>url_list = [<br>    {‘url’:’<a href="http://www.baidu.com&#39;,&#39;callback&#39;:f1}" target="_blank" rel="external">http://www.baidu.com&#39;,&#39;callback&#39;:f1}</a>,<br>    {‘url’:’<a href="http://www.digmyth.com&#39;,&#39;callback&#39;:f2}">http://www.digmyth.com&#39;,&#39;callback&#39;:f2}</a>,<br>    {‘url’:’<a href="http://www.github.com&#39;,&#39;callback&#39;:f3}" target="_blank" rel="external">http://www.github.com&#39;,&#39;callback&#39;:f3}</a>,<br>]</p>
+<p>import nb_thread<br>nb_thread.run(url_list)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 协程</div><div class="line">协程定义： 协程不同于进程，线程对于操作系统可见且是一种资源，协程只是代码层面的来回切换，对于操作系统不可见且并非是一种资源。</div></pre></td></tr></table></figure></p>
+<p>pip3 install greenlet  # python中原生协程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">单独协程没什么用，结合协程切换特性+IO+select+socket可以编写出牛逼的异步IO模块或异步非阻塞框架</div><div class="line"></div><div class="line">gevent就是基于greenlet+libvent+IO二次加工实现的python异步模块</div></pre></td></tr></table></figure></p>
+<p>pip3 instal gevent<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">示例：</div><div class="line">和多线程不同，这里是单线程并发IO任务</div></pre></td></tr></table></figure></p>
+<p>import gevent<br>import requests</p>
+<p>def func(url):<br>    response = requests.get(url)<br>    print(response.url)</p>
+<p>gevent.joinall([<br>    gevent.spawn(func,’<a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a>‘),<br>    gevent.spawn(func,’<a href="http://www.digmyth.com">http://www.digmyth.com</a>‘),<br>    gevent.spawn(func,’<a href="http://www.github.com" target="_blank" rel="external">http://www.github.com</a>‘),<br>])<br>```<br>当然我们也可以自己IO多路复用select来写</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>即使有了多进程多线程或进程池，线程池处理多任务，但如果一个任务在执行的过程中大部分时间都在等待IO操作，单进程单线程模型也只能处理一个任务，无法并发执行。</p>
+<p>还好现代操作系统支持异步IO，这是一个很牛逼的东东，单进程单线程模型并发执行任务得以实现。这种称为事件驱动模型，Nginx就是支持异步IO的Web服务器。</p>
+<p>单线程的异步编程或异步IO多路复用会是趋势，可以基于事件驱动编写高效的多任务程序。Twisted,Tornado之所以牛逼，就是因为它们的高性能也是基于事件驱动，基于异步IO多路复用。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdbg030x001qxljxb0hfmjl5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdcrffrq001oy2jxn2uvv4l5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -162,7 +260,7 @@
       <ul>
         
           <li>
-            <a href="/2018/02/06/hello-world/">Hello World</a>
+            <a href="/2018/02/07/hello-world/">Hello World</a>
           </li>
         
           <li>
