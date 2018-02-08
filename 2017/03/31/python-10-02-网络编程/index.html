@@ -5,16 +5,25 @@
   
   <title>python-09-02-网络编程 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录">
+  <meta name="description" content="目录
+
+
+服务器端第一步： 创建 套接字对够用123456789import socketsocket.socket(family, type)family  	AF_INET	AF_UNIXtype	SOCK_STREAM   -------&amp;gt; TCP	SOCK_DGRAM    -------&amp;gt; UDPconns = socket.socket(socket.AF_INET,so">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python-09-02-网络编程">
 <meta property="og:url" content="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="目录">
-<meta property="og:updated_time" content="2017-02-27T08:39:47.000Z">
+<meta property="og:description" content="目录
+
+
+服务器端第一步： 创建 套接字对够用123456789import socketsocket.socket(family, type)family  	AF_INET	AF_UNIXtype	SOCK_STREAM   -------&amp;gt; TCP	SOCK_DGRAM    -------&amp;gt; UDPconns = socket.socket(socket.AF_INET,so">
+<meta property="og:updated_time" content="2018-02-08T08:38:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-09-02-网络编程">
-<meta name="twitter:description" content="目录">
+<meta name="twitter:description" content="目录
+
+
+服务器端第一步： 创建 套接字对够用123456789import socketsocket.socket(family, type)family  	AF_INET	AF_UNIXtype	SOCK_STREAM   -------&amp;gt; TCP	SOCK_DGRAM    -------&amp;gt; UDPconns = socket.socket(socket.AF_INET,so">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -93,11 +102,22 @@
 <li>目录</li>
 <li></li>
 </ul>
+<p>服务器端<br>第一步： 创建 套接字对够用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import socket</div><div class="line">socket.socket(family, type)</div><div class="line">family  </div><div class="line">	AF_INET</div><div class="line">	AF_UNIX</div><div class="line">type</div><div class="line">	SOCK_STREAM   -------&gt; TCP</div><div class="line">	SOCK_DGRAM    -------&gt; UDP</div><div class="line">conns = socket.socket(socket.AF_INET,socket.SOCK_STREAM)</div></pre></td></tr></table></figure></p>
+<p>第二步：  绑定地址<br>使用套接字对象的 bind方法绑定于地址和端口组成的元组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conns.bind((&apos;ip&apos;,port))</div></pre></td></tr></table></figure></p>
+<p>第三步： 使用套接字的<code>Listen()</code>方法进行监听<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conns.listen(10)   #等待队列长度</div></pre></td></tr></table></figure></p>
+<p>第四步： 进入循环监听状态</p>
+<p>使用套接字的<code>accept()</code>方法接收用户连接请求<br><code>help(tcpconn.accept)</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">client_sock,client_addr = conns.accept()</div></pre></td></tr></table></figure></p>
+<p>编写客户端程序<br>第一步： 创建套接字对象以连接服务器端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">client_conn =  socket.socket(socket.AF_INET,socket.SOCK_STREAM)</div></pre></td></tr></table></figure></p>
+<p>第二步： 请求连接服务器<br>client_conn.conncet((‘server_ip’, port))</p>
+<p>第三步： 发送数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">client_conn.send(b&apos;hello world&apos;)</div></pre></td></tr></table></figure>
+<p>示例<br>server.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import socket</div><div class="line"></div><div class="line">sock = socket.socket()</div><div class="line">sock.bind((&apos;127.0.0.1&apos;,8000))</div><div class="line">sock.listen(5)</div><div class="line"></div><div class="line">while True:</div><div class="line">    conn,addr = sock.accept()</div><div class="line"></div><div class="line">    client_data = conn.recv(1024)</div><div class="line">    print(client_data)</div><div class="line">    conn.sendall(&apos;response info from server&apos;)</div><div class="line"></div><div class="line">    conn.close()</div></pre></td></tr></table></figure></p>
+<p>client.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import socket</div><div class="line"></div><div class="line">sk = socket.socket()</div><div class="line">sk.connect((&apos;127.0.0.1&apos;,8000))</div><div class="line"></div><div class="line">sk.sendall(&apos;请求数据&apos;)</div><div class="line"></div><div class="line">server_reply = sk.recv(1024)</div><div class="line">print(server_reply)</div><div class="line"></div><div class="line">sk.close()</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjdcrt5ip001w0fjxlj2cf8g2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjde94dqp001q05jxb3weth8j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -162,7 +182,7 @@
       <ul>
         
           <li>
-            <a href="/2018/02/07/hello-world/">Hello World</a>
+            <a href="/2018/02/08/hello-world/">Hello World</a>
           </li>
         
           <li>
