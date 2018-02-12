@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/02/12/hello-world/" class="article-date">
-  <time datetime="2018-02-12T11:57:38.512Z" itemprop="datePublished">2018-02-12</time>
+  <time datetime="2018-02-12T12:39:14.515Z" itemprop="datePublished">2018-02-12</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,68 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/02/12/hello-world/" data-id="cjdk5zc5s000lckjxpdymd9im" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/02/12/hello-world/" data-id="cjdk7gu38000leljxm4z59fh8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-django-26-API验证" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/06/python-django-26-API验证/" class="article-date">
+  <time datetime="2018-01-06T12:51:41.000Z" itemprop="datePublished">2018-01-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>前言</li>
+<li>原理</li>
+<li>实现</li>
+</ul>
+<p>讲解<code>Django api</code>验证，基于<code>Tornado</code>签名<code>Cookie</code>源码</p>
+<p>原理：<br>客户端<br>服务端和客户端共同存一个<code>字符串</code>，客户端用这个<code>字符串</code>和<code>时间戳</code>算一个<code>md5</code>值，把这个<code>md5</code>和<code>时间戳</code>组成一个字符串在请求头里发送给服务端。</p>
+<p>服务端：<br>服务端收到这个字符串，分别取出<code>md5</code>和<code>时间戳</code>，用这个<code>时间戳</code>与自己存的<code>key&#39;也算一个</code>md5`值，这个md5值与客户端发来的md5值作比较。</p>
+<p>当然这里还是不够的，比如黑客拿到<code>md5</code>和<code>时间戳</code>呢？</p>
+<p>我们还需要作进一步策略</p>
+<p>策略一：<br>发来的时间戳+5秒小于服务器时间戳，认为是非法请求</p>
+<p>策略二：<br>基于<code>字符串</code>和<code>时间戳</code>算的<code>md5</code>不等于客户端发来的<code>md5</code>值，认为是非法请求</p>
+<p>策略三：<br>5秒钟内的请求作进一步验证，维护一个5秒钟内的合法请求<code>md5</code>值,再来这个<code>md5</code>值的，认为是非法请求。5秒钟失效需要借住<code>memcache</code> <code>redis</code>，它们都自带过期时间。</p>
+<p>策略四：<br>如果基于网络原因，黑客的非法请求比客户端的请求先到达服务器，这样只能数据<code>AES</code>加密了。</p>
+<p>客户端发送请求头</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import time</div><div class="line">import hashlib</div><div class="line">def md5(arg):</div><div class="line">	hs = hashlib.md5()</div><div class="line">	hs.update(arg.encode(&quot;utf-8&quot;))</div><div class="line">	return hs.hexdigest()</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ctime=time.time()</div><div class="line">key=&apos;sdgasgsdgsdffsdf&apos;</div><div class="line">new_key=&quot;%s|%s&quot; %(key,ctime)</div><div class="line">md5_str = md5(new_key)</div><div class="line">auth_md5_str=&quot;%s|%s&quot; %(mdr_str,ctime)</div></pre></td></tr></table></figure>
+<p>发送请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requests.get(url=&quot;http://127.0.0.1:8000/test_api/&quot;,headers = &#123;&apos;auth-api&apos;:auth_md5_str&#125;)</div></pre></td></tr></table></figure>
+<p>服务端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">server_float_time = time.time()</div><div class="line">auth_header_val = requests.META.get(&apos;HTTP_AUTH_API&apos;)</div><div class="line">client_md5_str,client_ctime=auth_header_val.rsplit(&apos;|&apos;,maxsplit=1)</div><div class="line">if (client_float_time + 5) &lt; server_float_time :</div><div class="line">    return HttpResponse(&quot;已过期&quot;)</div><div class="line">server_md5_str != client_md5_str:</div><div class="line">    return HttpResponse(&quot;非法请求&quot;)</div><div class="line">if visited_keys.get(client_md5_str):</div><div class="line">    return HttpResponse(&quot;来晚了，你是非法的&quot;)</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjdk7gu58001yeljxwn4q26qe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -140,7 +201,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjdk5zc86002dckjx0dbrd882" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjdk7gu5m002feljxxmygarl7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -213,7 +274,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjdk5zc8r0038ckjxpkv42416" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjdk7gu66003aeljxujp55euj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,7 +334,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjdk5zc8q0036ckjxk6fvqhy9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjdk7gu650038eljx1svhmzoh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -339,7 +400,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjdk5zc8g002sckjxq9ggyhmd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjdk7gu5v002ueljxsmp8330n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -444,7 +505,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjdk5zc8y003gckjx9eaxr27w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjdk7gu6f003ieljx8cr6mqpa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -508,7 +569,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjdk5zc7u001yckjxsjyq246e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjdk7gu5b0021eljxsa29mo2h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -557,7 +618,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjdk5zc8p0034ckjxg0n7gdhu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjdk7gu640036eljxlyo8s9dm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -615,71 +676,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjdk5zc8m0030ckjxc8v8x88w" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-20-ajax" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/20/web-django-20-ajax/" class="article-date">
-  <time datetime="2017-11-20T12:26:37.000Z" itemprop="datePublished">2017-11-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>代码例子</li>
-<li>代码例子</li>
-<li>ajax前端组装数据</li>
-<li>ajax涉及的序列化</li>
-<li>ajax错误验证</li>
-<li>ajax的3种csrf_token</li>
-</ul>
-<h1 id="Ajax-学习"><a href="#Ajax-学习" class="headerlink" title="Ajax 学习"></a>Ajax 学习</h1><p><a href="http://www.cnblogs.com/wupeiqi/articles/5703697.html" target="_blank" rel="external">详情参考Ajax 武佩齐博客</a></p>
-<p>这里只是对Ajax学习做一个记录和总结，内容还有很多没有包括。</p>
-<h2 id="代码例子"><a href="#代码例子" class="headerlink" title="代码例子"></a>代码例子</h2><p>普通请求    —&gt;  render渲染全部HTML<br>Ajax           – -&gt;  render生成己经渲染好的局部HTML, 功能单一。<br>Ajax           — &gt;  HttpResponse(‘data’) 得到原始数据，ajax前端自行展示，定制化强，一般用于提供接口，为别人提供数据。</p>
-<p>render和HttpResponse的关系？<br>render:<br>1  模板+数据进行替换<br>2 HttpResponse(数据)</p>
-<p>HttpResponse:<br>1 HttpResponse(数据)</p>
-<p>Ajax请求时，响应内容时可以是render和HttpResponse,不要认为只能用HttpResponse. views.py里不能<code>return redirect(&quot;&quot;)</code><br>跳转是在前端跳转location.href = “<a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a>“</p>
-<h2 id="ajax前端组装数据"><a href="#ajax前端组装数据" class="headerlink" title="ajax前端组装数据"></a>ajax前端组装数据</h2><p>ajax形式发input数据时在前端取数据并组装数据后给后台<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ajax取input数据时，可以用data:&#123;&quot;user&quot;:$(&quot;#user&quot;).val(),&quot;pwd&quot;:$(&quot;#pwd&quot;).val()&#125;获取数据，</div><div class="line">更简单的数据组装方法是加form表单:&lt;form id=&quot;ff&quot;&gt;&lt;input /&gt;&lt;/form&gt;</div><div class="line">此时取数据可以用：data: $(&quot;#ff&quot;).serialize(),</div></pre></td></tr></table></figure></p>
-<h2 id="ajax涉及的序列化"><a href="#ajax涉及的序列化" class="headerlink" title="ajax涉及的序列化"></a>ajax涉及的序列化</h2><p>Django 中Ajax方式获取ORM数据时，涉及序列化操作的5种方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"># # 方式一  我们伪造的数据是可以序列化实现展示的</div><div class="line"># #  模板渲染后生成字符串</div><div class="line"># # user_list = models.UserInfo.objects.all()</div><div class="line"># #</div><div class="line"># # return render(request,&quot;tpl.html&quot;,&#123;&quot;user_list&quot;:user_list&#125;)</div><div class="line"># user_list = [</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line"># ]</div><div class="line">#</div><div class="line"># import json</div><div class="line"># data = json.dumps(user_list)</div><div class="line"># return HttpResponse(data)</div><div class="line"></div><div class="line"># # 方式二：  这里是失败的， QuerySet不支持Json序列化，经测试失败</div><div class="line"># user_list = models.UserInfo.objects.all()</div><div class="line"># import json</div><div class="line"># return  HttpResponse(json.dumps(user_list))</div><div class="line"></div><div class="line"># # 方式三 也是成功的,但不常见</div><div class="line">#</div><div class="line"># user_list = models.UserInfo.objects.all()</div><div class="line"># from django.core import serializers</div><div class="line"># data= serializers.serialize(&quot;json&quot;, user_list)</div><div class="line"># return  HttpResponse(data)</div><div class="line"></div><div class="line"># 方式四 推荐用法</div><div class="line"></div><div class="line">user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">user_list=list(user_list)</div><div class="line">print(user_list)</div><div class="line">import json</div><div class="line">data = json.dumps(user_list)</div><div class="line">return  HttpResponse(data)</div><div class="line"># 方式五 </div><div class="line"></div><div class="line">user_list = models.UserInfo.objects.values_list(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">user_list=list(user_list)</div><div class="line">print(user_list)</div><div class="line">import json</div><div class="line">data = json.dumps(user_list)</div><div class="line">return  HttpResponse(data)</div></pre></td></tr></table></figure></p>
-<h2 id="Ajax-错误验证"><a href="#Ajax-错误验证" class="headerlink" title="Ajax 错误验证"></a>Ajax 错误验证</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">## 异常判断</div><div class="line">   import json</div><div class="line">   ret = &#123;&apos;status&apos;:False,&apos;data&apos;:None,&apos;error&apos;:None&#125;</div><div class="line">   try:</div><div class="line">       user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">       user_list=list(user_list)</div><div class="line">       ret[&apos;status&apos;]= True</div><div class="line">       ret[&apos;data&apos;] = user_list</div><div class="line">   except Exception as e:</div><div class="line">       ret[&apos;error&apos;] = &apos;获取数据失败&apos;</div><div class="line">   data = json.dumps(ret)</div><div class="line">   return  HttpResponse(data)</div></pre></td></tr></table></figure>
-<p>或者以类的形式调用更为简洁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">app01项目下新建utls.py</div><div class="line">class BaseResponse():</div><div class="line">   def __init__(self):</div><div class="line">       self.status = False</div><div class="line">       self.data = None</div><div class="line">       self.error = None</div><div class="line">views.py中导入：</div><div class="line">from app01.utils import BaseResponse</div><div class="line">ret = BaseResponse()</div><div class="line">try:</div><div class="line">    user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">    user_list=list(user_list)</div><div class="line">    ret.status= True</div><div class="line">    ret.data = user_list</div><div class="line">except Exception as e:</div><div class="line">        ret.error = &apos;获取数据失败&apos;</div><div class="line">    data = json.dumps(ret.__dict__,ensure_ascii=False)       # False表示不要中文为变为unicode编码</div><div class="line">    return  HttpResponse(data)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var tag.createElement(&quot;a&quot;)</div><div class="line">tag.innertHTML=&quot;hello&quot;</div><div class="line">div.append(tag)  # &lt;div&gt; &lt;a&gt;hello&lt;/a&gt;&lt;/div&gt; 加在标签里面</div><div class="line">div.after(tag)       # &lt;div&gt;&lt;/div&gt;&lt;a&gt;hello&lt;/a&gt; 加在标签后面</div></pre></td></tr></table></figure>
-<h2 id="ajax的3种csrf-token"><a href="#ajax的3种csrf-token" class="headerlink" title="ajax的3种csrf_token"></a>ajax的3种csrf_token</h2><p>方法一： 自己组装数据csrf_token<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123;% csrf_token %&#125; 会生成带csrfmiddlewaretoken的input标签</div><div class="line">data:&#123;&apos;csrfmiddlewaretoken&apos;:$(&apos;input[name=&quot;csrfmiddlewaretoken&quot;]&apos;).val()&#125;</div></pre></td></tr></table></figure></p>
-<p>方法二：加 form表单后用$(“#form_id”).serialize()方法自动组装数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1 添加form HTML 标签 &lt;form id=&quot;form_id&quot;&gt;&lt;input /&gt;&lt;/form&gt;</div><div class="line">2 用data: $(&quot;#form_id&quot;).serialize(),自动组装数据</div></pre></td></tr></table></figure>
-<p>方法三：自行在cookies里取csrf_token放在请求头里<br><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="external">参考</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1  导入jquery.cookie.js: &lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</div><div class="line">2  jquery方式操作cookie取值:  csrf_token=$.cookie(&apos;csrftoken&apos;)	</div><div class="line">3  ajax形式添加到请求头里，注意写法是定死的</div><div class="line">   $.ajax(&#123;</div><div class="line">		  header: &#123;&quot;X-CSRFToken&quot;: $.cookie(&apos;csrftoken&apos;)&#125;，</div><div class="line">		  )&#125;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjdk5zc8l002yckjxpar3dbes" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjdk7gu610032eljxtvublqje" class="article-share-link">Share</a>
       
       
     </footer>
@@ -734,6 +731,10 @@ print(v1.site.name)
           </li>
         
           <li>
+            <a href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
           </li>
         
@@ -743,10 +744,6 @@ print(v1.site.name)
         
           <li>
             <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
           </li>
         
       </ul>

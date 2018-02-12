@@ -61,6 +61,64 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/git-01/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>git建版本库</li>
+<li>git别名设置</li>
+<li>git基本配置</li>
+<li>git基本命令</li>
+<li>git分支管理</li>
+</ul>
+<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init # 把当前目录变成git可管理的仓库</div><div class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</div></pre></td></tr></table></figure>
+<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">为命令设置别名</div><div class="line">$ git config --global alias.co checkout</div><div class="line">$ git config --global alias.ci commit</div><div class="line">$ git config --global alias.br branch</div></pre></td></tr></table></figure>
+<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">每台机器自报家门</div><div class="line">$ git config --global user.name &quot;Your Name&quot;</div><div class="line">$ git config --global user.email &quot;email@example.com&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优先级从高到低是</div><div class="line">.git/config--&gt;  --global --&gt; system</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">全局生效: 配置保存在/etc/gitconfig</div><div class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</div><div class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div><div class="line">	email = you@example.com</div><div class="line"></div><div class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">只对某仓库生效：配置保存在reponame/.git/config</div><div class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</div><div class="line">[root@wxq-srv git_work]# cat .git/config </div><div class="line">[core]</div><div class="line">	repositoryformatversion = 0</div><div class="line">	filemode = true</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">[user]</div><div class="line">	name = wxq1</div></pre></td></tr></table></figure>
+<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git log  # 每一次提交的记录</div><div class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</div><div class="line">git reset --hard $commit_id   # 回到指定版本</div><div class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</div><div class="line">git add index.html   # 添加更改至state暂存	区</div><div class="line">git reset HEAD index.html  # unstage 退出暂存区</div><div class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</div></pre></td></tr></table></figure>
+<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
+<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看分支：git branch</div><div class="line">创建分支：git branch &lt;name&gt;</div><div class="line">切换分支：git checkout &lt;name&gt;</div><div class="line">创建+切换分支：git checkout -b &lt;name&gt;</div><div class="line">合并某分支到当前分支：git merge &lt;name&gt;</div><div class="line">删除分支：git branch -d &lt;name&gt;</div></pre></td></tr></table></figure>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjdk7gu32000feljxijmag0ar" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-mysql-sysbench" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/10/mysql-sysbench/" class="article-date">
@@ -109,7 +167,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjdk5zc6z0012ckjxqnqj90in" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjdk7gu4g0012eljx97gekq4e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -182,7 +240,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjdk5zc5f0008ckjxwegjh398" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjdk7gu2u0008eljxol8tzpb0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -224,7 +282,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjdk5zc8a002kckjxm8eerrhz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjdk7gu5q002meljxlrpbaqwx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -272,7 +330,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjdk5zc7y0021ckjx7jv6tu70" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjdk7gu5e0024eljxuqtsxyod" class="article-share-link">Share</a>
       
       
     </footer>
@@ -331,7 +389,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjdk5zc6y0010ckjxvx58th9g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjdk7gu4f0010eljx0pjnxeji" class="article-share-link">Share</a>
       
       
     </footer>
@@ -386,7 +444,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjdk5zc89002ickjxjm9eljuf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjdk7gu5p002keljx8o15bvt7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -441,7 +499,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjdk5zc8c002mckjx27daua2w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjdk7gu5r002oeljxx48tnywh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -493,7 +551,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjdk5zc8s003ackjxdjm634n8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjdk7gu6b003celjxhmk65jl2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -570,64 +628,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjdk5zc7t001wckjxri9xoo34" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-08-02-面象对象编程中级" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/26/python-08-02-面象对象编程中级/" class="article-date">
-  <time datetime="2017-03-26T13:28:41.000Z" itemprop="datePublished">2017-03-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/26/python-08-02-面象对象编程中级/">python-08-02-面象对象编程中级</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>staticmethod</li>
-<li>classmethod</li>
-</ul>
-<h2 id="staticmethod"><a href="#staticmethod" class="headerlink" title="staticmethod"></a>staticmethod</h2><p>几个魔法方法说明：</p>
-<p><code>@classmethod</code>   <code>@staticmethod</code><br>不依赖任何具体的对象来执行类当中是方法，这个方法要么是静态方法， 要么是类方法，要么是属性</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@classmethod</div><div class="line">def test_func(cls):   # 类方法传入cls参数（类本身）</div><div class="line">    pass</div><div class="line"></div><div class="line">@staticmethod</div><div class="line">def test_func():    # 静态方法时没有任何变量</div><div class="line">    pass</div><div class="line"></div><div class="line">def test_func(self):  # 普通实例方法时传入self参数（实例本身）</div><div class="line">    pass</div></pre></td></tr></table></figure>
-<p><code>staticmethod</code>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">In [4]: class Foo(object):</div><div class="line">   ...:     @staticmethod</div><div class="line">   ...:     def spam(x,y,z):   # 静态方法时方法定义不写self</div><div class="line">   ...:         print(x,y,z)</div><div class="line">       </div><div class="line">In [5]: </div><div class="line">In [5]: Foo.spam(1,2,3)      # 静态方法属于类的，用类名调用。虽然实例能调用，但不要那样混用,不规范</div><div class="line">1 2 3</div></pre></td></tr></table></figure></p>
-<p><code>staticmethod</code>用法场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">In [7]: import time</div><div class="line">In [6]: class Date(object):</div><div class="line">   ...:     def __init__(self,year,mon, day):</div><div class="line">   ...:         self.year = year</div><div class="line">   ...:         self.mon = mon</div><div class="line">   ...:         self.day = day</div><div class="line">   ...:     @staticmethod</div><div class="line">   ...:     def now():</div><div class="line">   ...:         t = time.localtime()</div><div class="line">   ...:         return Date(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line">   ...:     </div><div class="line"></div><div class="line">In [8]: d1 = Date(1989, 8,20)    # 获得一个对象</div><div class="line"></div><div class="line">In [9]: d2 = Date.now()   # 这里也能获得一个对象</div><div class="line"></div><div class="line">In [10]: d1.day</div><div class="line">Out[10]: 20</div><div class="line"></div><div class="line">In [11]: d2.day</div><div class="line">Out[11]: 12</div></pre></td></tr></table></figure></p>
-<h2 id="classmethod"><a href="#classmethod" class="headerlink" title="classmethod"></a>classmethod</h2><p><code>@classmethod</code>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">In [12]: class C1(object):</div><div class="line">   ....:     name = &apos;wxq&apos;</div><div class="line">   ....:     @classmethod</div><div class="line">   ....:     def test(cls):    # 这里需要传入cls, 谁调用谁就是cls</div><div class="line">   ....:         print(cls, cls.name)</div><div class="line">   ....:         </div><div class="line"></div><div class="line">In [14]: C1.test()     # 这里cls就是C1</div><div class="line">&lt;class &apos;__main__.C1&apos;&gt; wxq</div><div class="line"></div><div class="line">In [13]: c = C1()   # 正常实例化对象</div></pre></td></tr></table></figure></p>
-<p><code>@classmethod</code>用法场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">In [2]: import time</div><div class="line"></div><div class="line">In [3]: class Date(object):</div><div class="line">   ...:     def __init__(self, year, mon,day):</div><div class="line">   ...:         self.year = year</div><div class="line">   ...:         self.mon = mon</div><div class="line">   ...:         self.day = day</div><div class="line">   ...:     @classmethod</div><div class="line">   ...:     def now(cls):</div><div class="line">   ...:         t = time.localtime()</div><div class="line">   ...:         return cls(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line">   ...:     </div><div class="line"></div><div class="line">In [4]: d = Date.now()</div><div class="line"></div><div class="line">In [5]: print(d.year,d.mon, d.day)</div><div class="line">2017 3 12</div></pre></td></tr></table></figure></p>
-<p><code>staticmethod</code>与<code>classmethod</code>区别的牛逼之处<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat method.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">import time</div><div class="line">class Date(object):</div><div class="line">    def __init__(self, year,mon,day):</div><div class="line">        self.year = year</div><div class="line">        self.mon = mon</div><div class="line">        self.day = day</div><div class="line">    @staticmethod</div><div class="line">    def now():</div><div class="line">        t = time.localtime()</div><div class="line">        return Date(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line"></div><div class="line">class EuroDate(Date):</div><div class="line">     def __str__(self):</div><div class="line">       return &apos;year: %s mon:%s day:%s&apos; % (self.year, self.mon,self.day)</div><div class="line"></div><div class="line">e = EuroDate.now()</div><div class="line">print(e)</div><div class="line">root@ubuntu:~# python3 method.py </div><div class="line">&lt;__main__.Date object at 0x7f5514658940&gt;</div></pre></td></tr></table></figure></p>
-<p>上面并没有我们想要的结果<br>分析：<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。<br>也就是<code>return Date(t.tm_year, t.tm_mon, t.tm_mday)</code>, 实例print时调Date类的<code>__str__</code>方法，故打印<code>return Date(t.tm_year, t.tm_mon, t.tm_mday)</code>后的内存地址，不会打印<code>EuroDate</code>类中定义的<code>__str__</code>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat goodmethod.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">import time</div><div class="line">class Date(object):</div><div class="line">    def __init__(self, year,mon,day):</div><div class="line">        self.year = year</div><div class="line">        self.mon = mon</div><div class="line">        self.day = day</div><div class="line">    @classmethod</div><div class="line">    def now(cls):</div><div class="line">        t = time.localtime()</div><div class="line">        return cls(t.tm_year, t.tm_mon, t.tm_mday)</div><div class="line"></div><div class="line">class EuroDate(Date):</div><div class="line">     def __str__(self):</div><div class="line">       return &apos;year: %s mon:%s day:%s&apos; % (self.year, self.mon,self.day)</div><div class="line"></div><div class="line">e = EuroDate.now()</div><div class="line">print(e)</div><div class="line">root@ubuntu:~# python3 goodmethod.py </div><div class="line">year: 2017 mon:3 day:12</div></pre></td></tr></table></figure>
-<p>这样才是我们想要的结果，好象参悟了点什么<br>分析:<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。这一点和上面是一致的。但此时<code>return cls(t.tm_year, t.tm_mon, t.tm_mday)</code>中的cls不是Date,而是EuroDate,符合谁调谁就是cls的原则。这样实例化<code>e = EuroDate.now()</code>时print(e)就会去调EuroDate中的<code>__str__</code>方法，得到我们想要的结果</p>
-<p>小结：<br><code>staticmethod</code>与<code>classmethod</code>在一定场景中是有区别的。细节参照上面的例子练习</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjdk5zc7m001ockjx4rgnkwud" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjdk7gu57001weljxb33fqkkp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -682,6 +683,10 @@
           </li>
         
           <li>
+            <a href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
           </li>
         
@@ -691,10 +696,6 @@
         
           <li>
             <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
           </li>
         
       </ul>
