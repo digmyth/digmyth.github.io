@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>python-spider-基础知识 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言
+爬虫简介
+具备技能
+爬虫实现
+爬虫示例
+
+简介爬虫：利用python模块伪造浏览器行为，读取网页源码，再经过正则匹配取出HTML文本的一系列处理，数据分析称为爬虫
+基本内容：123456789101112131415161718192021222324 - python实现浏览器行为： requests - beautifulsoup4  对HTML内容进行分析 - HTTP相关知识：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python-spider-基础知识">
+<meta property="og:url" content="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="前言
+爬虫简介
+具备技能
+爬虫实现
+爬虫示例
+
+简介爬虫：利用python模块伪造浏览器行为，读取网页源码，再经过正则匹配取出HTML文本的一系列处理，数据分析称为爬虫
+基本内容：123456789101112131415161718192021222324 - python实现浏览器行为： requests - beautifulsoup4  对HTML内容进行分析 - HTTP相关知识：">
+<meta property="og:updated_time" content="2018-02-12T10:00:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python-spider-基础知识">
+<meta name="twitter:description" content="前言
+爬虫简介
+具备技能
+爬虫实现
+爬虫示例
+
+简介爬虫：利用python模块伪造浏览器行为，读取网页源码，再经过正则匹配取出HTML文本的一系列处理，数据分析称为爬虫
+基本内容：123456789101112131415161718192021222324 - python实现浏览器行为： requests - beautifulsoup4  对HTML内容进行分析 - HTTP相关知识：">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python-spider01-基础知识" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/06/python-spider01-基础知识/" class="article-date">
+  <time datetime="2017-12-06T12:51:41.000Z" itemprop="datePublished">2017-12-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web爬虫开发/">Web爬虫开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      python-spider-基础知识
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>前言</li>
+<li>爬虫简介</li>
+<li>具备技能</li>
+<li>爬虫实现</li>
+<li>爬虫示例</li>
+</ul>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>爬虫：利用python模块伪造浏览器行为，读取网页源码，再经过正则匹配取出HTML文本的一系列处理，数据分析称为爬虫</p>
+<p>基本内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"> - python实现浏览器行为： requests</div><div class="line"> - beautifulsoup4  对HTML内容进行分析</div><div class="line"> - HTTP相关知识：</div><div class="line">   - cookie</div><div class="line">   - csftToken</div><div class="line">   - 请求头：其中ContenType表明什么格式封装的数据，服务器需要用相应格式解数据</div><div class="line">     请求： 请求头(cookie)/请求体(发送的内容)</div><div class="line">     响应： 响应头（浏览器读取头数据）/响应体（我们看到的网页或网页源码）</div><div class="line"> - 数据持久化（数据库存储）       </div><div class="line">```             </div><div class="line">            </div><div class="line">### 具备技能</div><div class="line">```            </div><div class="line">性能相关：批量get URL可想而知性能重要性</div><div class="line">1 线程池，进程池，</div><div class="line"></div><div class="line">2 协程coroutine（微线程）：</div><div class="line">     协程本身没有用，只做切换，具有切换特性,要想性能很高，刚好遇到IO时切换</div><div class="line">     </div><div class="line">3 异步非阻塞（如twisted,gevent,asyncio,tornado内部集成）</div><div class="line"></div><div class="line">  其中gevent异步模块由2个东西组成:</div><div class="line">	   greenlet协程: greenlet就是利用yield实现的协程</div><div class="line">	   libevent: libevent做异步IO库</div></pre></td></tr></table></figure></p>
+<p><a href="https://segmentfault.com/a/1190000001813992" target="_blank" rel="external">七牛云进程线程分享</a>　</p>
+<p>异步非阻塞<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">遇到IO请求不等待继续执行其它任务,如果IO请求响应内容回来了,自动回调某个函数.</div><div class="line">异步： 回调（相关于通知机制）</div><div class="line">非阻塞： 不等待</div></pre></td></tr></table></figure></p>
+<p>后面会学到爬虫框架：scrapy<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> 1 内部是twisted实现异步</div><div class="line"> 2 写入URL自动下载网页</div><div class="line"> 3 自动将下载的网页解析为对象方便我们处理</div><div class="line">```     </div><div class="line">后面也会学到分布式爬虫组件redis-scrapy</div><div class="line"></div><div class="line">### 爬虫实现</div><div class="line"></div><div class="line">基本模块：</div></pre></td></tr></table></figure></p>
+<p>pip3 install requests<br>pip3 install beautifulsoup4   （将网页字符串解析为对象，用于直接取文本内容）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">爬虫实现</div></pre></td></tr></table></figure></p>
+<p> 1 代码发送get请求： 请求头+请求体<br> 2 接收返回值： 响应头+响应体（本质字符串）<br> 3 获取响应体后进行解析，方便获取文本内容<br>     import requests<br>     from bs4 import BeautifulSoup<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">注意几点：</div></pre></td></tr></table></figure></p>
+<p>1 回车时得到token和cookies,如果有token和cookies的话取出来,一般get请求<br>2 提交用户名密码时带上token和cookies,一般post请求,并且取出登录成功后的cookies<br>3 登录后才能看到的网页(前2次请求的cookies都带上)<br>```</p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>示例这里就不展开了，可以基于这几个站点简单入门</p>
+<ul>
+<li>github或汽车之家</li>
+<li>抽届点赞</li>
+<li>博客园用户名密码密文发送给服务器的情况，其实是利用js三方模块在浏览器端加密再发送的（python rsa模块加密）</li>
+<li>知乎，新浪微博这种有图形验证码的网站，需要第三方平台做图像识别（类似滑动验证码这种验证其实是向后台发送鼠标坐标）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjdk1sjkp001y2cjxkvt9naqg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/15/web-get_post_contentype知识/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          03-GET/POST/ContentType知识
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/12/01/web-django-23-Django序列化/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">web-Django-23-Django序列化</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/02/12/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

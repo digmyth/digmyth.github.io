@@ -61,6 +61,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ceph-luminous安装" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/09/05/ceph-luminous安装/" class="article-date">
+  <time datetime="2017-09-05T01:41:54.000Z" itemprop="datePublished">2017-09-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/05/ceph-luminous安装/">ceph-luminous安装</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> 这里只简单列下luminous12.X 安装，默认存储引警Bluestore及监控界面</p>
+<p>1  /etc/hosts解析略<br>2  ntpservers时间同步略<br>3  系统配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">sed -i &apos;s/SELINUX=.*/SELINUX=disabled/&apos; /etc/selinux/config</div><div class="line">setenforce 0</div><div class="line">systemctl stop firewalld </div><div class="line">systemctl disable firewalld</div><div class="line">systemctl  stop NetworkManager</div><div class="line">systemctl  disable NetworkManager</div></pre></td></tr></table></figure></p>
+<p>添加yum源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@cluster-sql ~]# cat ceph.repo </div><div class="line">[ceph]</div><div class="line">name=ceph</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/x86_64/</div><div class="line">gpgcheck=0</div><div class="line">[ceph-noarch]</div><div class="line">name=cephnoarch</div><div class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/noarch/</div><div class="line">gpgcheck=0</div></pre></td></tr></table></figure></p>
+<p>4   新建集群<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># mkdir /mnt/cluster</div><div class="line"># cd /mnt/cluster</div><div class="line"> </div><div class="line"># yum -y install ceph-deploy</div><div class="line"># ceph-deploy  install --no-adjust-repos node01 node02 node03</div><div class="line"># ceph-deploy  new  node01 node02 node03</div></pre></td></tr></table></figure></p>
+<p>5  生成原始文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ls /mnt/cluster</div><div class="line">ceph.conf  ceph-deploy-ceph.log  ceph.mon.keyring</div></pre></td></tr></table></figure></p>
+<p>6  根据需要更新原始文件<br>添加需的ceph.conf配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# cat ceph.conf </div><div class="line">[global]</div><div class="line">fsid = d8fa6509-0196-41bc-838e-6226c927e680</div><div class="line">mon_initial_members = node01, node02, node03</div><div class="line">mon_host = 192.168.1.10,192.168.1.11,192.168.1.12</div><div class="line">auth_cluster_required = cephx</div><div class="line">auth_service_required = cephx</div><div class="line">auth_client_required = cephx</div><div class="line"></div><div class="line">mon_allow_pool_delete=true</div><div class="line"></div><div class="line">[mgr]</div><div class="line">mgr modules = dashboard</div></pre></td></tr></table></figure></p>
+<p>7 初始化同时推送配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># ceph-deploy mon create-initial</div></pre></td></tr></table></figure></p>
+<p>9 推送密钥文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ceph-deploy  admin node01 node02 node03</div></pre></td></tr></table></figure></p>
+<p>10 查看集群状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ceph  -s</div><div class="line">  cluster:</div><div class="line">    id:     d8fa6509-0196-41bc-838e-6226c927e680</div><div class="line">    health: HEALTH_WARN</div><div class="line">            clock skew detected on mon.node02, mon.node03</div><div class="line"> </div><div class="line">  services:</div><div class="line">    mon: 3 daemons, quorum node01,node02,node03</div><div class="line">    mgr: no daemons active</div><div class="line">    osd: 0 osds: 0 up, 0 in</div><div class="line"> </div><div class="line">  data:</div><div class="line">    pools:   0 pools, 0 pgs</div><div class="line">    objects: 0 objects, 0 bytes</div><div class="line">    usage:   0 kB used, 0 kB / 0 kB avail</div><div class="line">    pgs:</div></pre></td></tr></table></figure></p>
+<p>11  添加激活osd磁盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ceph-deploy  osd create --bluestore node01:/dev/sdb node02:/dev/sdb node03:/dev/sdb --zap-disk</div><div class="line"></div><div class="line">[root@node01 cluster]# ls</div><div class="line">ceph.bootstrap-mds.keyring  ceph.bootstrap-osd.keyring  ceph.client.admin.keyring  ceph-deploy-ceph.log</div><div class="line">ceph.bootstrap-mgr.keyring  ceph.bootstrap-rgw.keyring  ceph.conf                  ceph.mon.keyring</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@node01 cluster]# systemctl  status ceph-osd@2  # 查看单个osd进程</div><div class="line">[root@node01 cluster]# ceph -s</div><div class="line">  cluster:</div><div class="line">    id:     d8fa6509-0196-41bc-838e-6226c927e680</div><div class="line">    health: HEALTH_WARN</div><div class="line">            no active mgr</div><div class="line">            clock skew detected on mon.node02, mon.node03</div><div class="line"> </div><div class="line">  services:</div><div class="line">    mon: 3 daemons, quorum node01,node02,node03</div><div class="line">    mgr: no daemons active</div><div class="line">    osd: 3 osds: 3 up, 3 in</div><div class="line"> </div><div class="line">  data:</div><div class="line">    pools:   0 pools, 0 pgs</div><div class="line">    objects: 0 objects, 0 bytes</div><div class="line">    usage:   0 kB used, 0 kB / 0 kB avail</div><div class="line">    pgs:</div><div class="line">         </div><div class="line"> ####[root@node01 cluster]# ceph quorum_status --format json-pretty</div><div class="line">[root@node01 cluster]# ceph  osd tree</div><div class="line">ID CLASS WEIGHT  TYPE NAME       STATUS REWEIGHT PRI-AFF </div><div class="line">-1       0.14607 root default                            </div><div class="line">-3       0.04869     host node01                         </div><div class="line"> 0   hdd 0.04869         osd.0       up  1.00000 1.00000 </div><div class="line">-5       0.04869     host node02                         </div><div class="line"> 1   hdd 0.04869         osd.1       up  1.00000 1.00000 </div><div class="line">-7       0.04869     host node03                         </div><div class="line"> 2   hdd 0.04869         osd.2       up  1.00000 1.00000 </div><div class="line">[root@node01 cluster]# df  -hT</div><div class="line">Filesystem          Type      Size  Used Avail Use% Mounted on</div><div class="line">/dev/mapper/vg-root xfs        16G  1.7G   14G  11% /</div><div class="line">devtmpfs            devtmpfs  482M     0  482M   0% /dev</div><div class="line">tmpfs               tmpfs     493M     0  493M   0% /dev/shm</div><div class="line">tmpfs               tmpfs     493M  6.9M  486M   2% /run</div><div class="line">tmpfs               tmpfs     493M     0  493M   0% /sys/fs/cgroup</div><div class="line">/dev/sda1           xfs       497M  159M  338M  32% /boot</div><div class="line">/dev/mapper/vg-data xfs       3.9G   33M  3.9G   1% /data</div><div class="line">tmpfs               tmpfs      99M     0   99M   0% /run/user/0</div><div class="line">/dev/sdb1           xfs        97M  5.4M   92M   6% /var/lib/ceph/osd/ceph-0</div><div class="line">[root@node01 cluster]# cat /var/lib/ceph/osd/ceph-0/type </div><div class="line">bluestore</div><div class="line">[root@node01 cluster]# parted /dev/sdb print</div><div class="line">Model: VMware, VMware Virtual S (scsi)</div><div class="line">Disk /dev/sdb: 53.7GB</div><div class="line">Sector size (logical/physical): 512B/512B</div><div class="line">Partition Table: gpt</div><div class="line">Disk Flags: </div><div class="line"></div><div class="line">Number  Start   End     Size    File system  Name        Flags</div><div class="line"> 1      1049kB  106MB   105MB   xfs          ceph data</div><div class="line"> 2      106MB   53.7GB  53.6GB               ceph block</div></pre></td></tr></table></figure>
+<p>12 配置ceph-mgr<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ceph-deploy  mgr  create  node01  node02 node03</div></pre></td></tr></table></figure></p>
+<p>可以看到己被激活<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ceph -s</div><div class="line">  cluster:</div><div class="line">    id:     d8fa6509-0196-41bc-838e-6226c927e680</div><div class="line">    health: HEALTH_WARN</div><div class="line">            clock skew detected on mon.node02, mon.node03</div><div class="line"> </div><div class="line">  services:</div><div class="line">    mon: 3 daemons, quorum node01,node02,node03</div><div class="line">    mgr: node01(active), standbys: node02, node03</div><div class="line">    osd: 3 osds: 3 up, 3 in</div><div class="line"> </div><div class="line">  data:</div><div class="line">    pools:   0 pools, 0 pgs</div><div class="line">    objects: 0 objects, 0 bytes</div><div class="line">    usage:   3164 MB used, 146 GB / 149 GB avail</div><div class="line">    pgs:</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">[root@node01 cluster]# ceph config-key put mgr/dashboard/server_addr  192.168.1.10</div><div class="line">set mgr/dashboard/server_addr</div><div class="line">[root@node01 cluster]# ceph config-key put mgr/dashboard/server_port 7000</div><div class="line">set mgr/dashboard/server_port</div><div class="line"></div><div class="line">[root@node01 cluster]# ceph mgr  module enable dashboard</div><div class="line">[root@node01 cluster]# ceph mgr  module ls</div><div class="line">[</div><div class="line">    &quot;dashboard&quot;,</div><div class="line">    &quot;restful&quot;,</div><div class="line">    &quot;status&quot;</div><div class="line">]</div><div class="line"></div><div class="line">[root@node01 cluster]# netstat -tnlp | grep 7000</div><div class="line">tcp        0      0 192.168.1.10:7000       0.0.0.0:*               LISTEN      34774/ceph-mgr</div></pre></td></tr></table></figure>
+<p>13 ceph-fs部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># ceph-deploy   mds  create node01 node02 node03</div><div class="line"># ceph osd pool create cephfs_data &lt;pg_num&gt;</div><div class="line"># ceph osd pool create cephfs_metadata &lt;pg_num&gt;</div><div class="line"></div><div class="line"># ceph fs new cephfs cephfs_metadata cephfs_data</div><div class="line"></div><div class="line">(ceph-mds)[root@pike-vm /]# ceph fs ls</div><div class="line">name: cephfs, metadata pool: cephfs_metadata, data pools: [cephfs_data ]</div><div class="line">(ceph-mds)[root@pike-vm /]# ceph fs get cephfs</div><div class="line">Filesystem &apos;cephfs&apos; (1)</div><div class="line">fs_name	cephfs</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>14 cephfs文件系统挂载<br>确保客户端存在<code>/etc/ceph/ceph.client.admin.keyring</code> <code>/etc/ceph/ceph.conf</code></p>
+<p>方法一：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@admin:]# yum install ceph-common</div><div class="line">root@admin:~# ceph-authtool -l /etc/ceph/ceph.client.admin.keyring</div><div class="line">[client.admin]</div><div class="line">key = AQBABNZTMCBWNhAAUYPXxFpHYMHvyACdSAZoCg==</div><div class="line">mount -t ceph 172.16.170.135:6789:/ /mnt/cephdir/ -o name=admin,secret=AQBABNZTMCBWNhAAUYPXxFpHYMHvyACdSAZoCg==</div></pre></td></tr></table></figure></p>
+<p>方法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@wxq ceph]# yum install ceph-fuse</div><div class="line">[root@wxq ceph]# ceph-fuse  -m 172.18.23.17:6789  /mnt/cephdir/</div><div class="line">ceph-fuse[25849]: starting ceph client</div><div class="line">ceph-fuse[25849]: starting fuse</div><div class="line">[root@wxq ceph]# df -hT | grep fuse</div><div class="line">ceph-fuse      fuse.ceph-fuse  135G  116M  135G   1% /mnt/cephdir</div></pre></td></tr></table></figure></p>
+<h2 id="总结几点"><a href="#总结几点" class="headerlink" title="总结几点"></a>总结几点</h2><p>1 ceph quorum_status –format json-pretty 可查看选举详情<br>2 ceph osd pool application enable volumes rbd 标记一个池的应用(cephfs/rbd/rgw),不标记可以使用但集群状态将为warning<br>3 保护机制的存在默认删除池是不允许的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@ceph cluster]# ceph --show-config | grep delete</div><div class="line">mon_allow_pool_delete = false</div><div class="line">mon_fake_pool_delete = false</div><div class="line">osd_pool_default_flag_nodelete = false</div><div class="line">rbd_mirror_delete_retry_interval = 30.000000</div></pre></td></tr></table></figure></p>
+<p>需要编辑ceph.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">mon_allow_pool_delete=true</div></pre></td></tr></table></figure></p>
+<h2 id="界面视图"><a href="#界面视图" class="headerlink" title="界面视图"></a>界面视图</h2><p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150467077578.jpg" alt="figure1"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466837396.jpg" alt="figure2"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466890154.jpg" alt="figure3"><br><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466902942.jpg" alt="figure4"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjdk1sjj600082cjx8tuv2acq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-kolla-on-redhat7.2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/08/kolla-on-redhat7.2/" class="article-date">
@@ -119,7 +180,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjdk1fl6f000t0jjxt76f4mzw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjdk1sjjp000r2cjx24idyjkl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -179,7 +240,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjdk1fl5s00080jjxb8skjcaz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjdk1sjja000a2cjxzf4rzqox" class="article-share-link">Share</a>
       
       
     </footer>
@@ -246,7 +307,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjdk1fl87002n0jjxce9qywz0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjdk1sjl8002o2cjxbmjhlzyf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -318,7 +379,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjdk1fl8q003g0jjx9cpbpf0o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjdk1sjlt003l2cjxzkjzcxtd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -382,65 +443,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjdk1fl84002j0jjxecqe7vod" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/web-02-前端html/" class="article-date">
-  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</div><div class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</div><div class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</div><div class="line">    &lt;/select&gt;</div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</div><div class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</div><div class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="external">参考</a><br>基本概念：</p>
-<ul>
-<li>html很骨感.</li>
-<li>css就是装饰或样式.</li>
-<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
-</ul>
-<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
-<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
-<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
-<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">position</div><div class="line">     position: relative  # 与absolute一起使用</div><div class="line">     position: absolute  #随滚动条滚动而滚动</div><div class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</div><div class="line">     position: fixed     # 永远在窗口某位置</div></pre></td></tr></table></figure></p>
-<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="external">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
-<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
-<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
-<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjdk1fl7v00280jjxmyw60bqu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjdk1sjl7002m2cjx649702tr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -514,7 +517,65 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjdk1fl8n003c0jjxa459vwoa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjdk1sjlq003e2cjx0ogp4oac" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/web-02-前端html/" class="article-date">
+  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</div><div class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</div><div class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</div><div class="line">    &lt;/select&gt;</div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</div><div class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</div><div class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="external">参考</a><br>基本概念：</p>
+<ul>
+<li>html很骨感.</li>
+<li>css就是装饰或样式.</li>
+<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
+</ul>
+<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
+<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
+<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
+<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">position</div><div class="line">     position: relative  # 与absolute一起使用</div><div class="line">     position: absolute  #随滚动条滚动而滚动</div><div class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</div><div class="line">     position: fixed     # 永远在窗口某位置</div></pre></td></tr></table></figure></p>
+<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="external">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
+<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
+<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
+<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjdk1sjkx00282cjxp7uyxqhh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -572,7 +633,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjdk1fl65000f0jjxqkglao5g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjdk1sjjg000f2cjxzabt8qiv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -619,65 +680,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjdk1fl6e000r0jjxkbdei3gd" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-mysql-sysbench" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/10/mysql-sysbench/" class="article-date">
-  <time datetime="2017-06-10T01:41:54.000Z" itemprop="datePublished">2017-06-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/10/mysql-sysbench/">Mysql sysbench 压测</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>工具安装</li>
-<li>执行压测</li>
-<li>针对优化</li>
-<li>示例结果</li>
-</ul>
-<h3 id="数据库指标"><a href="#数据库指标" class="headerlink" title="数据库指标"></a>数据库指标</h3><p>对于mysql压力测试，大多用sysbench/tpcc-mysql工具。主要针对数据库OLTP（在线事务处理）指标。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">qps : query per second 查询量</div><div class="line">tps: transaction per second 事务量</div></pre></td></tr></table></figure>
-<h3 id="工具安装"><a href="#工具安装" class="headerlink" title="工具安装"></a>工具安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum install sysbench -y</div><div class="line">[root@mysql sysbench]# sysbench  --version</div><div class="line">sysbench 1.0.9</div></pre></td></tr></table></figure>
-<p>在<code>sysbench</code>压测时会调用内置<code>lua</code>脚本, 这些脚本为于<code>/etc/share/sysbench</code>目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/usr/share/sysbench</div><div class="line">[root@mysql sysbench]# ll</div><div class="line">total 64</div><div class="line">-rwxr-xr-x 1 root root  1452 Sep 18 12:29 bulk_insert.lua</div><div class="line">-rw-r--r-- 1 root root 13762 Sep 18 12:29 oltp_common.lua</div><div class="line">-rwxr-xr-x 1 root root  1290 Sep 18 12:29 oltp_delete.lua</div><div class="line">-rwxr-xr-x 1 root root  2018 Sep 18 12:29 oltp_insert.lua</div><div class="line">-rwxr-xr-x 1 root root  1265 Sep 18 12:29 oltp_point_select.lua</div><div class="line">-rwxr-xr-x 1 root root  1649 Sep 18 12:29 oltp_read_only.lua</div><div class="line">-rwxr-xr-x 1 root root  1824 Sep 18 12:29 oltp_read_write.lua</div><div class="line">-rwxr-xr-x 1 root root  1118 Sep 18 12:29 oltp_update_index.lua</div><div class="line">-rwxr-xr-x 1 root root  1127 Sep 18 12:29 oltp_update_non_index.lua</div><div class="line">-rwxr-xr-x 1 root root  1440 Sep 18 12:29 oltp_write_only.lua</div><div class="line">-rwxr-xr-x 1 root root  1919 Sep 18 12:29 select_random_points.lua</div><div class="line">-rwxr-xr-x 1 root root  2118 Sep 18 12:29 select_random_ranges.lua</div><div class="line">drwxr-xr-x 4 root root  4096 Nov 10 02:57 tests</div></pre></td></tr></table></figure></p>
-<h3 id="执行压测"><a href="#执行压测" class="headerlink" title="执行压测"></a>执行压测</h3><p>方便压测时找到内置<code>lua</code>脚本，以下命令都在<code>/etc/share/sysbench</code>目录下执行</p>
-<p>在远端连接数据库时，授权<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grant all on test.* to root@&apos;%&apos; identified by &apos;123&apos;;</div></pre></td></tr></table></figure></p>
-<p>生成压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/share/sysbench/</div><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  prepare</div></pre></td></tr></table></figure></p>
-<p>执行压测<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  run</div></pre></td></tr></table></figure></p>
-<p>清理压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  cleanup</div></pre></td></tr></table></figure></p>
-<h3 id="优化数据库"><a href="#优化数据库" class="headerlink" title="优化数据库"></a>优化数据库</h3><p>在压测过程中可能出现一些错误，连接数不够，max_prepared_stmt_count不够，可优化/etc/my.cnf 做适当调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">max_connections = 4096</div><div class="line">max_prepared_stmt_count=100000      # 默认16384压测时需调大</div><div class="line">query_cache_type = 1</div><div class="line">query_cache_size = 10M</div><div class="line"></div><div class="line">wsrep_slave_threads = 4</div><div class="line">#wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh</div><div class="line">max_connections = 10000</div><div class="line">key_buffer_size = 64M</div><div class="line">max_heap_table_size = 64M</div><div class="line">tmp_table_size = 64M</div><div class="line">innodb_buffer_pool_size = 8192M</div></pre></td></tr></table></figure></p>
-<h3 id="示例结果"><a href="#示例结果" class="headerlink" title="示例结果"></a>示例结果</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">Initializing worker threads...</div><div class="line"></div><div class="line">Threads started!</div><div class="line"></div><div class="line">[ 10s ] thds: 300 tps: 198.33 qps: 5741.67 (r/w/o: 4335.25/830.02/576.41) lat (ms,95%): 3706.08 err/s: 81.77 reconn/s: 0.00</div><div class="line">[ 20s ] thds: 300 tps: 222.61 qps: 6095.90 (r/w/o: 4553.90/924.16/617.84) lat (ms,95%): 4203.93 err/s: 102.31 reconn/s: 0.00</div><div class="line">[ 30s ] thds: 300 tps: 221.01 qps: 5899.58 (r/w/o: 4399.84/899.83/599.92) lat (ms,95%): 4055.23 err/s: 93.20 reconn/s: 0.00</div><div class="line">[ 40s ] thds: 300 tps: 198.06 qps: 5400.91 (r/w/o: 4032.79/827.03/541.09) lat (ms,95%): 4683.57 err/s: 89.98 reconn/s: 0.00</div><div class="line">[ 50s ] thds: 300 tps: 186.14 qps: 5162.76 (r/w/o: 3866.39/783.36/513.00) lat (ms,95%): 5312.73 err/s: 90.12 reconn/s: 0.00</div><div class="line">[ 60s ] thds: 300 tps: 158.49 qps: 4433.94 (r/w/o: 3325.93/670.45/437.56) lat (ms,95%): 5507.54 err/s: 78.99 reconn/s: 0.00</div><div class="line">SQL statistics:</div><div class="line">    queries performed:</div><div class="line">        read:                            246736</div><div class="line">        write:                           50340</div><div class="line">        other:                           33317</div><div class="line">        total:                           330393</div><div class="line">    transactions:                        12147  (195.34 per sec.)</div><div class="line">    queries:                             330393 (5313.17 per sec.)</div><div class="line">    ignored errors:                      5477   (88.08 per sec.)</div><div class="line">    reconnects:                          0      (0.00 per sec.)</div><div class="line"></div><div class="line">General statistics:</div><div class="line">    total time:                          62.1815s</div><div class="line">    total number of events:              12147</div><div class="line"></div><div class="line">Latency (ms):</div><div class="line">         min:                                 16.10</div><div class="line">         avg:                               1503.84</div><div class="line">         max:                              14267.54</div><div class="line">         95th percentile:                   4683.57</div><div class="line">         sum:                            18267086.41</div><div class="line"></div><div class="line">Threads fairness:</div><div class="line">    events (avg/stddev):           40.4900/6.29</div><div class="line">    execution time (avg/stddev):   60.8903/0.59</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjdk1fl6o00120jjxerj650qm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjdk1sjjq000t2cjxnu7dakiv" class="article-share-link">Share</a>
       
       
     </footer>

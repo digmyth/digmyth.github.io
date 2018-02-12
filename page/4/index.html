@@ -61,6 +61,64 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mysql-sysbench" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/10/mysql-sysbench/" class="article-date">
+  <time datetime="2017-06-10T01:41:54.000Z" itemprop="datePublished">2017-06-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/10/mysql-sysbench/">Mysql sysbench 压测</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>工具安装</li>
+<li>执行压测</li>
+<li>针对优化</li>
+<li>示例结果</li>
+</ul>
+<h3 id="数据库指标"><a href="#数据库指标" class="headerlink" title="数据库指标"></a>数据库指标</h3><p>对于mysql压力测试，大多用sysbench/tpcc-mysql工具。主要针对数据库OLTP（在线事务处理）指标。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">qps : query per second 查询量</div><div class="line">tps: transaction per second 事务量</div></pre></td></tr></table></figure>
+<h3 id="工具安装"><a href="#工具安装" class="headerlink" title="工具安装"></a>工具安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum install sysbench -y</div><div class="line">[root@mysql sysbench]# sysbench  --version</div><div class="line">sysbench 1.0.9</div></pre></td></tr></table></figure>
+<p>在<code>sysbench</code>压测时会调用内置<code>lua</code>脚本, 这些脚本为于<code>/etc/share/sysbench</code>目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">/usr/share/sysbench</div><div class="line">[root@mysql sysbench]# ll</div><div class="line">total 64</div><div class="line">-rwxr-xr-x 1 root root  1452 Sep 18 12:29 bulk_insert.lua</div><div class="line">-rw-r--r-- 1 root root 13762 Sep 18 12:29 oltp_common.lua</div><div class="line">-rwxr-xr-x 1 root root  1290 Sep 18 12:29 oltp_delete.lua</div><div class="line">-rwxr-xr-x 1 root root  2018 Sep 18 12:29 oltp_insert.lua</div><div class="line">-rwxr-xr-x 1 root root  1265 Sep 18 12:29 oltp_point_select.lua</div><div class="line">-rwxr-xr-x 1 root root  1649 Sep 18 12:29 oltp_read_only.lua</div><div class="line">-rwxr-xr-x 1 root root  1824 Sep 18 12:29 oltp_read_write.lua</div><div class="line">-rwxr-xr-x 1 root root  1118 Sep 18 12:29 oltp_update_index.lua</div><div class="line">-rwxr-xr-x 1 root root  1127 Sep 18 12:29 oltp_update_non_index.lua</div><div class="line">-rwxr-xr-x 1 root root  1440 Sep 18 12:29 oltp_write_only.lua</div><div class="line">-rwxr-xr-x 1 root root  1919 Sep 18 12:29 select_random_points.lua</div><div class="line">-rwxr-xr-x 1 root root  2118 Sep 18 12:29 select_random_ranges.lua</div><div class="line">drwxr-xr-x 4 root root  4096 Nov 10 02:57 tests</div></pre></td></tr></table></figure></p>
+<h3 id="执行压测"><a href="#执行压测" class="headerlink" title="执行压测"></a>执行压测</h3><p>方便压测时找到内置<code>lua</code>脚本，以下命令都在<code>/etc/share/sysbench</code>目录下执行</p>
+<p>在远端连接数据库时，授权<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grant all on test.* to root@&apos;%&apos; identified by &apos;123&apos;;</div></pre></td></tr></table></figure></p>
+<p>生成压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/share/sysbench/</div><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  prepare</div></pre></td></tr></table></figure></p>
+<p>执行压测<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  run</div></pre></td></tr></table></figure></p>
+<p>清理压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  cleanup</div></pre></td></tr></table></figure></p>
+<h3 id="优化数据库"><a href="#优化数据库" class="headerlink" title="优化数据库"></a>优化数据库</h3><p>在压测过程中可能出现一些错误，连接数不够，max_prepared_stmt_count不够，可优化/etc/my.cnf 做适当调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">max_connections = 4096</div><div class="line">max_prepared_stmt_count=100000      # 默认16384压测时需调大</div><div class="line">query_cache_type = 1</div><div class="line">query_cache_size = 10M</div><div class="line"></div><div class="line">wsrep_slave_threads = 4</div><div class="line">#wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh</div><div class="line">max_connections = 10000</div><div class="line">key_buffer_size = 64M</div><div class="line">max_heap_table_size = 64M</div><div class="line">tmp_table_size = 64M</div><div class="line">innodb_buffer_pool_size = 8192M</div></pre></td></tr></table></figure></p>
+<h3 id="示例结果"><a href="#示例结果" class="headerlink" title="示例结果"></a>示例结果</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">Initializing worker threads...</div><div class="line"></div><div class="line">Threads started!</div><div class="line"></div><div class="line">[ 10s ] thds: 300 tps: 198.33 qps: 5741.67 (r/w/o: 4335.25/830.02/576.41) lat (ms,95%): 3706.08 err/s: 81.77 reconn/s: 0.00</div><div class="line">[ 20s ] thds: 300 tps: 222.61 qps: 6095.90 (r/w/o: 4553.90/924.16/617.84) lat (ms,95%): 4203.93 err/s: 102.31 reconn/s: 0.00</div><div class="line">[ 30s ] thds: 300 tps: 221.01 qps: 5899.58 (r/w/o: 4399.84/899.83/599.92) lat (ms,95%): 4055.23 err/s: 93.20 reconn/s: 0.00</div><div class="line">[ 40s ] thds: 300 tps: 198.06 qps: 5400.91 (r/w/o: 4032.79/827.03/541.09) lat (ms,95%): 4683.57 err/s: 89.98 reconn/s: 0.00</div><div class="line">[ 50s ] thds: 300 tps: 186.14 qps: 5162.76 (r/w/o: 3866.39/783.36/513.00) lat (ms,95%): 5312.73 err/s: 90.12 reconn/s: 0.00</div><div class="line">[ 60s ] thds: 300 tps: 158.49 qps: 4433.94 (r/w/o: 3325.93/670.45/437.56) lat (ms,95%): 5507.54 err/s: 78.99 reconn/s: 0.00</div><div class="line">SQL statistics:</div><div class="line">    queries performed:</div><div class="line">        read:                            246736</div><div class="line">        write:                           50340</div><div class="line">        other:                           33317</div><div class="line">        total:                           330393</div><div class="line">    transactions:                        12147  (195.34 per sec.)</div><div class="line">    queries:                             330393 (5313.17 per sec.)</div><div class="line">    ignored errors:                      5477   (88.08 per sec.)</div><div class="line">    reconnects:                          0      (0.00 per sec.)</div><div class="line"></div><div class="line">General statistics:</div><div class="line">    total time:                          62.1815s</div><div class="line">    total number of events:              12147</div><div class="line"></div><div class="line">Latency (ms):</div><div class="line">         min:                                 16.10</div><div class="line">         avg:                               1503.84</div><div class="line">         max:                              14267.54</div><div class="line">         95th percentile:                   4683.57</div><div class="line">         sum:                            18267086.41</div><div class="line"></div><div class="line">Threads fairness:</div><div class="line">    events (avg/stddev):           40.4900/6.29</div><div class="line">    execution time (avg/stddev):   60.8903/0.59</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjdk1sjjy00122cjxw5m06z14" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-cephfs-Ganesha" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/05/cephfs-Ganesha/" class="article-date">
@@ -124,7 +182,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjdk1fl5p00060jjxcosq49yi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjdk1sjj200062cjxph6w84qr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -166,7 +224,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjdk1fl83002h0jjxj1osbp48" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjdk1sjl5002i2cjx0kpb5ie6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -214,7 +272,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjdk1fl7s00230jjxdvqr21pd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjdk1sjks00212cjxfrki1r0n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,62 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjdk1fl6n00100jjxwgqttw1y" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
-</ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</div></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</div><div class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</div></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">from django.urls import reverse</div><div class="line">def login(request):</div><div class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</div><div class="line">    return redirect(url)</div></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</div></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</div></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjdk1fl85002l0jjxh3tacn1q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjdk1sjjx00102cjxvj6671y5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -383,7 +386,62 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjdk1fl82002f0jjxr94p584k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjdk1sjl3002g2cjxh4xcjn6d" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>别名设置</li>
+<li>namespace设置</li>
+<li>reverse</li>
+<li>include本质</li>
+</ul>
+<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</div></pre></td></tr></table></figure></p>
+<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</div><div class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</div></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">from django.urls import reverse</div><div class="line">def login(request):</div><div class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</div><div class="line">    return redirect(url)</div></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</div></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</div></pre></td></tr></table></figure></p>
+<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjdk1sjl6002k2cjx9zvpkttv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -435,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjdk1fl8m003a0jjxp42la4bk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjdk1sjln003a2cjxjtty9bhi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -512,7 +570,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjdk1fl7k001w0jjx7a3bpku6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjdk1sjko001w2cjxnf2wvgtt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -569,54 +627,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjdk1fl7e001q0jjxevdvbuab" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-08-06-异常" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/25/python-08-06-异常/" class="article-date">
-  <time datetime="2017-03-25T12:39:12.000Z" itemprop="datePublished">2017-03-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/25/python-08-06-异常/">python-08-06-异常</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>1</li>
-<li>2</li>
-<li>3</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">class WxqException(Exception):</div><div class="line">    def __init__(self, msg):</div><div class="line">        self.message = msg</div><div class="line">    def __str__(self):</div><div class="line">        return self.message</div><div class="line"></div><div class="line">try:</div><div class="line">        raise WxqException(&quot;Game Over!&quot;)</div><div class="line">except WxqException as e:</div><div class="line">    print(e)</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cjdk1fl7b001o0jjxcvh6ns79" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjdk1sjkh001o2cjxak168qnn" class="article-share-link">Share</a>
       
       
     </footer>
