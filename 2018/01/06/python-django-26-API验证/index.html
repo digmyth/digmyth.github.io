@@ -6,36 +6,39 @@
   <title>python-django-26-API验证 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言
-原理
-实现
+验证原理
+验证实现
 
 讲解Django api验证，基于Tornado签名Cookie源码
-原理：客户端服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
-服务端：服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比较。
-当然这">
+验证原理客户端
+服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
+服务端
+服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python-django-26-API验证">
 <meta property="og:url" content="http://www.digmyth.com/2018/01/06/python-django-26-API验证/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
 <meta property="og:description" content="前言
-原理
-实现
+验证原理
+验证实现
 
 讲解Django api验证，基于Tornado签名Cookie源码
-原理：客户端服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
-服务端：服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比较。
-当然这">
-<meta property="og:updated_time" content="2018-02-12T12:39:11.000Z">
+验证原理客户端
+服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
+服务端
+服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
+<meta property="og:updated_time" content="2018-02-12T12:41:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-django-26-API验证">
 <meta name="twitter:description" content="前言
-原理
-实现
+验证原理
+验证实现
 
 讲解Django api验证，基于Tornado签名Cookie源码
-原理：客户端服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
-服务端：服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比较。
-当然这">
+验证原理客户端
+服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
+服务端
+服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -112,19 +115,21 @@
       
         <ul>
 <li>前言</li>
-<li>原理</li>
-<li>实现</li>
+<li>验证原理</li>
+<li>验证实现</li>
 </ul>
 <p>讲解<code>Django api</code>验证，基于<code>Tornado</code>签名<code>Cookie</code>源码</p>
-<p>原理：<br>客户端<br>服务端和客户端共同存一个<code>字符串</code>，客户端用这个<code>字符串</code>和<code>时间戳</code>算一个<code>md5</code>值，把这个<code>md5</code>和<code>时间戳</code>组成一个字符串在请求头里发送给服务端。</p>
-<p>服务端：<br>服务端收到这个字符串，分别取出<code>md5</code>和<code>时间戳</code>，用这个<code>时间戳</code>与自己存的<code>key&#39;也算一个</code>md5`值，这个md5值与客户端发来的md5值作比较。</p>
+<h2 id="验证原理"><a href="#验证原理" class="headerlink" title="验证原理"></a>验证原理</h2><p>客户端</p>
+<p>服务端和客户端共同存一个<code>字符串</code>，客户端用这个<code>字符串</code>和<code>时间戳</code>算一个<code>md5</code>值，把这个<code>md5</code>和<code>时间戳</code>组成一个字符串在请求头里发送给服务端。</p>
+<p>服务端</p>
+<p>服务端收到这个字符串，分别取出<code>md5</code>和<code>时间戳</code>，用这个<code>时间戳</code>与自己存的<code>key&#39;也算一个</code>md5`值，这个md5值与客户端发来的md5值作比较。</p>
 <p>当然这里还是不够的，比如黑客拿到<code>md5</code>和<code>时间戳</code>呢？</p>
 <p>我们还需要作进一步策略</p>
 <p>策略一：<br>发来的时间戳+5秒小于服务器时间戳，认为是非法请求</p>
 <p>策略二：<br>基于<code>字符串</code>和<code>时间戳</code>算的<code>md5</code>不等于客户端发来的<code>md5</code>值，认为是非法请求</p>
 <p>策略三：<br>5秒钟内的请求作进一步验证，维护一个5秒钟内的合法请求<code>md5</code>值,再来这个<code>md5</code>值的，认为是非法请求。5秒钟失效需要借住<code>memcache</code> <code>redis</code>，它们都自带过期时间。</p>
 <p>策略四：<br>如果基于网络原因，黑客的非法请求比客户端的请求先到达服务器，这样只能数据<code>AES</code>加密了。</p>
-<p>客户端发送请求头</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>客户端发送请求头</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import time</div><div class="line">import hashlib</div><div class="line">def md5(arg):</div><div class="line">	hs = hashlib.md5()</div><div class="line">	hs.update(arg.encode(&quot;utf-8&quot;))</div><div class="line">	return hs.hexdigest()</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ctime=time.time()</div><div class="line">key=&apos;sdgasgsdgsdffsdf&apos;</div><div class="line">new_key=&quot;%s|%s&quot; %(key,ctime)</div><div class="line">md5_str = md5(new_key)</div><div class="line">auth_md5_str=&quot;%s|%s&quot; %(mdr_str,ctime)</div></pre></td></tr></table></figure>
 <p>发送请求</p>
@@ -135,7 +140,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjdk7gu58001yeljxwn4q26qe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjdk7kaaw001yf8jxvixvmbcg" class="article-share-link">Share</a>
       
       
     </footer>

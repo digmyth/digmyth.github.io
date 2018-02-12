@@ -64,7 +64,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/02/12/hello-world/" class="article-date">
-  <time datetime="2018-02-12T12:39:14.515Z" itemprop="datePublished">2018-02-12</time>
+  <time datetime="2018-02-12T12:41:55.451Z" itemprop="datePublished">2018-02-12</time>
 </a>
     
   <div class="article-category">
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/02/12/hello-world/" data-id="cjdk7gu38000leljxm4z59fh8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/02/12/hello-world/" data-id="cjdk7ka9n000lf8jx7e1jb7a1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -138,19 +138,21 @@
       
         <ul>
 <li>前言</li>
-<li>原理</li>
-<li>实现</li>
+<li>验证原理</li>
+<li>验证实现</li>
 </ul>
 <p>讲解<code>Django api</code>验证，基于<code>Tornado</code>签名<code>Cookie</code>源码</p>
-<p>原理：<br>客户端<br>服务端和客户端共同存一个<code>字符串</code>，客户端用这个<code>字符串</code>和<code>时间戳</code>算一个<code>md5</code>值，把这个<code>md5</code>和<code>时间戳</code>组成一个字符串在请求头里发送给服务端。</p>
-<p>服务端：<br>服务端收到这个字符串，分别取出<code>md5</code>和<code>时间戳</code>，用这个<code>时间戳</code>与自己存的<code>key&#39;也算一个</code>md5`值，这个md5值与客户端发来的md5值作比较。</p>
+<h2 id="验证原理"><a href="#验证原理" class="headerlink" title="验证原理"></a>验证原理</h2><p>客户端</p>
+<p>服务端和客户端共同存一个<code>字符串</code>，客户端用这个<code>字符串</code>和<code>时间戳</code>算一个<code>md5</code>值，把这个<code>md5</code>和<code>时间戳</code>组成一个字符串在请求头里发送给服务端。</p>
+<p>服务端</p>
+<p>服务端收到这个字符串，分别取出<code>md5</code>和<code>时间戳</code>，用这个<code>时间戳</code>与自己存的<code>key&#39;也算一个</code>md5`值，这个md5值与客户端发来的md5值作比较。</p>
 <p>当然这里还是不够的，比如黑客拿到<code>md5</code>和<code>时间戳</code>呢？</p>
 <p>我们还需要作进一步策略</p>
 <p>策略一：<br>发来的时间戳+5秒小于服务器时间戳，认为是非法请求</p>
 <p>策略二：<br>基于<code>字符串</code>和<code>时间戳</code>算的<code>md5</code>不等于客户端发来的<code>md5</code>值，认为是非法请求</p>
 <p>策略三：<br>5秒钟内的请求作进一步验证，维护一个5秒钟内的合法请求<code>md5</code>值,再来这个<code>md5</code>值的，认为是非法请求。5秒钟失效需要借住<code>memcache</code> <code>redis</code>，它们都自带过期时间。</p>
 <p>策略四：<br>如果基于网络原因，黑客的非法请求比客户端的请求先到达服务器，这样只能数据<code>AES</code>加密了。</p>
-<p>客户端发送请求头</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>客户端发送请求头</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import time</div><div class="line">import hashlib</div><div class="line">def md5(arg):</div><div class="line">	hs = hashlib.md5()</div><div class="line">	hs.update(arg.encode(&quot;utf-8&quot;))</div><div class="line">	return hs.hexdigest()</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ctime=time.time()</div><div class="line">key=&apos;sdgasgsdgsdffsdf&apos;</div><div class="line">new_key=&quot;%s|%s&quot; %(key,ctime)</div><div class="line">md5_str = md5(new_key)</div><div class="line">auth_md5_str=&quot;%s|%s&quot; %(mdr_str,ctime)</div></pre></td></tr></table></figure>
 <p>发送请求</p>
@@ -161,7 +163,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjdk7gu58001yeljxwn4q26qe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjdk7kaaw001yf8jxvixvmbcg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -201,7 +203,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjdk7gu5m002feljxxmygarl7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjdk7kabk002ff8jx9w3onflf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -274,7 +276,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjdk7gu66003aeljxujp55euj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjdk7kacc003af8jx65pcyrwp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -334,7 +336,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjdk7gu650038eljx1svhmzoh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjdk7kac90038f8jxnsy1fjr9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -400,7 +402,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjdk7gu5v002ueljxsmp8330n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjdk7kaby002uf8jxk1is8a33" class="article-share-link">Share</a>
       
       
     </footer>
@@ -505,7 +507,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjdk7gu6f003ieljx8cr6mqpa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjdk7kaci003if8jxenr3cne2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -569,7 +571,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjdk7gu5b0021eljxsa29mo2h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjdk7kab60021f8jxn0oyitod" class="article-share-link">Share</a>
       
       
     </footer>
@@ -618,7 +620,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjdk7gu640036eljxlyo8s9dm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjdk7kac80036f8jxs2sghoze" class="article-share-link">Share</a>
       
       
     </footer>
@@ -676,7 +678,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjdk7gu610032eljxtvublqje" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjdk7kac40032f8jxbjxboznp" class="article-share-link">Share</a>
       
       
     </footer>
