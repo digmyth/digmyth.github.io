@@ -27,7 +27,7 @@
 服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
 服务端
 服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
-<meta property="og:updated_time" content="2018-02-12T12:41:52.000Z">
+<meta property="og:updated_time" content="2018-02-12T12:42:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-django-26-API验证">
 <meta name="twitter:description" content="前言
@@ -136,11 +136,12 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requests.get(url=&quot;http://127.0.0.1:8000/test_api/&quot;,headers = &#123;&apos;auth-api&apos;:auth_md5_str&#125;)</div></pre></td></tr></table></figure>
 <p>服务端</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">server_float_time = time.time()</div><div class="line">auth_header_val = requests.META.get(&apos;HTTP_AUTH_API&apos;)</div><div class="line">client_md5_str,client_ctime=auth_header_val.rsplit(&apos;|&apos;,maxsplit=1)</div><div class="line">if (client_float_time + 5) &lt; server_float_time :</div><div class="line">    return HttpResponse(&quot;已过期&quot;)</div><div class="line">server_md5_str != client_md5_str:</div><div class="line">    return HttpResponse(&quot;非法请求&quot;)</div><div class="line">if visited_keys.get(client_md5_str):</div><div class="line">    return HttpResponse(&quot;来晚了，你是非法的&quot;)</div></pre></td></tr></table></figure>
+<p>&lt;数据加密待续&gt;</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjdk7kaaw001yf8jxvixvmbcg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjdk7le30001yftjxlpnl7poy" class="article-share-link">Share</a>
       
       
     </footer>
