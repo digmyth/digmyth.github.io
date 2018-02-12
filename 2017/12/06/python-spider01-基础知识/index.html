@@ -25,7 +25,7 @@
 
 简介爬虫：利用python模块伪造浏览器行为，读取网页源码，再经过正则匹配取出HTML文本的一系列处理，数据分析称为爬虫
 基本内容：123456789- python实现浏览器行为： requests- beautifulsoup4  对HTML内容进行分析- HTTP相关知识：  - cookie  - csftToken  - 请求头：其中Co">
-<meta property="og:updated_time" content="2018-02-12T11:45:38.000Z">
+<meta property="og:updated_time" content="2018-02-12T11:57:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-spider-基础知识">
 <meta name="twitter:description" content="前言
@@ -124,10 +124,9 @@
 <p>异步非阻塞<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">遇到IO请求不等待继续执行其它任务,如果IO请求响应内容回来了,自动回调某个函数.</div><div class="line">异步： 回调（相关于通知机制）</div><div class="line">非阻塞： 不等待</div></pre></td></tr></table></figure></p>
 <p>后面会学到爬虫框架：scrapy<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1 内部是twisted实现异步</div><div class="line">2 写入URL自动下载网页</div><div class="line">3 自动将下载的网页解析为对象方便我们处理</div></pre></td></tr></table></figure></p>
 <p>后面也会学到分布式爬虫组件redis-scrapy</p>
-<h3 id="爬虫实现"><a href="#爬虫实现" class="headerlink" title="爬虫实现"></a>爬虫实现</h3><p>基本模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">pip3 install requests</div><div class="line">pip3 install beautifulsoup4   （将网页字符串解析为对象，用于直接取文本内容）</div><div class="line"></div><div class="line">``` </div><div class="line"></div><div class="line">爬虫实现</div></pre></td></tr></table></figure></p>
-<p> 1 代码发送get请求： 请求头+请求体<br> 2 接收返回值： 响应头+响应体（本质字符串）<br> 3 获取响应体后进行解析，方便获取文本内容<br>     import requests<br>     from bs4 import BeautifulSoup<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">注意几点：</div></pre></td></tr></table></figure></p>
-<p>1 回车时得到token和cookies,如果有token和cookies的话取出来,一般get请求<br>2 提交用户名密码时带上token和cookies,一般post请求,并且取出登录成功后的cookies<br>3 登录后才能看到的网页(前2次请求的cookies都带上)</p>
-<p>```</p>
+<h3 id="爬虫实现"><a href="#爬虫实现" class="headerlink" title="爬虫实现"></a>爬虫实现</h3><p>基本模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">pip3 install requests</div><div class="line">pip3 install beautifulsoup4   （将网页字符串解析为对象，用于直接取文本内容）</div></pre></td></tr></table></figure></p>
+<p>爬虫实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">1 代码发送get请求： 请求头+请求体</div><div class="line">2 接收返回值： 响应头+响应体（本质字符串）</div><div class="line">3 获取响应体后进行解析，方便获取文本内容</div><div class="line"> import requests</div><div class="line"> from bs4 import BeautifulSoup</div></pre></td></tr></table></figure></p>
+<p>注意几点：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1 回车时得到token和cookies,如果有token和cookies的话取出来,一般get请求</div><div class="line">2 提交用户名密码时带上token和cookies,一般post请求,并且取出登录成功后的cookies</div><div class="line">3 登录后才能看到的网页(前2次请求的cookies都带上)</div></pre></td></tr></table></figure></p>
 <h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>示例这里就不展开了，可以基于这几个站点简单入门</p>
 <ul>
 <li>github或汽车之家</li>
@@ -139,7 +138,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjdk5jyu8001ybxjxvyyi2q28" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjdk5zc7u001yckjxsjyq246e" class="article-share-link">Share</a>
       
       
     </footer>
