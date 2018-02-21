@@ -108,7 +108,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjdwkzqei001o0xjxeb3g4gyt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjdwl8sg3001o1jjx0t6zx6jz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -155,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cjdwkzqem001s0xjx7ugwkfdp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cjdwl8sg9001s1jjxax53u8on" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdwkzqeo001u0xjxyxo5vmpy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdwl8sgb001u1jjx4tr9ri7s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -338,7 +338,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdwkzqf6002i0xjxsqgqoju9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdwl8sh1002i1jjxcfxkixc3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -396,8 +396,8 @@
 <p>示例一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self):</div><div class="line">        pass</div><div class="line"></div><div class="line">    def __getattribute__(self, item):</div><div class="line">        print(&apos;__getattribute__&apos;)</div><div class="line">        return object.__getattribute__(self,item)</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        print(&apos;__getattr__&apos;)</div><div class="line">        return &quot;%s variable don&apos;t exists&quot; % item</div><div class="line"></div><div class="line">    def __setattr__(self, item, value):</div><div class="line">        print(&apos;__setattr__&apos;)</div><div class="line">        self.__dict__[item] = &apos;test&apos;+value</div><div class="line"></div><div class="line">obj=Foo()</div><div class="line">obj.name = &apos;wxq&apos;</div><div class="line">print(obj.name)</div></pre></td></tr></table></figure></p>
 <p>打印<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">__setattr__</div><div class="line">__getattribute__</div><div class="line">testwxq</div></pre></td></tr></table></figure></p>
 <p>示例二：</p>
-<p>当没有.xx变量属性时会访问<code>__getattr__</code>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,path=&apos;&apos;):</div><div class="line">        self.path = path</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        return Foo(&quot;%s/%s&quot;%(self.path, item))</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.path</div><div class="line"></div><div class="line">obj = Foo(&quot;www&quot;).bai.com</div><div class="line">print(obj)     # 打印 www/bai/com</div></pre></td></tr></table></figure>
+<p>当没有.xx变量属性时会访问<code>__getattr__</code>方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self):</div><div class="line">        pass</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        if item == &apos;name&apos;:</div><div class="line">            return &apos;wxq&apos;</div><div class="line"></div><div class="line">        elif item == &apos;age&apos;:</div><div class="line">            return 25</div><div class="line"></div><div class="line">obj = Foo()</div><div class="line">print(obj.age)</div></pre></td></tr></table></figure></p>
+<p>示例三：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,path=&apos;&apos;):</div><div class="line">        self.path = path</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        return Foo(&quot;%s/%s&quot;%(self.path, item))</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.path</div><div class="line"></div><div class="line">obj = Foo(&quot;www&quot;).bai.com</div><div class="line">print(obj)     # 打印 www/bai/com</div></pre></td></tr></table></figure></p>
 <h2 id="getitem-setitem-delitem"><a href="#getitem-setitem-delitem" class="headerlink" title="__getitem__  __setitem__  __delitem__"></a><code>__getitem__</code>  <code>__setitem__</code>  <code>__delitem__</code></h2><p>用于索引操作，<br>如字典形式：<code>obj[&#39;k1&#39;]</code><br>如Session设置 <code>request.session[&#39; user_info&#39;] =  &#39;user&#39;</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">class Foo(object):</div><div class="line">    def __init__(self,attrs=&#123;&#125;):</div><div class="line">        self.attrs = attrs</div><div class="line">    def __getitem__(self, key):</div><div class="line">        print(&apos;__getitem__&apos;,key)</div><div class="line">        return self.attrs.get(key)</div><div class="line">    def __setitem__(self, key, value):</div><div class="line">        print(&apos;__setitem__&apos;,key,value)</div><div class="line">        self.attrs[key] = value</div><div class="line">    def __delitem__(self, key):</div><div class="line">        print(&apos;__delitem__&apos;,key)</div><div class="line">        del self.attrs[key]</div><div class="line">        print(self.attrs)</div><div class="line">        </div><div class="line">obj = Foo(&#123;&apos;name&apos;:&apos;wxq&apos;&#125;)</div><div class="line"></div><div class="line">obj[&apos;k1&apos;] = &apos;v1&apos;   # 设置，自动触发执行 __setitem__</div><div class="line">print(obj.attrs)</div><div class="line">print(obj[&apos;k1&apos;])     # 获取值，自动触发执行 __getitem__</div><div class="line">del obj[&apos;name&apos;]        # 触发__delitem__</div></pre></td></tr></table></figure>
 <h2 id="new-和-metaclass"><a href="#new-和-metaclass" class="headerlink" title="__new__和 __metaclass__"></a><code>__new__和 __metaclass__</code></h2><h3 id="new-与实例化对象相关"><a href="#new-与实例化对象相关" class="headerlink" title="__new__与实例化对象相关"></a><code>__new__</code>与实例化对象相关</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,name):</div><div class="line">        print(&quot;Foo __init__&quot;)</div><div class="line">        self.name = name</div><div class="line"></div><div class="line">    def __new__(cls, *args, **kwargs):  # 其实是运行了__new__(),不再调用__init__()方法了</div><div class="line">        print(&quot;Foo __new__&quot;)</div><div class="line"></div><div class="line">obj = Foo(&apos;wxq&apos;)   # 打印 Foo __new__,这里obj是None</div></pre></td></tr></table></figure>
@@ -421,7 +421,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdwkzqek001q0xjxubucohm2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdwl8sg7001q1jjxfob3gtpk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -490,7 +490,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdwkzqef001k0xjx88gaqqhf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdwl8sg0001k1jjxrisxyiiq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -564,7 +564,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjdwkzqeh001m0xjxzczntsoo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjdwl8sg1001m1jjx2te8iigy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -775,7 +775,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdwkzqee001i0xjx9jugg6ey" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdwl8sfy001i1jjxco0xo7la" class="article-share-link">Share</a>
       
       
     </footer>
@@ -858,7 +858,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdwkzqec001g0xjxy3143ayb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdwl8sfw001g1jjxth9moz39" class="article-share-link">Share</a>
       
       
     </footer>
@@ -930,7 +930,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdwkzqf0002b0xjxvt6vu2bi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdwl8sgu002b1jjx5g043n8d" class="article-share-link">Share</a>
       
       
     </footer>
