@@ -108,7 +108,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjdk7n9yb001ogejxl55shhry" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjdwku1jf001s0cjx9mvc70xi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -155,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cjdk7n9ye001sgejxn2ffzwxf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cjdwku1ji001u0cjx7ond8fc7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdk7n9yh001ugejxukmvang4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjdwku1je001q0cjxanlzg05h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -338,7 +338,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdk7n9yy002fgejxvl2cvi0m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cjdwku1k2002i0cjxzih2hoym" class="article-share-link">Share</a>
       
       
     </footer>
@@ -390,11 +390,13 @@
 <h2 id="str-repr-call"><a href="#str-repr-call" class="headerlink" title="__str__ __repr__ __call__"></a><code>__str__</code> <code>__repr__</code> <code>__call__</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">__str__  对象打印时自动触发</div><div class="line">__repr__ 对象直接回车自动触发（仅供程序员使用）</div><div class="line">__call__ 对象后面加括号调用时自动触发</div></pre></td></tr></table></figure>
 <h2 id="property属性方法"><a href="#property属性方法" class="headerlink" title="@property属性方法"></a>@property属性方法</h2><p>把一个类方法变为属性来用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class Dog(object):</div><div class="line">    def __init__(self,name):</div><div class="line">        self.name = name</div><div class="line">        self.__food = None</div><div class="line">    @property</div><div class="line">    def eat(self):</div><div class="line">        print(&quot;%s is eating %s&quot; %(self.name, self.__food))</div><div class="line">    @eat.setter  # 赋值调用属性，调这个方法</div><div class="line">    def eat(self,food):</div><div class="line">        print(&quot;set to food:&quot;,food)</div><div class="line">        self.__food = food</div><div class="line">    @eat.deleter  # 删除属性</div><div class="line">    def eat(self):</div><div class="line">        del self.__food</div><div class="line">        print(&quot;Delete the finished&quot;)</div><div class="line"></div><div class="line">obj=Dog(&apos;w..w&apos;)</div><div class="line">obj.eat = &quot;fish&quot;    # 自动调用@eat.setter赋值</div><div class="line">obj.eat</div></pre></td></tr></table></figure></p>
 <p>property 原理就是property类里定义了<code>__get__()</code>  <code>__set__()</code>  <code>__delete__()</code>方法，是描述符的运用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">定义： 描述符就是将某种特殊类的实例指派给另一个类的属性，__get__   __set__  __delete__实现了</div><div class="line">       描述符协议，用于property描述符编写。</div><div class="line">一种调用方式之一： property(fget=None, fset=None, fdel=None, doc=None)</div><div class="line">__get__(self, instance, owner)    #用于访问属性，它返回属性的值</div><div class="line">__set__(self, instance, value)    #将在属性分配操作中调用，不返回任何内容</div><div class="line">__delete__(self, instance)	# 控制删除操作，不返回任何内容</div></pre></td></tr></table></figure></p>
-<h2 id="getattr-setattr-hasattr-delattr"><a href="#getattr-setattr-hasattr-delattr" class="headerlink" title="__getattr__  __setattr__  __hasattr__ __delattr__"></a><code>__getattr__</code>  <code>__setattr__</code>  <code>__hasattr__</code> <code>__delattr__</code></h2><p>用于属性操作, 如 :</p>
-<p><code>obj,name</code>调用<code>__getattr__()</code>方法<br><code>obj.name = &#39;wxq&#39; 调用 `` __setattr__()</code>方法</p>
-<p>示例一：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,path=&apos;&apos;):</div><div class="line">        self.path = path</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        return Foo(&quot;%s/%s&quot;%(self.path, item))</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.path</div><div class="line"></div><div class="line">obj = Foo(&quot;www&quot;).bai.com</div><div class="line">print(obj)     # 打印 www/bai/com</div></pre></td></tr></table></figure>
-<p>示例二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">def func1(self):</div><div class="line">    print(self.name,&apos;say Hi&apos;)</div><div class="line">    return &quot;func&quot;</div><div class="line"></div><div class="line">class Foo(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.name = &apos;fgf&apos;</div><div class="line">    def func2(self):</div><div class="line">        print(self.name,&apos;say fu&apos;)</div><div class="line">        return &quot;func&quot;</div><div class="line">obj = Foo()</div><div class="line"></div><div class="line">choice = input(&quot;请输入调用方法名[func1|func2]：&quot;)</div><div class="line">if hasattr(obj,choice):  # 实例中有这个方法，执行实例中的方法</div><div class="line">    print(getattr(obj,choice))</div><div class="line">else:                    # 动态加载函数封装到类中</div><div class="line">    setattr(obj,choice,func1)</div><div class="line">    func = getattr(obj,choice)</div><div class="line">    func(obj)</div></pre></td></tr></table></figure></p>
+<h2 id="getattr-setattr-hasattr反射系列"><a href="#getattr-setattr-hasattr反射系列" class="headerlink" title="getattr setattr hasattr反射系列"></a>getattr setattr hasattr反射系列</h2><p>用于通过字符串找到函数或方法</p>
+<p>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">def func1(self):</div><div class="line">    print(self.name,&apos;say Hi&apos;)</div><div class="line">    return &quot;func1&quot;</div><div class="line"></div><div class="line">class Foo(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.name = &apos;wxq&apos;</div><div class="line">    def func2(self):</div><div class="line">        print(self.name)</div><div class="line">        return &quot;method func2&quot;</div><div class="line">obj = Foo()</div><div class="line"></div><div class="line">choice = input(&quot;请输入调用方法名:&quot;)</div><div class="line">if hasattr(obj,choice):  # 实例中有这个方法，执行实例中的方法</div><div class="line">    func=getattr(obj,choice)</div><div class="line">    func()               # 绑定方法自动传入self参数</div><div class="line">else:                    # 动态加载函数封装到类中</div><div class="line">    setattr(obj,choice,func1)</div><div class="line">    func = getattr(obj,choice)</div><div class="line">    func(obj)   # 函数时需手动传入self参数</div></pre></td></tr></table></figure></p>
+<h2 id="getattr-setattr-hasattr-delattr-进行-dict-拦截"><a href="#getattr-setattr-hasattr-delattr-进行-dict-拦截" class="headerlink" title="__getattr__  __setattr__  __hasattr__ __delattr__ 进行__dict__拦截"></a><code>__getattr__</code>  <code>__setattr__</code>  <code>__hasattr__</code> <code>__delattr__</code> 进行<code>__dict__</code>拦截</h2><p>一般来讲，<code>obj.name = &#39;wxq&#39;</code>python自动基于<code>self.__dict__</code>赋值取值操作，无需关心，这里只是对这种自动操作进行拦截，用于高级代码重写操,<code>self.xx</code>不存在变量<code>xx</code>时先访问<code>__getattribute__</code>,再访问<code>__getattr__</code>,默认返回<code>None</code>,self.xx<code>存在变量</code>xx<code>时不会访问</code><strong>getattr</strong><code>，直接取出值返回，</code>self.name=’wxq’<code>赋值先访问</code><strong>setattr</strong>`方法，没有该方法就用默认内置.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self):</div><div class="line">        pass</div><div class="line"></div><div class="line">    def __getattribute__(self, item):</div><div class="line">        print(&apos;__getattribute__&apos;)</div><div class="line">        return object.__getattribute__(self,item)</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        print(&apos;__getattr__&apos;)</div><div class="line">        return &quot;%s variable don&apos;t exists&quot; % item</div><div class="line"></div><div class="line">    def __setattr__(self, item, value):</div><div class="line">        print(&apos;__setattr__&apos;)</div><div class="line">        self.__dict__[item] = &apos;test&apos;+value</div><div class="line"></div><div class="line">obj=Foo()</div><div class="line">obj.name = &apos;wxq&apos;</div><div class="line">print(obj.name)</div></pre></td></tr></table></figure>
+<p>打印<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">__setattr__</div><div class="line">__getattribute__</div><div class="line">testwxq</div></pre></td></tr></table></figure></p>
+<p>用于属性操作, 如 :<br><code>obj.name</code>调用<code>__getattr__()</code>方法<br><code>obj.name = &#39;wxq&#39;</code> 调用 <code>__setattr__()</code>方法</p>
+<p>示例一：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,path=&apos;&apos;):</div><div class="line">        self.path = path</div><div class="line"></div><div class="line">    def __getattr__(self, item):</div><div class="line">        return Foo(&quot;%s/%s&quot;%(self.path, item))</div><div class="line"></div><div class="line">    def __str__(self):</div><div class="line">        return self.path</div><div class="line"></div><div class="line">obj = Foo(&quot;www&quot;).bai.com</div><div class="line">print(obj)     # 打印 www/bai/com</div></pre></td></tr></table></figure></p>
 <h2 id="getitem-setitem-delitem"><a href="#getitem-setitem-delitem" class="headerlink" title="__getitem__  __setitem__  __delitem__"></a><code>__getitem__</code>  <code>__setitem__</code>  <code>__delitem__</code></h2><p>用于索引操作，<br>如字典形式：<code>obj[&#39;k1&#39;]</code><br>如Session设置 <code>request.session[&#39; user_info&#39;] =  &#39;user&#39;</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">class Foo(object):</div><div class="line">    def __init__(self,attrs=&#123;&#125;):</div><div class="line">        self.attrs = attrs</div><div class="line">    def __getitem__(self, key):</div><div class="line">        print(&apos;__getitem__&apos;,key)</div><div class="line">        return self.attrs.get(key)</div><div class="line">    def __setitem__(self, key, value):</div><div class="line">        print(&apos;__setitem__&apos;,key,value)</div><div class="line">        self.attrs[key] = value</div><div class="line">    def __delitem__(self, key):</div><div class="line">        print(&apos;__delitem__&apos;,key)</div><div class="line">        del self.attrs[key]</div><div class="line">        print(self.attrs)</div><div class="line">        </div><div class="line">obj = Foo(&#123;&apos;name&apos;:&apos;wxq&apos;&#125;)</div><div class="line"></div><div class="line">obj[&apos;k1&apos;] = &apos;v1&apos;   # 设置，自动触发执行 __setitem__</div><div class="line">print(obj.attrs)</div><div class="line">print(obj[&apos;k1&apos;])     # 获取值，自动触发执行 __getitem__</div><div class="line">del obj[&apos;name&apos;]        # 触发__delitem__</div></pre></td></tr></table></figure>
 <h2 id="new-和-metaclass"><a href="#new-和-metaclass" class="headerlink" title="__new__和 __metaclass__"></a><code>__new__和 __metaclass__</code></h2><h3 id="new-与实例化对象相关"><a href="#new-与实例化对象相关" class="headerlink" title="__new__与实例化对象相关"></a><code>__new__</code>与实例化对象相关</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">class Foo():</div><div class="line">    def __init__(self,name):</div><div class="line">        print(&quot;Foo __init__&quot;)</div><div class="line">        self.name = name</div><div class="line"></div><div class="line">    def __new__(cls, *args, **kwargs):  # 其实是运行了__new__(),不再调用__init__()方法了</div><div class="line">        print(&quot;Foo __new__&quot;)</div><div class="line"></div><div class="line">obj = Foo(&apos;wxq&apos;)   # 打印 Foo __new__,这里obj是None</div></pre></td></tr></table></figure>
@@ -418,7 +420,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdk7n9yd001qgejxt8rrqq27" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cjdwku1j8001k0cjxckxyp77z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -487,7 +489,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdk7n9y9001kgejxfio56qz2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cjdwku1j6001i0cjxnn7aeh6a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -561,7 +563,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjdk7n9ya001mgejxnr0uen9y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjdwku1ja001m0cjxo581dte7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -772,7 +774,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdk7n9y7001igejxvk5itsz9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjdwku1j4001g0cjxdc05ccip" class="article-share-link">Share</a>
       
       
     </footer>
@@ -855,7 +857,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdk7n9y4001ggejxyp19lhe6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjdwku1jb001o0cjxrjv4fjoh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -927,7 +929,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdk7n9ys002bgejxbas4203b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjdwku1jz002d0cjxh664ua3r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -978,7 +980,7 @@
       <ul>
         
           <li>
-            <a href="/2018/02/12/hello-world/">Hello World</a>
+            <a href="/2018/02/21/hello-world/">Hello World</a>
           </li>
         
           <li>
