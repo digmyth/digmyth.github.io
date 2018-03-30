@@ -10,7 +10,7 @@
 模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同
 虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64
 
-虚拟中完全虚拟">
+3.虚拟化分类">
 <meta property="og:type" content="article">
 <meta property="og:title" content="KVM introduction">
 <meta property="og:url" content="http://www.digmyth.com/2017/06/08/KVM-introduction/index.html">
@@ -20,8 +20,8 @@
 模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同
 虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64
 
-虚拟中完全虚拟">
-<meta property="og:updated_time" content="2018-03-30T06:54:55.000Z">
+3.虚拟化分类">
+<meta property="og:updated_time" content="2018-03-30T06:58:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="KVM introduction">
 <meta name="twitter:description" content="1. kvm简介kvm as a kernel based virtual machine,现如今较为流行的虚拟化技术，openstack后端就是kvm虚拟化。
@@ -29,7 +29,7 @@
 模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同
 虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64
 
-虚拟中完全虚拟">
+3.虚拟化分类">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -109,7 +109,6 @@
 <li>模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同</li>
 <li>虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64</li>
 </ul>
-<p>虚拟中完全虚拟化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1). 早期BT技术实现加速，binary translation 边运行边翻译,虚机内核就是运行ring1上专用于翻译加速</div><div class="line">2). hvm: 硬件辅助虚拟化，需要cpu硬件支持，就是cpu多了ring-1，这样虚拟机直接运行在ring0上，</div><div class="line">   宿主机内核运行在ring-1,ring-1捕获ring0的特权指令直接运行，性能可想而知提高了</div></pre></td></tr></table></figure></p>
 <h1 id="3-虚拟化分类"><a href="#3-虚拟化分类" class="headerlink" title="3.虚拟化分类"></a>3.虚拟化分类</h1><p>虚拟化分类无非2种方式：</p>
 <p>一种：直接运行于硬件平台–&gt; hypervisor: &lt;–&gt; dom0</p>
 <ul>
@@ -123,11 +122,16 @@
 <ul>
 <li>半虚拟化是要修改内核的，要让虚拟机知道自己运行在虚拟机环境下的，知道的结果是当虚拟机发起cpu指令时不能直接操作硬件，需要发起hypercall调用.</li>
 </ul>
+<p>那么什么是完全虚拟化？</p>
+<ul>
+<li>1) 早期BT技术实现加速，binary translation 边运行边翻译,虚机内核就是运行ring1上专用于翻译加速</li>
+<li>2) hvm: 硬件辅助虚拟化，需要cpu硬件支持，就是cpu多了ring-1，这样虚拟机直接运行在ring0上，宿主机内核运行在ring-1,ring-1捕获ring0的特权指令直接运行，性能可想而知提高了</li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjfdlfih300005bjxbonldjw5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjfdlkadl00006ujx76smbhzg" class="article-share-link">Share</a>
       
       
     </footer>

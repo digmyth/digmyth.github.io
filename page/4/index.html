@@ -61,14 +61,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
+    <a href="/2017/06/15/git-01/" class="article-date">
   <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    <a class="article-category-link" href="/categories/Git/">Git</a>
   </div>
 
   </div>
@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
+      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
     </h1>
   
 
@@ -87,18 +87,29 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
-<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</div></pre></td></tr></table></figure></p>
-<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</div><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</div></pre></td></tr></table></figure></p>
-<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</div><div class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</div></pre></td></tr></table></figure></p>
-
+        <ul>
+<li>目录</li>
+<li>git建版本库</li>
+<li>git别名设置</li>
+<li>git基本配置</li>
+<li>git基本命令</li>
+<li>git分支管理</li>
+</ul>
+<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init # 把当前目录变成git可管理的仓库</div><div class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</div></pre></td></tr></table></figure>
+<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">为命令设置别名</div><div class="line">$ git config --global alias.co checkout</div><div class="line">$ git config --global alias.ci commit</div><div class="line">$ git config --global alias.br branch</div></pre></td></tr></table></figure>
+<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">每台机器自报家门</div><div class="line">$ git config --global user.name &quot;Your Name&quot;</div><div class="line">$ git config --global user.email &quot;email@example.com&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优先级从高到低是</div><div class="line">.git/config--&gt;  --global --&gt; system</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">全局生效: 配置保存在/etc/gitconfig</div><div class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</div><div class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div><div class="line">	email = you@example.com</div><div class="line"></div><div class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">只对某仓库生效：配置保存在reponame/.git/config</div><div class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</div><div class="line">[root@wxq-srv git_work]# cat .git/config </div><div class="line">[core]</div><div class="line">	repositoryformatversion = 0</div><div class="line">	filemode = true</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">[user]</div><div class="line">	name = wxq1</div></pre></td></tr></table></figure>
+<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git log  # 每一次提交的记录</div><div class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</div><div class="line">git reset --hard $commit_id   # 回到指定版本</div><div class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</div><div class="line">git add index.html   # 添加更改至state暂存	区</div><div class="line">git reset HEAD index.html  # unstage 退出暂存区</div><div class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</div></pre></td></tr></table></figure>
+<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
+<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看分支：git branch</div><div class="line">创建分支：git branch &lt;name&gt;</div><div class="line">切换分支：git checkout &lt;name&gt;</div><div class="line">创建+切换分支：git checkout -b &lt;name&gt;</div><div class="line">合并某分支到当前分支：git merge &lt;name&gt;</div><div class="line">删除分支：git branch -d &lt;name&gt;</div></pre></td></tr></table></figure>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjfdlfiju000v5bjx5t0lh7p9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjfdlkaf5000i6ujxgknfuxyp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -156,7 +167,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjfdlfik100125bjxu51fwfe5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjfdlkafq00146ujxsavro475" class="article-share-link">Share</a>
       
       
     </footer>
@@ -197,7 +208,6 @@
 <li>模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同</li>
 <li>虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64</li>
 </ul>
-<p>虚拟中完全虚拟化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1). 早期BT技术实现加速，binary translation 边运行边翻译,虚机内核就是运行ring1上专用于翻译加速</div><div class="line">2). hvm: 硬件辅助虚拟化，需要cpu硬件支持，就是cpu多了ring-1，这样虚拟机直接运行在ring0上，</div><div class="line">   宿主机内核运行在ring-1,ring-1捕获ring0的特权指令直接运行，性能可想而知提高了</div></pre></td></tr></table></figure></p>
 <h1 id="3-虚拟化分类"><a href="#3-虚拟化分类" class="headerlink" title="3.虚拟化分类"></a>3.虚拟化分类</h1><p>虚拟化分类无非2种方式：</p>
 <p>一种：直接运行于硬件平台–&gt; hypervisor: &lt;–&gt; dom0</p>
 <ul>
@@ -211,11 +221,16 @@
 <ul>
 <li>半虚拟化是要修改内核的，要让虚拟机知道自己运行在虚拟机环境下的，知道的结果是当虚拟机发起cpu指令时不能直接操作硬件，需要发起hypercall调用.</li>
 </ul>
+<p>那么什么是完全虚拟化？</p>
+<ul>
+<li>1) 早期BT技术实现加速，binary translation 边运行边翻译,虚机内核就是运行ring1上专用于翻译加速</li>
+<li>2) hvm: 硬件辅助虚拟化，需要cpu硬件支持，就是cpu多了ring-1，这样虚拟机直接运行在ring0上，宿主机内核运行在ring-1,ring-1捕获ring0的特权指令直接运行，性能可想而知提高了</li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjfdlfih300005bjxbonldjw5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjfdlkadl00006ujx76smbhzg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -288,7 +303,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjfdlfij300095bjxcchahhdq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjfdlkaez000b6ujxespbfsnm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -330,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjfdlfiln002l5bjx8apkw6nm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjfdlkah2002o6ujxgn0yc5d3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -378,7 +393,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjfdlfila00295bjxga3gdzbc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjfdlkagq00266ujxsvh2f9pv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -437,7 +452,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjfdlfik200145bjxn0q9u4tq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjfdlkafo00126ujxfei60tc5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -492,7 +507,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjfdlfill002j5bjxsdvph3xt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjfdlkah1002m6ujxeinx1nn8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -547,7 +562,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjfdlfilu002u5bjxizz0xm14" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjfdlkah3002q6ujxtp62jygf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -599,7 +614,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjfdlfimc003i5bjxovhuj0o2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjfdlkahn003e6ujxa7tk9eo5" class="article-share-link">Share</a>
       
       
     </footer>
