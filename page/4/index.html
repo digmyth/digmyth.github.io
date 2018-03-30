@@ -61,14 +61,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/06/15/git-01/" class="article-date">
+    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
   <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
   </div>
 
   </div>
@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
+      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
     </h1>
   
 
@@ -87,29 +87,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>git建版本库</li>
-<li>git别名设置</li>
-<li>git基本配置</li>
-<li>git基本命令</li>
-<li>git分支管理</li>
-</ul>
-<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init # 把当前目录变成git可管理的仓库</div><div class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</div></pre></td></tr></table></figure>
-<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">为命令设置别名</div><div class="line">$ git config --global alias.co checkout</div><div class="line">$ git config --global alias.ci commit</div><div class="line">$ git config --global alias.br branch</div></pre></td></tr></table></figure>
-<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">每台机器自报家门</div><div class="line">$ git config --global user.name &quot;Your Name&quot;</div><div class="line">$ git config --global user.email &quot;email@example.com&quot;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优先级从高到低是</div><div class="line">.git/config--&gt;  --global --&gt; system</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">全局生效: 配置保存在/etc/gitconfig</div><div class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</div><div class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div><div class="line">	email = you@example.com</div><div class="line"></div><div class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">只对某仓库生效：配置保存在reponame/.git/config</div><div class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</div><div class="line">[root@wxq-srv git_work]# cat .git/config </div><div class="line">[core]</div><div class="line">	repositoryformatversion = 0</div><div class="line">	filemode = true</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">[user]</div><div class="line">	name = wxq1</div></pre></td></tr></table></figure>
-<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git log  # 每一次提交的记录</div><div class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</div><div class="line">git reset --hard $commit_id   # 回到指定版本</div><div class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</div><div class="line">git add index.html   # 添加更改至state暂存	区</div><div class="line">git reset HEAD index.html  # unstage 退出暂存区</div><div class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</div></pre></td></tr></table></figure>
-<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
-<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看分支：git branch</div><div class="line">创建分支：git branch &lt;name&gt;</div><div class="line">切换分支：git checkout &lt;name&gt;</div><div class="line">创建+切换分支：git checkout -b &lt;name&gt;</div><div class="line">合并某分支到当前分支：git merge &lt;name&gt;</div><div class="line">删除分支：git branch -d &lt;name&gt;</div></pre></td></tr></table></figure>
-<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
+        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</div></pre></td></tr></table></figure></p>
+<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</div><div class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</div><div class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</div><div class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</div><div class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</div></pre></td></tr></table></figure></p>
+<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</div></pre></td></tr></table></figure></p>
+<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</div><div class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</div></pre></td></tr></table></figure></p>
+<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</div><div class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</div></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjdwl8sep000f1jjxavvyjnvv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjfdlfiju000v5bjx5t0lh7p9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -167,7 +156,66 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjdwl8sfc00121jjx6jdmfrma" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjfdlfik100125bjxu51fwfe5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-KVM-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/08/KVM-introduction/" class="article-date">
+  <time datetime="2017-06-08T01:41:54.000Z" itemprop="datePublished">2017-06-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/08/KVM-introduction/">KVM introduction</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-kvm简介"><a href="#1-kvm简介" class="headerlink" title="1. kvm简介"></a>1. kvm简介</h1><p>kvm as a kernel based virtual machine,现如今较为流行的虚拟化技术，openstack后端就是kvm虚拟化。</p>
+<h1 id="2-模拟与虚拟"><a href="#2-模拟与虚拟" class="headerlink" title="2. 模拟与虚拟"></a>2. 模拟与虚拟</h1><ul>
+<li>模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同</li>
+<li>虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64</li>
+</ul>
+<p>虚拟中完全虚拟化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1). 早期BT技术实现加速，binary translation 边运行边翻译,虚机内核就是运行ring1上专用于翻译加速</div><div class="line">2). hvm: 硬件辅助虚拟化，需要cpu硬件支持，就是cpu多了ring-1，这样虚拟机直接运行在ring0上，</div><div class="line">   宿主机内核运行在ring-1,ring-1捕获ring0的特权指令直接运行，性能可想而知提高了</div></pre></td></tr></table></figure></p>
+<h1 id="3-虚拟化分类"><a href="#3-虚拟化分类" class="headerlink" title="3.虚拟化分类"></a>3.虚拟化分类</h1><p>虚拟化分类无非2种方式：</p>
+<p>一种：直接运行于硬件平台–&gt; hypervisor: &lt;–&gt; dom0</p>
+<ul>
+<li>如xen ,esxi,这里xen不好理解，装xen不也要安装操作系统后安装xen4软件包么？为什么它也说直接运行在硬件平台，是因为安装完xen4后，切换了xen4的内核来启动，并非原有操作系统内核.</li>
+</ul>
+<p>二种：先有host系统，再安装虚拟软件（如vmware station）或统称virtual machine mintor(虚拟机监视器)</p>
+<ul>
+<li>如kvm, 虚拟机的cpu,内存通过kvm模块来调用，但IO不行，虚拟机的IO是通过host系统的qemu程序模拟提供的，再由host系统的内核提供IO</li>
+</ul>
+<p>那么什么是半虚拟化？</p>
+<ul>
+<li>半虚拟化是要修改内核的，要让虚拟机知道自己运行在虚拟机环境下的，知道的结果是当虚拟机发起cpu指令时不能直接操作硬件，需要发起hypercall调用.</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjfdlfih300005bjxbonldjw5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -240,7 +288,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjdwl8seb00081jjxqbwa36ng" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjfdlfij300095bjxcchahhdq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -282,7 +330,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjdwl8sh3002m1jjx9fjvr06i" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjfdlfiln002l5bjx8apkw6nm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -330,7 +378,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjdwl8sgn00241jjxxgypx24f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjfdlfila00295bjxga3gdzbc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -389,7 +437,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjdwl8sfa00101jjxkqwgjk2b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjfdlfik200145bjxn0q9u4tq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -444,7 +492,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjdwl8sh2002k1jjxq4wrhn7m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjfdlfill002j5bjxsdvph3xt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -499,7 +547,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjdwl8sh4002o1jjxh2lpur04" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjfdlfilu002u5bjxizz0xm14" class="article-share-link">Share</a>
       
       
     </footer>
@@ -551,84 +599,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjdwl8shk003c1jjx89bsyhq1" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-python-10-02-网络编程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/31/python-10-02-网络编程/" class="article-date">
-  <time datetime="2017-03-31T14:26:46.000Z" itemprop="datePublished">2017-03-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/31/python-10-02-网络编程/">python-09-02-网络编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>socket概念</li>
-<li>socket基本使用</li>
-<li>socket简单示例</li>
-<li>总结 </li>
-</ul>
-<h2 id="一、socket概念"><a href="#一、socket概念" class="headerlink" title="一、socket概念"></a>一、socket概念</h2><p>什么是socket ?</p>
-<p>socket常称为’套接字’，用于描述IP地址和端口，是一个通信链的句柄，应用程序通常通过”套接字”向网络发出请求或应答网络请求。</p>
-<p><code>Unix</code>中一切皆文件，socket是一种特殊的套接字文件，对网络的编程就是对服务器，客户端socket对象<code>打开</code> <code>读写</code> <code>关闭</code>  的过程。</p>
-<p>所不同的是对于服务器而言，连接进来了，socket套接字为可读状态，发送数据为可写状态。</p>
-<p>对于客户端而言，创建连接后socket套接字为可写状态，发送数据为可读状态。</p>
-<h2 id="二、socket基本使用"><a href="#二、socket基本使用" class="headerlink" title="二、socket基本使用"></a>二、socket基本使用</h2><p>服务器端<br>第一步： 创建 套接字对够用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import socket</div><div class="line">socket.socket(family, type)</div><div class="line">family  </div><div class="line">	AF_INET</div><div class="line">	AF_UNIX</div><div class="line">type</div><div class="line">	SOCK_STREAM   -------&gt; TCP</div><div class="line">	SOCK_DGRAM    -------&gt; UDP</div><div class="line">conns = socket.socket(socket.AF_INET,socket.SOCK_STREAM)</div></pre></td></tr></table></figure></p>
-<p>第二步：  绑定地址<br>使用套接字对象的 bind方法绑定于地址和端口组成的元组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conns.bind((&apos;ip&apos;,port))</div></pre></td></tr></table></figure></p>
-<p>第三步： 使用套接字的<code>Listen()</code>方法进行监听<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conns.listen(10)   #等待队列长度</div></pre></td></tr></table></figure></p>
-<p>第四步： 进入循环监听状态</p>
-<p>使用套接字的<code>accept()</code>方法接收用户连接请求<br><code>help(tcpconn.accept)</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">client_sock,client_addr = conns.accept()</div></pre></td></tr></table></figure></p>
-<p>编写客户端程序<br>第一步： 创建套接字对象以连接服务器端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">client_conn =  socket.socket(socket.AF_INET,socket.SOCK_STREAM)</div></pre></td></tr></table></figure></p>
-<p>第二步： 请求连接服务器<br>client_conn.conncet((‘server_ip’, port))</p>
-<p>第三步： 发送数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">client_conn.send(b&apos;hello world&apos;)</div></pre></td></tr></table></figure>
-<p>示例<br>server.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import socket</div><div class="line"></div><div class="line">sock = socket.socket()</div><div class="line">sock.bind((&apos;127.0.0.1&apos;,8000))</div><div class="line">sock.listen(5)</div><div class="line"></div><div class="line">while True:</div><div class="line">    conn,addr = sock.accept()</div><div class="line"></div><div class="line">    client_data = conn.recv(1024)</div><div class="line">    print(client_data)</div><div class="line">    conn.sendall(&apos;response info from server&apos;)</div><div class="line"></div><div class="line">    conn.close()</div></pre></td></tr></table></figure></p>
-<p>client.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import socket</div><div class="line"></div><div class="line">sk = socket.socket()</div><div class="line">sk.connect((&apos;127.0.0.1&apos;,8000))</div><div class="line"></div><div class="line">sk.sendall(&apos;请求数据&apos;)</div><div class="line"></div><div class="line">server_reply = sk.recv(1024)</div><div class="line">print(server_reply)</div><div class="line"></div><div class="line">sk.close()</div></pre></td></tr></table></figure></p>
-<h2 id="三、socket简单示例"><a href="#三、socket简单示例" class="headerlink" title="三、socket简单示例"></a>三、socket简单示例</h2><p>python中网络编程主要有socket/socketserver和异步相关的Twisted/tornado/</p>
-<p>socket这里包括自己用select实现的伪异步IO多路复用</p>
-<p>2.1 示例一<br>web浏览器和socket_server交互,浏览器将收到服务端返回的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"># socket_server.py</div><div class="line">import socket</div><div class="line"></div><div class="line">def handle_process(client):</div><div class="line">    data = client.recv(1024)</div><div class="line">    print(data.decode(&quot;utf-8&quot;))</div><div class="line">    client.send(b&quot;HTTP/1.1 200 OK\r\n\r\n&quot;)#一定要先发送合规请求头</div><div class="line">    client.send(b&apos;hello worldfdds&apos;)</div><div class="line"></div><div class="line">def main():</div><div class="line">    sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)</div><div class="line">    sock.bind((&apos;127.0.0.1&apos;,8003))</div><div class="line">    sock.listen(5)</div><div class="line"></div><div class="line">    while True:</div><div class="line">        conn,addr = sock.accept()</div><div class="line">        handle_process(conn)</div><div class="line">        conn.close()</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    main()</div></pre></td></tr></table></figure></p>
-<p>2.2 示例二<br>socket + select 实现IO多路复用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"># socket_server.py</div><div class="line">import select</div><div class="line">import socket</div><div class="line"># 单线程里同时监听多个socket对象，实现了&quot;伪&quot;并发IO操作： IO多路复用</div><div class="line">sk1 = socket.socket()</div><div class="line">sk1.bind((&apos;127.0.0.1&apos;,8001))</div><div class="line">sk1.listen(5)</div><div class="line"></div><div class="line">sk2 = socket.socket()</div><div class="line">sk2.bind((&apos;127.0.0.1&apos;,8002))</div><div class="line">sk2.listen(5)</div><div class="line"></div><div class="line">inputs = [sk1,sk2]</div><div class="line">w_inputs = []</div><div class="line">while True:</div><div class="line">    # IO多路复用：</div><div class="line">    # select: 内部循环，主动查看</div><div class="line">    # poll:   内部循环，主动查看</div><div class="line">    # epoll:  非循环，  异步回调或被动通知</div><div class="line">    r,w,e = select.select(inputs,w_inputs,[],0.05)</div><div class="line">    for obj in r:</div><div class="line">        if obj in [sk1,sk2]:</div><div class="line">            print(&quot;新的连接来了。。&quot;)</div><div class="line">            conn,addr = obj.accept()</div><div class="line">            inputs.append(conn)</div><div class="line">        else:</div><div class="line">            print(&quot;新的数据来了&quot;)</div><div class="line">            try:</div><div class="line">                data=obj.recv(1024)</div><div class="line">            except Exception as e:</div><div class="line">                data = &quot;&quot;</div><div class="line">            if data:</div><div class="line">                # obj.sendall(data)</div><div class="line">                w_inputs.append(obj)</div><div class="line">            else:</div><div class="line">                inputs.remove(obj)</div><div class="line">                w_inputs.remove(obj)</div><div class="line">                obj.close()</div><div class="line">    for obj in w:</div><div class="line">        obj.sendall(b&apos;ok&apos;)</div><div class="line">        w_inputs.remove(obj)</div></pre></td></tr></table></figure></p>
-<p>定义2个socket_client</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># socket_client01.py</div><div class="line">import socket</div><div class="line"></div><div class="line">client = socket.socket()</div><div class="line">client.connect((&apos;127.0.0.1&apos;,8001))</div><div class="line">while True:</div><div class="line"></div><div class="line">    v = input(&quot;&gt;&gt;&gt;&quot;)</div><div class="line">    client.sendall(v.encode())</div><div class="line">    ret = client.recv(1024)</div><div class="line">    print(&quot;server response:&quot;,ret)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># socket_client02.py</div><div class="line">import socket</div><div class="line"></div><div class="line">client = socket.socket()</div><div class="line">client.connect((&apos;127.0.0.1&apos;,8002))</div><div class="line">while True:</div><div class="line">    v = input(&quot;&gt;&gt;&gt;&quot;)</div><div class="line">    client.sendall(v.encode())</div><div class="line">    ret = client.recv(1024)</div><div class="line">    print(&quot;server response:&quot;,ret)</div></pre></td></tr></table></figure>
-<p>测试服务端并发： 先启动socket_server.py,后启动socket_clientx.py</p>
-<p>小结：<br>服务端单线程同时监听了多个socket对象，表明实现了并发连接或IO多路复用，但真正实现了并发吗？当并发边连接有IO请求时还是占住了资源,那么在下一个例子中用线程处理IO请求实现真正的IO并发</p>
-<p>4.2 示例三<br>select + 线程实现真正的多并发<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">import select</div><div class="line">import socket</div><div class="line">import threading</div><div class="line"></div><div class="line">def process_request(conn):</div><div class="line"></div><div class="line">    while True:</div><div class="line">        v = conn.recv(1024)</div><div class="line">        conn.sendall(b&apos;HTTP/1.1 200 OK\r\n\r\ndownload page ...&apos;)</div><div class="line">        conn.close()</div><div class="line">        break  # 任务处理完成后终止这个线程</div><div class="line"></div><div class="line">sk1 = socket.socket()</div><div class="line">sk1.bind((&apos;127.0.0.1&apos;,8009))</div><div class="line">sk1.listen(5)</div><div class="line"></div><div class="line">inputs = [sk1,]</div><div class="line">while True:</div><div class="line">    r,w,e = select.select(inputs,[],[],0.05)</div><div class="line">    for obj in r:</div><div class="line">        if obj in [sk1,]:</div><div class="line">            conn,addr = obj.accept()</div><div class="line">            t=threading.Thread(target=process_request,args=(conn,))</div><div class="line">            t.start()</div></pre></td></tr></table></figure></p>
-<p>设计思路可参考 socketserver源代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">import socketserver</div><div class="line">class MyHandler(socketserver.BaseRequestHandler):</div><div class="line">    def handle(self):</div><div class="line">        pass</div><div class="line">    </div><div class="line">server = socketserver.ThreadingTCPServer((&apos;127.0.0.1&apos;,8001),MyHandler)</div><div class="line">server.serve_forever()</div></pre></td></tr></table></figure></p>
-<p>4.2 示例四<br>浏览器会自动向服务端请求头的一些数据，process_data()函数对请求头做了结构化处理，同时浏览器请求什么URL，服务端就会返回什么URL, 在此基础上可以用类封装为一个web框架邹形,</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">import select</div><div class="line">import socket</div><div class="line"></div><div class="line">def process_data(client):</div><div class="line">    data = bytes()</div><div class="line">    while True:</div><div class="line">        try:</div><div class="line">            chunk = client.recv(1024)</div><div class="line">        except Exception as e:</div><div class="line">            chunk = None</div><div class="line">        if not chunk:</div><div class="line">            break</div><div class="line">        data += chunk</div><div class="line">    data_str = str(data, encoding=&quot;utf-8&quot;)</div><div class="line">    header,body = data_str.split(&apos;\r\n\r\n&apos;,1)</div><div class="line">    header_list = header.split(&apos;\r\n&apos;,1)</div><div class="line">    header_dict = &#123;&#125;</div><div class="line">    for line in header_list:</div><div class="line">        value = line.split(&apos;:&apos;, 1)</div><div class="line">        if len(value) == 2:</div><div class="line">            k, v = value</div><div class="line">            header_dict[k] = v</div><div class="line">        else:</div><div class="line">            header_method, header_url, header_protocal = line.split(&quot; &quot;)</div><div class="line">            header_dict[&quot;header_method&quot;] = header_method</div><div class="line">            header_dict[&quot;header_url&quot;] = header_url</div><div class="line">            header_dict[&quot;header_protocal&quot;] = header_protocal</div><div class="line"></div><div class="line">    return header_dict,body</div><div class="line"></div><div class="line">sock = socket.socket()</div><div class="line">sock.setblocking(False)                     # setblocking表示是否设置为阻塞模式,这里是对accept生效</div><div class="line">sock.bind((&apos;127.0.0.1&apos;,8008))</div><div class="line">sock.listen(5)</div><div class="line"></div><div class="line"># while True:</div><div class="line">#     conn,addr = sock.accept() #setblocking(False)后不阻塞了，有连接就拿连接，没有连接就直接报错</div><div class="line">#     conn.setblocking(False)</div><div class="line">#     conn.recv(1024)                       # 有数据拿数据，没有数据就直接报错</div><div class="line">inputs = [sock,]</div><div class="line">while True:</div><div class="line">    rList,wList,eList = select.select(inputs,[],[],0.05)</div><div class="line">    for client in rList:</div><div class="line">        if client == sock:  # 建立新的连接</div><div class="line">            conn,addr = client.accept()</div><div class="line">            conn.setblocking(False)         # 有数据拿数据，没有数据就直接报错</div><div class="line">            inputs.append(conn)</div><div class="line">        else:</div><div class="line">            header_dict,body=process_data(client)</div><div class="line">            request_url=header_dict[&apos;header_url&apos;]</div><div class="line">            client.send(b&apos;HTTP/1.1 200 OK\r\n\r\n&apos;)</div><div class="line">            client.send(request_url.encode(&quot;utf-8&quot;))</div><div class="line">            inputs.remove(client)</div><div class="line">            client.close()</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>对网络的编程就是对服务器，客户端socket对象<code>打开</code> <code>读写</code> <code>关闭</code>  的过程。<br>所不同的是对于服务器而言，连接进来了，socket套接字为可读状态，发送数据为可写状态。<br>对于客户端而言，创建连接后socket套接字为可写状态，发送数据为可读状态。<br>掌握socket可读可写状态</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjdwl8sgd001w1jjx0iga6mc1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjfdlfimc003i5bjxovhuj0o2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -641,7 +612,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -666,7 +637,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -679,7 +650,7 @@
       <ul>
         
           <li>
-            <a href="/2018/02/21/hello-world/">Hello World</a>
+            <a href="/2018/03/30/hello-world/">Hello World</a>
           </li>
         
           <li>

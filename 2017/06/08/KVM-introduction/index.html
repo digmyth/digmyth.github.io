@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>KVM introduction | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1. kvm简介kvm as a kernel based virtual machine,现如今较为流行的虚拟化技术，openstack后端就是kvm虚拟化。
+2. 模拟与虚拟
+模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同
+虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64
+
+虚拟中完全虚拟">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KVM introduction">
+<meta property="og:url" content="http://www.digmyth.com/2017/06/08/KVM-introduction/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="1. kvm简介kvm as a kernel based virtual machine,现如今较为流行的虚拟化技术，openstack后端就是kvm虚拟化。
+2. 模拟与虚拟
+模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同
+虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64
+
+虚拟中完全虚拟">
+<meta property="og:updated_time" content="2018-03-30T06:54:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KVM introduction">
+<meta name="twitter:description" content="1. kvm简介kvm as a kernel based virtual machine,现如今较为流行的虚拟化技术，openstack后端就是kvm虚拟化。
+2. 模拟与虚拟
+模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同
+虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64
+
+虚拟中完全虚拟">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-KVM-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/08/KVM-introduction/" class="article-date">
+  <time datetime="2017-06-08T01:41:54.000Z" itemprop="datePublished">2017-06-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      KVM introduction
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-kvm简介"><a href="#1-kvm简介" class="headerlink" title="1. kvm简介"></a>1. kvm简介</h1><p>kvm as a kernel based virtual machine,现如今较为流行的虚拟化技术，openstack后端就是kvm虚拟化。</p>
+<h1 id="2-模拟与虚拟"><a href="#2-模拟与虚拟" class="headerlink" title="2. 模拟与虚拟"></a>2. 模拟与虚拟</h1><ul>
+<li>模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同</li>
+<li>虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64</li>
+</ul>
+<p>虚拟中完全虚拟化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1). 早期BT技术实现加速，binary translation 边运行边翻译,虚机内核就是运行ring1上专用于翻译加速</div><div class="line">2). hvm: 硬件辅助虚拟化，需要cpu硬件支持，就是cpu多了ring-1，这样虚拟机直接运行在ring0上，</div><div class="line">   宿主机内核运行在ring-1,ring-1捕获ring0的特权指令直接运行，性能可想而知提高了</div></pre></td></tr></table></figure></p>
+<h1 id="3-虚拟化分类"><a href="#3-虚拟化分类" class="headerlink" title="3.虚拟化分类"></a>3.虚拟化分类</h1><p>虚拟化分类无非2种方式：</p>
+<p>一种：直接运行于硬件平台–&gt; hypervisor: &lt;–&gt; dom0</p>
+<ul>
+<li>如xen ,esxi,这里xen不好理解，装xen不也要安装操作系统后安装xen4软件包么？为什么它也说直接运行在硬件平台，是因为安装完xen4后，切换了xen4的内核来启动，并非原有操作系统内核.</li>
+</ul>
+<p>二种：先有host系统，再安装虚拟软件（如vmware station）或统称virtual machine mintor(虚拟机监视器)</p>
+<ul>
+<li>如kvm, 虚拟机的cpu,内存通过kvm模块来调用，但IO不行，虚拟机的IO是通过host系统的qemu程序模拟提供的，再由host系统的内核提供IO</li>
+</ul>
+<p>那么什么是半虚拟化？</p>
+<ul>
+<li>半虚拟化是要修改内核的，要让虚拟机知道自己运行在虚拟机环境下的，知道的结果是当虚拟机发起cpu指令时不能直接操作硬件，需要发起hypercall调用.</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjfdlfih300005bjxbonldjw5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/06/10/mysql-sysbench/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Mysql sysbench 压测
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/06/05/cephfs-Ganesha/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">cephfs-Ganesha</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/03/30/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
