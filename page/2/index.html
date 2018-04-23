@@ -61,73 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-web-django-20-ajax" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/20/web-django-20-ajax/" class="article-date">
-  <time datetime="2017-11-20T12:26:37.000Z" itemprop="datePublished">2017-11-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>代码例子</li>
-<li>代码例子</li>
-<li>ajax前端组装数据</li>
-<li>ajax涉及的序列化</li>
-<li>ajax错误验证</li>
-<li>ajax的3种csrf_token</li>
-</ul>
-<h1 id="Ajax-学习"><a href="#Ajax-学习" class="headerlink" title="Ajax 学习"></a>Ajax 学习</h1><p><a href="http://www.cnblogs.com/wupeiqi/articles/5703697.html" target="_blank" rel="external">详情参考Ajax 武佩齐博客</a></p>
-<p>这里只是对Ajax学习做一个记录和总结，内容还有很多没有包括。</p>
-<h2 id="代码例子"><a href="#代码例子" class="headerlink" title="代码例子"></a>代码例子</h2><p>普通请求    —&gt;  render渲染全部HTML<br>Ajax           – -&gt;  render生成己经渲染好的局部HTML, 功能单一。<br>Ajax           — &gt;  HttpResponse(‘data’) 得到原始数据，ajax前端自行展示，定制化强，一般用于提供接口，为别人提供数据。</p>
-<p>render和HttpResponse的关系？<br>render:<br>1  模板+数据进行替换<br>2 HttpResponse(数据)</p>
-<p>HttpResponse:<br>1 HttpResponse(数据)</p>
-<p>Ajax请求时，响应内容时可以是render和HttpResponse,不要认为只能用HttpResponse. views.py里不能<code>return redirect(&quot;&quot;)</code><br>跳转是在前端跳转location.href = “<a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a>“</p>
-<h2 id="ajax前端组装数据"><a href="#ajax前端组装数据" class="headerlink" title="ajax前端组装数据"></a>ajax前端组装数据</h2><p>ajax形式发input数据时在前端取数据并组装数据后给后台<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ajax取input数据时，可以用data:&#123;&quot;user&quot;:$(&quot;#user&quot;).val(),&quot;pwd&quot;:$(&quot;#pwd&quot;).val()&#125;获取数据，</div><div class="line">更简单的数据组装方法是加form表单:&lt;form id=&quot;ff&quot;&gt;&lt;input /&gt;&lt;/form&gt;</div><div class="line">此时取数据可以用：data: $(&quot;#ff&quot;).serialize(),</div></pre></td></tr></table></figure></p>
-<h2 id="ajax涉及的序列化"><a href="#ajax涉及的序列化" class="headerlink" title="ajax涉及的序列化"></a>ajax涉及的序列化</h2><p>Django 中Ajax方式获取ORM数据时，涉及序列化操作的5种方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"># # 方式一  我们伪造的数据是可以序列化实现展示的</div><div class="line"># #  模板渲染后生成字符串</div><div class="line"># # user_list = models.UserInfo.objects.all()</div><div class="line"># #</div><div class="line"># # return render(request,&quot;tpl.html&quot;,&#123;&quot;user_list&quot;:user_list&#125;)</div><div class="line"># user_list = [</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</div><div class="line"># ]</div><div class="line">#</div><div class="line"># import json</div><div class="line"># data = json.dumps(user_list)</div><div class="line"># return HttpResponse(data)</div><div class="line"></div><div class="line"># # 方式二：  这里是失败的， QuerySet不支持Json序列化，经测试失败</div><div class="line"># user_list = models.UserInfo.objects.all()</div><div class="line"># import json</div><div class="line"># return  HttpResponse(json.dumps(user_list))</div><div class="line"></div><div class="line"># # 方式三 也是成功的,但不常见</div><div class="line">#</div><div class="line"># user_list = models.UserInfo.objects.all()</div><div class="line"># from django.core import serializers</div><div class="line"># data= serializers.serialize(&quot;json&quot;, user_list)</div><div class="line"># return  HttpResponse(data)</div><div class="line"></div><div class="line"># 方式四 推荐用法</div><div class="line"></div><div class="line">user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">user_list=list(user_list)</div><div class="line">print(user_list)</div><div class="line">import json</div><div class="line">data = json.dumps(user_list)</div><div class="line">return  HttpResponse(data)</div><div class="line"># 方式五 </div><div class="line"></div><div class="line">user_list = models.UserInfo.objects.values_list(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">user_list=list(user_list)</div><div class="line">print(user_list)</div><div class="line">import json</div><div class="line">data = json.dumps(user_list)</div><div class="line">return  HttpResponse(data)</div></pre></td></tr></table></figure></p>
-<h2 id="Ajax-错误验证"><a href="#Ajax-错误验证" class="headerlink" title="Ajax 错误验证"></a>Ajax 错误验证</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">## 异常判断</div><div class="line">   import json</div><div class="line">   ret = &#123;&apos;status&apos;:False,&apos;data&apos;:None,&apos;error&apos;:None&#125;</div><div class="line">   try:</div><div class="line">       user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">       user_list=list(user_list)</div><div class="line">       ret[&apos;status&apos;]= True</div><div class="line">       ret[&apos;data&apos;] = user_list</div><div class="line">   except Exception as e:</div><div class="line">       ret[&apos;error&apos;] = &apos;获取数据失败&apos;</div><div class="line">   data = json.dumps(ret)</div><div class="line">   return  HttpResponse(data)</div></pre></td></tr></table></figure>
-<p>或者以类的形式调用更为简洁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">app01项目下新建utls.py</div><div class="line">class BaseResponse():</div><div class="line">   def __init__(self):</div><div class="line">       self.status = False</div><div class="line">       self.data = None</div><div class="line">       self.error = None</div><div class="line">views.py中导入：</div><div class="line">from app01.utils import BaseResponse</div><div class="line">ret = BaseResponse()</div><div class="line">try:</div><div class="line">    user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</div><div class="line">    user_list=list(user_list)</div><div class="line">    ret.status= True</div><div class="line">    ret.data = user_list</div><div class="line">except Exception as e:</div><div class="line">        ret.error = &apos;获取数据失败&apos;</div><div class="line">    data = json.dumps(ret.__dict__,ensure_ascii=False)       # False表示不要中文为变为unicode编码</div><div class="line">    return  HttpResponse(data)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var tag.createElement(&quot;a&quot;)</div><div class="line">tag.innertHTML=&quot;hello&quot;</div><div class="line">div.append(tag)  # &lt;div&gt; &lt;a&gt;hello&lt;/a&gt;&lt;/div&gt; 加在标签里面</div><div class="line">div.after(tag)       # &lt;div&gt;&lt;/div&gt;&lt;a&gt;hello&lt;/a&gt; 加在标签后面</div></pre></td></tr></table></figure>
-<h2 id="ajax的3种csrf-token"><a href="#ajax的3种csrf-token" class="headerlink" title="ajax的3种csrf_token"></a>ajax的3种csrf_token</h2><p>方法一： 自己组装数据csrf_token<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123;% csrf_token %&#125; 会生成带csrfmiddlewaretoken的input标签</div><div class="line">data:&#123;&apos;csrfmiddlewaretoken&apos;:$(&apos;input[name=&quot;csrfmiddlewaretoken&quot;]&apos;).val()&#125;</div></pre></td></tr></table></figure></p>
-<p>方法二：加 form表单后用$(“#form_id”).serialize()方法自动组装数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1 添加form HTML 标签 &lt;form id=&quot;form_id&quot;&gt;&lt;input /&gt;&lt;/form&gt;</div><div class="line">2 用data: $(&quot;#form_id&quot;).serialize(),自动组装数据</div></pre></td></tr></table></figure>
-<p>方法三：自行在cookies里取csrf_token放在请求头里<br><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="external">参考</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1  导入jquery.cookie.js: &lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</div><div class="line">2  jquery方式操作cookie取值:  csrf_token=$.cookie(&apos;csrftoken&apos;)	</div><div class="line">3  ajax形式添加到请求头里，注意写法是定死的</div><div class="line">   $.ajax(&#123;</div><div class="line">		  header: &#123;&quot;X-CSRFToken&quot;: $.cookie(&apos;csrftoken&apos;)&#125;，</div><div class="line">		  )&#125;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjgbt7tmn0032qojx22xwkvn0" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
     <article id="post-haproxy-基础" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/12/haproxy-基础/" class="article-date">
@@ -171,7 +104,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjgbt7tkn000lqojxlcobgokd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjgbthl33000ls3jxlcksemlj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -243,7 +176,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjgbt7tkr000rqojx4vgvu9e2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjgbthl35000os3jxchrjyi84" class="article-share-link">Share</a>
       
       
     </footer>
@@ -338,7 +271,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjgbt7tkz0010qojxb0czsk3y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjgbthl3d000xs3jxqkmb5m2t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -391,7 +324,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjgbt7tmq0036qojxlh7v0irf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjgbthl530033s3jxwvabhhiv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -461,7 +394,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjgbt7tkx000xqojxr901uhe6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjgbthl3b000us3jxeroemqbr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,7 +448,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjgbt7tk80006qojx7x1fq22p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjgbthl2l0006s3jxp1yx2ff7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -565,7 +498,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjgbt7tm3002bqojx195elhq0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjgbthl4g0028s3jx00nj96s8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -625,7 +558,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjgbt7tmm0030qojxqsv8qx2z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjgbthl50002xs3jxp3h2lvms" class="article-share-link">Share</a>
       
       
     </footer>
@@ -685,7 +618,69 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjgbt7tml002yqojxpw1xc0vs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjgbthl4y002vs3jxnzqthxv4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-django-orm(三)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/09/15/web-django-orm(三)/" class="article-date">
+  <time datetime="2017-09-15T12:51:41.000Z" itemprop="datePublished">2017-09-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/15/web-django-orm(三)/">web-django-orm(三)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>Orm Shell</li>
+<li>FQ查询</li>
+<li>聚合查询</li>
+</ul>
+<p>参考资料<br><a href="http://python.usyiyi.cn/documents/django_182/ref/models/fields.html#manytomany-arguments" target="_blank" rel="external">官方</a><br><a href="http://www.cnblogs.com/yuanchenqi/articles/7552333.html" target="_blank" rel="external">昊</a><br><a href="http://www.cnblogs.com/wupeiqi/articles/5729934.html" target="_blank" rel="external">练习一</a><br><a href="http://www.cnblogs.com/wupeiqi/articles/5748496.html" target="_blank" rel="external">练习二</a><br><a href="https://github.com/wxqpython/pythoncode/blob/master/test/Django_SQL_ORM" target="_blank" rel="external">pythoncode</a></p>
+<h2 id="一-Orm-Shell"><a href="#一-Orm-Shell" class="headerlink" title="一 Orm Shell"></a>一 Orm Shell</h2><p>  pycharm中models我们己经学习过了，这里记录下在linux操作系统中启动<code>Orm Shell</code>需要做的几件事儿.</p>
+<h3 id="1-模块导入"><a href="#1-模块导入" class="headerlink" title="1  模块导入"></a>1  模块导入</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">pip3 install pymysql</div><div class="line">pycharm中可以在应用目录下__init__.py,也可以在项目目录__init__.py下</div><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div><div class="line">但是linux系统里只能在项目目录下</div></pre></td></tr></table></figure>
+<h3 id="2-models-py的区别"><a href="#2-models-py的区别" class="headerlink" title="2 models.py的区别"></a>2 models.py的区别</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">在建立一对一或一对多关系表时需要位置参数on_delete=models.CASCADE，多对多不需要</div><div class="line">author=models.OneToOneField(&quot;Author&quot;,on_delete=models.CASCADE)</div><div class="line">publisher=models.ForeignKey(to=&quot;Publish&quot;,on_delete=models.CASCADE)</div><div class="line">authors=models.ManyToManyField(&quot;Author&quot;)</div></pre></td></tr></table></figure>
+<h3 id="3-数据库"><a href="#3-数据库" class="headerlink" title="3 数据库"></a>3 数据库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">&apos;default&apos;: &#123;</div><div class="line">    &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">    &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">    &apos;USER&apos;: &apos;root&apos;,</div><div class="line">    &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">    &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">    &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h3 id="4-明确指明INSTALLED-APPS"><a href="#4-明确指明INSTALLED-APPS" class="headerlink" title="4 明确指明INSTALLED_APPS"></a>4 明确指明INSTALLED_APPS</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    INSTALLED_APPS = [</div><div class="line">    &apos;django.contrib.admin&apos;,</div><div class="line">    &apos;django.contrib.auth&apos;,</div><div class="line">    &apos;django.contrib.contenttypes&apos;,</div><div class="line">    &apos;django.contrib.sessions&apos;,</div><div class="line">    &apos;django.contrib.messages&apos;,</div><div class="line">    &apos;django.contrib.staticfiles&apos;,</div><div class="line">    &apos;app01.apps.App01Config&apos;,  </div><div class="line">]</div></pre></td></tr></table></figure>
+<h3 id="5-启动Orm-Shell"><a href="#5-启动Orm-Shell" class="headerlink" title="5 启动Orm Shell"></a>5 启动Orm Shell</h3><p>可以命令行操作orm语句学习了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">python3 manage.py  shell</div><div class="line">&gt;&gt;&gt; from app01 import models</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="6-联表sql示例"><a href="#6-联表sql示例" class="headerlink" title="6 联表sql示例"></a>6 联表sql示例</h3><p>原始sql语句的一个精典联表操作示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">    MariaDB [wxq_db]&gt; select sum(app01_book.price) as bookSumPrice,app01_publish.name </div><div class="line">    -&gt;from app01_book_authors</div><div class="line">    -&gt;left join app01_book</div><div class="line">    -&gt;on app01_book.nid=book_id</div><div class="line">    -&gt;left join app01_author</div><div class="line">    -&gt;on author_id=app01_author.id</div><div class="line">    -&gt;left join app01_publish</div><div class="line">    -&gt;on publisher_id=app01_publish.id</div><div class="line">    -&gt;group by app01_publish.name</div><div class="line">    -&gt;having bookSumPrice &gt; 100</div><div class="line">    -&gt;order by bookSumPrice desc;</div><div class="line">+--------------+-----------------+</div><div class="line">| bookSumPrice | name            |</div><div class="line">+--------------+-----------------+</div><div class="line">|       176.40 | 工业出版社      |</div><div class="line">|       124.00 | 人民出版社      |</div><div class="line">+--------------+-----------------+</div><div class="line">2 rows in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+<h2 id="二-FQ查询"><a href="#二-FQ查询" class="headerlink" title="二 FQ查询"></a>二 FQ查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">def FQQuery(request):</div><div class="line">    from django.db.models import F,Q</div><div class="line">    </div><div class="line">    # F查询</div><div class="line">    # F查询用于自修改或字段比较或一个字段值赋值给另一字段的场景</div><div class="line"></div><div class="line">    # ret1=models.Book.objects.filter(comment_num__gt=50)</div><div class="line">    # ret2=models.Book.objects.filter(comment_num__gt=F(&quot;read_num&quot;)*2)</div><div class="line">    # print(ret2)</div><div class="line"></div><div class="line">    #models.Book.objects.all().update(price=F(&quot;price&quot;)+10)</div><div class="line"></div><div class="line">    ################################## Q查询</div><div class="line">    ret3=models.Book.objects.filter(comment_num__gt=50,read_num__gt=50)  # 并且</div><div class="line">    ret3=models.Book.objects.filter(Q(comment_num__gt=100)|Q(read_num__gt=100))   # 或者</div><div class="line">    print(ret3)</div><div class="line">    </div><div class="line">    return HttpResponse(&quot;OK&quot;)</div></pre></td></tr></table></figure>
+<p>F查询总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">F查询适用场景:</div><div class="line"></div><div class="line">场景1：  两个字段间值的比较F(&apos;price&apos;)</div><div class="line">场景2：  自运算，如F(&apos;price&apos;) + 10</div></pre></td></tr></table></figure></p>
+<p>Q查询总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 注意事项：不同顺序的区别，不同放置的区别</div><div class="line"># 关键字语句放在Q查询的后面，并且只要有(逗号)就是(且)的意思</div><div class="line">#ret3=models.Book.objects.filter(price__lt=100,(Q(comment_num__gt=100)|Q(read_num__gt=100))) # 有效语句</div><div class="line">#ret3=models.Book.objects.filter(Q(comment_num__gt=100)|Q(read_num__gt=100),price__lt=100)   # 有效语句</div><div class="line">#ret3=models.Book.objects.filter(price__lt=100,Q(comment_num__gt=100)|Q(read_num__gt=100))   # 无效语句</div></pre></td></tr></table></figure></p>
+<h2 id="三-聚合查询"><a href="#三-聚合查询" class="headerlink" title="三 聚合查询"></a>三 聚合查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">def juheQuery(reqeuest):</div><div class="line">     from django.db.models import F,Q,Avg,Count,Sum,Min,Max</div><div class="line">     # 单纯聚合函数</div><div class="line">     # 计算所有图书的平均价格</div><div class="line">     # ret=models.Book.objects.all().aggregate(priceSum=Sum(&quot;price&quot;))</div><div class="line">     # print(ret)  # &#123;&apos;priceSum&apos;: Decimal(&apos;2158.00&apos;)&#125;</div><div class="line"></div><div class="line">     # 统计每一本书的作者个数</div><div class="line"></div><div class="line">     # ret2=models.Book.objects.all().annotate(authors_num=Count(&quot;authors&quot;))  # 返回QuerySet</div><div class="line">     # print(ret2)   # [book_obj1,book_obj2,book_obj3,book_obj4,....]</div><div class="line">     #</div><div class="line">     # for obj in ret2:</div><div class="line">     #     print(obj.nid,obj.title,obj.authors_num)</div><div class="line"></div><div class="line"></div><div class="line">     # 查询每一个出版社出版过的所有书籍的总价格</div><div class="line"></div><div class="line">      #方式1：</div><div class="line">     # ret3=models.Publish.objects.all().annotate(priceSum=Sum(&quot;bookList__price&quot;))</div><div class="line">     #</div><div class="line">     # for obj in ret3:</div><div class="line">     #     print(obj.id,obj.name,obj.priceSum)</div><div class="line"></div><div class="line">     # ret4 = models.Publish.objects.all().annotate(priceSum=Sum(&quot;bookList__price&quot;)).values(&quot;name&quot;,&quot;priceSum&quot;)</div><div class="line">     # print(ret4)</div><div class="line"></div><div class="line">     # 方式2：</div><div class="line">     # ret5=models.Book.objects.all().values(&quot;publisher__name&quot;).annotate(priceSum=Sum(&quot;price&quot;)).values(&quot;publisher__name&quot;,&quot;priceSum&quot;)</div><div class="line">     # print(ret5)</div><div class="line">     </div><div class="line">     return HttpResponse(&quot;OK&quot;)</div></pre></td></tr></table></figure>
+<p>实践示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [178]: models.Publish.objects.annotate(priceSum=Sum(&quot;book__price&quot;)).values(&apos;name&apos;,&apos;priceSum&apos;)</div><div class="line">Out[178]: &lt;QuerySet [&#123;&apos;priceSum&apos;: Decimal(&apos;12.00&apos;), &apos;name&apos;: &apos;人民出版社&apos;&#125;, &#123;&apos;priceSum&apos;: Decimal(&apos;8.80&apos;), &apos;name&apos;: &apos;工业出版社&apos;&#125;, &#123;&apos;priceSum&apos;: Decimal(&apos;8.80&apos;), &apos;name&apos;: &apos;清华版社&apos;&#125;]&gt;</div><div class="line"></div><div class="line">In [179]: models.Book.objects.values(&quot;publisher__name&quot;).annotate(priceSum=Sum(&quot;price&quot;)).values(&apos;publisher__name&apos;,&apos;priceSum&apos;)</div><div class="line">Out[179]: &lt;QuerySet [&#123;&apos;publisher__name&apos;: &apos;人民出版社&apos;, &apos;priceSum&apos;: Decimal(&apos;12.00&apos;)&#125;, &#123;&apos;publisher__name&apos;: &apos;清华版社&apos;, &apos;priceSum&apos;: Decimal(&apos;8.80&apos;)&#125;, &#123;&apos;publisher__name&apos;: &apos;工业出版社&apos;, &apos;priceSum&apos;: Decimal(&apos;8.80&apos;)&#125;]&gt;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cjgbthl5a003ds3jx5yewii2x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -701,7 +696,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -711,7 +706,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
     </div>
   </div>
 
@@ -726,7 +721,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -737,10 +732,6 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2018/04/23/hello-world/">Hello World</a>
-          </li>
         
           <li>
             <a href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
@@ -756,6 +747,10 @@
         
           <li>
             <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
           </li>
         
       </ul>

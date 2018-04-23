@@ -61,68 +61,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-web-django-orm(三)" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/09/15/web-django-orm(三)/" class="article-date">
-  <time datetime="2017-09-15T12:51:41.000Z" itemprop="datePublished">2017-09-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/15/web-django-orm(三)/">web-django-orm(三)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>Orm Shell</li>
-<li>FQ查询</li>
-<li>聚合查询</li>
-</ul>
-<p>参考资料<br><a href="http://python.usyiyi.cn/documents/django_182/ref/models/fields.html#manytomany-arguments" target="_blank" rel="external">官方</a><br><a href="http://www.cnblogs.com/yuanchenqi/articles/7552333.html" target="_blank" rel="external">昊</a><br><a href="http://www.cnblogs.com/wupeiqi/articles/5729934.html" target="_blank" rel="external">练习一</a><br><a href="http://www.cnblogs.com/wupeiqi/articles/5748496.html" target="_blank" rel="external">练习二</a><br><a href="https://github.com/wxqpython/pythoncode/blob/master/test/Django_SQL_ORM" target="_blank" rel="external">pythoncode</a></p>
-<h2 id="一-Orm-Shell"><a href="#一-Orm-Shell" class="headerlink" title="一 Orm Shell"></a>一 Orm Shell</h2><p>  pycharm中models我们己经学习过了，这里记录下在linux操作系统中启动<code>Orm Shell</code>需要做的几件事儿.</p>
-<h3 id="1-模块导入"><a href="#1-模块导入" class="headerlink" title="1  模块导入"></a>1  模块导入</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">pip3 install pymysql</div><div class="line">pycharm中可以在应用目录下__init__.py,也可以在项目目录__init__.py下</div><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div><div class="line">但是linux系统里只能在项目目录下</div></pre></td></tr></table></figure>
-<h3 id="2-models-py的区别"><a href="#2-models-py的区别" class="headerlink" title="2 models.py的区别"></a>2 models.py的区别</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">在建立一对一或一对多关系表时需要位置参数on_delete=models.CASCADE，多对多不需要</div><div class="line">author=models.OneToOneField(&quot;Author&quot;,on_delete=models.CASCADE)</div><div class="line">publisher=models.ForeignKey(to=&quot;Publish&quot;,on_delete=models.CASCADE)</div><div class="line">authors=models.ManyToManyField(&quot;Author&quot;)</div></pre></td></tr></table></figure>
-<h3 id="3-数据库"><a href="#3-数据库" class="headerlink" title="3 数据库"></a>3 数据库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">&apos;default&apos;: &#123;</div><div class="line">    &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">    &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">    &apos;USER&apos;: &apos;root&apos;,</div><div class="line">    &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">    &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">    &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<h3 id="4-明确指明INSTALLED-APPS"><a href="#4-明确指明INSTALLED-APPS" class="headerlink" title="4 明确指明INSTALLED_APPS"></a>4 明确指明INSTALLED_APPS</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    INSTALLED_APPS = [</div><div class="line">    &apos;django.contrib.admin&apos;,</div><div class="line">    &apos;django.contrib.auth&apos;,</div><div class="line">    &apos;django.contrib.contenttypes&apos;,</div><div class="line">    &apos;django.contrib.sessions&apos;,</div><div class="line">    &apos;django.contrib.messages&apos;,</div><div class="line">    &apos;django.contrib.staticfiles&apos;,</div><div class="line">    &apos;app01.apps.App01Config&apos;,  </div><div class="line">]</div></pre></td></tr></table></figure>
-<h3 id="5-启动Orm-Shell"><a href="#5-启动Orm-Shell" class="headerlink" title="5 启动Orm Shell"></a>5 启动Orm Shell</h3><p>可以命令行操作orm语句学习了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">python3 manage.py  shell</div><div class="line">&gt;&gt;&gt; from app01 import models</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
-<h3 id="6-联表sql示例"><a href="#6-联表sql示例" class="headerlink" title="6 联表sql示例"></a>6 联表sql示例</h3><p>原始sql语句的一个精典联表操作示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">    MariaDB [wxq_db]&gt; select sum(app01_book.price) as bookSumPrice,app01_publish.name </div><div class="line">    -&gt;from app01_book_authors</div><div class="line">    -&gt;left join app01_book</div><div class="line">    -&gt;on app01_book.nid=book_id</div><div class="line">    -&gt;left join app01_author</div><div class="line">    -&gt;on author_id=app01_author.id</div><div class="line">    -&gt;left join app01_publish</div><div class="line">    -&gt;on publisher_id=app01_publish.id</div><div class="line">    -&gt;group by app01_publish.name</div><div class="line">    -&gt;having bookSumPrice &gt; 100</div><div class="line">    -&gt;order by bookSumPrice desc;</div><div class="line">+--------------+-----------------+</div><div class="line">| bookSumPrice | name            |</div><div class="line">+--------------+-----------------+</div><div class="line">|       176.40 | 工业出版社      |</div><div class="line">|       124.00 | 人民出版社      |</div><div class="line">+--------------+-----------------+</div><div class="line">2 rows in set (0.00 sec)</div></pre></td></tr></table></figure></p>
-<h2 id="二-FQ查询"><a href="#二-FQ查询" class="headerlink" title="二 FQ查询"></a>二 FQ查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">def FQQuery(request):</div><div class="line">    from django.db.models import F,Q</div><div class="line">    </div><div class="line">    # F查询</div><div class="line">    # F查询用于自修改或字段比较或一个字段值赋值给另一字段的场景</div><div class="line"></div><div class="line">    # ret1=models.Book.objects.filter(comment_num__gt=50)</div><div class="line">    # ret2=models.Book.objects.filter(comment_num__gt=F(&quot;read_num&quot;)*2)</div><div class="line">    # print(ret2)</div><div class="line"></div><div class="line">    #models.Book.objects.all().update(price=F(&quot;price&quot;)+10)</div><div class="line"></div><div class="line">    ################################## Q查询</div><div class="line">    ret3=models.Book.objects.filter(comment_num__gt=50,read_num__gt=50)  # 并且</div><div class="line">    ret3=models.Book.objects.filter(Q(comment_num__gt=100)|Q(read_num__gt=100))   # 或者</div><div class="line">    print(ret3)</div><div class="line">    </div><div class="line">    return HttpResponse(&quot;OK&quot;)</div></pre></td></tr></table></figure>
-<p>F查询总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">F查询适用场景:</div><div class="line"></div><div class="line">场景1：  两个字段间值的比较F(&apos;price&apos;)</div><div class="line">场景2：  自运算，如F(&apos;price&apos;) + 10</div></pre></td></tr></table></figure></p>
-<p>Q查询总结<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 注意事项：不同顺序的区别，不同放置的区别</div><div class="line"># 关键字语句放在Q查询的后面，并且只要有(逗号)就是(且)的意思</div><div class="line">#ret3=models.Book.objects.filter(price__lt=100,(Q(comment_num__gt=100)|Q(read_num__gt=100))) # 有效语句</div><div class="line">#ret3=models.Book.objects.filter(Q(comment_num__gt=100)|Q(read_num__gt=100),price__lt=100)   # 有效语句</div><div class="line">#ret3=models.Book.objects.filter(price__lt=100,Q(comment_num__gt=100)|Q(read_num__gt=100))   # 无效语句</div></pre></td></tr></table></figure></p>
-<h2 id="三-聚合查询"><a href="#三-聚合查询" class="headerlink" title="三 聚合查询"></a>三 聚合查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">def juheQuery(reqeuest):</div><div class="line">     from django.db.models import F,Q,Avg,Count,Sum,Min,Max</div><div class="line">     # 单纯聚合函数</div><div class="line">     # 计算所有图书的平均价格</div><div class="line">     # ret=models.Book.objects.all().aggregate(priceSum=Sum(&quot;price&quot;))</div><div class="line">     # print(ret)  # &#123;&apos;priceSum&apos;: Decimal(&apos;2158.00&apos;)&#125;</div><div class="line"></div><div class="line">     # 统计每一本书的作者个数</div><div class="line"></div><div class="line">     # ret2=models.Book.objects.all().annotate(authors_num=Count(&quot;authors&quot;))  # 返回QuerySet</div><div class="line">     # print(ret2)   # [book_obj1,book_obj2,book_obj3,book_obj4,....]</div><div class="line">     #</div><div class="line">     # for obj in ret2:</div><div class="line">     #     print(obj.nid,obj.title,obj.authors_num)</div><div class="line"></div><div class="line"></div><div class="line">     # 查询每一个出版社出版过的所有书籍的总价格</div><div class="line"></div><div class="line">      #方式1：</div><div class="line">     # ret3=models.Publish.objects.all().annotate(priceSum=Sum(&quot;bookList__price&quot;))</div><div class="line">     #</div><div class="line">     # for obj in ret3:</div><div class="line">     #     print(obj.id,obj.name,obj.priceSum)</div><div class="line"></div><div class="line">     # ret4 = models.Publish.objects.all().annotate(priceSum=Sum(&quot;bookList__price&quot;)).values(&quot;name&quot;,&quot;priceSum&quot;)</div><div class="line">     # print(ret4)</div><div class="line"></div><div class="line">     # 方式2：</div><div class="line">     # ret5=models.Book.objects.all().values(&quot;publisher__name&quot;).annotate(priceSum=Sum(&quot;price&quot;)).values(&quot;publisher__name&quot;,&quot;priceSum&quot;)</div><div class="line">     # print(ret5)</div><div class="line">     </div><div class="line">     return HttpResponse(&quot;OK&quot;)</div></pre></td></tr></table></figure>
-<p>实践示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [178]: models.Publish.objects.annotate(priceSum=Sum(&quot;book__price&quot;)).values(&apos;name&apos;,&apos;priceSum&apos;)</div><div class="line">Out[178]: &lt;QuerySet [&#123;&apos;priceSum&apos;: Decimal(&apos;12.00&apos;), &apos;name&apos;: &apos;人民出版社&apos;&#125;, &#123;&apos;priceSum&apos;: Decimal(&apos;8.80&apos;), &apos;name&apos;: &apos;工业出版社&apos;&#125;, &#123;&apos;priceSum&apos;: Decimal(&apos;8.80&apos;), &apos;name&apos;: &apos;清华版社&apos;&#125;]&gt;</div><div class="line"></div><div class="line">In [179]: models.Book.objects.values(&quot;publisher__name&quot;).annotate(priceSum=Sum(&quot;price&quot;)).values(&apos;publisher__name&apos;,&apos;priceSum&apos;)</div><div class="line">Out[179]: &lt;QuerySet [&#123;&apos;publisher__name&apos;: &apos;人民出版社&apos;, &apos;priceSum&apos;: Decimal(&apos;12.00&apos;)&#125;, &#123;&apos;publisher__name&apos;: &apos;清华版社&apos;, &apos;priceSum&apos;: Decimal(&apos;8.80&apos;)&#125;, &#123;&apos;publisher__name&apos;: &apos;工业出版社&apos;, &apos;priceSum&apos;: Decimal(&apos;8.80&apos;)&#125;]&gt;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cjgbt7tmz003gqojxuhp8dnvb" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
     <article id="post-ceph-luminous安装" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/05/ceph-luminous安装/" class="article-date">
@@ -174,7 +112,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjgbt7tkc0009qojxqsu4tf2q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjgbthl2q0009s3jxw5rd05ew" class="article-share-link">Share</a>
       
       
     </footer>
@@ -245,7 +183,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjgbt7tku000tqojx2xwxy9n1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjgbthl36000qs3jx4lidnhu3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -308,7 +246,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjgbt7tkh000dqojxqag8x888" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjgbthl2w000ds3jxll3twvhu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -378,7 +316,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjgbt7tmi002uqojxxfywkk52" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjgbthl4v002rs3jxnekmkr7x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -453,7 +391,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjgbt7tn7003pqojxbgdumjvi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjgbthl5e003ms3jxfka9cm98" class="article-share-link">Share</a>
       
       
     </footer>
@@ -520,7 +458,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjgbt7tmg002sqojxih9wsii0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjgbthl4t002ps3jx58ccy6pz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -581,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjgbt7tm6002fqojx6oraj685" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjgbthl4l002cs3jxzmr3ejxi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -658,7 +596,68 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjgbt7tn1003iqojx0jh1cadb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjgbthl5b003fs3jx3u82vonv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/git-01/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>git建版本库</li>
+<li>git别名设置</li>
+<li>git基本配置</li>
+<li>git基本命令</li>
+<li>git分支管理</li>
+</ul>
+<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init # 把当前目录变成git可管理的仓库</div><div class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</div></pre></td></tr></table></figure>
+<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">为命令设置别名</div><div class="line">$ git config --global alias.co checkout</div><div class="line">$ git config --global alias.ci commit</div><div class="line">$ git config --global alias.br branch</div></pre></td></tr></table></figure>
+<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">每台机器自报家门</div><div class="line">$ git config --global user.name &quot;Your Name&quot;</div><div class="line">$ git config --global user.email &quot;email@example.com&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优先级从高到低是</div><div class="line">.git/config--&gt;  --global --&gt; system</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">全局生效: 配置保存在/etc/gitconfig</div><div class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</div><div class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div><div class="line">	email = you@example.com</div><div class="line"></div><div class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">只对某仓库生效：配置保存在reponame/.git/config</div><div class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</div><div class="line">[root@wxq-srv git_work]# cat .git/config </div><div class="line">[core]</div><div class="line">	repositoryformatversion = 0</div><div class="line">	filemode = true</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">[user]</div><div class="line">	name = wxq1</div></pre></td></tr></table></figure>
+<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git log  # 每一次提交的记录</div><div class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</div><div class="line">git reset --hard $commit_id   # 回到指定版本</div><div class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</div><div class="line">git add index.html   # 添加更改至state暂存	区</div><div class="line">git reset HEAD index.html  # unstage 退出暂存区</div><div class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</div></pre></td></tr></table></figure>
+<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
+<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看分支：git branch</div><div class="line">创建分支：git branch &lt;name&gt;</div><div class="line">切换分支：git checkout &lt;name&gt;</div><div class="line">创建+切换分支：git checkout -b &lt;name&gt;</div><div class="line">合并某分支到当前分支：git merge &lt;name&gt;</div><div class="line">删除分支：git branch -d &lt;name&gt;</div></pre></td></tr></table></figure>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjgbthl31000is3jxfhk8ohaz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -708,7 +707,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjgbt7tkv000vqojxvw0445ts" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjgbthl39000ss3jxezptnv6p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -724,7 +723,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -734,7 +733,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
     </div>
   </div>
 
@@ -749,7 +748,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -760,10 +759,6 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2018/04/23/hello-world/">Hello World</a>
-          </li>
         
           <li>
             <a href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
@@ -779,6 +774,10 @@
         
           <li>
             <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
           </li>
         
       </ul>
