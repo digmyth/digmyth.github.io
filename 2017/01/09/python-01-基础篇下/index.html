@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>python_01_基础篇下 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="目录
+位运算
+程序编码
+用户交互
+
+第四节 位运算123456位运算：&amp;amp;与  ： 同位都为1则为1|或  ： 同位有1则为1^异或:  同位相异为1，相同为0&amp;lt;&amp;lt;n左移位： 左移n位(保留左位),右边补n个0&amp;gt;&amp;gt;n右移位： 右移n位(去掉右位),左边补n个0
+&amp;amp;运算:都为11234001100010111111100110001`
+|运算：或为112300">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python_01_基础篇下">
+<meta property="og:url" content="http://www.digmyth.com/2017/01/09/python-01-基础篇下/index.html">
+<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="目录
+位运算
+程序编码
+用户交互
+
+第四节 位运算123456位运算：&amp;amp;与  ： 同位都为1则为1|或  ： 同位有1则为1^异或:  同位相异为1，相同为0&amp;lt;&amp;lt;n左移位： 左移n位(保留左位),右边补n个0&amp;gt;&amp;gt;n右移位： 右移n位(去掉右位),左边补n个0
+&amp;amp;运算:都为11234001100010111111100110001`
+|运算：或为112300">
+<meta property="og:updated_time" content="2018-04-27T04:56:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python_01_基础篇下">
+<meta name="twitter:description" content="目录
+位运算
+程序编码
+用户交互
+
+第四节 位运算123456位运算：&amp;amp;与  ： 同位都为1则为1|或  ： 同位有1则为1^异或:  同位相异为1，相同为0&amp;lt;&amp;lt;n左移位： 左移n位(保留左位),右边补n个0&amp;gt;&amp;gt;n右移位： 右移n位(去掉右位),左边补n个0
+&amp;amp;运算:都为11234001100010111111100110001`
+|运算：或为112300">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python-01-基础篇下" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/09/python-01-基础篇下/" class="article-date">
+  <time datetime="2017-01-09T02:37:13.000Z" itemprop="datePublished">2017-01-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      python_01_基础篇下
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>位运算</li>
+<li>程序编码</li>
+<li>用户交互</li>
+</ul>
+<h1 id="第四节-位运算"><a href="#第四节-位运算" class="headerlink" title="第四节 位运算"></a>第四节 位运算</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">位运算：</div><div class="line">&amp;与  ： 同位都为1则为1</div><div class="line">|或  ： 同位有1则为1</div><div class="line">^异或:  同位相异为1，相同为0</div><div class="line">&lt;&lt;n左移位： 左移n位(保留左位),右边补n个0</div><div class="line">&gt;&gt;n右移位： 右移n位(去掉右位),左边补n个0</div></pre></td></tr></table></figure>
+<p>&amp;运算:都为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">00110001</div><div class="line">01111111</div><div class="line">00110001</div><div class="line">`</div></pre></td></tr></table></figure></p>
+<p>|运算：或为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">00110001</div><div class="line">01111111</div><div class="line">01111111</div></pre></td></tr></table></figure></p>
+<p>^运算：相异为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">11001101</div><div class="line">01111111</div><div class="line">10110010</div></pre></td></tr></table></figure></p>
+<p><code>&lt;&lt;3左移位：</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">11010001</div><div class="line">11010001000</div></pre></td></tr></table></figure></p>
+<p><code>&gt;&gt;3右移位：</code>右边001不保留<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">11010001</div><div class="line">00011010</div></pre></td></tr></table></figure></p>
+<h1 id="第五节-程序编码"><a href="#第五节-程序编码" class="headerlink" title="第五节 程序编码"></a>第五节 程序编码</h1><h3 id="bytes、str-区别"><a href="#bytes、str-区别" class="headerlink" title="bytes、str 区别"></a>bytes、str 区别</h3><p>python3 中bytes、str是有区别的</p>
+<ul>
+<li>bytes/str的区别：bytes 是byte的序列，而str是unicode 序列</li>
+<li>bytes并不能存储中文，需要先定义成str类型后encode()编码</li>
+<li>之间的转换是编码，解码完成。 方式： b1 = str1.encode()/ b1.decode()</li>
+<li>网络传输中都是用的bytes类型二进制进行传输（socket编程发送必须bytes类型）</li>
+<li>b（bytes）只能接收ASCII 的值</li>
+<li>python3与大多数软件运行在内存中都是unicode编码</li>
+</ul>
+<p>b表示方法(bytes)只能接收ASCII的值, 直接传的中文为字符串 unicode编码，一个unicode两个字节，一个汉字两个字节。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; b1 = b&apos;hello world&apos;   # bytes只能接收ASCII样的值</div><div class="line">&gt;&gt;&gt; b2 = b&apos;你好&apos;</div><div class="line">  File &quot;&lt;stdin&gt;&quot;, line 1</div><div class="line">SyntaxError: bytes can only contain ASCII literal characters.</div></pre></td></tr></table></figure>
+<p>将中文转换为bytes  (转为ASCII里面能支持的格式，默认为utf-8)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; b2 = &apos;你好&apos;.encode(&apos;utf-8&apos;)</div><div class="line">&gt;&gt;&gt; b3 = bytes(&apos;你好&apos;, encoding=&apos;utf-8&apos;)</div><div class="line">&gt;&gt;&gt; type(b2)</div><div class="line">&lt;class &apos;bytes&apos;&gt;</div><div class="line">&gt;&gt;&gt; b2</div><div class="line">b&apos;\xe4\xbd\xa0\xe5\xa5\xbd&apos;</div></pre></td></tr></table></figure></p>
+<p>看看下面的转换是否能领悟点什么<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; test_str = &apos;你是最好的！&apos;</div><div class="line">&gt;&gt;&gt; test_b = test_str.encode()  # 不指定时默认encode()成utf-8</div><div class="line">&gt;&gt;&gt; test_b</div><div class="line">b&apos;\xe4\xbd\xa0\xe6\x98\xaf\xe6\x9c\x80\xe5\xa5\xbd\xe7\x9a\x84\xef\xbc\x81&apos;</div><div class="line">&gt;&gt;&gt; for i in test_b:</div><div class="line">...     print(i, end=&apos; &apos;)</div><div class="line">228 189 160 230 152 175 230 156 128 229 165 189 231 154 132 239 188 129</div><div class="line">&gt;&gt;&gt; for i in test_str:</div><div class="line">...     print(i, end=&apos; &apos;)</div><div class="line">你 是 最 好 的 ！</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat utf-8.txt </div><div class="line">我是最好的！</div><div class="line">root@ubuntu:~# iconv -f utf-8 -t gbk utf-8.txt </div><div class="line">ϒˇخºõģ¡</div><div class="line">root@ubuntu:~# iconv -f utf-8 -t gbk utf-8.txt  &gt; gbk.txt</div><div class="line">root@ubuntu:~# cat gbk.txt</div><div class="line">ϒˇخºõģ¡</div><div class="line">&gt;&gt;&gt; f = open(&apos;gbk.txt&apos;, &apos;rb&apos;)</div><div class="line">&gt;&gt;&gt; test = f.read()</div><div class="line">&gt;&gt;&gt; test</div><div class="line">b&apos;\xce\xd2\xca\xc7\xd7\xee\xba\xc3\xb5\xc4\xa3\xa1\n&apos;</div><div class="line">&gt;&gt;&gt; test.decode(&apos;gbk&apos;)</div><div class="line">&apos;我是最好的！\n&apos;</div><div class="line">&gt;&gt;&gt; f.close()</div></pre></td></tr></table></figure>
+<h3 id="编码总结"><a href="#编码总结" class="headerlink" title="编码总结"></a>编码总结</h3><p>编码过程： 任意unicode到bytes的过程<br>解码过程： bytes到unicode的过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">pycharm默认以UTF-8存数据到硬盘(unicode to UTF-8)   一个编码过程</div><div class="line">python3默认以UTF-8读数据到内存（UTF-8 to unicode）  一个解码过程</div><div class="line">#coding:utf-8 也是指明了用什么编码读数据到内存,一个解码过程</div><div class="line"></div><div class="line">#这里open虽然文件是UTF8存的，此时要以utf8读, utf8 to unicode， 是一个解码过程</div><div class="line">with open(&quot;test.txt&quot;,&apos;r&apos;,encoding=&apos;utf8&apos;) as f: </div><div class="line">    f.read() </div><div class="line"></div><div class="line">python3字符串就是unicode, 任意unicode只要编码后就是bytes</div><div class="line">&apos;你好&apos;.encode(&apos;utf8&apos;)</div></pre></td></tr></table></figure></p>
+<h1 id="第六节-用户交互"><a href="#第六节-用户交互" class="headerlink" title="第六节 用户交互"></a>第六节 用户交互</h1><p>for python2.x<br>name = raw_input(“What is your name:”)<br>for python3.x<br>name = input(“What is your name:”)<br>eg: 想要输入密码时不可见，可以利用getpass模块的getpass()方法<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">root@apt:/mnt<span class="comment"># cat getp.py </span></div><div class="line"><span class="comment">#!/usr/bin/env python3</span></div><div class="line">import getpass</div><div class="line"><span class="built_in">pwd</span> = getpass.getpass(<span class="string">"请输入密码："</span>)</div><div class="line"><span class="built_in">print</span>(<span class="built_in">pwd</span>)</div><div class="line">root@apt:/mnt<span class="comment"># python3 getp.py </span></div><div class="line">请输入密码：</div><div class="line">123</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="cjghhkgtj001346jxfhcpsp5v" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/01/15/python-02-流程控制_枚举/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          python_02_流程控制/枚举
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/01/08/python-01-基础篇上/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">python_01_基础篇上</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+    <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+		   能帮到您是我的荣幸！
+        </span>
+        <br>
+      </div>  
+	<div id="donate_guide" class="donate_bar center hidden" >
+		<!-- 支付宝打赏图案 -->
+		<!--img src="/img/zhifubao.jpg" alt="支付宝打赏"--> 
+		<!-- 微信打赏图案 -->
+		<img src="/images/wecharpay.png" alt="微信打赏">  
+    </div>
+	<script type="text/javascript">
+		document.getElementById('btn_donate').onclick = function(){
+			$('#donate_board').addClass('hidden');
+			$('#donate_guide').removeClass('hidden');
+		}
+	</script>
+</div>
+<! -- 添加捐赠图标 -->
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

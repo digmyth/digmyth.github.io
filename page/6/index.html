@@ -134,7 +134,54 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjgbw7nyo001d5tjx0fgy9vj3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjghhkgu0001f46jx0jdsdpmv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjghhkguu002546jxm1zg8mze" class="article-share-link">Share</a>
       
       
     </footer>
@@ -228,54 +275,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjgbw7nyb00135tjx4muo93rt" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
-  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Shell/">Shell</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjgbw7nzj00255tjxm2rsvpr5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjghhkgtl001546jx4nvofj1f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -529,7 +529,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjgbw7nyl001b5tjxj177cxwj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjghhkgtu001b46jxdi90rtch" class="article-share-link">Share</a>
       
       
     </footer>
@@ -600,7 +600,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjgbw7nyi00195tjxllximfmd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjghhkgtr001946jxy1eg1qwd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -667,7 +667,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjgbw7nyf00175tjx9xb7lfux" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjghhkgtx001d46jx0pfnwtqf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -680,9 +680,80 @@
 
 
   
-    <article id="post-python-01-基础篇" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-python-01-基础篇下" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/08/python-01-基础篇/" class="article-date">
+    <a href="/2017/01/09/python-01-基础篇下/" class="article-date">
+  <time datetime="2017-01-09T02:37:13.000Z" itemprop="datePublished">2017-01-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/09/python-01-基础篇下/">python_01_基础篇下</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>位运算</li>
+<li>程序编码</li>
+<li>用户交互</li>
+</ul>
+<h1 id="第四节-位运算"><a href="#第四节-位运算" class="headerlink" title="第四节 位运算"></a>第四节 位运算</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">位运算：</div><div class="line">&amp;与  ： 同位都为1则为1</div><div class="line">|或  ： 同位有1则为1</div><div class="line">^异或:  同位相异为1，相同为0</div><div class="line">&lt;&lt;n左移位： 左移n位(保留左位),右边补n个0</div><div class="line">&gt;&gt;n右移位： 右移n位(去掉右位),左边补n个0</div></pre></td></tr></table></figure>
+<p>&amp;运算:都为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">00110001</div><div class="line">01111111</div><div class="line">00110001</div><div class="line">`</div></pre></td></tr></table></figure></p>
+<p>|运算：或为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">00110001</div><div class="line">01111111</div><div class="line">01111111</div></pre></td></tr></table></figure></p>
+<p>^运算：相异为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">11001101</div><div class="line">01111111</div><div class="line">10110010</div></pre></td></tr></table></figure></p>
+<p><code>&lt;&lt;3左移位：</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">11010001</div><div class="line">11010001000</div></pre></td></tr></table></figure></p>
+<p><code>&gt;&gt;3右移位：</code>右边001不保留<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">11010001</div><div class="line">00011010</div></pre></td></tr></table></figure></p>
+<h1 id="第五节-程序编码"><a href="#第五节-程序编码" class="headerlink" title="第五节 程序编码"></a>第五节 程序编码</h1><h3 id="bytes、str-区别"><a href="#bytes、str-区别" class="headerlink" title="bytes、str 区别"></a>bytes、str 区别</h3><p>python3 中bytes、str是有区别的</p>
+<ul>
+<li>bytes/str的区别：bytes 是byte的序列，而str是unicode 序列</li>
+<li>bytes并不能存储中文，需要先定义成str类型后encode()编码</li>
+<li>之间的转换是编码，解码完成。 方式： b1 = str1.encode()/ b1.decode()</li>
+<li>网络传输中都是用的bytes类型二进制进行传输（socket编程发送必须bytes类型）</li>
+<li>b（bytes）只能接收ASCII 的值</li>
+<li>python3与大多数软件运行在内存中都是unicode编码</li>
+</ul>
+<p>b表示方法(bytes)只能接收ASCII的值, 直接传的中文为字符串 unicode编码，一个unicode两个字节，一个汉字两个字节。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; b1 = b&apos;hello world&apos;   # bytes只能接收ASCII样的值</div><div class="line">&gt;&gt;&gt; b2 = b&apos;你好&apos;</div><div class="line">  File &quot;&lt;stdin&gt;&quot;, line 1</div><div class="line">SyntaxError: bytes can only contain ASCII literal characters.</div></pre></td></tr></table></figure>
+<p>将中文转换为bytes  (转为ASCII里面能支持的格式，默认为utf-8)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; b2 = &apos;你好&apos;.encode(&apos;utf-8&apos;)</div><div class="line">&gt;&gt;&gt; b3 = bytes(&apos;你好&apos;, encoding=&apos;utf-8&apos;)</div><div class="line">&gt;&gt;&gt; type(b2)</div><div class="line">&lt;class &apos;bytes&apos;&gt;</div><div class="line">&gt;&gt;&gt; b2</div><div class="line">b&apos;\xe4\xbd\xa0\xe5\xa5\xbd&apos;</div></pre></td></tr></table></figure></p>
+<p>看看下面的转换是否能领悟点什么<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; test_str = &apos;你是最好的！&apos;</div><div class="line">&gt;&gt;&gt; test_b = test_str.encode()  # 不指定时默认encode()成utf-8</div><div class="line">&gt;&gt;&gt; test_b</div><div class="line">b&apos;\xe4\xbd\xa0\xe6\x98\xaf\xe6\x9c\x80\xe5\xa5\xbd\xe7\x9a\x84\xef\xbc\x81&apos;</div><div class="line">&gt;&gt;&gt; for i in test_b:</div><div class="line">...     print(i, end=&apos; &apos;)</div><div class="line">228 189 160 230 152 175 230 156 128 229 165 189 231 154 132 239 188 129</div><div class="line">&gt;&gt;&gt; for i in test_str:</div><div class="line">...     print(i, end=&apos; &apos;)</div><div class="line">你 是 最 好 的 ！</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat utf-8.txt </div><div class="line">我是最好的！</div><div class="line">root@ubuntu:~# iconv -f utf-8 -t gbk utf-8.txt </div><div class="line">ϒˇخºõģ¡</div><div class="line">root@ubuntu:~# iconv -f utf-8 -t gbk utf-8.txt  &gt; gbk.txt</div><div class="line">root@ubuntu:~# cat gbk.txt</div><div class="line">ϒˇخºõģ¡</div><div class="line">&gt;&gt;&gt; f = open(&apos;gbk.txt&apos;, &apos;rb&apos;)</div><div class="line">&gt;&gt;&gt; test = f.read()</div><div class="line">&gt;&gt;&gt; test</div><div class="line">b&apos;\xce\xd2\xca\xc7\xd7\xee\xba\xc3\xb5\xc4\xa3\xa1\n&apos;</div><div class="line">&gt;&gt;&gt; test.decode(&apos;gbk&apos;)</div><div class="line">&apos;我是最好的！\n&apos;</div><div class="line">&gt;&gt;&gt; f.close()</div></pre></td></tr></table></figure>
+<h3 id="编码总结"><a href="#编码总结" class="headerlink" title="编码总结"></a>编码总结</h3><p>编码过程： 任意unicode到bytes的过程<br>解码过程： bytes到unicode的过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">pycharm默认以UTF-8存数据到硬盘(unicode to UTF-8)   一个编码过程</div><div class="line">python3默认以UTF-8读数据到内存（UTF-8 to unicode）  一个解码过程</div><div class="line">#coding:utf-8 也是指明了用什么编码读数据到内存,一个解码过程</div><div class="line"></div><div class="line">#这里open虽然文件是UTF8存的，此时要以utf8读, utf8 to unicode， 是一个解码过程</div><div class="line">with open(&quot;test.txt&quot;,&apos;r&apos;,encoding=&apos;utf8&apos;) as f: </div><div class="line">    f.read() </div><div class="line"></div><div class="line">python3字符串就是unicode, 任意unicode只要编码后就是bytes</div><div class="line">&apos;你好&apos;.encode(&apos;utf8&apos;)</div></pre></td></tr></table></figure></p>
+<h1 id="第六节-用户交互"><a href="#第六节-用户交互" class="headerlink" title="第六节 用户交互"></a>第六节 用户交互</h1><p>for python2.x<br>name = raw_input(“What is your name:”)<br>for python3.x<br>name = input(“What is your name:”)<br>eg: 想要输入密码时不可见，可以利用getpass模块的getpass()方法<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">root@apt:/mnt<span class="comment"># cat getp.py </span></div><div class="line"><span class="comment">#!/usr/bin/env python3</span></div><div class="line">import getpass</div><div class="line"><span class="built_in">pwd</span> = getpass.getpass(<span class="string">"请输入密码："</span>)</div><div class="line"><span class="built_in">print</span>(<span class="built_in">pwd</span>)</div><div class="line">root@apt:/mnt<span class="comment"># python3 getp.py </span></div><div class="line">请输入密码：</div><div class="line">123</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="cjghhkgtj001346jxfhcpsp5v" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-python-01-基础篇上" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/08/python-01-基础篇上/" class="article-date">
   <time datetime="2017-01-08T02:37:13.000Z" itemprop="datePublished">2017-01-08</time>
 </a>
     
@@ -698,7 +769,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/08/python-01-基础篇/">python_01_基础篇</a>
+      <a class="article-title" href="/2017/01/08/python-01-基础篇上/">python_01_基础篇上</a>
     </h1>
   
 
@@ -711,9 +782,6 @@
 <li>python简介</li>
 <li>python变量</li>
 <li>数据类型</li>
-<li>运算</li>
-<li>程序编码</li>
-<li>用户交互</li>
 </ul>
 <h1 id="第一节-简介"><a href="#第一节-简介" class="headerlink" title="第一节 简介"></a>第一节 简介</h1><p>Python 简介</p>
 <p>Python 安装<br>More info: <a href="https://www.python.org/" target="_blank" rel="external">官网</a></p>
@@ -803,27 +871,11 @@ Age_of_name = &quot;xx&quot;  #类名
 </tbody>
 </table>
 <h4 id="3-8-集合forzent"><a href="#3-8-集合forzent" class="headerlink" title="3.8 集合forzent()"></a>3.8 集合forzent()</h4><p>可变集合</p>
-<h1 id="第四节-运算"><a href="#第四节-运算" class="headerlink" title="第四节 运算"></a>第四节 运算</h1><h1 id="第五节-程序编码"><a href="#第五节-程序编码" class="headerlink" title="第五节 程序编码"></a>第五节 程序编码</h1><h3 id="bytes、str-区别"><a href="#bytes、str-区别" class="headerlink" title="bytes、str 区别"></a>bytes、str 区别</h3><p>python3 中bytes、str是有区别的</p>
-<ul>
-<li>bytes/str的区别：bytes 是byte的序列，而str是unicode 序列</li>
-<li>bytes并不能存储中文，需要先定义成str类型后encode()编码</li>
-<li>之间的转换是编码，解码完成。 方式： b1 = str1.encode()/ b1.decode()</li>
-<li>网络传输中都是用的bytes类型二进制进行传输（socket编程发送必须bytes类型）</li>
-<li>b（bytes）只能接收ASCII 的值</li>
-<li>python3与大多数软件运行在内存中都是unicode编码</li>
-</ul>
-<p>b表示方法(bytes)只能接收ASCII的值, 直接传的中文为字符串 unicode编码，一个unicode两个字节，一个汉字两个字节。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; b1 = b&apos;hello world&apos;   # bytes只能接收ASCII样的值</div><div class="line">&gt;&gt;&gt; b2 = b&apos;你好&apos;</div><div class="line">  File &quot;&lt;stdin&gt;&quot;, line 1</div><div class="line">SyntaxError: bytes can only contain ASCII literal characters.</div></pre></td></tr></table></figure>
-<p>将中文转换为bytes  (转为ASCII里面能支持的格式，默认为utf-8)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; b2 = &apos;你好&apos;.encode(&apos;utf-8&apos;)</div><div class="line">&gt;&gt;&gt; b3 = bytes(&apos;你好&apos;, encoding=&apos;utf-8&apos;)</div><div class="line">&gt;&gt;&gt; type(b2)</div><div class="line">&lt;class &apos;bytes&apos;&gt;</div><div class="line">&gt;&gt;&gt; b2</div><div class="line">b&apos;\xe4\xbd\xa0\xe5\xa5\xbd&apos;</div></pre></td></tr></table></figure></p>
-<p>看看下面的转换是否能领悟点什么<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; test_str = &apos;你是最好的！&apos;</div><div class="line">&gt;&gt;&gt; test_b = test_str.encode()  # 不指定时默认encode()成utf-8</div><div class="line">&gt;&gt;&gt; test_b</div><div class="line">b&apos;\xe4\xbd\xa0\xe6\x98\xaf\xe6\x9c\x80\xe5\xa5\xbd\xe7\x9a\x84\xef\xbc\x81&apos;</div><div class="line">&gt;&gt;&gt; for i in test_b:</div><div class="line">...     print(i, end=&apos; &apos;)</div><div class="line">228 189 160 230 152 175 230 156 128 229 165 189 231 154 132 239 188 129</div><div class="line">&gt;&gt;&gt; for i in test_str:</div><div class="line">...     print(i, end=&apos; &apos;)</div><div class="line">你 是 最 好 的 ！</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat utf-8.txt </div><div class="line">我是最好的！</div><div class="line">root@ubuntu:~# iconv -f utf-8 -t gbk utf-8.txt </div><div class="line">ϒˇخºõģ¡</div><div class="line">root@ubuntu:~# iconv -f utf-8 -t gbk utf-8.txt  &gt; gbk.txt</div><div class="line">root@ubuntu:~# cat gbk.txt</div><div class="line">ϒˇخºõģ¡</div><div class="line">&gt;&gt;&gt; f = open(&apos;gbk.txt&apos;, &apos;rb&apos;)</div><div class="line">&gt;&gt;&gt; test = f.read()</div><div class="line">&gt;&gt;&gt; test</div><div class="line">b&apos;\xce\xd2\xca\xc7\xd7\xee\xba\xc3\xb5\xc4\xa3\xa1\n&apos;</div><div class="line">&gt;&gt;&gt; test.decode(&apos;gbk&apos;)</div><div class="line">&apos;我是最好的！\n&apos;</div><div class="line">&gt;&gt;&gt; f.close()</div></pre></td></tr></table></figure>
-<h3 id="编码总结"><a href="#编码总结" class="headerlink" title="编码总结"></a>编码总结</h3><p>编码过程： 任意unicode到bytes的过程<br>解码过程： bytes到unicode的过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">pycharm默认以UTF-8存数据到硬盘(unicode to UTF-8)   一个编码过程</div><div class="line">python3默认以UTF-8读数据到内存（UTF-8 to unicode）  一个解码过程</div><div class="line">#coding:utf-8 也是指明了用什么编码读数据到内存,一个解码过程</div><div class="line"></div><div class="line">#这里open虽然文件是UTF8存的，此时要以utf8读, utf8 to unicode， 是一个解码过程</div><div class="line">with open(&quot;test.txt&quot;,&apos;r&apos;,encoding=&apos;utf8&apos;) as f: </div><div class="line">    f.read() </div><div class="line"></div><div class="line">python3字符串就是unicode, 任意unicode只要编码后就是bytes</div><div class="line">&apos;你好&apos;.encode(&apos;utf8&apos;)</div></pre></td></tr></table></figure></p>
-<h1 id="第六节-用户交互"><a href="#第六节-用户交互" class="headerlink" title="第六节 用户交互"></a>第六节 用户交互</h1><p>for python2.x<br>name = raw_input(“What is your name:”)<br>for python3.x<br>name = input(“What is your name:”)<br>eg: 想要输入密码时不可见，可以利用getpass模块的getpass()方法<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">root@apt:/mnt<span class="comment"># cat getp.py </span></div><div class="line"><span class="comment">#!/usr/bin/env python3</span></div><div class="line">import getpass</div><div class="line"><span class="built_in">pwd</span> = getpass.getpass(<span class="string">"请输入密码："</span>)</div><div class="line"><span class="built_in">print</span>(<span class="built_in">pwd</span>)</div><div class="line">root@apt:/mnt<span class="comment"># python3 getp.py </span></div><div class="line">请输入密码：</div><div class="line">123</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇/" data-id="cjgbw7nyc00155tjxadea29lr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="cjghhkgth001146jxsspgkpgw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -868,7 +920,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjgbw7nx100035tjxb49btcxm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjghhkgs4000346jx7qnjeois" class="article-share-link">Share</a>
       
       
     </footer>
@@ -915,59 +967,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cjgbw7nxm000f5tjx5wzsl9hq" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-为什么写博客" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/01/为什么写博客/" class="article-date">
-  <time datetime="2017-01-01T00:08:08.000Z" itemprop="datePublished">2017-01-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/生活/">生活</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/01/为什么写博客/">为什么写博客</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>.</p>
-<h2 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h2><h3 id="欢迎大家来到个人博客-我来自成都无疑不幸与万幸是北漂IT-engineer-尤如www-digmyth-com"><a href="#欢迎大家来到个人博客-我来自成都无疑不幸与万幸是北漂IT-engineer-尤如www-digmyth-com" class="headerlink" title="欢迎大家来到个人博客,我来自成都无疑不幸与万幸是北漂IT engineer ! 尤如www.digmyth.com,"></a>欢迎大家来到个人博客,我来自成都无疑不幸与万幸是北漂IT engineer ! 尤如www.digmyth.com,</h3><h3 id="一个想要遆造神话却总在路上的人。"><a href="#一个想要遆造神话却总在路上的人。" class="headerlink" title="一个想要遆造神话却总在路上的人。"></a>一个想要遆造神话却总在路上的人。</h3><hr>
-<p>.</p>
-<h2 id="一个选择"><a href="#一个选择" class="headerlink" title="一个选择"></a>一个选择</h2><h3 id="至于为什么写博客，有很多原因-一段时间，一个心境，一段经历，一个情怀。在一个适当的时间"><a href="#至于为什么写博客，有很多原因-一段时间，一个心境，一段经历，一个情怀。在一个适当的时间" class="headerlink" title="至于为什么写博客，有很多原因, 一段时间，一个心境，一段经历，一个情怀。在一个适当的时间"></a>至于为什么写博客，有很多原因, 一段时间，一个心境，一段经历，一个情怀。在一个适当的时间</h3><h3 id="做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。"><a href="#做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。" class="headerlink" title="做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。"></a>做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。</h3><hr>
-<p>.</p>
-<h2 id="认知时间"><a href="#认知时间" class="headerlink" title="认知时间"></a>认知时间</h2><h3 id="时间对年轻人来说太快了，2016年己远去，2017年己来临-刚好2017年1月1日-此时成立博客也许是"><a href="#时间对年轻人来说太快了，2016年己远去，2017年己来临-刚好2017年1月1日-此时成立博客也许是" class="headerlink" title="时间对年轻人来说太快了，2016年己远去，2017年己来临,刚好2017年1月1日,此时成立博客也许是"></a>时间对年轻人来说太快了，2016年己远去，2017年己来临,刚好2017年1月1日,此时成立博客也许是</h3><h3 id="天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住"><a href="#天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住" class="headerlink" title="天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住"></a>天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住</h3><h3 id="它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么"><a href="#它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么" class="headerlink" title="它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么"></a>它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么</h3><h3 id="错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感-让人"><a href="#错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感-让人" class="headerlink" title="错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感,让人"></a>错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感,让人</h3><h3 id="很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己"><a href="#很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己" class="headerlink" title="很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己"></a>很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己</h3><h3 id="很充实"><a href="#很充实" class="headerlink" title="很充实."></a>很充实.</h3><hr>
-<p>.</p>
-<h2 id="共鸣共勉"><a href="#共鸣共勉" class="headerlink" title="共鸣共勉"></a>共鸣共勉</h2><h3 id="欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗"><a href="#欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗" class="headerlink" title="欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗"></a>欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗</h3><h3 id="平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在"><a href="#平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在" class="headerlink" title="平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在"></a>平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在</h3><h3 id="沉淀中积累-才不会迷失方向-才不会迷失自我。-越是浮躁越是保持淡定，越是功利越是要适度恬静"><a href="#沉淀中积累-才不会迷失方向-才不会迷失自我。-越是浮躁越是保持淡定，越是功利越是要适度恬静" class="headerlink" title="沉淀中积累,才不会迷失方向,才不会迷失自我。 越是浮躁越是保持淡定，越是功利越是要适度恬静."></a>沉淀中积累,才不会迷失方向,才不会迷失自我。 越是浮躁越是保持淡定，越是功利越是要适度恬静.</h3><h3 id="焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难"><a href="#焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难" class="headerlink" title="焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难"></a>焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难</h3><h3 id="的岁月-再大的风险和考验都可以轻轻的付之一笑-有定力的人才有希望，告别2016，迎来2017，善"><a href="#的岁月-再大的风险和考验都可以轻轻的付之一笑-有定力的人才有希望，告别2016，迎来2017，善" class="headerlink" title="的岁月,再大的风险和考验都可以轻轻的付之一笑.有定力的人才有希望，告别2016，迎来2017，善"></a>的岁月,再大的风险和考验都可以轻轻的付之一笑.有定力的人才有希望，告别2016，迎来2017，善</h3><h3 id="待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼-给自己多些淡定和从容"><a href="#待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼-给自己多些淡定和从容" class="headerlink" title="待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼, 给自己多些淡定和从容."></a>待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼, 给自己多些淡定和从容.</h3><hr>
-<p>.</p>
-<h2 id="记录点滴"><a href="#记录点滴" class="headerlink" title="记录点滴"></a>记录点滴</h2><h3 id="记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。"><a href="#记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。" class="headerlink" title="记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。"></a>记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。</h3>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cjgbw7o14003j5tjxyis21vg8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cjghhkgsr000f46jxuiqjvrtg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -983,7 +983,7 @@ Age_of_name = &quot;xx&quot;  #类名
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/5/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/">__('next') &raquo;</a>
   </nav>
 </section>
         
