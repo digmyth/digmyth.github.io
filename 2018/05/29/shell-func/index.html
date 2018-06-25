@@ -3,14 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>归档: 2017/10 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>shell getopts语法 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:url" content="http://www.digmyth.com/archives/2017/10/index.html">
+  <meta name="description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下
+
+cat /usr/local/bin/show12345678910111213141516171819202122232425262728#!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shell getopts语法">
+<meta property="og:url" content="http://www.digmyth.com/2018/05/29/shell-func/index.html">
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta property="og:description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下
+
+cat /usr/local/bin/show12345678910111213141516171819202122232425262728#!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\0">
+<meta property="og:updated_time" content="2018-06-25T02:14:08.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Welcome to wxq's Blog created in 2017-01-01">
+<meta name="twitter:title" content="shell getopts语法">
+<meta name="twitter:description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下
+
+cat /usr/local/bin/show12345678910111213141516171819202122232425262728#!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\0">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -59,77 +69,63 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/10/31/ssh-01-反向代理/" class="archive-article-date">
-  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">10月 31</time>
+        <section id="main"><article id="post-shell-func" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/29/shell-func/" class="article-date">
+  <time datetime="2018-05-29T01:41:54.000Z" itemprop="datePublished">2018-05-29</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/10/31/ssh-01-反向代理/">ssh-01-反向代理</a>
+    <h1 class="article-title" itemprop="name">
+      shell getopts语法
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/10/09/web-django-19-auth认证系统/" class="archive-article-date">
-  <time datetime="2017-10-09T12:26:37.000Z" itemprop="datePublished">10月 9</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
+        <blockquote>
+<p>Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下</p>
+</blockquote>
+<p>cat /usr/local/bin/show<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">a=&apos;df -hT&apos;</div><div class="line">b=&quot;ls&quot;</div><div class="line"></div><div class="line"></div><div class="line">echo_print() &#123;</div><div class="line">	echo -e &quot;\033[1;32m$1\033[0m&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">exec() &#123;</div><div class="line">	echo_print &quot;$1&quot;</div><div class="line">	$1</div><div class="line">	echo &quot;&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">info () &#123;</div><div class="line">	exec $a</div><div class="line">	exec $b</div><div class="line"></div><div class="line">&#125;</div><div class="line">case &quot;$1&quot; in</div><div class="line">info)</div><div class="line">	info;;</div><div class="line"></div><div class="line">*)</div><div class="line">	echo &quot;Usage: kk info&quot;;;</div><div class="line">esac</div></pre></td></tr></table></figure></p>
+<p>[root@wxqnode opt]# show info<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">df</div><div class="line">Filesystem              1K-blocks    Used Available Use% Mounted on</div><div class="line">/dev/mapper/centos-root  22001156 1946776  20054380   9% /</div><div class="line">devtmpfs                  2962076       0   2962076   0% /dev</div><div class="line">tmpfs                     2973096       0   2973096   0% /dev/shm</div><div class="line">tmpfs                     2973096   33268   2939828   2% /run</div><div class="line">tmpfs                     2973096       0   2973096   0% /sys/fs/cgroup</div><div class="line">/dev/sda1                 1038336  145652    892684  15% /boot</div><div class="line">tmpfs                      594620       0    594620   0% /run/user/0</div><div class="line"></div><div class="line">ls</div><div class="line">restart_cob  study  venv</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjitmq0aj001z0pjxbqapixb3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/10/09/web-django-19-auth认证系统/">web-Django-19-auth认证系统</a>
-    </h1>
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/01/06/python-django-26-API验证/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">python-django-26-API验证</div>
+    </a>
+  
+</nav>
+
   
 
-    </header>
-  </div>
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/10/08/web-django-19-Cookies-Session/" class="archive-article-date">
-  <time datetime="2017-10-08T12:26:37.000Z" itemprop="datePublished">10月 8</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/10/08/web-django-19-Cookies-Session/">web-Django-19-Cookies-Session</a>
-    </h1>
-  
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
 </section>
         
