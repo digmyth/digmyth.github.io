@@ -90,13 +90,13 @@
         <blockquote>
 <p>Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下</p>
 </blockquote>
-<p>cat /usr/local/bin/show<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">a=&apos;df -hT&apos;</div><div class="line">b=&quot;ls&quot;</div><div class="line"></div><div class="line"></div><div class="line">echo_print() &#123;</div><div class="line">	echo -e &quot;\033[1;32m$1\033[0m&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">exec() &#123;</div><div class="line">	echo_print &quot;$1&quot;</div><div class="line">	$1</div><div class="line">	echo &quot;&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">info () &#123;</div><div class="line">	exec $a</div><div class="line">	exec $b</div><div class="line"></div><div class="line">&#125;</div><div class="line">case &quot;$1&quot; in</div><div class="line">info)</div><div class="line">	info;;</div><div class="line"></div><div class="line">*)</div><div class="line">	echo &quot;Usage: kk info&quot;;;</div><div class="line">esac</div></pre></td></tr></table></figure></p>
-<p>[root@wxqnode opt]# show info<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">df</div><div class="line">Filesystem              1K-blocks    Used Available Use% Mounted on</div><div class="line">/dev/mapper/centos-root  22001156 1946776  20054380   9% /</div><div class="line">devtmpfs                  2962076       0   2962076   0% /dev</div><div class="line">tmpfs                     2973096       0   2973096   0% /dev/shm</div><div class="line">tmpfs                     2973096   33268   2939828   2% /run</div><div class="line">tmpfs                     2973096       0   2973096   0% /sys/fs/cgroup</div><div class="line">/dev/sda1                 1038336  145652    892684  15% /boot</div><div class="line">tmpfs                      594620       0    594620   0% /run/user/0</div><div class="line"></div><div class="line">ls</div><div class="line">restart_cob  study  venv</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">cat /usr/local/bin/show </div><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">a=&apos;df -hT&apos;</div><div class="line">b=&quot;ls&quot;</div><div class="line"></div><div class="line"></div><div class="line">echo_print() &#123;</div><div class="line">	echo -e &quot;\033[1;32m$1\033[0m&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">exec() &#123;</div><div class="line">	echo_print &quot;$1&quot;</div><div class="line">	$1</div><div class="line">	echo &quot;&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">info () &#123;</div><div class="line">	exec $a</div><div class="line">	exec $b</div><div class="line"></div><div class="line">&#125;</div><div class="line">case &quot;$1&quot; in</div><div class="line">info)</div><div class="line">	info;;</div><div class="line"></div><div class="line">*)</div><div class="line">	echo &quot;Usage: kk info&quot;;;</div><div class="line">esac</div></pre></td></tr></table></figure>
+<p>相当于定制了一个shell命令，运行一下看下效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#[root@wxqnode opt]# show info</div><div class="line">df</div><div class="line">Filesystem              1K-blocks    Used Available Use% Mounted on</div><div class="line">/dev/mapper/centos-root  22001156 1946776  20054380   9% /</div><div class="line">devtmpfs                  2962076       0   2962076   0% /dev</div><div class="line">tmpfs                     2973096       0   2973096   0% /dev/shm</div><div class="line">tmpfs                     2973096   33268   2939828   2% /run</div><div class="line">tmpfs                     2973096       0   2973096   0% /sys/fs/cgroup</div><div class="line">/dev/sda1                 1038336  145652    892684  15% /boot</div><div class="line">tmpfs                      594620       0    594620   0% /run/user/0</div><div class="line"></div><div class="line">ls</div><div class="line">restart_cob  study  venv</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjitmridp00271sjxzgghd91p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjitmt8wt00272xjxrpvhcfzx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -163,7 +163,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjitmridh001z1sjxldwqc2u1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjitmt8wl001z2xjxl9w47n2j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,7 +206,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjitmridv002i1sjxfs8sqbjd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjitmt8x0002i2xjxjmd4iovo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -282,7 +282,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjitmrieh003d1sjxfjv4y6a1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjitmt8xj003d2xjx8jublap0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -345,7 +345,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjitmrief003b1sjxw7yk6o1j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjitmt8xi003b2xjxf9s2b2jz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -414,7 +414,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjitmrie5002x1sjx9r1zin5z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjitmt8x9002x2xjxxjgbpo7u" class="article-share-link">Share</a>
       
       
     </footer>
@@ -522,7 +522,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjitmriel003l1sjxeng4wvtj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjitmt8xo003l2xjxwj5xckfo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -589,7 +589,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjitmridj00221sjxc4ggmfin" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjitmt8wn00222xjxywty9qvx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -641,7 +641,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjitmried00391sjxvzft92yi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjitmt8xh00392xjxuhfuf8yl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -702,7 +702,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjitmrieb00351sjx6rpq855f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjitmt8xe00352xjxfv6tigvb" class="article-share-link">Share</a>
       
       
     </footer>
