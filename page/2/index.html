@@ -61,6 +61,119 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-23-Django序列化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/01/web-django-23-Django序列化/" class="article-date">
+  <time datetime="2017-12-01T12:26:37.000Z" itemprop="datePublished">2017-12-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>序列化</li>
+</ul>
+<h2 id="Django中的序列化操作"><a href="#Django中的序列化操作" class="headerlink" title="Django中的序列化操作"></a>Django中的序列化操作</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="external">序列化操作参考</a><br><a href="http://www.digmyth.com/2017/11/20/web-django-20-ajax/">ajax学习</a><br>Django返回前端数据一般为json格式，那么就要数据进行序列化。<br>方法一：<br>Django内置serializers<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.core import serializers</div><div class="line">ret = models.BookType.objects.all()</div><div class="line">data = serializers.serialize(&quot;json&quot;, ret)</div></pre></td></tr></table></figure></p>
+<p>方法二：<br>json.dumps<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import json</div><div class="line"> </div><div class="line">#ret = models.BookType.objects.all().values(&apos;caption&apos;)</div><div class="line">ret = models.BookType.objects.all().values_list(&apos;caption&apos;)</div><div class="line">ret=list(ret)</div><div class="line">result = json.dumps(ret,nsure_ascii=False)</div></pre></td></tr></table></figure></p>
+<p>方法三：<br>由于json.dumps时无法处理datetime日期，所以可以通过自定义处理器来做扩展<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">import json </div><div class="line">from datetime import date </div><div class="line">from datetime import datetime </div><div class="line">   </div><div class="line">class JsonCustomEncoder(json.JSONEncoder): </div><div class="line">    def default(self, field): </div><div class="line">        if isinstance(field, datetime): </div><div class="line">            return o.strftime(&apos;%Y-%m-%d %H:%M:%S&apos;) </div><div class="line">        elif isinstance(field, date): </div><div class="line">            return o.strftime(&apos;%Y-%m-%d&apos;) </div><div class="line">        else: </div><div class="line">            return json.JSONEncoder.default(self, field) </div><div class="line"># ds = json.dumps(d, cls=JsonCustomEncoder)</div></pre></td></tr></table></figure></p>
+<p>有时在前端渲染也需要<code>date:&#39;Y-m-d&#39;</code>处理一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;出版日期&lt;input  type=&quot;date&quot; name=&quot;pubdate&quot; value=&quot;&#123;&#123; edit_book.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&quot;&gt;&lt;/p&gt;</div></pre></td></tr></table></figure></p>
+<p>如果用到了Form或ModelForm，同样需要widgets处理下时间格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">widgets=&#123;</div><div class="line">&quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjk6q6om5003g8yjx7nmg3jr8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-django-21-图片上传" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/21/web-django-21-图片上传/" class="article-date">
+  <time datetime="2017-11-21T12:26:37.000Z" itemprop="datePublished">2017-11-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>上传文件版本一</li>
+<li>上传文件版本二</li>
+<li>上传文件版本三</li>
+</ul>
+<h2 id="上传文件版本一"><a href="#上传文件版本一" class="headerlink" title="上传文件版本一"></a>上传文件版本一</h2><p>定义views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">def upload(request):</div><div class="line">    if request.method==&quot;GET&quot;:</div><div class="line">        return render(request,&quot;upload.html&quot;)</div><div class="line">    else:</div><div class="line">        obj=request.FILES.get(&quot;fff&quot;)</div><div class="line">        # obj.name 文件名</div><div class="line">        # obj.chunks 文件块</div><div class="line">        f = open(obj.name,&apos;wb&apos;)</div><div class="line">        for chunk in obj.chunks():</div><div class="line">            f.write(chunk)</div><div class="line">        f.close()</div><div class="line">        return render(request,&quot;upload.html&quot;)</div></pre></td></tr></table></figure></p>
+<p>upload.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/upload/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &lt;p&gt;&lt;input type=&quot;file&quot; name=&quot;fff&quot;/&gt;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;&lt;/p&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="上传文件版本二"><a href="#上传文件版本二" class="headerlink" title="上传文件版本二"></a>上传文件版本二</h2><p>版本一中form表单上传文件或图片无法做预览，并无法做失败验证及上传文件大小限制，那么就要用到ajax 方式发送。下面学习下ajax方式上传文件。<br>定义views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">def upload(request):</div><div class="line">    if request.method==&quot;GET&quot;:</div><div class="line">        return render(request,&quot;upload.html&quot;)</div><div class="line">    elif request.is_ajax():</div><div class="line">        file_obj= request.FILES.get(&apos;obj&apos;)</div><div class="line">        print(obj)</div><div class="line">        f = open(file_obj.name, &apos;wb&apos;)</div><div class="line">        for chunk in file_obj.chunks():</div><div class="line">            f.write(chunk)</div><div class="line">        f.close()</div><div class="line">        return HttpResponse(&quot;ok&quot;)</div><div class="line">    else:</div><div class="line">		pass</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">&lt;h1&gt;ajax形式上传文件&lt;/h1&gt;</div><div class="line">&lt;input type=&quot;file&quot; id=&quot;f4&quot;/&gt;</div><div class="line">&lt;input type=&quot;button&quot; value=&quot;提交&quot; id=&quot;btn&quot;&gt; #input的button默认不会有任何事件，除非绑定事件</div><div class="line">&#123;% csrf_token %&#125;</div><div class="line">&lt;script src=&quot;/static/jquery-1.12.4.js&quot;&gt;&lt;/script&gt;</div><div class="line">&lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</div><div class="line">&lt;script&gt;</div><div class="line"></div><div class="line">    $(function () &#123;</div><div class="line">        $(&quot;#btn&quot;).click(function () &#123;</div><div class="line">            var fm=new FormData();</div><div class="line">            fm.append(&apos;obj&apos;,$(&quot;#f4&quot;)[0].files[0]);</div><div class="line">            fm.append(&apos;csrfmiddlewaretoken&apos;,$.cookie(&apos;csrftoken&apos;));     //自行组数据$(&quot;input[name=&apos;csrfmiddlewaretoken&apos;]&quot;).val());</div><div class="line">           // fm.append(&apos;file_obj&apos;,document.getElementById(&quot;f4&quot;).files[0]);</div><div class="line">            //document.getElementById(&quot;f4&quot;)  # dom对象</div><div class="line">            // $(&quot;#f4&quot;)                     # jquery对象</div><div class="line">            // $(&quot;#f4&quot;)[0]                  #jquery对象转dom对象</div><div class="line">            $.ajax(&#123;</div><div class="line">                url:&apos;/upload/&apos;,</div><div class="line">                type:&apos;POST&apos;,</div><div class="line">                data:fm,</div><div class="line">                processData: false,</div><div class="line">                contentType: false,</div><div class="line">                success:function (data) &#123;</div><div class="line">                    console.log(data);</div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125;)</div><div class="line">        &#125;)</div><div class="line">    &#125;)</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+<h2 id="上传文件版本三"><a href="#上传文件版本三" class="headerlink" title="上传文件版本三"></a>上传文件版本三</h2><p>版本二中对各种浏览器兼容不好，可以再次改进. 利用form+iframe特性做的，业内都是这么做的，很重要，兼容性非常好。形式上与ajax很像但不是ajax,称伪ajax,后端不能用request.is_ajax()判断请求方式。<br>不得不先来学习下iframe标签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;iframe id=&quot;ifm&quot; src=&quot;http://www.chouti.com&quot;&gt;&lt;/iframe&gt;</div><div class="line">$(&quot;#ifm&quot;).attr(&apos;src&apos;, &apos;http://www.qq.com&apos;)  # 修改iframe src属性但页面不刷新，返回的数据不在整个页面，而在iframe body里，基于这样的特性我们可以上传文件。</div></pre></td></tr></table></figure></p>
+<p>当form表单以iframe形式发送数据到后端，后端返回的数据会在iframe body里<br>form 的target属性值要与iframe的name属性值保持一致。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form  id=&quot;ff1&quot; action=&quot;/upload/&quot; method=&quot;POST&quot; enctype=&quot;multipart/form-data&quot; target=&quot;ifr&quot;&gt;</div><div class="line">    &lt;p&gt;&lt;input   onchange=&quot;changeImg();&quot; type=&quot;file&quot; name=&quot;fff&quot;/&gt;&lt;/p&gt;</div><div class="line">    &lt;p&gt;&lt;input id=&quot;sb&quot; type=&quot;submit&quot; value=&quot;提交&quot;/&gt;&lt;/p&gt; </div><div class="line">&lt;/form&gt;</div><div class="line">&lt;iframe id=&quot;ifm&quot;  name=&quot;ifr&quot; onload=&quot;sucessBack();&quot; &gt;&lt;/iframe&gt;</div></pre></td></tr></table></figure></p>
+<p>那么如何取出iframe body里的值呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(&quot;#ifm&quot;).html();  # iframe会重新生成一个子document,有html/head/body,这种方法无法取出。</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(&quot;#ifm&quot;).find(&apos;body&apos;).html(); # 有这种想法是好的，这种找只会在当前document里找，但是这样的document嵌套递归查找需要一个额外方法处理.contents()后再查找</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(&quot;#ifm&quot;).contents().find(&apos;body&apos;).html();   # iframe最终正确的方法</div></pre></td></tr></table></figure>
+<p>文件上传完整版<br>utils.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class BaseResponse():</div><div class="line">    def __init__(self):</div><div class="line">        self.status=False</div><div class="line">        self.data=None</div><div class="line">        self.error=None</div></pre></td></tr></table></figure></p>
+<p>views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render,HttpResponse,redirect</div><div class="line">import os,json</div><div class="line">from utils import BaseResponse</div><div class="line">ret=BaseResponse()</div><div class="line">def upload(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        return render(request, &quot;upload.html&quot;)</div><div class="line">    else:</div><div class="line">        try:</div><div class="line">            file_obj=request.FILES.get(&apos;fff&apos;)</div><div class="line">            # file_obj.name  # file name</div><div class="line">            # file_obj.chunks() #file block</div><div class="line">            file_path = os.path.join(&apos;static&apos;, file_obj.name)</div><div class="line">            with open(file_path,&apos;wb&apos;) as f:</div><div class="line">                for chunk in file_obj.chunks():</div><div class="line">                    f.write(chunk)</div><div class="line">            ret.status=True</div><div class="line">            ret.data=file_path</div><div class="line">        except Exception as e:</div><div class="line">            ret.error=&quot;上传失败&quot;</div><div class="line">        return  HttpResponse(json.dumps(ret.__dict__,ensure_ascii=False))</div></pre></td></tr></table></figure></p>
+<p>upload.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">&lt;form id=&quot;sb&quot; action=&quot;/upload/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; target=&quot;ifr&quot;&gt;</div><div class="line">    &#123;% csrf_token %&#125;</div><div class="line">   &lt;input type=&quot;file&quot;  name=&quot;fff&quot; onchange=&quot;changeImg();&quot;/&gt;</div><div class="line">   &lt;!-- 元素更新时触发onchange事件  --&gt;</div><div class="line">&#123;#    &lt;input type=&quot;submit&quot;&gt;#&#125;</div><div class="line">&lt;/form&gt;</div><div class="line"></div><div class="line">&lt;iframe  id=&quot;ifr&quot; name=&quot;ifr&quot;  onload=&quot;successBack();&quot; style=&quot;display: none&quot;&gt;&lt;/iframe&gt;</div><div class="line">&lt;div id=&quot;prevImg&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- 我们这里不是真正的ajax,是没有success回调函数的,上传成功后会返回数据到前端，文本载入会触发onload事件。 --&gt;</div><div class="line"></div><div class="line">&lt;script src=&quot;/static/jquery-1.12.4.js&quot;&gt;&lt;/script&gt;</div><div class="line">&lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</div><div class="line">&lt;script&gt;</div><div class="line">    function successBack() &#123;</div><div class="line">        var v=$(&quot;#ifr&quot;).contents().find(&quot;body&quot;).html();</div><div class="line">        var v=JSON.parse(v);</div><div class="line">        if(v.status)&#123;</div><div class="line">             var tag=document.createElement(&apos;img&apos;);</div><div class="line">            tag.src=&quot;/&quot;+v.data;</div><div class="line">            $(&quot;#prevImg&quot;).append(tag);</div><div class="line">        &#125;else &#123;</div><div class="line">            console.log(v.error)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    function changeImg() &#123;</div><div class="line">       $(&quot;#sb&quot;)[0].submit();</div><div class="line">      //  document.getElementById(&apos;sb&apos;).submit();</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjk6q6om2003c8yjxche0z25v" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-20-ajax" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/20/web-django-20-ajax/" class="article-date">
@@ -115,7 +228,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjk6nwxmb00354ojxhicdfikv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjk6q6olz003a8yjx49zzel3y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -171,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjk6nwxjo000l4ojxs3bint65" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjk6q6ojk000q8yjxzjcg73iz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -243,7 +356,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjk6nwxjq000o4ojxozd66i91" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjk6q6ojl000t8yjxhbosaglg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -338,7 +451,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjk6nwxk3000z4ojxzcgm1lx5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjk6q6ojv00148yjxc3k2to3w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -391,7 +504,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjk6nwxme00394ojx4it9yeep" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjk6q6om3003e8yjx20xjtsdg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -461,7 +574,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjk6nwxk0000w4ojxmk0wt374" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjk6q6ojs00118yjx8rdekruu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,7 +628,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjk6nwxj400064ojxwmq0zng6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjk6q6oj5000b8yjxpmdpn28x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -565,127 +678,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjk6nwxlo002e4ojxsg4ja7yh" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-19-auth认证系统" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/09/web-django-19-auth认证系统/" class="article-date">
-  <time datetime="2017-10-09T12:26:37.000Z" itemprop="datePublished">2017-10-09</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/09/web-django-19-auth认证系统/">web-Django-19-auth认证系统</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>auth模块</li>
-<li>Django内置补充 </li>
-</ul>
-<h2 id="auth模块"><a href="#auth模块" class="headerlink" title="auth模块"></a>auth模块</h2><p>可以基于Cookie/Session自己写登录、注销的用户认证，这里我们学习Django自带的auth模块实现用户的登录、注销认证系统。</p>
-<p>模块引入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.contrib import auth   # 模块引入</div><div class="line">#from django.contrib.auth.models import User,AbstractUser</div><div class="line">#from app01 import  models</div></pre></td></tr></table></figure></p>
-<p>下面2条命令会生成Django默认表，其中有张表auth_user用于存认证用户信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations</div><div class="line">python manage.py migrate</div></pre></td></tr></table></figure></p>
-<p>创建一个超级用户，auth_user可查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py  createsuperuser</div></pre></td></tr></table></figure></p>
-<p>自己写登录系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">def login(request):</div><div class="line">    if request.method==&quot;GET&quot;:</div><div class="line">        return render(request,&quot;login.html&quot;)</div><div class="line">    elif request.method==&quot;POST&quot;:</div><div class="line">        username=request.POST.get(&quot;username&quot;)</div><div class="line">        pwd=request.POST.get(&quot;pwd&quot;)</div><div class="line">        user_obj=auth.authenticate(username=username,password=pwd) # 验证</div><div class="line">        if user_obj:</div><div class="line">            auth.login(request,user_obj)  # 写入session</div><div class="line">            return  redirect(&quot;/home/&quot;)</div><div class="line">        else:</div><div class="line">            return  redirect(&quot;/login/&quot;)</div><div class="line"></div><div class="line">def log_out(request):</div><div class="line">    auth.logout(request)     #相当于request.session.flush() 去除session</div><div class="line">    return redirect(&quot;/login/&quot;)</div><div class="line"></div><div class="line">def home(request):</div><div class="line">    if not request.user_obj.is_authenticated():  # 是否认证过有没写入session</div><div class="line">        return redirect(&quot;/login/&quot;)   </div><div class="line">    return render(request,&quot;home.html&quot;)</div></pre></td></tr></table></figure></p>
-<p> 注意：<br>利用Django自带的表创建用户，不能对Django自带的表直接操作，那怎么创建呢，Django提供一个接口，通过auth模块操作User表.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from django.contrib.auth.models import User</div><div class="line">user = User.objects.create_user（username=&apos;&apos;,password=&apos;&apos;,email=&apos;&apos;）</div></pre></td></tr></table></figure></p>
-<p>当Django自带User表字段不够用时，可以自己建表继承User表字段，方法:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.contrib.auth.models import  AbstractUser</div><div class="line">class UserInfo(AbstractUser):</div><div class="line">     detail = modoles.CharField(max_length=32)</div></pre></td></tr></table></figure></p>
-<p>自建表记得settins.py配置<code>AUTH_USER_MODEL</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">STATIC_URL = &apos;/static/&apos;</div><div class="line">STATICFILES_DIRS =[</div><div class="line">    os.path.join(BASE_DIR,&quot;blog&quot;,&quot;static&quot;),</div><div class="line">]</div><div class="line"></div><div class="line"># MEDIA_ROOT=os.path.join(BASE_DIR,&apos;blog&apos;,&apos;media&apos;,&apos;upload&apos;)</div><div class="line"># MEDIA_URL = &apos;/media/&apos;</div><div class="line"></div><div class="line">AUTH_USER_MODEL= &quot;blog.UserInfo&quot;</div></pre></td></tr></table></figure></p>
-<h2 id="Django-内置补充"><a href="#Django-内置补充" class="headerlink" title="Django 内置补充"></a>Django 内置补充</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">django已经为我们设计好了一个用于此种情况的装饰器：login_requierd()</div><div class="line"></div><div class="line">from django.contrib.auth.decorators import login_required</div><div class="line">      </div><div class="line">@login_required</div><div class="line">def my_view(request):</div><div class="line">  ...</div><div class="line">若用户没有登录，则会跳转到django默认的 登录URL &apos;/accounts/login/ &apos; </div><div class="line">(这个值可以在settings文件中通过LOGIN_URL进行修改)。并传递当前访问</div><div class="line">url的绝对路径 (登陆成功后，会重定向到该路径)。</div><div class="line"></div><div class="line">User对象</div><div class="line">User 对象属性：username， password（必填项）password用哈希算法保存到数据库</div><div class="line"></div><div class="line">is_staff ： 用户是否拥有网站的管理权限.</div><div class="line"></div><div class="line">is_active ： 是否允许用户登录, 设置为``False``，可以不用删除用户来禁止 用户登录</div><div class="line"></div><div class="line"></div><div class="line">2.1 、is_authenticated()</div><div class="line">表明是否认证通过并有session,当使用auth模块时，前端`&#123;&#123; request.user &#125;&#125;`可以直接使用</div><div class="line">不需要后端传入request.user变量。</div><div class="line">request.user.username 为AnonymousUser或用户名</div><div class="line"></div><div class="line">2.2 、创建用户</div><div class="line">使用 create_user 辅助函数创建用户:</div><div class="line">from django.contrib.auth.models import User</div><div class="line">user = User.objects.create_user（username=&apos;&apos;,password=&apos;&apos;,email=&apos;&apos;）</div><div class="line"></div><div class="line">2.3 、check_password(passwd)</div><div class="line"></div><div class="line">用户需要修改密码的时候 首先要让他输入原来的密码 ，如果给定的字符串通过了密码检查，返回 True</div><div class="line">2.4 、修改密码</div><div class="line">使用 set_password() 来修改密码</div><div class="line"></div><div class="line">user = User.objects.get(username=&apos;&apos;)</div><div class="line">user.set_password(password=&apos;&apos;)</div><div class="line">user.save</div></pre></td></tr></table></figure>
-<p>简单示例<br>注册：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">def sign_up(request):</div><div class="line">    state = None</div><div class="line">    if request.method == &apos;POST&apos;:</div><div class="line"> </div><div class="line">        password = request.POST.get(&apos;password&apos;, &apos;&apos;)</div><div class="line">        repeat_password = request.POST.get(&apos;repeat_password&apos;, &apos;&apos;)</div><div class="line">        email=request.POST.get(&apos;email&apos;, &apos;&apos;)</div><div class="line">        username = request.POST.get(&apos;username&apos;, &apos;&apos;)</div><div class="line">        if User.objects.filter(username=username):</div><div class="line">                state = &apos;user_exist&apos;</div><div class="line">        else:</div><div class="line">                new_user = User.objects.create_user(username=username, password=password,email=email)</div><div class="line">                new_user.save()</div><div class="line"> </div><div class="line">                return redirect(&apos;/book/&apos;)</div><div class="line">    content = &#123;</div><div class="line">        &apos;state&apos;: state,</div><div class="line">        &apos;user&apos;: None,</div><div class="line">    &#125;</div><div class="line">    return render(request, &apos;sign_up.html&apos;, content)</div></pre></td></tr></table></figure></p>
-<p>修改密码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">@login_required</div><div class="line">def set_password(request):</div><div class="line">    user = request.user</div><div class="line">    state = None</div><div class="line">    if request.method == &apos;POST&apos;:</div><div class="line">        old_password = request.POST.get(&apos;old_password&apos;, &apos;&apos;)</div><div class="line">        new_password = request.POST.get(&apos;new_password&apos;, &apos;&apos;)</div><div class="line">        repeat_password = request.POST.get(&apos;repeat_password&apos;, &apos;&apos;)</div><div class="line">        if user.check_password(old_password):</div><div class="line">            if not new_password:</div><div class="line">                state = &apos;empty&apos;</div><div class="line">            elif new_password != repeat_password:</div><div class="line">                state = &apos;repeat_error&apos;</div><div class="line">            else:</div><div class="line">                user.set_password(new_password)</div><div class="line">                user.save()</div><div class="line">                return redirect(&quot;/log_in/&quot;)</div><div class="line">        else:</div><div class="line">            state = &apos;password_error&apos;</div><div class="line">    content = &#123;</div><div class="line">        &apos;user&apos;: user,</div><div class="line">        &apos;state&apos;: state,</div><div class="line">    &#125;</div><div class="line">    return render(request, &apos;set_password.html&apos;, content)</div></pre></td></tr></table></figure></p>
-<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7609586.html" target="_blank" rel="external">补充原文</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjk6nwxma00334ojx52lgfu5p" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-19-Cookies-Session" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/08/web-django-19-Cookies-Session/" class="article-date">
-  <time datetime="2017-10-08T12:26:37.000Z" itemprop="datePublished">2017-10-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/08/web-django-19-Cookies-Session/">web-Django-19-Cookies-Session</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>Cookies</li>
-<li>Session</li>
-<li>代码学习</li>
-<li>相关配置</li>
-<li>总结</li>
-</ul>
-<h2 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h2><p>用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。</p>
-<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服务器端，对应一个随机字符串，再把这个随机字符串写入cookies，格式为{“sessionid”:”随机字符串”},问题就得到了解决。</p>
-<h2 id="代码学习"><a href="#代码学习" class="headerlink" title="代码学习"></a>代码学习</h2><p>Cookies 工作特性：<br>在浏览器F12 network-&gt;cookies中首次请求时可以看到 Response Cookies有写入的键值对，下次再访问时Request Cookies有这个键值对，证明此时浏览器会带着这个键值对发给服务器。可以简单用下面代码测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">def ck(request):</div><div class="line">    print(request.COOKIES)   # cookies会封装在request.COOKIES内</div><div class="line">    obj = render(request, &quot;ck.html&quot;, &#123;&quot;msg&quot;: &quot;&quot;&#125;)</div><div class="line">    obj.set_cookie(&apos;user&apos;, &apos;wxq&apos;)  # 向浏览器写入cookies键值对</div><div class="line"></div><div class="line">    return obj</div></pre></td></tr></table></figure></p>
-<p>下面用代码描述Cookies、Session各自工作：<br>login.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;/&gt;</div><div class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;/&gt;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt;&lt;span&gt;&#123;&#123; msg &#125;&#125;&lt;/span&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
-<p>views.py视图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">from app01 import models</div><div class="line">def login(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        return  render(request, &apos;login.html&apos;,&#123;&quot;msg&quot;: &quot;&quot;&#125;)</div><div class="line">    else:</div><div class="line">        u = request.POST.get(&quot;username&quot;)</div><div class="line">        p = request.POST.get(&quot;pwd&quot;)</div><div class="line">        v=models.UserInfo.objects.filter(username=u, pwd=p).exists()</div><div class="line">        if v:</div><div class="line"></div><div class="line">            # obj.set_cookie(&quot;user&quot;, u,max_age=5)</div><div class="line">            request.session[&quot;user&quot;] = u</div><div class="line">            request.session[&quot;pwd&quot;] = p</div><div class="line">            return redirect(&quot;/home/&quot;)</div><div class="line">        else:</div><div class="line"></div><div class="line">            return render(request,&quot;login.html&quot;,&#123;&quot;msg&quot;: &quot;用户名或密码错误&quot;&#125;)</div><div class="line"></div><div class="line">def home(request):</div><div class="line">    # v = request.COOKIES.get(&quot;user&quot;)</div><div class="line">    v = request.session.get(&quot;user&quot;)</div><div class="line">    if v:</div><div class="line">        return  HttpResponse(&quot;登录成功&quot;)</div><div class="line">    else:</div><div class="line">        return redirect(&quot;/login/&quot;)</div></pre></td></tr></table></figure></p>
-<h2 id="利用session注销"><a href="#利用session注销" class="headerlink" title="利用session注销"></a>利用session注销</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">def logout(request):</div><div class="line">	&apos;&apos;&apos;</div><div class="line">	obj=HttpResponse(&quot;xxx&quot;)</div><div class="line">	obj.set_cookie(&quot;user&quot;,&quot;name&quot;)   # 设置cookie</div><div class="line">	request.COOKIES.get(&quot;user&quot;)     # 获取cookie</div><div class="line">        obj.delete_cookie(&apos;user&apos;)       # 清除cookie</div><div class="line">	&apos;&apos;&apos;</div><div class="line">    #request.session[&apos;user&apos;] = &apos;wxq&apos; # 设置session</div><div class="line">    #request.session.get(&apos;user&apos;)     # 获取session</div><div class="line">    request.session.clear()          # 清除session</div><div class="line">	return redirect(&quot;/login/&quot;)</div></pre></td></tr></table></figure>
-<h2 id="Cookies、Session相关配置"><a href="#Cookies、Session相关配置" class="headerlink" title="Cookies、Session相关配置"></a>Cookies、Session相关配置</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="external">配置参考</a></p>
-<p>settings.py配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SESSION_ENGINE = &apos;django.contrib.sessions.backends.db&apos;   # 引擎（默认）</div><div class="line"> </div><div class="line">SESSION_COOKIE_NAME ＝ &quot;sessionid&quot;         # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串（默认）</div><div class="line">SESSION_COOKIE_PATH ＝ &quot;/&quot;                 # Session的cookie保存的路径（默认）</div><div class="line">SESSION_COOKIE_DOMAIN = None               # Session的cookie保存的域名（默认）</div><div class="line">SESSION_COOKIE_SECURE = False              # 是否Https传输cookie（默认）</div><div class="line">SESSION_COOKIE_HTTPONLY = True             # 是否Session的cookie只支持http传输（默认）</div><div class="line">SESSION_COOKIE_AGE = 1209600               # Session的cookie失效日期（2周）（默认）</div><div class="line">SESSION_EXPIRE_AT_BROWSER_CLOSE = False    # 是否关闭浏览器使得Session过期（默认）</div><div class="line">SESSION_SAVE_EVERY_REQUEST = True          # 是否每次请求都保存Session，默认修改之后才保存（默认）</div></pre></td></tr></table></figure></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1 cookies是记录在浏览器上的键值对，本身与登录没有任何关系。 cookies信息保存在request.COOKIES.<br>2 session是记录在服务器上的键值对，key是一个随机字符串, session信息保存在request.session字典里的.<br>3 只有Django框架有session 相关的封装,Flask/tornado等其它web框架是没有的，需要自己写Cookies、session.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjk6nwxm800314ojxp17h2ap4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjk6q6olf002j8yjx7fjltsod" class="article-share-link">Share</a>
       
       
     </footer>
@@ -711,7 +704,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
     </div>
   </div>
 
@@ -726,7 +719,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -739,6 +732,14 @@
       <ul>
         
           <li>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+          </li>
+        
+          <li>
             <a href="/2018/05/29/shell-func/">shell function语法</a>
           </li>
         
@@ -748,14 +749,6 @@
         
           <li>
             <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
           </li>
         
       </ul>

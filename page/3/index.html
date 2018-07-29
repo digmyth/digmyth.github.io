@@ -61,6 +61,126 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-19-auth认证系统" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/09/web-django-19-auth认证系统/" class="article-date">
+  <time datetime="2017-10-09T12:26:37.000Z" itemprop="datePublished">2017-10-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/09/web-django-19-auth认证系统/">web-Django-19-auth认证系统</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>auth模块</li>
+<li>Django内置补充 </li>
+</ul>
+<h2 id="auth模块"><a href="#auth模块" class="headerlink" title="auth模块"></a>auth模块</h2><p>可以基于Cookie/Session自己写登录、注销的用户认证，这里我们学习Django自带的auth模块实现用户的登录、注销认证系统。</p>
+<p>模块引入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.contrib import auth   # 模块引入</div><div class="line">#from django.contrib.auth.models import User,AbstractUser</div><div class="line">#from app01 import  models</div></pre></td></tr></table></figure></p>
+<p>下面2条命令会生成Django默认表，其中有张表auth_user用于存认证用户信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations</div><div class="line">python manage.py migrate</div></pre></td></tr></table></figure></p>
+<p>创建一个超级用户，auth_user可查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py  createsuperuser</div></pre></td></tr></table></figure></p>
+<p>自己写登录系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">def login(request):</div><div class="line">    if request.method==&quot;GET&quot;:</div><div class="line">        return render(request,&quot;login.html&quot;)</div><div class="line">    elif request.method==&quot;POST&quot;:</div><div class="line">        username=request.POST.get(&quot;username&quot;)</div><div class="line">        pwd=request.POST.get(&quot;pwd&quot;)</div><div class="line">        user_obj=auth.authenticate(username=username,password=pwd) # 验证</div><div class="line">        if user_obj:</div><div class="line">            auth.login(request,user_obj)  # 写入session</div><div class="line">            return  redirect(&quot;/home/&quot;)</div><div class="line">        else:</div><div class="line">            return  redirect(&quot;/login/&quot;)</div><div class="line"></div><div class="line">def log_out(request):</div><div class="line">    auth.logout(request)     #相当于request.session.flush() 去除session</div><div class="line">    return redirect(&quot;/login/&quot;)</div><div class="line"></div><div class="line">def home(request):</div><div class="line">    if not request.user_obj.is_authenticated():  # 是否认证过有没写入session</div><div class="line">        return redirect(&quot;/login/&quot;)   </div><div class="line">    return render(request,&quot;home.html&quot;)</div></pre></td></tr></table></figure></p>
+<p> 注意：<br>利用Django自带的表创建用户，不能对Django自带的表直接操作，那怎么创建呢，Django提供一个接口，通过auth模块操作User表.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">from django.contrib.auth.models import User</div><div class="line">user = User.objects.create_user（username=&apos;&apos;,password=&apos;&apos;,email=&apos;&apos;）</div></pre></td></tr></table></figure></p>
+<p>当Django自带User表字段不够用时，可以自己建表继承User表字段，方法:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">from django.contrib.auth.models import  AbstractUser</div><div class="line">class UserInfo(AbstractUser):</div><div class="line">     detail = modoles.CharField(max_length=32)</div></pre></td></tr></table></figure></p>
+<p>自建表记得settins.py配置<code>AUTH_USER_MODEL</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">STATIC_URL = &apos;/static/&apos;</div><div class="line">STATICFILES_DIRS =[</div><div class="line">    os.path.join(BASE_DIR,&quot;blog&quot;,&quot;static&quot;),</div><div class="line">]</div><div class="line"></div><div class="line"># MEDIA_ROOT=os.path.join(BASE_DIR,&apos;blog&apos;,&apos;media&apos;,&apos;upload&apos;)</div><div class="line"># MEDIA_URL = &apos;/media/&apos;</div><div class="line"></div><div class="line">AUTH_USER_MODEL= &quot;blog.UserInfo&quot;</div></pre></td></tr></table></figure></p>
+<h2 id="Django-内置补充"><a href="#Django-内置补充" class="headerlink" title="Django 内置补充"></a>Django 内置补充</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">django已经为我们设计好了一个用于此种情况的装饰器：login_requierd()</div><div class="line"></div><div class="line">from django.contrib.auth.decorators import login_required</div><div class="line">      </div><div class="line">@login_required</div><div class="line">def my_view(request):</div><div class="line">  ...</div><div class="line">若用户没有登录，则会跳转到django默认的 登录URL &apos;/accounts/login/ &apos; </div><div class="line">(这个值可以在settings文件中通过LOGIN_URL进行修改)。并传递当前访问</div><div class="line">url的绝对路径 (登陆成功后，会重定向到该路径)。</div><div class="line"></div><div class="line">User对象</div><div class="line">User 对象属性：username， password（必填项）password用哈希算法保存到数据库</div><div class="line"></div><div class="line">is_staff ： 用户是否拥有网站的管理权限.</div><div class="line"></div><div class="line">is_active ： 是否允许用户登录, 设置为``False``，可以不用删除用户来禁止 用户登录</div><div class="line"></div><div class="line"></div><div class="line">2.1 、is_authenticated()</div><div class="line">表明是否认证通过并有session,当使用auth模块时，前端`&#123;&#123; request.user &#125;&#125;`可以直接使用</div><div class="line">不需要后端传入request.user变量。</div><div class="line">request.user.username 为AnonymousUser或用户名</div><div class="line"></div><div class="line">2.2 、创建用户</div><div class="line">使用 create_user 辅助函数创建用户:</div><div class="line">from django.contrib.auth.models import User</div><div class="line">user = User.objects.create_user（username=&apos;&apos;,password=&apos;&apos;,email=&apos;&apos;）</div><div class="line"></div><div class="line">2.3 、check_password(passwd)</div><div class="line"></div><div class="line">用户需要修改密码的时候 首先要让他输入原来的密码 ，如果给定的字符串通过了密码检查，返回 True</div><div class="line">2.4 、修改密码</div><div class="line">使用 set_password() 来修改密码</div><div class="line"></div><div class="line">user = User.objects.get(username=&apos;&apos;)</div><div class="line">user.set_password(password=&apos;&apos;)</div><div class="line">user.save</div></pre></td></tr></table></figure>
+<p>简单示例<br>注册：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">def sign_up(request):</div><div class="line">    state = None</div><div class="line">    if request.method == &apos;POST&apos;:</div><div class="line"> </div><div class="line">        password = request.POST.get(&apos;password&apos;, &apos;&apos;)</div><div class="line">        repeat_password = request.POST.get(&apos;repeat_password&apos;, &apos;&apos;)</div><div class="line">        email=request.POST.get(&apos;email&apos;, &apos;&apos;)</div><div class="line">        username = request.POST.get(&apos;username&apos;, &apos;&apos;)</div><div class="line">        if User.objects.filter(username=username):</div><div class="line">                state = &apos;user_exist&apos;</div><div class="line">        else:</div><div class="line">                new_user = User.objects.create_user(username=username, password=password,email=email)</div><div class="line">                new_user.save()</div><div class="line"> </div><div class="line">                return redirect(&apos;/book/&apos;)</div><div class="line">    content = &#123;</div><div class="line">        &apos;state&apos;: state,</div><div class="line">        &apos;user&apos;: None,</div><div class="line">    &#125;</div><div class="line">    return render(request, &apos;sign_up.html&apos;, content)</div></pre></td></tr></table></figure></p>
+<p>修改密码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">@login_required</div><div class="line">def set_password(request):</div><div class="line">    user = request.user</div><div class="line">    state = None</div><div class="line">    if request.method == &apos;POST&apos;:</div><div class="line">        old_password = request.POST.get(&apos;old_password&apos;, &apos;&apos;)</div><div class="line">        new_password = request.POST.get(&apos;new_password&apos;, &apos;&apos;)</div><div class="line">        repeat_password = request.POST.get(&apos;repeat_password&apos;, &apos;&apos;)</div><div class="line">        if user.check_password(old_password):</div><div class="line">            if not new_password:</div><div class="line">                state = &apos;empty&apos;</div><div class="line">            elif new_password != repeat_password:</div><div class="line">                state = &apos;repeat_error&apos;</div><div class="line">            else:</div><div class="line">                user.set_password(new_password)</div><div class="line">                user.save()</div><div class="line">                return redirect(&quot;/log_in/&quot;)</div><div class="line">        else:</div><div class="line">            state = &apos;password_error&apos;</div><div class="line">    content = &#123;</div><div class="line">        &apos;user&apos;: user,</div><div class="line">        &apos;state&apos;: state,</div><div class="line">    &#125;</div><div class="line">    return render(request, &apos;set_password.html&apos;, content)</div></pre></td></tr></table></figure></p>
+<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7609586.html" target="_blank" rel="external">补充原文</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cjk6q6oly00388yjx3zhg2ngn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-django-19-Cookies-Session" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/08/web-django-19-Cookies-Session/" class="article-date">
+  <time datetime="2017-10-08T12:26:37.000Z" itemprop="datePublished">2017-10-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/08/web-django-19-Cookies-Session/">web-Django-19-Cookies-Session</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>Cookies</li>
+<li>Session</li>
+<li>代码学习</li>
+<li>相关配置</li>
+<li>总结</li>
+</ul>
+<h2 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h2><p>用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。</p>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服务器端，对应一个随机字符串，再把这个随机字符串写入cookies，格式为{“sessionid”:”随机字符串”},问题就得到了解决。</p>
+<h2 id="代码学习"><a href="#代码学习" class="headerlink" title="代码学习"></a>代码学习</h2><p>Cookies 工作特性：<br>在浏览器F12 network-&gt;cookies中首次请求时可以看到 Response Cookies有写入的键值对，下次再访问时Request Cookies有这个键值对，证明此时浏览器会带着这个键值对发给服务器。可以简单用下面代码测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">def ck(request):</div><div class="line">    print(request.COOKIES)   # cookies会封装在request.COOKIES内</div><div class="line">    obj = render(request, &quot;ck.html&quot;, &#123;&quot;msg&quot;: &quot;&quot;&#125;)</div><div class="line">    obj.set_cookie(&apos;user&apos;, &apos;wxq&apos;)  # 向浏览器写入cookies键值对</div><div class="line"></div><div class="line">    return obj</div></pre></td></tr></table></figure></p>
+<p>下面用代码描述Cookies、Session各自工作：<br>login.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt;</div><div class="line">    &#123;%  csrf_token %&#125;</div><div class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;/&gt;</div><div class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;/&gt;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt;&lt;span&gt;&#123;&#123; msg &#125;&#125;&lt;/span&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<p>views.py视图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">from app01 import models</div><div class="line">def login(request):</div><div class="line">    if request.method == &quot;GET&quot;:</div><div class="line">        return  render(request, &apos;login.html&apos;,&#123;&quot;msg&quot;: &quot;&quot;&#125;)</div><div class="line">    else:</div><div class="line">        u = request.POST.get(&quot;username&quot;)</div><div class="line">        p = request.POST.get(&quot;pwd&quot;)</div><div class="line">        v=models.UserInfo.objects.filter(username=u, pwd=p).exists()</div><div class="line">        if v:</div><div class="line"></div><div class="line">            # obj.set_cookie(&quot;user&quot;, u,max_age=5)</div><div class="line">            request.session[&quot;user&quot;] = u</div><div class="line">            request.session[&quot;pwd&quot;] = p</div><div class="line">            return redirect(&quot;/home/&quot;)</div><div class="line">        else:</div><div class="line"></div><div class="line">            return render(request,&quot;login.html&quot;,&#123;&quot;msg&quot;: &quot;用户名或密码错误&quot;&#125;)</div><div class="line"></div><div class="line">def home(request):</div><div class="line">    # v = request.COOKIES.get(&quot;user&quot;)</div><div class="line">    v = request.session.get(&quot;user&quot;)</div><div class="line">    if v:</div><div class="line">        return  HttpResponse(&quot;登录成功&quot;)</div><div class="line">    else:</div><div class="line">        return redirect(&quot;/login/&quot;)</div></pre></td></tr></table></figure></p>
+<h2 id="利用session注销"><a href="#利用session注销" class="headerlink" title="利用session注销"></a>利用session注销</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">def logout(request):</div><div class="line">	&apos;&apos;&apos;</div><div class="line">	obj=HttpResponse(&quot;xxx&quot;)</div><div class="line">	obj.set_cookie(&quot;user&quot;,&quot;name&quot;)   # 设置cookie</div><div class="line">	request.COOKIES.get(&quot;user&quot;)     # 获取cookie</div><div class="line">        obj.delete_cookie(&apos;user&apos;)       # 清除cookie</div><div class="line">	&apos;&apos;&apos;</div><div class="line">    #request.session[&apos;user&apos;] = &apos;wxq&apos; # 设置session</div><div class="line">    #request.session.get(&apos;user&apos;)     # 获取session</div><div class="line">    request.session.clear()          # 清除session</div><div class="line">	return redirect(&quot;/login/&quot;)</div></pre></td></tr></table></figure>
+<h2 id="Cookies、Session相关配置"><a href="#Cookies、Session相关配置" class="headerlink" title="Cookies、Session相关配置"></a>Cookies、Session相关配置</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="external">配置参考</a></p>
+<p>settings.py配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SESSION_ENGINE = &apos;django.contrib.sessions.backends.db&apos;   # 引擎（默认）</div><div class="line"> </div><div class="line">SESSION_COOKIE_NAME ＝ &quot;sessionid&quot;         # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串（默认）</div><div class="line">SESSION_COOKIE_PATH ＝ &quot;/&quot;                 # Session的cookie保存的路径（默认）</div><div class="line">SESSION_COOKIE_DOMAIN = None               # Session的cookie保存的域名（默认）</div><div class="line">SESSION_COOKIE_SECURE = False              # 是否Https传输cookie（默认）</div><div class="line">SESSION_COOKIE_HTTPONLY = True             # 是否Session的cookie只支持http传输（默认）</div><div class="line">SESSION_COOKIE_AGE = 1209600               # Session的cookie失效日期（2周）（默认）</div><div class="line">SESSION_EXPIRE_AT_BROWSER_CLOSE = False    # 是否关闭浏览器使得Session过期（默认）</div><div class="line">SESSION_SAVE_EVERY_REQUEST = True          # 是否每次请求都保存Session，默认修改之后才保存（默认）</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1 cookies是记录在浏览器上的键值对，本身与登录没有任何关系。 cookies信息保存在request.COOKIES.<br>2 session是记录在服务器上的键值对，key是一个随机字符串, session信息保存在request.session字典里的.<br>3 只有Django框架有session 相关的封装,Flask/tornado等其它web框架是没有的，需要自己写Cookies、session.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cjk6q6olx00368yjxfvsh72v5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-orm(三)" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/15/web-django-orm(三)/" class="article-date">
@@ -110,7 +230,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cjk6nwxmm003j4ojx7cex7rit" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cjk6q6ome003o8yjxd85k66qm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -174,7 +294,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjk6nwxj700094ojxzdajb64y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cjk6q6oj8000e8yjxenxdx7ip" class="article-share-link">Share</a>
       
       
     </footer>
@@ -245,7 +365,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjk6nwxju000q4ojxjr93x6t8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjk6q6ojn000v8yjxz152s9rl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -308,7 +428,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjk6nwxjg000d4ojxf94zw16y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjk6q6ojb000i8yjxzqr15gxs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -378,7 +498,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjk6nwxm5002x4ojxcwuehh8f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjk6q6olt00328yjx6oltq1w2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -453,7 +573,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjk6nwxn2003s4ojxe1is3rhk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjk6q6omk003x8yjxa0zla1mo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -520,7 +640,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjk6nwxm3002v4ojx986iq4nq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjk6q6ols00308yjxwkojohhf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -581,145 +701,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjk6nwxls002i4ojx0w4vvvqv" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-orm(二)" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/web-django-orm(二)/" class="article-date">
-  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-django-orm(二)/">web-django-orm(二)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>一对多查询</li>
-<li>多对多查询</li>
-<li>查询优化</li>
-</ul>
-<h2 id="一对多查询"><a href="#一对多查询" class="headerlink" title="一对多查询"></a>一对多查询</h2><h3 id="1-1-创建测试数据"><a href="#1-1-创建测试数据" class="headerlink" title="1.1 创建测试数据"></a>1.1 创建测试数据</h3><p>models.py数据库模型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class DePart(models.Model):</div><div class="line">    title=models.CharField(max_length=32)</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username=models.CharField(max_length=32)</div><div class="line">    pwd=models.CharField(max_length=32)</div><div class="line">    dp = models.ForeignKey(DePart)</div></pre></td></tr></table></figure></p>
-<p>创建测试数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">models.DePart.objects.create(title=&quot;IT&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;咨询&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;公关&quot;)</div><div class="line"></div><div class="line">models.UserInfo.objects.create(username=&quot;user1&quot;,pwd=123,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user2&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user3&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user4&quot;,pwd=456,dp_id=2)</div></pre></td></tr></table></figure></p>
-<p>注：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">p=models.UserInfo.objects.create(username=&apos;wxq&apos;,pwd=123)  # 返回对象本身</div><div class="line">print(p.username,p.pwd)</div></pre></td></tr></table></figure></p>
-<h3 id="1-2-一对多正向查询"><a href="#1-2-一对多正向查询" class="headerlink" title="1.2 一对多正向查询"></a>1.2 一对多正向查询</h3><p>all() 返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.all()</div><div class="line">for row in v:</div><div class="line">    print(row.id,row.title,row.userinfo_set.all())</div></pre></td></tr></table></figure></p>
-<p>values()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># values()每一个字典代表一行数据</div><div class="line"># v = models.UserInfo.objects.values(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</div><div class="line"># for row in v:</div><div class="line">#     print(row[&apos;username&apos;],row[&apos;dp__title&apos;])</div></pre></td></tr></table></figure></p>
-<p>values_list()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># values_list()每一个元组代表一行数据</div><div class="line">v = models.UserInfo.objects.values_list(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</div><div class="line">for row in v:</div><div class="line">    print(row[0],row[2])</div></pre></td></tr></table></figure></p>
-<h3 id="1-3-一对多反向查询"><a href="#1-3-一对多反向查询" class="headerlink" title="1.3  一对多反向查询"></a>1.3  一对多反向查询</h3><p>all()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"> v=models.DePart.objects.all()</div><div class="line">    for row in  v:</div><div class="line">        print(row.id, row.title, row.userinfo_set.all())</div><div class="line">打印结果：</div><div class="line">1 IT &lt;QuerySet [&lt;UserInfo: UserInfo object&gt;, &lt;UserInfo: UserInfo object&gt;, &lt;UserInfo: UserInfo object&gt;]&gt;</div><div class="line">2 咨询 &lt;QuerySet [&lt;UserInfo: UserInfo object&gt;]&gt;</div><div class="line">3 公关 &lt;QuerySet []&gt;</div></pre></td></tr></table></figure></p>
-<p>values()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.values(&apos;title&apos;,&apos;userinfo__username&apos;,&apos;userinfo__dp_id&apos;)</div><div class="line">for row  in v:</div><div class="line">    print(row[&apos;title&apos;],row[&apos;userinfo__username&apos;],row[&apos;userinfo__dp_id&apos;])</div><div class="line">#打印结果</div><div class="line">IT user1 1</div><div class="line">IT user2 1</div><div class="line">IT user3 1</div><div class="line">咨询 user4 2</div><div class="line">公关 None None</div></pre></td></tr></table></figure></p>
-<p>values_list()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.values_list(&apos;title&apos;,&apos;userinfo__username&apos;,&apos;userinfo__dp_id&apos;)</div><div class="line">for row in v:</div><div class="line">    print(row[0],row[1],row[2])</div><div class="line">#打印结果</div><div class="line">IT user1 1</div><div class="line">IT user2 1</div><div class="line">IT user3 1</div><div class="line">咨询 user4 2</div><div class="line">公关 None None</div></pre></td></tr></table></figure></p>
-<h2 id="1-4-总结"><a href="#1-4-总结" class="headerlink" title="1.4 总结"></a>1.4 总结</h2><p>正向查询用字段（这里字段是指外键字段）</p>
-<ul>
-<li>all:   <code>字段+.跨表字段</code></li>
-<li>values:  <code>字段 + __跨表字段</code></li>
-<li>values_list <code>字段+ __跨表字段</code><br>反向查询用表名</li>
-<li>all:   <code>表名小写+_set</code></li>
-<li>values:  <code>表名小写 + __跨表字段</code></li>
-<li>values_list <code>表名小写+ __跨表字段</code></li>
-</ul>
-<p>总结一句话就是： 正向查询用字段，反向查询用表名</p>
-<h2 id="多对多查询"><a href="#多对多查询" class="headerlink" title="多对多查询"></a>多对多查询</h2><h3 id="2-1-多对多自建表"><a href="#2-1-多对多自建表" class="headerlink" title="2.1 多对多自建表"></a>2.1 多对多自建表</h3><p>当我们自己建第三张表时，第三张表列数没有限制，更加灵活，更能满足复杂需求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">表模型</div><div class="line">class UserGroup(models.Model):</div><div class="line">    caption= models.CharField(max_length=32)</div><div class="line"></div><div class="line">class U2G(models.Model):</div><div class="line">    ui = models.ForeignKey(UserInfo)</div><div class="line">    ug =  models.ForeignKey(UserGroup)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">创建测试数据</div><div class="line">models.U2G.objects.create(ui_id=1,ug_id=1)</div><div class="line">models.U2G.objects.create(ui_id=2,ug_id=1)</div><div class="line">models.U2G.objects.create(ui_id=3,ug_id=2)</div><div class="line">models.U2G.objects.create(ui_id=4,ug_id=2)</div><div class="line">v=models.U2G.objects.all()</div><div class="line">for row in v:</div><div class="line">    print(row.ug.caption,row.ui.username)</div><div class="line"># 打印结果</div><div class="line">A组 user1</div><div class="line">A组 user2</div><div class="line">B组 user3</div><div class="line">B组 user4</div></pre></td></tr></table></figure>
-<h3 id="2-2-多对多非自建"><a href="#2-2-多对多非自建" class="headerlink" title="2.2 多对多非自建"></a>2.2 多对多非自建</h3><p>多对多关系<code>Django  ManyToMany</code>帮我们建第三张表时，我们不能对第三张直接操作，并且第三张只有三列（2张表的分别ForeighKey列，自增ID列）。只能通过如下面的<code>ManyToMany</code>字段间接操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#表模型</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username=models.CharField(max_length=32)</div><div class="line">    pwd=models.CharField(max_length=32)</div><div class="line">    dp = models.ForeignKey(&quot;DePart&quot;)</div><div class="line"></div><div class="line">class UserGroup(models.Model):</div><div class="line">    caption= models.CharField(max_length=32)</div><div class="line">    m = models.ManyToManyField(&quot;UserInfo&quot;)</div><div class="line">&apos;&apos;&apos;</div><div class="line">第三张表只有三列</div><div class="line">id   userinfo_id  usergroup_id&apos;</div><div class="line">&apos;&apos;&apos;</div></pre></td></tr></table></figure></p>
-<p>添加几个组做如下增删及更新数据操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">obj = models.UserGroup.objects.filter(id=2).first() #id为2的组是B组</div><div class="line">print(obj.id,obj.caption,obj.m)</div><div class="line">obj.m.add(*[1,2])     #ID为1，2的用户加入B组</div><div class="line"># obj.m.remove(*[1,]) # 删除B组中用户id为1的记录</div><div class="line">obj.m.clear()         # 清除组id为2的所有记录</div><div class="line">obj.m.set([1,])       # 不管id为2的组有几个用户都清空后把用户id为1的加入B组</div></pre></td></tr></table></figure></p>
-<h3 id="2-3-多对多查询"><a href="#2-3-多对多查询" class="headerlink" title="2.3 多对多查询"></a>2.3 多对多查询</h3><p>学习多对多查询<br>注意：first/get返回对象，filter/all/values/values_list返回QuerySet<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">obj=models.UserGroup.objects.filter(id=2).first()  # 得到组对象</div><div class="line">v=obj.m.all()     # obj.m表示UserInfo表</div><div class="line">for row in v:</div><div class="line">    print(row.username, row.dp.title)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">obj=models.UserGroup.objects.filter(id=2).first() # 得到组ID为2的对象</div><div class="line">v=obj.m.filter(dp__title=&quot;IT&quot;).first()  # UserInfo表中查部门为IT的记录</div><div class="line">print(v.username)                       # 打印符合条件的username</div></pre></td></tr></table></figure>
-<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p><code>select_related</code>优化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">user_list=models.UserInfo.objects.all() # 这里是1次sql请求</div><div class="line">for row in user_list: #如果有10条数据,会有10次sql请求</div><div class="line">   print(row.username,row.dp.title)  # 每一次row.dp.title都会跨表查询</div><div class="line">那么返回结果经历了11次sql请求,做select_related优化后只有2次sql请求,其中1次是跨表请求</div><div class="line">models.UserInfo.objects.all().select_related(&quot;ForeighKeyname&quot;)   #优化方法一</div></pre></td></tr></table></figure></p>
-<p><code>prefetch_related</code>优化,推荐用优化方法二<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">models.UserInfo.objects.all().prefetch_related(&quot;ForeighKeyname&quot;) # 优化方法二</div><div class="line">prefetch_related可以分解为models.UserInfo.objects.all()一次单表查询</div><div class="line">取到了ForeighKeyname_id=[1,2,3,4,5] 然后DJango会发起第2次单表查询，</div><div class="line">models.DePart.objects.filter(id__in = [1,2,3,4,5]) 2次单表查询明显轻量了。</div><div class="line"></div><div class="line">#only:只取相应字段，否则性能下降</div><div class="line"># defer:不取相应字段，否则性能下降</div><div class="line">models.UserInfo.objects.all().only(&apos;id&apos;,&apos;name&apos;)  # 只取哪几列</div><div class="line">models.UserInfo.objects.all().defer(&apos;id&apos;,&apos;name&apos;) # 不取哪几列</div></pre></td></tr></table></figure></p>
-<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7552333.html" target="_blank" rel="external">还有更多</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjk6nwxmn003l4ojxwao5kubi" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/git-01/" class="article-date">
-  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>git建版本库</li>
-<li>git别名设置</li>
-<li>git基本配置</li>
-<li>git基本命令</li>
-<li>git分支管理</li>
-</ul>
-<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init # 把当前目录变成git可管理的仓库</div><div class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</div></pre></td></tr></table></figure>
-<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">为命令设置别名</div><div class="line">$ git config --global alias.co checkout</div><div class="line">$ git config --global alias.ci commit</div><div class="line">$ git config --global alias.br branch</div></pre></td></tr></table></figure>
-<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">每台机器自报家门</div><div class="line">$ git config --global user.name &quot;Your Name&quot;</div><div class="line">$ git config --global user.email &quot;email@example.com&quot;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优先级从高到低是</div><div class="line">.git/config--&gt;  --global --&gt; system</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">全局生效: 配置保存在/etc/gitconfig</div><div class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</div><div class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div><div class="line">	email = you@example.com</div><div class="line"></div><div class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">只对某仓库生效：配置保存在reponame/.git/config</div><div class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</div><div class="line">[root@wxq-srv git_work]# cat .git/config </div><div class="line">[core]</div><div class="line">	repositoryformatversion = 0</div><div class="line">	filemode = true</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">[user]</div><div class="line">	name = wxq1</div></pre></td></tr></table></figure>
-<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git log  # 每一次提交的记录</div><div class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</div><div class="line">git reset --hard $commit_id   # 回到指定版本</div><div class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</div><div class="line">git add index.html   # 添加更改至state暂存	区</div><div class="line">git reset HEAD index.html  # unstage 退出暂存区</div><div class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</div></pre></td></tr></table></figure>
-<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
-<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看分支：git branch</div><div class="line">创建分支：git branch &lt;name&gt;</div><div class="line">切换分支：git checkout &lt;name&gt;</div><div class="line">创建+切换分支：git checkout -b &lt;name&gt;</div><div class="line">合并某分支到当前分支：git merge &lt;name&gt;</div><div class="line">删除分支：git branch -d &lt;name&gt;</div></pre></td></tr></table></figure>
-<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjk6nwxjl000i4ojx7z1ynji4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjk6q6oli002n8yjxgmt392r4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -745,7 +727,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
     </div>
   </div>
 
@@ -760,7 +742,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -773,6 +755,14 @@
       <ul>
         
           <li>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+          </li>
+        
+          <li>
             <a href="/2018/05/29/shell-func/">shell function语法</a>
           </li>
         
@@ -782,14 +772,6 @@
         
           <li>
             <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
           </li>
         
       </ul>

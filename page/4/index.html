@@ -61,6 +61,83 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-orm(二)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/web-django-orm(二)/" class="article-date">
+  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/web-django-orm(二)/">web-django-orm(二)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>一对多查询</li>
+<li>多对多查询</li>
+<li>查询优化</li>
+</ul>
+<h2 id="一对多查询"><a href="#一对多查询" class="headerlink" title="一对多查询"></a>一对多查询</h2><h3 id="1-1-创建测试数据"><a href="#1-1-创建测试数据" class="headerlink" title="1.1 创建测试数据"></a>1.1 创建测试数据</h3><p>models.py数据库模型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class DePart(models.Model):</div><div class="line">    title=models.CharField(max_length=32)</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username=models.CharField(max_length=32)</div><div class="line">    pwd=models.CharField(max_length=32)</div><div class="line">    dp = models.ForeignKey(DePart)</div></pre></td></tr></table></figure></p>
+<p>创建测试数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">models.DePart.objects.create(title=&quot;IT&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;咨询&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;公关&quot;)</div><div class="line"></div><div class="line">models.UserInfo.objects.create(username=&quot;user1&quot;,pwd=123,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user2&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user3&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user4&quot;,pwd=456,dp_id=2)</div></pre></td></tr></table></figure></p>
+<p>注：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">p=models.UserInfo.objects.create(username=&apos;wxq&apos;,pwd=123)  # 返回对象本身</div><div class="line">print(p.username,p.pwd)</div></pre></td></tr></table></figure></p>
+<h3 id="1-2-一对多正向查询"><a href="#1-2-一对多正向查询" class="headerlink" title="1.2 一对多正向查询"></a>1.2 一对多正向查询</h3><p>all() 返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.all()</div><div class="line">for row in v:</div><div class="line">    print(row.id,row.title,row.userinfo_set.all())</div></pre></td></tr></table></figure></p>
+<p>values()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># values()每一个字典代表一行数据</div><div class="line"># v = models.UserInfo.objects.values(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</div><div class="line"># for row in v:</div><div class="line">#     print(row[&apos;username&apos;],row[&apos;dp__title&apos;])</div></pre></td></tr></table></figure></p>
+<p>values_list()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># values_list()每一个元组代表一行数据</div><div class="line">v = models.UserInfo.objects.values_list(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</div><div class="line">for row in v:</div><div class="line">    print(row[0],row[2])</div></pre></td></tr></table></figure></p>
+<h3 id="1-3-一对多反向查询"><a href="#1-3-一对多反向查询" class="headerlink" title="1.3  一对多反向查询"></a>1.3  一对多反向查询</h3><p>all()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"> v=models.DePart.objects.all()</div><div class="line">    for row in  v:</div><div class="line">        print(row.id, row.title, row.userinfo_set.all())</div><div class="line">打印结果：</div><div class="line">1 IT &lt;QuerySet [&lt;UserInfo: UserInfo object&gt;, &lt;UserInfo: UserInfo object&gt;, &lt;UserInfo: UserInfo object&gt;]&gt;</div><div class="line">2 咨询 &lt;QuerySet [&lt;UserInfo: UserInfo object&gt;]&gt;</div><div class="line">3 公关 &lt;QuerySet []&gt;</div></pre></td></tr></table></figure></p>
+<p>values()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.values(&apos;title&apos;,&apos;userinfo__username&apos;,&apos;userinfo__dp_id&apos;)</div><div class="line">for row  in v:</div><div class="line">    print(row[&apos;title&apos;],row[&apos;userinfo__username&apos;],row[&apos;userinfo__dp_id&apos;])</div><div class="line">#打印结果</div><div class="line">IT user1 1</div><div class="line">IT user2 1</div><div class="line">IT user3 1</div><div class="line">咨询 user4 2</div><div class="line">公关 None None</div></pre></td></tr></table></figure></p>
+<p>values_list()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.values_list(&apos;title&apos;,&apos;userinfo__username&apos;,&apos;userinfo__dp_id&apos;)</div><div class="line">for row in v:</div><div class="line">    print(row[0],row[1],row[2])</div><div class="line">#打印结果</div><div class="line">IT user1 1</div><div class="line">IT user2 1</div><div class="line">IT user3 1</div><div class="line">咨询 user4 2</div><div class="line">公关 None None</div></pre></td></tr></table></figure></p>
+<h2 id="1-4-总结"><a href="#1-4-总结" class="headerlink" title="1.4 总结"></a>1.4 总结</h2><p>正向查询用字段（这里字段是指外键字段）</p>
+<ul>
+<li>all:   <code>字段+.跨表字段</code></li>
+<li>values:  <code>字段 + __跨表字段</code></li>
+<li>values_list <code>字段+ __跨表字段</code><br>反向查询用表名</li>
+<li>all:   <code>表名小写+_set</code></li>
+<li>values:  <code>表名小写 + __跨表字段</code></li>
+<li>values_list <code>表名小写+ __跨表字段</code></li>
+</ul>
+<p>总结一句话就是： 正向查询用字段，反向查询用表名</p>
+<h2 id="多对多查询"><a href="#多对多查询" class="headerlink" title="多对多查询"></a>多对多查询</h2><h3 id="2-1-多对多自建表"><a href="#2-1-多对多自建表" class="headerlink" title="2.1 多对多自建表"></a>2.1 多对多自建表</h3><p>当我们自己建第三张表时，第三张表列数没有限制，更加灵活，更能满足复杂需求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">表模型</div><div class="line">class UserGroup(models.Model):</div><div class="line">    caption= models.CharField(max_length=32)</div><div class="line"></div><div class="line">class U2G(models.Model):</div><div class="line">    ui = models.ForeignKey(UserInfo)</div><div class="line">    ug =  models.ForeignKey(UserGroup)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">创建测试数据</div><div class="line">models.U2G.objects.create(ui_id=1,ug_id=1)</div><div class="line">models.U2G.objects.create(ui_id=2,ug_id=1)</div><div class="line">models.U2G.objects.create(ui_id=3,ug_id=2)</div><div class="line">models.U2G.objects.create(ui_id=4,ug_id=2)</div><div class="line">v=models.U2G.objects.all()</div><div class="line">for row in v:</div><div class="line">    print(row.ug.caption,row.ui.username)</div><div class="line"># 打印结果</div><div class="line">A组 user1</div><div class="line">A组 user2</div><div class="line">B组 user3</div><div class="line">B组 user4</div></pre></td></tr></table></figure>
+<h3 id="2-2-多对多非自建"><a href="#2-2-多对多非自建" class="headerlink" title="2.2 多对多非自建"></a>2.2 多对多非自建</h3><p>多对多关系<code>Django  ManyToMany</code>帮我们建第三张表时，我们不能对第三张直接操作，并且第三张只有三列（2张表的分别ForeighKey列，自增ID列）。只能通过如下面的<code>ManyToMany</code>字段间接操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#表模型</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username=models.CharField(max_length=32)</div><div class="line">    pwd=models.CharField(max_length=32)</div><div class="line">    dp = models.ForeignKey(&quot;DePart&quot;)</div><div class="line"></div><div class="line">class UserGroup(models.Model):</div><div class="line">    caption= models.CharField(max_length=32)</div><div class="line">    m = models.ManyToManyField(&quot;UserInfo&quot;)</div><div class="line">&apos;&apos;&apos;</div><div class="line">第三张表只有三列</div><div class="line">id   userinfo_id  usergroup_id&apos;</div><div class="line">&apos;&apos;&apos;</div></pre></td></tr></table></figure></p>
+<p>添加几个组做如下增删及更新数据操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">obj = models.UserGroup.objects.filter(id=2).first() #id为2的组是B组</div><div class="line">print(obj.id,obj.caption,obj.m)</div><div class="line">obj.m.add(*[1,2])     #ID为1，2的用户加入B组</div><div class="line"># obj.m.remove(*[1,]) # 删除B组中用户id为1的记录</div><div class="line">obj.m.clear()         # 清除组id为2的所有记录</div><div class="line">obj.m.set([1,])       # 不管id为2的组有几个用户都清空后把用户id为1的加入B组</div></pre></td></tr></table></figure></p>
+<h3 id="2-3-多对多查询"><a href="#2-3-多对多查询" class="headerlink" title="2.3 多对多查询"></a>2.3 多对多查询</h3><p>学习多对多查询<br>注意：first/get返回对象，filter/all/values/values_list返回QuerySet<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">obj=models.UserGroup.objects.filter(id=2).first()  # 得到组对象</div><div class="line">v=obj.m.all()     # obj.m表示UserInfo表</div><div class="line">for row in v:</div><div class="line">    print(row.username, row.dp.title)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">obj=models.UserGroup.objects.filter(id=2).first() # 得到组ID为2的对象</div><div class="line">v=obj.m.filter(dp__title=&quot;IT&quot;).first()  # UserInfo表中查部门为IT的记录</div><div class="line">print(v.username)                       # 打印符合条件的username</div></pre></td></tr></table></figure>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p><code>select_related</code>优化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">user_list=models.UserInfo.objects.all() # 这里是1次sql请求</div><div class="line">for row in user_list: #如果有10条数据,会有10次sql请求</div><div class="line">   print(row.username,row.dp.title)  # 每一次row.dp.title都会跨表查询</div><div class="line">那么返回结果经历了11次sql请求,做select_related优化后只有2次sql请求,其中1次是跨表请求</div><div class="line">models.UserInfo.objects.all().select_related(&quot;ForeighKeyname&quot;)   #优化方法一</div></pre></td></tr></table></figure></p>
+<p><code>prefetch_related</code>优化,推荐用优化方法二<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">models.UserInfo.objects.all().prefetch_related(&quot;ForeighKeyname&quot;) # 优化方法二</div><div class="line">prefetch_related可以分解为models.UserInfo.objects.all()一次单表查询</div><div class="line">取到了ForeighKeyname_id=[1,2,3,4,5] 然后DJango会发起第2次单表查询，</div><div class="line">models.DePart.objects.filter(id__in = [1,2,3,4,5]) 2次单表查询明显轻量了。</div><div class="line"></div><div class="line">#only:只取相应字段，否则性能下降</div><div class="line"># defer:不取相应字段，否则性能下降</div><div class="line">models.UserInfo.objects.all().only(&apos;id&apos;,&apos;name&apos;)  # 只取哪几列</div><div class="line">models.UserInfo.objects.all().defer(&apos;id&apos;,&apos;name&apos;) # 不取哪几列</div></pre></td></tr></table></figure></p>
+<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7552333.html" target="_blank" rel="external">还有更多</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjk6q6omg003q8yjxwa7br8lm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/15/linux-iptables应用/" class="article-date">
@@ -98,7 +175,68 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjk6nwxjy000u4ojx5y83g2a3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjk6q6ojq000z8yjxjuylkell" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/git-01/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>git建版本库</li>
+<li>git别名设置</li>
+<li>git基本配置</li>
+<li>git基本命令</li>
+<li>git分支管理</li>
+</ul>
+<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init # 把当前目录变成git可管理的仓库</div><div class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</div></pre></td></tr></table></figure>
+<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">为命令设置别名</div><div class="line">$ git config --global alias.co checkout</div><div class="line">$ git config --global alias.ci commit</div><div class="line">$ git config --global alias.br branch</div></pre></td></tr></table></figure>
+<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">每台机器自报家门</div><div class="line">$ git config --global user.name &quot;Your Name&quot;</div><div class="line">$ git config --global user.email &quot;email@example.com&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优先级从高到低是</div><div class="line">.git/config--&gt;  --global --&gt; system</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">全局生效: 配置保存在/etc/gitconfig</div><div class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</div><div class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </div><div class="line">[user]</div><div class="line">	name = wxq</div><div class="line">	email = you@example.com</div><div class="line"></div><div class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</div><div class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">只对某仓库生效：配置保存在reponame/.git/config</div><div class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</div><div class="line">[root@wxq-srv git_work]# cat .git/config </div><div class="line">[core]</div><div class="line">	repositoryformatversion = 0</div><div class="line">	filemode = true</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">[user]</div><div class="line">	name = wxq1</div></pre></td></tr></table></figure>
+<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git log  # 每一次提交的记录</div><div class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</div><div class="line">git reset --hard $commit_id   # 回到指定版本</div><div class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</div><div class="line">git add index.html   # 添加更改至state暂存	区</div><div class="line">git reset HEAD index.html  # unstage 退出暂存区</div><div class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</div></pre></td></tr></table></figure>
+<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
+<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看分支：git branch</div><div class="line">创建分支：git branch &lt;name&gt;</div><div class="line">切换分支：git checkout &lt;name&gt;</div><div class="line">创建+切换分支：git checkout -b &lt;name&gt;</div><div class="line">合并某分支到当前分支：git merge &lt;name&gt;</div><div class="line">删除分支：git branch -d &lt;name&gt;</div></pre></td></tr></table></figure>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjk6q6ojg000n8yjxat2ttt5d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -159,7 +297,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjk6nwxk700134ojxgwxhz8vm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjk6q6ok000188yjxzluhqk0x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -225,7 +363,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjk6nwxin00004ojxr4sj5ucq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjk6q6oil00008yjxwyqtara2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -301,7 +439,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjk6nwxjc000b4ojxb2p4m4n3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjk6q6oja000g8yjx89i5j32q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -346,7 +484,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjk6nwxm1002t4ojxioz1t7p0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjk6q6olp002w8yjxqf6f3dci" class="article-share-link">Share</a>
       
       
     </footer>
@@ -397,7 +535,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjk6nwxlh00274ojxricmqrqs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjk6q6ola002c8yjxgp8ilybe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -448,7 +586,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjk6nwxjw000s4ojxdtbg5fhl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjk6q6ojp000x8yjxaw1ibasv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -510,123 +648,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjk6nwxk400114ojxdktc289p" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
-</ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</div></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</div><div class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</div></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">from django.urls import reverse</div><div class="line">def login(request):</div><div class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</div><div class="line">    return redirect(url)</div></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</div></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</div></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjk6nwxlz002r4ojxjmyqweey" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-02-基本配置示例" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-02-基本配置示例/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-02-基本配置示例/">web-Django-02-基本配置示例</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-django安装"><a href="#1-django安装" class="headerlink" title="1 django安装"></a>1 django安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install django pymysql</div></pre></td></tr></table></figure>
-<h3 id="2-新建django-project"><a href="#2-新建django-project" class="headerlink" title="2 新建django project"></a>2 新建django project</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">django-admin.py startproject mysite  或用pycharm新建一个项目</div></pre></td></tr></table></figure>
-<h3 id="3-该项目下创建一个应用"><a href="#3-该项目下创建一个应用" class="headerlink" title="3 该项目下创建一个应用"></a>3 该项目下创建一个应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd mysite &amp;&amp; python manage.py startapp  app01</div></pre></td></tr></table></figure>
-<h3 id="4-配置Django"><a href="#4-配置Django" class="headerlink" title="4 配置Django"></a>4 配置Django</h3><p>settings.py文件确保有下面代码，用于在static目录放置静态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">STATIC_URL = &apos;/static/&apos;</div><div class="line">STATICFILES_DIRS= (</div><div class="line">    os.path.join(BASE_DIR, &apos;static&apos;),</div><div class="line">)</div></pre></td></tr></table></figure></p>
-<p>确保INSTALLED_APPS = []有app01,应用</p>
-<h3 id="5-Django-mysql配置"><a href="#5-Django-mysql配置" class="headerlink" title="5 Django mysql配置"></a>5 Django mysql配置</h3><p>settings.py文件确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">    &apos;default&apos;: &#123;</div><div class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</div><div class="line">        &apos;NAME&apos;: &apos;wxq_db&apos;,</div><div class="line">        &apos;USER&apos;: &apos;root&apos;,</div><div class="line">        &apos;PASSWORD&apos;: &apos;123&apos;,</div><div class="line">        &apos;HOST&apos;: &apos;localhost&apos;,</div><div class="line">        &apos;PORT&apos;: &apos;3306&apos;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>app01下 <strong>init</strong>.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">import pymysql</div><div class="line">pymysql.install_as_MySQLdb()</div></pre></td></tr></table></figure></p>
-<p>对于初学者建议配置此项，用于打印orm翻译后的sql语后，便于对照学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">LOGGING = &#123;</div><div class="line">    &apos;version&apos;: 1,</div><div class="line">    &apos;disable_existing_loggers&apos;: False,</div><div class="line">    &apos;handlers&apos;: &#123;</div><div class="line">        &apos;console&apos;:&#123;</div><div class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</div><div class="line">            &apos;class&apos;:&apos;logging.StreamHandler&apos;,</div><div class="line">        &#125;,</div><div class="line">    &#125;,</div><div class="line">    &apos;loggers&apos;: &#123;</div><div class="line">        &apos;django.db.backends&apos;: &#123;</div><div class="line">            &apos;handlers&apos;: [&apos;console&apos;],</div><div class="line">            &apos;propagate&apos;: True,</div><div class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</div><div class="line">        &#125;,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="6-django生成数据"><a href="#6-django生成数据" class="headerlink" title="6 django生成数据"></a>6 django生成数据</h3><p>models.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username = models.CharField(max_length=32)</div><div class="line">    password = models.CharField(max_length=32)</div><div class="line">    email = models.CharField(max_length=32)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations</div><div class="line">python manage.py migrate</div></pre></td></tr></table></figure>
-<h3 id="7-urls-py定义"><a href="#7-urls-py定义" class="headerlink" title="7  urls.py定义"></a>7  urls.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">from app01 import views</div><div class="line">urlpatterns = [</div><div class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</div><div class="line">    url(r&apos;^users/$&apos;, views.users),</div><div class="line">    # url(r&apos;^create_data/&apos;, views.create_data),</div><div class="line">]</div></pre></td></tr></table></figure>
-<h3 id="8-views-py定义"><a href="#8-views-py定义" class="headerlink" title="8 views.py定义"></a>8 views.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">from django.shortcuts import render,HttpResponse, redirect</div><div class="line">from app01 import models</div><div class="line"></div><div class="line">def create_data(request):</div><div class="line">    for i in range(1,104):</div><div class="line">        models.UserInfo.objects.create(</div><div class="line">            username = &quot;root%s&quot; %i,</div><div class="line">            password = &quot;123&quot;,</div><div class="line">            email = &quot;root%s@qq.com&quot; %i,</div><div class="line">    )</div><div class="line">    return HttpResponse(&quot;data generate...&quot;)</div><div class="line"></div><div class="line">def users(request):</div><div class="line">    user_list = models.UserInfo.objects.all()</div><div class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;user_list &apos;:user_list &#125;)</div></pre></td></tr></table></figure>
-<h3 id="9-templates-users-html定义"><a href="#9-templates-users-html定义" class="headerlink" title="9 templates/users.html定义"></a>9 templates/users.html定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html lang=&quot;en&quot;&gt;</div><div class="line">&lt;head&gt;</div><div class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</div><div class="line">    &lt;title&gt;Title&lt;/title&gt;</div><div class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/static/bootstrap-3.3.7-dist/css/bootstrap.css&quot;&gt;</div><div class="line"></div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">    &lt;div style=&quot;width: 700px; margin: 10px     auto&quot;&gt;</div><div class="line">    &lt;h1&gt;用户列表&lt;/h1&gt;</div><div class="line">    &lt;table class=&quot;table table-hover table-bordered&quot;&gt;</div><div class="line">        &lt;thead&gt;</div><div class="line">            &lt;tr&gt;</div><div class="line">                &lt;th&gt; 用户名&lt;/th&gt;</div><div class="line">                &lt;th&gt; 密码&lt;/th&gt;</div><div class="line">                &lt;th&gt;邮箱&lt;/th&gt;</div><div class="line">            &lt;/tr&gt;</div><div class="line">        &lt;/thead&gt;</div><div class="line">    </div><div class="line">        &lt;tbody&gt;</div><div class="line">            &#123;% for user in page_obj.object_list  %&#125;</div><div class="line">                &lt;tr&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.username &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.password &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; user.email &#125;&#125;&lt;/td&gt;</div><div class="line">                &lt;/tr&gt;</div><div class="line">            &#123;% endfor %&#125;</div><div class="line">    </div><div class="line">        &lt;/tbody&gt;</div><div class="line">    &lt;/table&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
-<h3 id="10-注意bootstrap应用"><a href="#10-注意bootstrap应用" class="headerlink" title="10 注意bootstrap应用"></a>10 注意bootstrap应用</h3><p><a href="http://v3.bootcss.com/getting-started/#download" target="_blank" rel="external">bootstrap下载链接</a></p>
-<h3 id="11-启动项目"><a href="#11-启动项目" class="headerlink" title="11 启动项目"></a>11 启动项目</h3><p>运行项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py runserver 127.0.0.1:8000</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjk6nwxlx002p4ojxndieioir" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjk6q6ojy00168yjx4seetve8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -652,7 +674,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
     </div>
   </div>
 
@@ -667,7 +689,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -680,6 +702,14 @@
       <ul>
         
           <li>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+          </li>
+        
+          <li>
             <a href="/2018/05/29/shell-func/">shell function语法</a>
           </li>
         
@@ -689,14 +719,6 @@
         
           <li>
             <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
           </li>
         
       </ul>
