@@ -61,6 +61,92 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-05-01-列表解析-生成器-迭代器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/18/python-05-01-列表解析-生成器-迭代器/" class="article-date">
+  <time datetime="2017-02-18T02:53:38.000Z" itemprop="datePublished">2017-02-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/18/python-05-01-列表解析-生成器-迭代器/">python-05-01-列表解析_生成器_迭代器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>列表解析</li>
+<li>生成器</li>
+<li>迭代器</li>
+</ul>
+<h2 id="列表解析"><a href="#列表解析" class="headerlink" title="列表解析"></a>列表解析</h2><p>什么是列表解析？<br>定义： 基于一个列表生成另外一个列表，或动态生成一个列表。<br>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [26]: [ i ** 2 for i in range(2,8)]    # 对原列表乘以2</div><div class="line">Out[26]: [4, 9, 16, 25, 36, 49]</div><div class="line"></div><div class="line">In [25]: [ i for i in range(1,10) if i % 2 ]  # 对原列表取奇数</div><div class="line">Out[25]: [1, 3, 5, 7, 9]</div></pre></td></tr></table></figure></p>
+<p>练习1： 有如下文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># cat word.txt</div><div class="line">render practice inventory  indent accelerate,</div><div class="line">trigger status,wxq.</div></pre></td></tr></table></figure></p>
+<p>我们计算<code>word.txt</code>单词个数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">In [29]: f = open(&apos;/root/word.txt&apos;, &apos;r&apos;)</div><div class="line">In [31]: word_list = [ word for line in f for word in line.split() ]</div><div class="line"></div><div class="line">In [36]: print(word_list)</div><div class="line">[&apos;render&apos;, &apos;practice&apos;, &apos;inventory&apos;, &apos;indent&apos;, &apos;accelerate,&apos;, &apos;trigger&apos;, &apos;status,wxq.&apos;]</div><div class="line"></div><div class="line">In [37]: f.seek(0)       # 上面读取过文件，指针己然在最后了，这里是把指针移到文件首部</div><div class="line">Out[37]: 0</div><div class="line"></div><div class="line">In [38]: len([ word for line in f for word in line.split() ])  # 计算结果为7</div><div class="line">Out[38]: 7</div></pre></td></tr></table></figure></p>
+<p>我们计算<code>word.txt</code>非空白字符数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">In [37]: f.seek(0)       # 把指针移到文件首部</div><div class="line">Out[37]: 0</div><div class="line"></div><div class="line">In [41]: sum([ len(word) for line in f for word in line.split() ])</div><div class="line">Out[41]: 58</div></pre></td></tr></table></figure></p>
+<p>练习2： 打印一个3行5列的矩阵<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">In [45]: list1 = [ (x+1, y+1) for x in range(3) for y in range(5) ]</div><div class="line">In [47]: print(list1)</div><div class="line">[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5)]</div></pre></td></tr></table></figure></p>
+<p>练习3：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; d = &#123;&apos;x&apos;: &apos;A&apos;, &apos;y&apos;: &apos;B&apos;, &apos;z&apos;: &apos;C&apos; &#125;</div><div class="line">&gt;&gt;&gt; [k + &apos;=&apos; + v for k, v in d.items()]</div><div class="line">[&apos;y=B&apos;, &apos;x=A&apos;, &apos;z=C&apos;]</div></pre></td></tr></table></figure></p>
+<p>练习4：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">In [61]: L = [&apos;I&apos;, &apos;WILL&apos;, &apos;STUDY&apos;, &apos;HARD&apos;, &apos;PYTHON&apos;]</div><div class="line"></div><div class="line">In [62]: [ s.capitalize() for s in L ]</div><div class="line">Out[62]: [&apos;I&apos;, &apos;Will&apos;, &apos;Study&apos;, &apos;Hard&apos;, &apos;Python&apos;]</div></pre></td></tr></table></figure></p>
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><p>列表解析会创建完整列表占用内存，那么有没有一种算法或机制让我们循环使用时推算出后续元素，这样节省了内存空间。<br>定义：这种边循环边计算的机制，称为生成器<code>generator</code></p>
+<p>创建一个生成器，其中一个方法就是把前面的列表解析[] 换成()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">In [107]: g = (i for i in range(4))</div><div class="line"></div><div class="line">In [108]: g</div><div class="line">Out[108]: &lt;generator object &lt;genexpr&gt; at 0x7f98a27ba150&gt;</div><div class="line"></div><div class="line">In [117]: g.send(None)    </div><div class="line">Out[117]: 0</div><div class="line"></div><div class="line">In [118]: g.send(None)</div><div class="line">Out[118]: 1</div><div class="line"></div><div class="line">In [119]: next(g)</div><div class="line">Out[119]: 2</div><div class="line"></div><div class="line">In [120]: next(g)</div><div class="line">Out[120]: 3</div><div class="line"></div><div class="line">In [122]: next(g)</div><div class="line">---------------------------------------------------------------------------</div><div class="line">StopIteration                             Traceback (most recent call last)</div><div class="line">&lt;ipython-input-122-5f315c5de15b&gt; in &lt;module&gt;()</div><div class="line">----&gt; 1 next(g)</div><div class="line"></div><div class="line">StopIteration:</div></pre></td></tr></table></figure></p>
+<p>利用<code>yield</code>创建一个生成器，取出完整元素需要用for 循环来迭代<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">In [123]: def genNum(x):</div><div class="line">   .....:     i = 0</div><div class="line">   .....:     while i &lt; x:</div><div class="line">   .....:         yield i</div><div class="line">   .....:         i += 1      </div><div class="line"></div><div class="line">In [124]: g = genNum(5)</div><div class="line">In [136]: for i in g:</div><div class="line">   .....:     print(i, end=&apos; &apos;)</div><div class="line">   .....:     </div><div class="line">0 1 2 3 4</div></pre></td></tr></table></figure></p>
+<p> 来看一下<code>yield</code>工作细节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">In [138]: def consumer():</div><div class="line">   .....:     print(&quot;yield starting&quot;)</div><div class="line">   .....:     m = yield 5</div><div class="line">   .....:     print(&quot;m_values: %s&quot; % m)</div><div class="line">   .....:     n = yield 12</div><div class="line">   .....:     print(&quot;Game over&quot;)</div><div class="line">   .....:     </div><div class="line"></div><div class="line">In [139]: c = consumer()</div><div class="line"></div><div class="line">In [140]: c.send(None)</div><div class="line">yield starting</div><div class="line">Out[140]: 5</div><div class="line"></div><div class="line">In [141]: c.send(&apos;to be brave&apos;)</div><div class="line">m_values: to be brave</div><div class="line">Out[141]: 12</div></pre></td></tr></table></figure></p>
+<p>小结:</p>
+<ul>
+<li>c.send(None)遇到第一个yield停止，在解释器中out yield中的值，在python  yield.py却不会.</li>
+<li>c.send(‘to be brave’)会上次中止处继续，’to be brave’会赋值给yield 5,即m = ‘to be brave’, 遇到第二个yield停止.</li>
+<li>g.send(None)启动迭代器，遇到第一个yield返回.<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">root@apt:~/script_study# cat yield.py </div><div class="line">#!/usr/bin/env python3</div><div class="line">#</div><div class="line">def h():  </div><div class="line">    print(&quot;yield starting&quot;)  </div><div class="line">    m = yield 5</div><div class="line">    print(&quot;m_values: %s&quot; % m)</div><div class="line">    d = yield 12  </div><div class="line">    print(&apos;Game over&apos;)  </div><div class="line">c = h()</div><div class="line"># print test info</div><div class="line">c.send(None)</div><div class="line">c.send(&apos;Fighting!&apos;)</div><div class="line"></div><div class="line">root@apt:~/script_study# python3 yield.py </div><div class="line">yield starting</div><div class="line">m_values: Fighting!</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>后面协程正是用的这个知识点。</p>
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p>细心的朋友不难发现生成器可以被next()函数不断调用并返回下一个值，直到最后抛出StopIteration错误表示无法继续返回下一个值为止。</p>
+<ul>
+<li>可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator</li>
+<li>可以直接作用于for循环的对象统称为可迭代对象：Iterable</li>
+</ul>
+<p>哪些是可迭代对象呢？或说可作用于for循环呢？有以下几种数据类型：</p>
+<p>一类是集合数据类型，如list、tuple、dict、set、str等；</p>
+<p>一类是generator，包括生成器和带yield的generator function。</p>
+<p>可以使用isinstance()判断一个对象是否是Iterable对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from collections import Iterable</div><div class="line">&gt;&gt;&gt; isinstance([], Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(&#123;&#125;, Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(&apos;abc&apos;, Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance((x for x in range(10)), Iterable)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(100, Iterable)</div><div class="line">False</div></pre></td></tr></table></figure></p>
+<p>可以使用isinstance()判断一个对象是否是Iterator对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from collections import Iterator</div><div class="line">&gt;&gt;&gt; isinstance((x for x in range(10)), Iterator)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance([], Iterator)</div><div class="line">False</div><div class="line">&gt;&gt;&gt; isinstance(&#123;&#125;, Iterator)</div><div class="line">False</div><div class="line">&gt;&gt;&gt; isinstance(&apos;abc&apos;, Iterator)</div><div class="line">False</div></pre></td></tr></table></figure></p>
+<p>生成器都是Iterator对象，但list、dict、str虽然是Iterable，却不是Iterator。</p>
+<p>把list、dict、str等Iterable变成Iterator可以使用iter()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; isinstance(iter([]), Iterator)</div><div class="line">True</div><div class="line">&gt;&gt;&gt; isinstance(iter(&apos;abc&apos;), Iterator)</div><div class="line">True</div></pre></td></tr></table></figure></p>
+<p>为什么list、dict、str等数据类型不是Iterator 呢？</p>
+<p>这是因为Python的Iterator对象表示的是一个数据流，Iterator对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误。可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过next()函数实现按需计算下一个数据，所以Iterator的计算是惰性的，只有在需要返回下一个数据时它才会计算。</p>
+<p><code>Iterator</code>甚至可以表示一个无限大的数据流，例如全体自然数。而使用list是永远不可能存储全体自然数的。</p>
+<p>Python的for循环本质上就是通过不断调用next()函数实现的，例如：</p>
+<p>for x in [1, 2, 3, 4, 5]:<br>    pass<br>实际上完全等价于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># 首先获得Iterator对象:</div><div class="line">it = iter([1, 2, 3, 4, 5])</div><div class="line"># 循环:</div><div class="line">while True:</div><div class="line">    try:</div><div class="line">        # 获得下一个值:</div><div class="line">        x = next(it)</div><div class="line">    except StopIteration:</div><div class="line">        # 遇到StopIteration就退出循环</div><div class="line">        break</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">凡是可作用于for循环的对象都是Iterable类型；</div><div class="line">凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；</div><div class="line">集合数据类型如list、dict、str等是Iterable但不是Iterator，不过可以通过iter()函数获得一个Iterator对象。</div><div class="line"></div><div class="line">迭代器：能够作用于next()函数，不断向后返回值，称为迭代器 iter([1,2,3,4])</div><div class="line">生成器：yield返回，并且可以next(),是一种特殊的迭代器</div><div class="line">可迭代对象：一个类中有__iter__()方法，并返回迭代器(包括生成器),那么这个类的对象就是可迭代对象，可for循环</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjk6nq7ql001j1ijxymvp7g00" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-01-开发入门" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/02/15/web-01-开发入门/" class="article-date">
@@ -123,7 +209,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjitmufut002e4vjxzkeohdo3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjk6nq7rp002l1ijxgxj2ewsb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -209,7 +295,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjitmuftz001f4vjxy3mh2lb9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjk6nq7qi001h1ijxytwosdx5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjitmufur002a4vjxnld36n17" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjk6nq7rf00291ijxtmnol8dh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -350,7 +436,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjitmufto00134vjx65s3s2vc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjk6nq7q700151ijxrd8dhl8m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -604,7 +690,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjitmufty001d4vjxi09tcrfb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjk6nq7qh001f1ijxikxt79n3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -675,7 +761,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjitmuftv001b4vjxw7417a2m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjk6nq7qg001d1ijxz5q11bkq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -742,7 +828,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjitmuftt00194vjx40aqkffc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjk6nq7qd001b1ijxhtidrw4f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -813,7 +899,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="cjitmuftr00174vjxvkqxsy0z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="cjk6nq7qb00191ijxv5vieoh8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -950,52 +1036,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="cjitmuftp00154vjxhvrbadwl" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-PyCharm基本使用-01" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/05/PyCharm基本使用-01/" class="article-date">
-  <time datetime="2017-01-05T02:37:13.000Z" itemprop="datePublished">2017-01-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/05/PyCharm基本使用-01/">PyCharm基本使用-01</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><p>More info: 参考官网  <a href="http://www.jetbrains.com/pycharm/download/#section=windows" target="_blank" rel="external">下载</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">1 在Pycharm为你的python项目配置python解释器</div><div class="line">	 Project当前项目名为&gt;&gt;Project Interpreter &gt;&gt; add Local</div><div class="line">2 在Pycharm下创建Python 文件，Python模块</div><div class="line">	 File&gt;&gt;New&gt;&gt;Python file</div><div class="line">	 File &gt;&gt; New &gt;&gt; Python Package</div><div class="line">3 使用Pycharm安装python 三方模块</div><div class="line">	Project 当前项目名&gt;&gt;  Project Interpreter &gt;&gt; 点击右侧绿色小加号</div><div class="line">4  Pycharm基本设置，例如不使用tab, tab=4空格，字体，字体颜色，主题，脚本设置，显示行号等，</div><div class="line">	如何导出入导入自定义设置</div><div class="line">	1 不使用tab,tab=4空格：Editor&gt;&gt;Code Style&gt;&gt;python</div><div class="line">	2 字体，字体颜色：Editor&gt; Color&amp;Fronts &gt;&gt; python</div><div class="line">	3 关闭自动更新：Apperance&amp; Behavior &gt; System Setting &gt;&gt; Updates</div><div class="line">	4 脚本关设置: Editor&gt;&gt; File and Code Templates &gt;&gt; Python Script 注：其它类似</div><div class="line">	5 显示行号： Editor&gt;&gt; Geratal &gt;&gt; Apperance &gt;&gt; Show Line number 注：2016.2默认显示行号</div><div class="line">	6 右侧坚线是PEP8的代码规范，提示一行不要超过120个字符</div><div class="line">	7 导出，导入你自定义的配置：File &gt;&gt; Export Settings,  Import Settings</div><div class="line">5 常用快捷键，例如复制当前行，删除当前行，批量注释，缩进，查找和替换</div><div class="line">	1 常用快捷键的查询和配置：Keymap</div><div class="line">		1  Ctrl + D :    复制当前行</div><div class="line">		2  Ctrl + E :    删除当前行</div><div class="line">		3  Ctrl + Enter  快捷换行</div><div class="line">		4  Ctrl +  /    快捷注释，（选中多行后可以批量注释）</div><div class="line">		5  Tab:  缩进当前行（选中多行后可以批量缩进）</div><div class="line">		6  Shift + Tab : 取消缩进（选中多行后可以批量取消缩进）</div><div class="line">		7  Ctrl + F:  查找</div><div class="line">		8  Ctrl + H :  替换</div><div class="line">		9  批量注释：ctrl + ?</div><div class="line">6 Pycharm安装插件，例如Markdown supprot,数据库支持插件等</div><div class="line">		1  Plugins &gt; Browse reposltories (下方三个按钮中间寻个)&gt;&gt; </div><div class="line">			  搜索 markdown supprot &gt; Install</div><div class="line">		2 右上解View有三个选项可选，一般我们都用中间那个左侧编写，右侧实时预览</div><div class="line">7 Git配置 ？</div><div class="line">		1  需要本地安装好git</div><div class="line">		2  Version control  &gt; git</div><div class="line">		3  配置了git等版本控制系统之后，可以很方便的diff查看文件的不同</div><div class="line">8 常用操作指南，例如复制文件路径，在文件管理中打开，快速定位，查看模块结构视图，tab批量换space ,TODO的使用 ，</div><div class="line">  Debug的使用，</div><div class="line">	1 复制文件路径: 左侧文件列表右键选中的文 件&gt; Copy Path</div><div class="line">	2 在文件管理器中打开：右键选中的文件&gt;&gt;往下找到show In Explorer</div><div class="line">	3 快速定位： Ctrl + 某些内键模块之后，点击在源文件中展开</div><div class="line">	4 查看结构： IDE左侧边栏Structure 查看当前项目的结构</div><div class="line">	5  tab 批量换space: Editor &gt; Convert Indents</div><div class="line">	6  Todo的使用： #todo要记录的事情</div><div class="line">	7  tab页上右键 &gt;&gt; Move Right (Down) , 把当前Tab 页移到窗口右边（下边），方便对比</div><div class="line">	8  文件中右键 &gt;&gt;Local History 能够查看文件修改前后对比</div><div class="line">	9  IDE右下解能看到一些有用的信息，光标当前在第几行的基本几个字符，当前回车换行，当前编码类型 ，</div><div class="line">           当前git 分支</div><div class="line">	10  IDE 右侧边栏&gt;&gt;  Database</div><div class="line">9  如何去掉烦人的波浪线？PEP8是什么？</div></pre></td></tr></table></figure></p>
-<p>完</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjitmufsa00034vjx0iudef3x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="cjk6nq7q900171ijxa3nrqoqp" class="article-share-link">Share</a>
       
       
     </footer>
