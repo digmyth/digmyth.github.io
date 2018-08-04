@@ -61,9 +61,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-web-django-orm(二)" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/06/15/web-django-orm(二)/" class="article-date">
+    <a href="/2017/06/15/web-02-前端html/" class="article-date">
   <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
 </a>
     
@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-django-orm(二)/">web-django-orm(二)</a>
+      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
     </h1>
   
 
@@ -87,45 +87,29 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>一对多查询</li>
-<li>多对多查询</li>
-<li>查询优化</li>
-</ul>
-<h2 id="一对多查询"><a href="#一对多查询" class="headerlink" title="一对多查询"></a>一对多查询</h2><h3 id="1-1-创建测试数据"><a href="#1-1-创建测试数据" class="headerlink" title="1.1 创建测试数据"></a>1.1 创建测试数据</h3><p>models.py数据库模型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from django.db import models</div><div class="line">class DePart(models.Model):</div><div class="line">    title=models.CharField(max_length=32)</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username=models.CharField(max_length=32)</div><div class="line">    pwd=models.CharField(max_length=32)</div><div class="line">    dp = models.ForeignKey(DePart)</div></pre></td></tr></table></figure></p>
-<p>创建测试数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">models.DePart.objects.create(title=&quot;IT&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;咨询&quot;)</div><div class="line">models.DePart.objects.create(title=&quot;公关&quot;)</div><div class="line"></div><div class="line">models.UserInfo.objects.create(username=&quot;user1&quot;,pwd=123,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user2&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user3&quot;,pwd=456,dp_id=1)</div><div class="line">models.UserInfo.objects.create(username=&quot;user4&quot;,pwd=456,dp_id=2)</div></pre></td></tr></table></figure></p>
-<p>注：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">p=models.UserInfo.objects.create(username=&apos;wxq&apos;,pwd=123)  # 返回对象本身</div><div class="line">print(p.username,p.pwd)</div></pre></td></tr></table></figure></p>
-<h3 id="1-2-一对多正向查询"><a href="#1-2-一对多正向查询" class="headerlink" title="1.2 一对多正向查询"></a>1.2 一对多正向查询</h3><p>all() 返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.all()</div><div class="line">for row in v:</div><div class="line">    print(row.id,row.title,row.userinfo_set.all())</div></pre></td></tr></table></figure></p>
-<p>values()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># values()每一个字典代表一行数据</div><div class="line"># v = models.UserInfo.objects.values(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</div><div class="line"># for row in v:</div><div class="line">#     print(row[&apos;username&apos;],row[&apos;dp__title&apos;])</div></pre></td></tr></table></figure></p>
-<p>values_list()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># values_list()每一个元组代表一行数据</div><div class="line">v = models.UserInfo.objects.values_list(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</div><div class="line">for row in v:</div><div class="line">    print(row[0],row[2])</div></pre></td></tr></table></figure></p>
-<h3 id="1-3-一对多反向查询"><a href="#1-3-一对多反向查询" class="headerlink" title="1.3  一对多反向查询"></a>1.3  一对多反向查询</h3><p>all()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"> v=models.DePart.objects.all()</div><div class="line">    for row in  v:</div><div class="line">        print(row.id, row.title, row.userinfo_set.all())</div><div class="line">打印结果：</div><div class="line">1 IT &lt;QuerySet [&lt;UserInfo: UserInfo object&gt;, &lt;UserInfo: UserInfo object&gt;, &lt;UserInfo: UserInfo object&gt;]&gt;</div><div class="line">2 咨询 &lt;QuerySet [&lt;UserInfo: UserInfo object&gt;]&gt;</div><div class="line">3 公关 &lt;QuerySet []&gt;</div></pre></td></tr></table></figure></p>
-<p>values()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.values(&apos;title&apos;,&apos;userinfo__username&apos;,&apos;userinfo__dp_id&apos;)</div><div class="line">for row  in v:</div><div class="line">    print(row[&apos;title&apos;],row[&apos;userinfo__username&apos;],row[&apos;userinfo__dp_id&apos;])</div><div class="line">#打印结果</div><div class="line">IT user1 1</div><div class="line">IT user2 1</div><div class="line">IT user3 1</div><div class="line">咨询 user4 2</div><div class="line">公关 None None</div></pre></td></tr></table></figure></p>
-<p>values_list()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">v = models.DePart.objects.values_list(&apos;title&apos;,&apos;userinfo__username&apos;,&apos;userinfo__dp_id&apos;)</div><div class="line">for row in v:</div><div class="line">    print(row[0],row[1],row[2])</div><div class="line">#打印结果</div><div class="line">IT user1 1</div><div class="line">IT user2 1</div><div class="line">IT user3 1</div><div class="line">咨询 user4 2</div><div class="line">公关 None None</div></pre></td></tr></table></figure></p>
-<h2 id="1-4-总结"><a href="#1-4-总结" class="headerlink" title="1.4 总结"></a>1.4 总结</h2><p>正向查询用字段（这里字段是指外键字段）</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</div><div class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</div><div class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</div><div class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</div><div class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</div><div class="line">    &lt;/select&gt;</div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</div><div class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</div><div class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="external">参考</a><br>基本概念：</p>
 <ul>
-<li>all:   <code>字段+.跨表字段</code></li>
-<li>values:  <code>字段 + __跨表字段</code></li>
-<li>values_list <code>字段+ __跨表字段</code><br>反向查询用表名</li>
-<li>all:   <code>表名小写+_set</code></li>
-<li>values:  <code>表名小写 + __跨表字段</code></li>
-<li>values_list <code>表名小写+ __跨表字段</code></li>
+<li>html很骨感.</li>
+<li>css就是装饰或样式.</li>
+<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
 </ul>
-<p>总结一句话就是： 正向查询用字段，反向查询用表名</p>
-<h2 id="多对多查询"><a href="#多对多查询" class="headerlink" title="多对多查询"></a>多对多查询</h2><h3 id="2-1-多对多自建表"><a href="#2-1-多对多自建表" class="headerlink" title="2.1 多对多自建表"></a>2.1 多对多自建表</h3><p>当我们自己建第三张表时，第三张表列数没有限制，更加灵活，更能满足复杂需求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">表模型</div><div class="line">class UserGroup(models.Model):</div><div class="line">    caption= models.CharField(max_length=32)</div><div class="line"></div><div class="line">class U2G(models.Model):</div><div class="line">    ui = models.ForeignKey(UserInfo)</div><div class="line">    ug =  models.ForeignKey(UserGroup)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">创建测试数据</div><div class="line">models.U2G.objects.create(ui_id=1,ug_id=1)</div><div class="line">models.U2G.objects.create(ui_id=2,ug_id=1)</div><div class="line">models.U2G.objects.create(ui_id=3,ug_id=2)</div><div class="line">models.U2G.objects.create(ui_id=4,ug_id=2)</div><div class="line">v=models.U2G.objects.all()</div><div class="line">for row in v:</div><div class="line">    print(row.ug.caption,row.ui.username)</div><div class="line"># 打印结果</div><div class="line">A组 user1</div><div class="line">A组 user2</div><div class="line">B组 user3</div><div class="line">B组 user4</div></pre></td></tr></table></figure>
-<h3 id="2-2-多对多非自建"><a href="#2-2-多对多非自建" class="headerlink" title="2.2 多对多非自建"></a>2.2 多对多非自建</h3><p>多对多关系<code>Django  ManyToMany</code>帮我们建第三张表时，我们不能对第三张直接操作，并且第三张只有三列（2张表的分别ForeighKey列，自增ID列）。只能通过如下面的<code>ManyToMany</code>字段间接操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#表模型</div><div class="line">class UserInfo(models.Model):</div><div class="line">    username=models.CharField(max_length=32)</div><div class="line">    pwd=models.CharField(max_length=32)</div><div class="line">    dp = models.ForeignKey(&quot;DePart&quot;)</div><div class="line"></div><div class="line">class UserGroup(models.Model):</div><div class="line">    caption= models.CharField(max_length=32)</div><div class="line">    m = models.ManyToManyField(&quot;UserInfo&quot;)</div><div class="line">&apos;&apos;&apos;</div><div class="line">第三张表只有三列</div><div class="line">id   userinfo_id  usergroup_id&apos;</div><div class="line">&apos;&apos;&apos;</div></pre></td></tr></table></figure></p>
-<p>添加几个组做如下增删及更新数据操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">obj = models.UserGroup.objects.filter(id=2).first() #id为2的组是B组</div><div class="line">print(obj.id,obj.caption,obj.m)</div><div class="line">obj.m.add(*[1,2])     #ID为1，2的用户加入B组</div><div class="line"># obj.m.remove(*[1,]) # 删除B组中用户id为1的记录</div><div class="line">obj.m.clear()         # 清除组id为2的所有记录</div><div class="line">obj.m.set([1,])       # 不管id为2的组有几个用户都清空后把用户id为1的加入B组</div></pre></td></tr></table></figure></p>
-<h3 id="2-3-多对多查询"><a href="#2-3-多对多查询" class="headerlink" title="2.3 多对多查询"></a>2.3 多对多查询</h3><p>学习多对多查询<br>注意：first/get返回对象，filter/all/values/values_list返回QuerySet<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">obj=models.UserGroup.objects.filter(id=2).first()  # 得到组对象</div><div class="line">v=obj.m.all()     # obj.m表示UserInfo表</div><div class="line">for row in v:</div><div class="line">    print(row.username, row.dp.title)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">obj=models.UserGroup.objects.filter(id=2).first() # 得到组ID为2的对象</div><div class="line">v=obj.m.filter(dp__title=&quot;IT&quot;).first()  # UserInfo表中查部门为IT的记录</div><div class="line">print(v.username)                       # 打印符合条件的username</div></pre></td></tr></table></figure>
-<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p><code>select_related</code>优化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">user_list=models.UserInfo.objects.all() # 这里是1次sql请求</div><div class="line">for row in user_list: #如果有10条数据,会有10次sql请求</div><div class="line">   print(row.username,row.dp.title)  # 每一次row.dp.title都会跨表查询</div><div class="line">那么返回结果经历了11次sql请求,做select_related优化后只有2次sql请求,其中1次是跨表请求</div><div class="line">models.UserInfo.objects.all().select_related(&quot;ForeighKeyname&quot;)   #优化方法一</div></pre></td></tr></table></figure></p>
-<p><code>prefetch_related</code>优化,推荐用优化方法二<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">models.UserInfo.objects.all().prefetch_related(&quot;ForeighKeyname&quot;) # 优化方法二</div><div class="line">prefetch_related可以分解为models.UserInfo.objects.all()一次单表查询</div><div class="line">取到了ForeighKeyname_id=[1,2,3,4,5] 然后DJango会发起第2次单表查询，</div><div class="line">models.DePart.objects.filter(id__in = [1,2,3,4,5]) 2次单表查询明显轻量了。</div><div class="line"></div><div class="line">#only:只取相应字段，否则性能下降</div><div class="line"># defer:不取相应字段，否则性能下降</div><div class="line">models.UserInfo.objects.all().only(&apos;id&apos;,&apos;name&apos;)  # 只取哪几列</div><div class="line">models.UserInfo.objects.all().defer(&apos;id&apos;,&apos;name&apos;) # 不取哪几列</div></pre></td></tr></table></figure></p>
-<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7552333.html" target="_blank" rel="external">还有更多</a></p>
+<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
+<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
+<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
+<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">position</div><div class="line">     position: relative  # 与absolute一起使用</div><div class="line">     position: absolute  #随滚动条滚动而滚动</div><div class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</div><div class="line">     position: fixed     # 永远在窗口某位置</div></pre></td></tr></table></figure></p>
+<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="external">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
+<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
+<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="external">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
+<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="external">http://fontawesome.dashgame.com/#basic</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjk6q6omg003q8yjxwa7br8lm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjkf61wt6002l0gjxd153su26" class="article-share-link">Share</a>
       
       
     </footer>
@@ -175,7 +159,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjk6q6ojq000z8yjxjuylkell" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjkf61wro000z0gjxjw1rzzdf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -236,7 +220,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjk6q6ojg000n8yjxat2ttt5d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjkf61wrd000n0gjxi3f8y7eb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -297,7 +281,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjk6q6ok000188yjxzluhqk0x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjkf61wrv00180gjxu59jxmtz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -363,7 +347,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjk6q6oil00008yjxwyqtara2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjkf61wqh00000gjxqh8giek6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -439,7 +423,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjk6q6oja000g8yjx89i5j32q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjkf61wr8000g0gjxafmrynd1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -484,7 +468,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjk6q6olp002w8yjxqf6f3dci" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjkf61wth002y0gjx2trvn3rq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -535,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjk6q6ola002c8yjxgp8ilybe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjkf61wt0002c0gjxyw4kaijm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -579,14 +563,14 @@
 <h3 id="安装你需要的版本"><a href="#安装你需要的版本" class="headerlink" title="安装你需要的版本"></a>安装你需要的版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># yum -y --enablerepo=elrepo-kernel install kernel-ml.x86_64 kernel-ml-devel.x86_64</div><div class="line">版本性质：主分支ml(mainline)，稳定版(stable)，长期维护版lt(longterm)</div></pre></td></tr></table></figure>
 <h3 id="查看内核是否安装完成"><a href="#查看内核是否安装完成" class="headerlink" title="查看内核是否安装完成"></a>查看内核是否安装完成</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># rpm -qa |grep kernel</div><div class="line">kernel-tools-3.10.0-693.el7.x86_64</div><div class="line">kernel-ml-4.17.11-1.el7.elrepo.x86_64</div><div class="line">kernel-3.10.0-693.el7.x86_64</div><div class="line">kernel-ml-devel-4.17.11-1.el7.elrepo.x86_64</div><div class="line">kernel-tools-libs-3.10.0-693.el7.x86_64</div></pre></td></tr></table></figure>
 <h3 id="查看并修改grub的启动顺序"><a href="#查看并修改grub的启动顺序" class="headerlink" title="查看并修改grub的启动顺序"></a>查看并修改grub的启动顺序</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># awk -F\&apos; &apos;$1==&quot;menuentry &quot; &#123;print $2&#125;&apos; /etc/grub2.cfg</div><div class="line">CentOS Linux (4.17.11-1.el7.elrepo.x86_64) 7 (Core)</div><div class="line">CentOS Linux (3.10.0-693.el7.x86_64) 7 (Core)</div><div class="line">CentOS Linux (0-rescue-d14171e79a9e4b5da1a69e7348d0f45f) 7 (Core)</div></pre></td></tr></table></figure>
-<p>注： 最新内核为第一个，故启动项为0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">GRUB_TIMEOUT=5</div><div class="line">GRUB_DISTRIBUTOR=&quot;$(sed &apos;s, release .*$,,g&apos; /etc/system-release)&quot;</div><div class="line">GRUB_DEFAULT=saved(这里改成0)</div><div class="line">GRUB_DISABLE_SUBMENU=true</div><div class="line">GRUB_TERMINAL_OUTPUT=&quot;console&quot;</div><div class="line">GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rhgb quiet&quot;</div><div class="line">GRUB_DISABLE_RECOVERY=&quot;true&quot;</div></pre></td></tr></table></figure></p>
+<p>注： 最新内核为第一个，故启动项为0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># vim /etc/default/grub</div><div class="line">GRUB_TIMEOUT=5</div><div class="line">GRUB_DISTRIBUTOR=&quot;$(sed &apos;s, release .*$,,g&apos; /etc/system-release)&quot;</div><div class="line">GRUB_DEFAULT=saved(这里改成0)</div><div class="line">GRUB_DISABLE_SUBMENU=true</div><div class="line">GRUB_TERMINAL_OUTPUT=&quot;console&quot;</div><div class="line">GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rhgb quiet&quot;</div><div class="line">GRUB_DISABLE_RECOVERY=&quot;true&quot;</div></pre></td></tr></table></figure></p>
 <h3 id="生成grub重新创建内核配置并重启"><a href="#生成grub重新创建内核配置并重启" class="headerlink" title="生成grub重新创建内核配置并重启"></a>生成grub重新创建内核配置并重启</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># grub2-mkconfig -o /boot/grub2/grub.cfg</div><div class="line">Generating grub configuration file ...</div><div class="line">Found linux image: /boot/vmlinuz-4.17.11-1.el7.elrepo.x86_64</div><div class="line">Found initrd image: /boot/initramfs-4.17.11-1.el7.elrepo.x86_64.img</div><div class="line">Found linux image: /boot/vmlinuz-3.10.0-693.el7.x86_64</div><div class="line">Found initrd image: /boot/initramfs-3.10.0-693.el7.x86_64.img</div><div class="line">Found linux image: /boot/vmlinuz-0-rescue-d14171e79a9e4b5da1a69e7348d0f45f</div><div class="line">Found initrd image: /boot/initramfs-0-rescue-d14171e79a9e4b5da1a69e7348d0f45f.img</div><div class="line">done</div><div class="line">[root@localhost ~]# reboot</div></pre></td></tr></table></figure>
 <h3 id="确认内核版本"><a href="#确认内核版本" class="headerlink" title="确认内核版本"></a>确认内核版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># uname -r</div><div class="line">4.17.11-1.el7.elrepo.x86_64</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjk6q6ojp000x8yjxaw1ibasv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjkf61wrk000v0gjxh7t55uqq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -648,7 +632,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjk6q6ojy00168yjx4seetve8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjkf61wru00160gjxkn8vasnw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -702,11 +686,11 @@
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>

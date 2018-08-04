@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
 <meta property="og:description" content="查看版本12# uname  -r3.10.0-693.el7.x86_64
 升级内核需要先导入elrepo的key，然后安装elrepo的yum源12345678910111213141516171819202122232425262728293031# rpm -import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org# rpm -Uvh htt">
-<meta property="og:updated_time" content="2018-07-29T09:48:44.000Z">
+<meta property="og:updated_time" content="2018-08-04T08:38:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux_7.X内核升级">
 <meta name="twitter:description" content="查看版本12# uname  -r3.10.0-693.el7.x86_64
@@ -97,14 +97,14 @@
 <h3 id="安装你需要的版本"><a href="#安装你需要的版本" class="headerlink" title="安装你需要的版本"></a>安装你需要的版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># yum -y --enablerepo=elrepo-kernel install kernel-ml.x86_64 kernel-ml-devel.x86_64</div><div class="line">版本性质：主分支ml(mainline)，稳定版(stable)，长期维护版lt(longterm)</div></pre></td></tr></table></figure>
 <h3 id="查看内核是否安装完成"><a href="#查看内核是否安装完成" class="headerlink" title="查看内核是否安装完成"></a>查看内核是否安装完成</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># rpm -qa |grep kernel</div><div class="line">kernel-tools-3.10.0-693.el7.x86_64</div><div class="line">kernel-ml-4.17.11-1.el7.elrepo.x86_64</div><div class="line">kernel-3.10.0-693.el7.x86_64</div><div class="line">kernel-ml-devel-4.17.11-1.el7.elrepo.x86_64</div><div class="line">kernel-tools-libs-3.10.0-693.el7.x86_64</div></pre></td></tr></table></figure>
 <h3 id="查看并修改grub的启动顺序"><a href="#查看并修改grub的启动顺序" class="headerlink" title="查看并修改grub的启动顺序"></a>查看并修改grub的启动顺序</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># awk -F\&apos; &apos;$1==&quot;menuentry &quot; &#123;print $2&#125;&apos; /etc/grub2.cfg</div><div class="line">CentOS Linux (4.17.11-1.el7.elrepo.x86_64) 7 (Core)</div><div class="line">CentOS Linux (3.10.0-693.el7.x86_64) 7 (Core)</div><div class="line">CentOS Linux (0-rescue-d14171e79a9e4b5da1a69e7348d0f45f) 7 (Core)</div></pre></td></tr></table></figure>
-<p>注： 最新内核为第一个，故启动项为0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">GRUB_TIMEOUT=5</div><div class="line">GRUB_DISTRIBUTOR=&quot;$(sed &apos;s, release .*$,,g&apos; /etc/system-release)&quot;</div><div class="line">GRUB_DEFAULT=saved(这里改成0)</div><div class="line">GRUB_DISABLE_SUBMENU=true</div><div class="line">GRUB_TERMINAL_OUTPUT=&quot;console&quot;</div><div class="line">GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rhgb quiet&quot;</div><div class="line">GRUB_DISABLE_RECOVERY=&quot;true&quot;</div></pre></td></tr></table></figure></p>
+<p>注： 最新内核为第一个，故启动项为0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># vim /etc/default/grub</div><div class="line">GRUB_TIMEOUT=5</div><div class="line">GRUB_DISTRIBUTOR=&quot;$(sed &apos;s, release .*$,,g&apos; /etc/system-release)&quot;</div><div class="line">GRUB_DEFAULT=saved(这里改成0)</div><div class="line">GRUB_DISABLE_SUBMENU=true</div><div class="line">GRUB_TERMINAL_OUTPUT=&quot;console&quot;</div><div class="line">GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rhgb quiet&quot;</div><div class="line">GRUB_DISABLE_RECOVERY=&quot;true&quot;</div></pre></td></tr></table></figure></p>
 <h3 id="生成grub重新创建内核配置并重启"><a href="#生成grub重新创建内核配置并重启" class="headerlink" title="生成grub重新创建内核配置并重启"></a>生成grub重新创建内核配置并重启</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># grub2-mkconfig -o /boot/grub2/grub.cfg</div><div class="line">Generating grub configuration file ...</div><div class="line">Found linux image: /boot/vmlinuz-4.17.11-1.el7.elrepo.x86_64</div><div class="line">Found initrd image: /boot/initramfs-4.17.11-1.el7.elrepo.x86_64.img</div><div class="line">Found linux image: /boot/vmlinuz-3.10.0-693.el7.x86_64</div><div class="line">Found initrd image: /boot/initramfs-3.10.0-693.el7.x86_64.img</div><div class="line">Found linux image: /boot/vmlinuz-0-rescue-d14171e79a9e4b5da1a69e7348d0f45f</div><div class="line">Found initrd image: /boot/initramfs-0-rescue-d14171e79a9e4b5da1a69e7348d0f45f.img</div><div class="line">done</div><div class="line">[root@localhost ~]# reboot</div></pre></td></tr></table></figure>
 <h3 id="确认内核版本"><a href="#确认内核版本" class="headerlink" title="确认内核版本"></a>确认内核版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># uname -r</div><div class="line">4.17.11-1.el7.elrepo.x86_64</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjk6q6ojp000x8yjxaw1ibasv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjkf61wrk000v0gjxh7t55uqq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -172,11 +172,11 @@
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>
