@@ -10,9 +10,8 @@ function decryptAES() {
           swal(
             'Good job!',
             '常来玩',
-            'success',
-            1500
-          )  
+            'success'
+          )
 
         } else {
             document.getElementById("encrypt-blog").style.display    = "inline";
