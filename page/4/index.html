@@ -62,9 +62,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-web-django-orm(二)" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/06/15/web-django-orm(二)/" class="article-date">
+    <a href="/2017/06/15/web-02-前端html/" class="article-date">
   <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
 </a>
     
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-django-orm(二)/">web-django-orm(二)</a>
+      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
     </h1>
   
 
@@ -88,45 +88,77 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>一对多查询</li>
-<li>多对多查询</li>
-<li>查询优化</li>
-</ul>
-<h2 id="一对多查询"><a href="#一对多查询" class="headerlink" title="一对多查询"></a>一对多查询</h2><h3 id="1-1-创建测试数据"><a href="#1-1-创建测试数据" class="headerlink" title="1.1 创建测试数据"></a>1.1 创建测试数据</h3><p>models.py数据库模型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from django.db import models</span><br><span class="line">class DePart(models.Model):</span><br><span class="line">    title=models.CharField(max_length=32)</span><br><span class="line">class UserInfo(models.Model):</span><br><span class="line">    username=models.CharField(max_length=32)</span><br><span class="line">    pwd=models.CharField(max_length=32)</span><br><span class="line">    dp = models.ForeignKey(DePart)</span><br></pre></td></tr></table></figure></p>
-<p>创建测试数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">models.DePart.objects.create(title=&quot;IT&quot;)</span><br><span class="line">models.DePart.objects.create(title=&quot;咨询&quot;)</span><br><span class="line">models.DePart.objects.create(title=&quot;公关&quot;)</span><br><span class="line"></span><br><span class="line">models.UserInfo.objects.create(username=&quot;user1&quot;,pwd=123,dp_id=1)</span><br><span class="line">models.UserInfo.objects.create(username=&quot;user2&quot;,pwd=456,dp_id=1)</span><br><span class="line">models.UserInfo.objects.create(username=&quot;user3&quot;,pwd=456,dp_id=1)</span><br><span class="line">models.UserInfo.objects.create(username=&quot;user4&quot;,pwd=456,dp_id=2)</span><br></pre></td></tr></table></figure></p>
-<p>注：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p=models.UserInfo.objects.create(username=&apos;wxq&apos;,pwd=123)  # 返回对象本身</span><br><span class="line">print(p.username,p.pwd)</span><br></pre></td></tr></table></figure></p>
-<h3 id="1-2-一对多正向查询"><a href="#1-2-一对多正向查询" class="headerlink" title="1.2 一对多正向查询"></a>1.2 一对多正向查询</h3><p>all() 返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">v = models.DePart.objects.all()</span><br><span class="line">for row in v:</span><br><span class="line">    print(row.id,row.title,row.userinfo_set.all())</span><br></pre></td></tr></table></figure></p>
-<p>values()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># values()每一个字典代表一行数据</span><br><span class="line"># v = models.UserInfo.objects.values(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</span><br><span class="line"># for row in v:</span><br><span class="line">#     print(row[&apos;username&apos;],row[&apos;dp__title&apos;])</span><br></pre></td></tr></table></figure></p>
-<p>values_list()返回Queryset<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># values_list()每一个元组代表一行数据</span><br><span class="line">v = models.UserInfo.objects.values_list(&apos;username&apos;,&apos;dp_id&apos;,&apos;dp__title&apos;)</span><br><span class="line">for row in v:</span><br><span class="line">    print(row[0],row[2])</span><br></pre></td></tr></table></figure></p>
-<h3 id="1-3-一对多反向查询"><a href="#1-3-一对多反向查询" class="headerlink" title="1.3  一对多反向查询"></a>1.3  一对多反向查询</h3><p>all()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> v=models.DePart.objects.all()</span><br><span class="line">    for row in  v:</span><br><span class="line">        print(row.id, row.title, row.userinfo_set.all())</span><br><span class="line">打印结果：</span><br><span class="line">1 IT &lt;QuerySet [&lt;UserInfo: UserInfo object&gt;, &lt;UserInfo: UserInfo object&gt;, &lt;UserInfo: UserInfo object&gt;]&gt;</span><br><span class="line">2 咨询 &lt;QuerySet [&lt;UserInfo: UserInfo object&gt;]&gt;</span><br><span class="line">3 公关 &lt;QuerySet []&gt;</span><br></pre></td></tr></table></figure></p>
-<p>values()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">v = models.DePart.objects.values(&apos;title&apos;,&apos;userinfo__username&apos;,&apos;userinfo__dp_id&apos;)</span><br><span class="line">for row  in v:</span><br><span class="line">    print(row[&apos;title&apos;],row[&apos;userinfo__username&apos;],row[&apos;userinfo__dp_id&apos;])</span><br><span class="line">#打印结果</span><br><span class="line">IT user1 1</span><br><span class="line">IT user2 1</span><br><span class="line">IT user3 1</span><br><span class="line">咨询 user4 2</span><br><span class="line">公关 None None</span><br></pre></td></tr></table></figure></p>
-<p>values_list()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">v = models.DePart.objects.values_list(&apos;title&apos;,&apos;userinfo__username&apos;,&apos;userinfo__dp_id&apos;)</span><br><span class="line">for row in v:</span><br><span class="line">    print(row[0],row[1],row[2])</span><br><span class="line">#打印结果</span><br><span class="line">IT user1 1</span><br><span class="line">IT user2 1</span><br><span class="line">IT user3 1</span><br><span class="line">咨询 user4 2</span><br><span class="line">公关 None None</span><br></pre></td></tr></table></figure></p>
-<h2 id="1-4-总结"><a href="#1-4-总结" class="headerlink" title="1.4 总结"></a>1.4 总结</h2><p>正向查询用字段（这里字段是指外键字段）</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</span><br><span class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</span><br><span class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line"></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form&gt;</span><br><span class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</span><br><span class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</span><br><span class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="noopener">参考</a><br>基本概念：</p>
 <ul>
-<li>all:   <code>字段+.跨表字段</code></li>
-<li>values:  <code>字段 + __跨表字段</code></li>
-<li>values_list <code>字段+ __跨表字段</code><br>反向查询用表名</li>
-<li>all:   <code>表名小写+_set</code></li>
-<li>values:  <code>表名小写 + __跨表字段</code></li>
-<li>values_list <code>表名小写+ __跨表字段</code></li>
+<li>html很骨感.</li>
+<li>css就是装饰或样式.</li>
+<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
 </ul>
-<p>总结一句话就是： 正向查询用字段，反向查询用表名</p>
-<h2 id="多对多查询"><a href="#多对多查询" class="headerlink" title="多对多查询"></a>多对多查询</h2><h3 id="2-1-多对多自建表"><a href="#2-1-多对多自建表" class="headerlink" title="2.1 多对多自建表"></a>2.1 多对多自建表</h3><p>当我们自己建第三张表时，第三张表列数没有限制，更加灵活，更能满足复杂需求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">表模型</span><br><span class="line">class UserGroup(models.Model):</span><br><span class="line">    caption= models.CharField(max_length=32)</span><br><span class="line"></span><br><span class="line">class U2G(models.Model):</span><br><span class="line">    ui = models.ForeignKey(UserInfo)</span><br><span class="line">    ug =  models.ForeignKey(UserGroup)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">创建测试数据</span><br><span class="line">models.U2G.objects.create(ui_id=1,ug_id=1)</span><br><span class="line">models.U2G.objects.create(ui_id=2,ug_id=1)</span><br><span class="line">models.U2G.objects.create(ui_id=3,ug_id=2)</span><br><span class="line">models.U2G.objects.create(ui_id=4,ug_id=2)</span><br><span class="line">v=models.U2G.objects.all()</span><br><span class="line">for row in v:</span><br><span class="line">    print(row.ug.caption,row.ui.username)</span><br><span class="line"># 打印结果</span><br><span class="line">A组 user1</span><br><span class="line">A组 user2</span><br><span class="line">B组 user3</span><br><span class="line">B组 user4</span><br></pre></td></tr></table></figure>
-<h3 id="2-2-多对多非自建"><a href="#2-2-多对多非自建" class="headerlink" title="2.2 多对多非自建"></a>2.2 多对多非自建</h3><p>多对多关系<code>Django  ManyToMany</code>帮我们建第三张表时，我们不能对第三张直接操作，并且第三张只有三列（2张表的分别ForeighKey列，自增ID列）。只能通过如下面的<code>ManyToMany</code>字段间接操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#表模型</span><br><span class="line">class UserInfo(models.Model):</span><br><span class="line">    username=models.CharField(max_length=32)</span><br><span class="line">    pwd=models.CharField(max_length=32)</span><br><span class="line">    dp = models.ForeignKey(&quot;DePart&quot;)</span><br><span class="line"></span><br><span class="line">class UserGroup(models.Model):</span><br><span class="line">    caption= models.CharField(max_length=32)</span><br><span class="line">    m = models.ManyToManyField(&quot;UserInfo&quot;)</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">第三张表只有三列</span><br><span class="line">id   userinfo_id  usergroup_id&apos;</span><br><span class="line">&apos;&apos;&apos;</span><br></pre></td></tr></table></figure></p>
-<p>添加几个组做如下增删及更新数据操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">obj = models.UserGroup.objects.filter(id=2).first() #id为2的组是B组</span><br><span class="line">print(obj.id,obj.caption,obj.m)</span><br><span class="line">obj.m.add(*[1,2])     #ID为1，2的用户加入B组</span><br><span class="line"># obj.m.remove(*[1,]) # 删除B组中用户id为1的记录</span><br><span class="line">obj.m.clear()         # 清除组id为2的所有记录</span><br><span class="line">obj.m.set([1,])       # 不管id为2的组有几个用户都清空后把用户id为1的加入B组</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-3-多对多查询"><a href="#2-3-多对多查询" class="headerlink" title="2.3 多对多查询"></a>2.3 多对多查询</h3><p>学习多对多查询<br>注意：first/get返回对象，filter/all/values/values_list返回QuerySet<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">obj=models.UserGroup.objects.filter(id=2).first()  # 得到组对象</span><br><span class="line">v=obj.m.all()     # obj.m表示UserInfo表</span><br><span class="line">for row in v:</span><br><span class="line">    print(row.username, row.dp.title)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">obj=models.UserGroup.objects.filter(id=2).first() # 得到组ID为2的对象</span><br><span class="line">v=obj.m.filter(dp__title=&quot;IT&quot;).first()  # UserInfo表中查部门为IT的记录</span><br><span class="line">print(v.username)                       # 打印符合条件的username</span><br></pre></td></tr></table></figure>
-<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p><code>select_related</code>优化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">user_list=models.UserInfo.objects.all() # 这里是1次sql请求</span><br><span class="line">for row in user_list: #如果有10条数据,会有10次sql请求</span><br><span class="line">   print(row.username,row.dp.title)  # 每一次row.dp.title都会跨表查询</span><br><span class="line">那么返回结果经历了11次sql请求,做select_related优化后只有2次sql请求,其中1次是跨表请求</span><br><span class="line">models.UserInfo.objects.all().select_related(&quot;ForeighKeyname&quot;)   #优化方法一</span><br></pre></td></tr></table></figure></p>
-<p><code>prefetch_related</code>优化,推荐用优化方法二<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">models.UserInfo.objects.all().prefetch_related(&quot;ForeighKeyname&quot;) # 优化方法二</span><br><span class="line">prefetch_related可以分解为models.UserInfo.objects.all()一次单表查询</span><br><span class="line">取到了ForeighKeyname_id=[1,2,3,4,5] 然后DJango会发起第2次单表查询，</span><br><span class="line">models.DePart.objects.filter(id__in = [1,2,3,4,5]) 2次单表查询明显轻量了。</span><br><span class="line"></span><br><span class="line">#only:只取相应字段，否则性能下降</span><br><span class="line"># defer:不取相应字段，否则性能下降</span><br><span class="line">models.UserInfo.objects.all().only(&apos;id&apos;,&apos;name&apos;)  # 只取哪几列</span><br><span class="line">models.UserInfo.objects.all().defer(&apos;id&apos;,&apos;name&apos;) # 不取哪几列</span><br></pre></td></tr></table></figure></p>
-<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7552333.html" target="_blank" rel="noopener">还有更多</a></p>
+<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
+<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
+<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
+<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">position</span><br><span class="line">     position: relative  # 与absolute一起使用</span><br><span class="line">     position: absolute  #随滚动条滚动而滚动</span><br><span class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</span><br><span class="line">     position: fixed     # 永远在窗口某位置</span><br></pre></td></tr></table></figure></p>
+<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="noopener">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
+<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
+<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="noopener">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
+<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="noopener">http://fontawesome.dashgame.com/#basic</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjl8sc2ko003o89jxyj5ksabb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjl8sct08002i9ajxintzb4h3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/git-01/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/06/15/git-01/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjl8scsya000c9ajxrm0ihu7g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -176,55 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjl8sc2ik000o89jxdu9qs7r0" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/git-01/" class="article-date">
-  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/06/15/git-01/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjl8sc2ib000f89jxmr426zfe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjl8scsyr000n9ajx0s2wk1lj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -285,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjl8sc2ir000y89jx73ppe3lh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjl8scsyy000v9ajx98c8qskd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +335,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjl8sc2ho000089jx3blx5x11" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjl8scsz500149ajxqxph9j2v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -427,7 +411,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjl8sc2i4000889jx8wjdl9xn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjl8scsy500079ajx8wgfidpl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -472,7 +456,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjl8sc2k4002s89jxxjnr0xsr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjl8sct0d002r9ajxg2kxwm68" class="article-share-link">Share</a>
       
       
     </footer>
@@ -523,7 +507,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjl8sc2jr002689jx28hmvwl2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjl8scszz00259ajxtp7umskc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -574,7 +558,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjl8sc2ii000n89jx9d6lptco" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjl8scsyp000k9ajxyxcl50yi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -636,7 +620,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjl8sc2iq000w89jxtyj8szg9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjl8scsyw000s9ajxpnfzm5fh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -690,11 +674,11 @@
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>
