@@ -7,7 +7,13 @@ function decryptAES() {
         console.log(content);
         content = unescape(content);
         if (content == '') {
-            alert("密码错误！！");
+          swal(
+            'Good job!',
+            '常来玩',
+            'success',
+            1500
+          )  
+
         } else {
             document.getElementById("encrypt-blog").style.display    = "inline";
             document.getElementById("encrypt-blog").innerHTML        = content;
@@ -20,8 +26,8 @@ function decryptAES() {
             }
         }
     } catch (e) {
-        alert("密码错误！！");
-        console.log(e);
+        
+        //console.log(e);
     }
 }
 
