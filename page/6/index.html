@@ -126,7 +126,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjl8vgl9y001pp1jxgkimw8rk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cjl90w31y001p30jxe0nxksg6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -340,7 +340,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjl8vgl9s001hp1jxq3gntnif" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cjl90w31t001k30jxns3buvii" class="article-share-link">Share</a>
       
       
     </footer>
@@ -426,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjl8vgl9r001fp1jxznl1777j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cjl90w31r001h30jx7os9n7xl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -501,7 +501,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjl8vglan002gp1jx9cmce641" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjl90w32q002j30jxksxx062j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -587,7 +587,54 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjl8vgl9p001cp1jx7ttr69n7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjl90w31p001f30jx13uhcypq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat getopts.sh </span><br><span class="line">#!/bin/bash</span><br><span class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</span><br><span class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</span><br><span class="line"># OPTARG  表示选项给的值</span><br><span class="line"># OPTIND  表示选项指针（下一位）</span><br><span class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</span><br><span class="line"></span><br><span class="line">while getopts &quot;:a:b:c:&quot; OPT;</span><br><span class="line">do</span><br><span class="line">case $OPT in</span><br><span class="line">  a)</span><br><span class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</span><br><span class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  b)</span><br><span class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  c)</span><br><span class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</span><br><span class="line">        ;;</span><br><span class="line">  *)</span><br><span class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</span><br><span class="line">esac</span><br><span class="line">done</span><br><span class="line">shift $(($OPTIND-1))</span><br><span class="line">echo &quot;\$1 is: $1&quot;</span><br><span class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</span><br><span class="line">a is OPTARG: a1</span><br><span class="line">a is OPTIND: 3</span><br><span class="line">b is OPTARG: b1</span><br><span class="line">b is OPTIND: 5</span><br><span class="line">c is OPTARG: c1</span><br><span class="line">c is OPTIND: 7</span><br><span class="line">$1 is: test.sh</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjl90w32m002e30jx5fqvy0iu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -681,7 +728,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjl8vgl9e0011p1jxjjneld1d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjl90w31b001230jx4r1ysyyp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -694,14 +741,14 @@
 
 
   
-    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-mysql-limit" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+    <a href="/2017/01/29/mysql-limit/" class="article-date">
   <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
   </div>
 
   </div>
@@ -712,7 +759,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
+      <a class="article-title" href="/2017/01/29/mysql-limit/">CentOS 7.x/Mysql limit</a>
     </h1>
   
 
@@ -720,15 +767,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat getopts.sh </span><br><span class="line">#!/bin/bash</span><br><span class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</span><br><span class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</span><br><span class="line"># OPTARG  表示选项给的值</span><br><span class="line"># OPTIND  表示选项指针（下一位）</span><br><span class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</span><br><span class="line"></span><br><span class="line">while getopts &quot;:a:b:c:&quot; OPT;</span><br><span class="line">do</span><br><span class="line">case $OPT in</span><br><span class="line">  a)</span><br><span class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</span><br><span class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  b)</span><br><span class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  c)</span><br><span class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</span><br><span class="line">        ;;</span><br><span class="line">  *)</span><br><span class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</span><br><span class="line">esac</span><br><span class="line">done</span><br><span class="line">shift $(($OPTIND-1))</span><br><span class="line">echo &quot;\$1 is: $1&quot;</span><br><span class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</span><br><span class="line">a is OPTARG: a1</span><br><span class="line">a is OPTIND: 3</span><br><span class="line">b is OPTARG: b1</span><br><span class="line">b is OPTIND: 5</span><br><span class="line">c is OPTARG: c1</span><br><span class="line">c is OPTIND: 7</span><br><span class="line">$1 is: test.sh</span><br></pre></td></tr></table></figure>
-
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/01/29/mysql-limit/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjl8vglak002bp1jxpjsc59ys" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-limit/" data-id="cjl90w315000w30jxj8dtw8wl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -982,7 +1030,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjl8vgl9m001ap1jxp0frr8pn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjl90w31m001c30jxijczipjh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1053,74 +1101,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjl8vgl9k0017p1jxwccm2b5y" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python-02-流程控制_枚举" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/15/python-02-流程控制_枚举/" class="article-date">
-  <time datetime="2017-01-15T05:03:41.000Z" itemprop="datePublished">2017-01-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/15/python-02-流程控制_枚举/">python_02_流程控制/枚举</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>流程控制</li>
-<li>三元表达式</li>
-<li>枚举类</li>
-</ul>
-<h1 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h1><h2 id="if"><a href="#if" class="headerlink" title="if"></a>if</h2><p>if 玩猜数字游戏<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python3</span><br><span class="line">i = 0</span><br><span class="line">try_num = 3</span><br><span class="line">AGE = 27</span><br><span class="line">while i &lt; try_num:</span><br><span class="line">    enter = int(input(&apos;enter you num:&apos;))</span><br><span class="line">    if enter == AGE:</span><br><span class="line">        print(&quot;Conguratulations, you got it&quot;)</span><br><span class="line">        break</span><br><span class="line">    elif enter &gt; AGE:</span><br><span class="line">        print(&quot;too large&quot;)</span><br><span class="line">        i += 1</span><br><span class="line">    else:</span><br><span class="line">        print(&quot;too smaller&quot;)</span><br><span class="line">        i+=1</span><br></pre></td></tr></table></figure></p>
-<p>if成绩查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python3</span><br><span class="line">__author__ = &quot;wxq&quot;</span><br><span class="line"></span><br><span class="line">enter_score = int(input(&quot;enter your score :&quot;).strip())</span><br><span class="line"></span><br><span class="line">if enter_score &lt;=100 and enter_score &gt;=0:</span><br><span class="line">    if enter_score &gt;=90:</span><br><span class="line">        print(&quot;A&quot;)</span><br><span class="line">    elif enter_score &gt;=80:</span><br><span class="line">        print(&quot;B&quot;)</span><br><span class="line">    elif enter_score &gt;=70:</span><br><span class="line">        print(&quot;C&quot;)</span><br><span class="line">    elif enter_score &gt;= 60:</span><br><span class="line">        print(&quot;D&quot;)</span><br><span class="line">    else:</span><br><span class="line">        print(&quot;you are too low&quot;)</span><br><span class="line"></span><br><span class="line">else:</span><br><span class="line">    print(&quot;invalid score&quot;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="while"><a href="#while" class="headerlink" title="while"></a>while</h2><p>这里主要注意与<code>shell</code>中的区别，python里<code>while</code>后有<code>else</code>, 即while语句正常执行完后才执行else中的语句，否则不会执行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">i = 0</span><br><span class="line">while i &lt;3:</span><br><span class="line">    if i &gt;=2:</span><br><span class="line">        break</span><br><span class="line">    print(i)</span><br><span class="line">    i += 1</span><br><span class="line">else:</span><br><span class="line">    print(&apos;end&apos;)    </span><br><span class="line">#结果</span><br><span class="line">0</span><br><span class="line">1</span><br></pre></td></tr></table></figure></p>
-<p>来个小练习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">count1 = 0</span><br><span class="line">while True:</span><br><span class="line">    if count1 == 10000000:</span><br><span class="line">        break</span><br><span class="line">    count1 += 1</span><br><span class="line">print(&quot;cost&quot;, time.time() - t1_start, count1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">t2_start = time.time()</span><br><span class="line">count2 = 0</span><br><span class="line">while count2 &lt; 10000000:</span><br><span class="line">    count2 += 1</span><br><span class="line">print(&quot;cose&quot;, time.time() - t2_start, count2)</span><br></pre></td></tr></table></figure></p>
-<h1 id="for"><a href="#for" class="headerlink" title="for"></a>for</h1><p> 很懒什么也没有留下…<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">count = 3</span><br><span class="line">AGE = 27</span><br><span class="line">for i in range(100):</span><br><span class="line">    if i &gt;3:</span><br><span class="line">        enter=input(&quot;are you want to keep trying ....&quot;).strip()</span><br><span class="line">        if enter == &quot;y&quot;:</span><br><span class="line">            count = 0</span><br><span class="line">        else:</span><br><span class="line">            break</span><br><span class="line"></span><br><span class="line">    enter = int(input(&apos;enter you num:&apos;))</span><br><span class="line">    if enter == AGE:</span><br><span class="line">        print(&quot;Conguratulations, you got it&quot;)</span><br><span class="line">        break</span><br><span class="line">    elif enter &gt; AGE:</span><br><span class="line">        print(&quot;too large&quot;)</span><br><span class="line">    else:</span><br><span class="line">        print(&quot;too smaller&quot;)</span><br><span class="line"></span><br><span class="line">    count +=1</span><br></pre></td></tr></table></figure></p>
-<h2 id="continue-break"><a href="#continue-break" class="headerlink" title="continue/break"></a>continue/break</h2><p><code>continue</code>结束本次循环，提前进入下一轮循环<br><code>break</code> 直接终止循环</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python3</span><br><span class="line">__author__ = &quot;wangxiaoqiang&quot;</span><br><span class="line"></span><br><span class="line">for i in range(10):</span><br><span class="line">    if i == 5:</span><br><span class="line">        for j in range(10):</span><br><span class="line">            if j == 8:</span><br><span class="line">                break</span><br><span class="line">            print(&quot;inner loop&quot;,j)</span><br><span class="line">        continue</span><br><span class="line">    print(&quot;loop&quot;,i)</span><br><span class="line">结果：</span><br><span class="line">loop 0</span><br><span class="line">loop 1</span><br><span class="line">loop 2</span><br><span class="line">loop 3</span><br><span class="line">loop 4</span><br><span class="line">inner loop 0</span><br><span class="line">inner loop 1</span><br><span class="line">inner loop 2</span><br><span class="line">inner loop 3</span><br><span class="line">inner loop 4</span><br><span class="line">inner loop 5</span><br><span class="line">inner loop 6</span><br><span class="line">inner loop 7</span><br><span class="line">loop 6</span><br><span class="line">loop 7</span><br><span class="line">loop 8</span><br><span class="line">loop 9</span><br></pre></td></tr></table></figure>
-<h1 id="三元表达式"><a href="#三元表达式" class="headerlink" title="三元表达式"></a>三元表达式</h1><p>三元表达式很简单， 这里来几个小例子就明白了</p>
-<p>条件满足为1，否则为False<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">n [44]: 1 if True else False</span><br><span class="line">Out[44]: 1</span><br></pre></td></tr></table></figure></p>
-<p>成员关系判断，条件满足为True, 否则为False<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [53]: True if 1 in [1,2,3] else False</span><br><span class="line">Out[53]: True</span><br><span class="line"></span><br><span class="line">In [54]: True if 0 in [1,2,3] else False</span><br><span class="line">Out[54]: False</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [45]: a = 10</span><br><span class="line">In [46]: b = 15</span><br><span class="line"></span><br><span class="line">In [47]: a if a&gt;b else b</span><br><span class="line">Out[47]: 15</span><br></pre></td></tr></table></figure>
-<h1 id="枚举类"><a href="#枚举类" class="headerlink" title="枚举类"></a>枚举类</h1><p>枚举 <code>enumerate</code>, 在用到index和value对应关系时能用到enumerate函数，参数为可遍历对象（字符串，列表等），返回多个元组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">In [3]: for i in enumerate(&apos;abc&apos;):</span><br><span class="line">   ...:     print(i)</span><br><span class="line">   ...:     </span><br><span class="line">(0, &apos;a&apos;)</span><br><span class="line">(1, &apos;b&apos;)</span><br><span class="line">(2, &apos;c&apos;)</span><br><span class="line">In [43]: for index,i in enumerate(&apos;abc&apos;, 10):</span><br><span class="line">   ....:     print(index,i)</span><br><span class="line">   ....:     </span><br><span class="line">10 a</span><br><span class="line">11 b</span><br><span class="line">12 c</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">In [4]: a = enumerate(&apos;abc&apos;)</span><br><span class="line"></span><br><span class="line">In [5]: list(a)</span><br><span class="line">Out[5]: [(0, &apos;a&apos;), (1, &apos;b&apos;), (2, &apos;c&apos;)]</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">In [6]: import string</span><br><span class="line">In [7]: s  = string.ascii_uppercase</span><br><span class="line">In [8]: E = enumerate(s)</span><br><span class="line">In [9]: s</span><br><span class="line">Out[9]: &apos;ABCDEFGHIJKLMNOPQRSTUVWXYZ&apos;</span><br><span class="line"></span><br><span class="line">In [10]: list(E)</span><br><span class="line">Out[10]: </span><br><span class="line">[(0, &apos;A&apos;),</span><br><span class="line"> (1, &apos;B&apos;),</span><br><span class="line">此处略...</span><br><span class="line"></span><br><span class="line">In [11]: for i in E:</span><br><span class="line">   ....:     print(i, end=&apos; &apos;)</span><br><span class="line">   ....:     </span><br><span class="line">In [12]: E = enumerate(s)</span><br><span class="line">In [13]: for i in E:</span><br><span class="line">    print(i, end=&apos; &apos;)</span><br><span class="line">   ....:     </span><br><span class="line">(0, &apos;A&apos;) (1, &apos;B&apos;) (2, &apos;C&apos;) (3, &apos;D&apos;) (4, &apos;E&apos;) (5, &apos;F&apos;) (6, &apos;G&apos;) (7, &apos;H&apos;) (8, &apos;I&apos;) (9, &apos;J&apos;) (10, &apos;K&apos;) (11, &apos;L&apos;) (12, &apos;M&apos;) (13, &apos;N&apos;) (14, &apos;O&apos;) (15, &apos;P&apos;) (16, &apos;Q&apos;) (17, &apos;R&apos;) (18, &apos;S&apos;) (19, &apos;T&apos;) (20, &apos;U&apos;) (21, &apos;V&apos;) (22, &apos;W&apos;) (23, &apos;X&apos;) (24, &apos;Y&apos;) (25, &apos;Z&apos;)</span><br></pre></td></tr></table></figure>
-<p>枚举类用法<br>int 常量默认从1开始，我们来看个例子</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">In [16]: from enum import Enum</span><br><span class="line"></span><br><span class="line">In [17]: Month = Enum(&apos;Month&apos;,  (&apos;January&apos;, &apos;February&apos;, &apos;March&apos;, &apos;April&apos;, &apos;May&apos;, &apos;June&apos;, &apos;July&apos;, &apos;August&apos;, &apos;September&apos;, &apos;October&apos;, &apos;November&apos;, &apos;December&apos;))</span><br><span class="line">In [19]: print(Month.January)</span><br><span class="line">Month.January</span><br><span class="line"></span><br><span class="line">In [20]: print(Month[&apos;January&apos;])</span><br><span class="line">Month.January</span><br><span class="line"></span><br><span class="line">In [21]: print(Month[&apos;January&apos;].value)</span><br><span class="line">1</span><br><span class="line"></span><br><span class="line">In [22]: print(Month(4))</span><br><span class="line">Month.April</span><br><span class="line">In [24]: for name, members in Month.__members__.items():</span><br><span class="line">    print(&quot;%s =&gt; %s =&gt; %s&quot; % (name, members, members.value))</span><br><span class="line">   ....:     </span><br><span class="line">January =&gt; Month.January =&gt; 1</span><br><span class="line">February =&gt; Month.February =&gt; 2</span><br><span class="line">March =&gt; Month.March =&gt; 3</span><br><span class="line">April =&gt; Month.April =&gt; 4</span><br><span class="line">May =&gt; Month.May =&gt; 5</span><br><span class="line">June =&gt; Month.June =&gt; 6</span><br><span class="line">July =&gt; Month.July =&gt; 7</span><br><span class="line">August =&gt; Month.August =&gt; 8</span><br><span class="line">September =&gt; Month.September =&gt; 9</span><br><span class="line">October =&gt; Month.October =&gt; 10</span><br><span class="line">November =&gt; Month.November =&gt; 11</span><br><span class="line">December =&gt; Month.December =&gt; 12</span><br></pre></td></tr></table></figure>
-<p>自定义枚举类（自定义int常量从0开始）<br>@unique帮助我们检查没有重复值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">In [29]: from enum import Enum, unique</span><br><span class="line"></span><br><span class="line">In [30]: @unique</span><br><span class="line">   ....: class Myday(Enum):</span><br><span class="line">   ....:     Sun = 0</span><br><span class="line">   ....:     Mon = 1</span><br><span class="line">   ....:     Tue = 2</span><br><span class="line">   ....:     Wed = 3</span><br><span class="line">   ....:     Thu = 4</span><br><span class="line">   ....:     Fri = 5</span><br><span class="line">   ....:     Sat = 6</span><br><span class="line">   ....:     </span><br><span class="line"></span><br><span class="line">In [31]: Myday.Fri</span><br><span class="line">Out[31]: &lt;Myday.Fri: 5&gt;</span><br><span class="line"></span><br><span class="line">In [32]: print(Myday.Fri)</span><br><span class="line">Myday.Fri</span><br><span class="line"></span><br><span class="line">In [33]: print(Myday.Fri.value)</span><br><span class="line">5</span><br><span class="line">In [34]: print(Myday[&apos;Fri&apos;])</span><br><span class="line">Myday.Fri</span><br><span class="line"></span><br><span class="line">In [35]: print(Myday(5))</span><br><span class="line">Myday.Fri</span><br><span class="line"></span><br><span class="line">In [37]: for name, members in Myday.__members__.items():</span><br><span class="line">   ....:     print(&quot;%s, %s, %s&quot; % (name, members, members.value))</span><br><span class="line">   ....:     </span><br><span class="line">Sun, Myday.Sun, 0</span><br><span class="line">Mon, Myday.Mon, 1</span><br><span class="line">Tue, Myday.Tue, 2</span><br><span class="line">Wed, Myday.Wed, 3</span><br><span class="line">Thu, Myday.Thu, 4</span><br><span class="line">Fri, Myday.Fri, 5</span><br><span class="line">Sat, Myday.Sat, 6</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjl8vgl9i0016p1jx628272yp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjl90w31j001a30jxdryi4cpu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1174,11 +1155,11 @@
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>
