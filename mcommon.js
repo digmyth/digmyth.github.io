@@ -7,7 +7,7 @@ function decryptAES() {
         console.log(content);
         content = unescape(content);
         if (content == '') {
-            alert("密码错误！！");
+            alert("大爷常来玩");
         } else {
             document.getElementById("encrypt-blog").style.display    = "inline";
             document.getElementById("encrypt-blog").innerHTML        = content;
@@ -20,7 +20,7 @@ function decryptAES() {
             }
         }
     } catch (e) {
-        alert("密码错误！！");
+        alert("大爷常来玩");
         console.log(e);
     }
 }
