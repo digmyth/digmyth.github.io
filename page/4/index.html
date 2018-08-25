@@ -126,7 +126,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjl8sgeqi003oajjxnwkyo4qn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjl8spa3w003ocxjxtc1gwr4v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -176,7 +176,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjl8sgeoi000oajjxog09em6y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjl8spa1f000ocxjxh36vyjve" class="article-share-link">Share</a>
       
       
     </footer>
@@ -215,16 +215,29 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/06/15/git-01/#more">Read More</a>
-          </p>
-        
+        <ul>
+<li>目录</li>
+<li>git建版本库</li>
+<li>git别名设置</li>
+<li>git基本配置</li>
+<li>git基本命令</li>
+<li>git分支管理</li>
+</ul>
+<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git init # 把当前目录变成git可管理的仓库</span><br><span class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</span><br></pre></td></tr></table></figure>
+<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">为命令设置别名</span><br><span class="line">$ git config --global alias.co checkout</span><br><span class="line">$ git config --global alias.ci commit</span><br><span class="line">$ git config --global alias.br branch</span><br></pre></td></tr></table></figure>
+<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">每台机器自报家门</span><br><span class="line">$ git config --global user.name &quot;Your Name&quot;</span><br><span class="line">$ git config --global user.email &quot;email@example.com&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">优先级从高到低是</span><br><span class="line">.git/config--&gt;  --global --&gt; system</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">全局生效: 配置保存在/etc/gitconfig</span><br><span class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</span><br><span class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </span><br><span class="line">[user]</span><br><span class="line">	name = wxq</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</span><br><span class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </span><br><span class="line">[user]</span><br><span class="line">	name = wxq</span><br><span class="line">	email = you@example.com</span><br><span class="line"></span><br><span class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</span><br><span class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">只对某仓库生效：配置保存在reponame/.git/config</span><br><span class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</span><br><span class="line">[root@wxq-srv git_work]# cat .git/config </span><br><span class="line">[core]</span><br><span class="line">	repositoryformatversion = 0</span><br><span class="line">	filemode = true</span><br><span class="line">	bare = false</span><br><span class="line">	logallrefupdates = true</span><br><span class="line">[user]</span><br><span class="line">	name = wxq1</span><br></pre></td></tr></table></figure>
+<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git log  # 每一次提交的记录</span><br><span class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</span><br><span class="line">git reset --hard $commit_id   # 回到指定版本</span><br><span class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</span><br><span class="line">git add index.html   # 添加更改至state暂存	区</span><br><span class="line">git reset HEAD index.html  # unstage 退出暂存区</span><br><span class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</span><br></pre></td></tr></table></figure>
+<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
+<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">查看分支：git branch</span><br><span class="line">创建分支：git branch &lt;name&gt;</span><br><span class="line">切换分支：git checkout &lt;name&gt;</span><br><span class="line">创建+切换分支：git checkout -b &lt;name&gt;</span><br><span class="line">合并某分支到当前分支：git merge &lt;name&gt;</span><br><span class="line">删除分支：git branch -d &lt;name&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjl8sgeo8000fajjx6no3p5a6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjl8spa16000fcxjxpxyi6d9z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -285,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjl8sgeoo000yajjxnq0n5urn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjl8spa1m000ycxjxc9r1qev5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjl8sgeni0000ajjxogsvvkaw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjl8spa0g0000cxjxhl14xcbf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -427,7 +440,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjl8sgeo00008ajjxvwnggpn7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjl8spa0y0008cxjxudmk355j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -472,7 +485,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjl8sgepy002sajjxdoti4wh2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjl8spa33002scxjx9529dccp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -523,7 +536,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjl8sgepm0026ajjx0ovcol1j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjl8spa2q0026cxjxco8nrqet" class="article-share-link">Share</a>
       
       
     </footer>
@@ -574,7 +587,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjl8sgeog000najjxq8day7fj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjl8spa1d000ncxjxhbkrsjem" class="article-share-link">Share</a>
       
       
     </footer>
@@ -636,7 +649,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjl8sgeom000wajjximvpcva4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjl8spa1k000wcxjxia1asox5" class="article-share-link">Share</a>
       
       
     </footer>

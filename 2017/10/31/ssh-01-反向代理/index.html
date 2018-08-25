@@ -5,17 +5,17 @@
   
   <title>ssh-01-反向代理 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="The article has been encrypted, please enter your password to view.">
+  <meta name="description" content="疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。  解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？   实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892那么在221">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ssh-01-反向代理">
 <meta property="og:url" content="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="The article has been encrypted, please enter your password to view.">
+<meta property="og:description" content="疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。  解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？   实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892那么在221">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-25T02:11:05.142Z">
+<meta property="og:updated_time" content="2018-08-25T02:17:20.670Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ssh-01-反向代理">
-<meta name="twitter:description" content="The article has been encrypted, please enter your password to view.">
+<meta name="twitter:description" content="疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。  解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？   实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892那么在221">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -90,11 +90,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <script src="/crypto-js.js"></script><script src="/mcommon.js"></script><h3 id="encrypt-message"></h3><link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"> <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">   <script src="sweetalert2.all.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script> <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> <div id="security"> <div style="width:300px; float:right"> <div class="input-group"> <input type="text" class="form-control" aria-label="Enter the password." id="pass"  placeholder="逗你玩儿"  /> <div class="input-group-btn"> <button type="button" class="btn btn-success" onclick="decryptAES()">同意条款</button> </div> </div> </div> </div> <div id="encrypt-blog" style="display:none"> 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 </div>
+        <ul>
+<li><p><strong>疑惑</strong>: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。</p>
+</li>
+<li><p><strong>解惑</strong>: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？</p>
+</li>
+</ul>
+<p>实战<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">内部A主机执行下面命令</span><br><span class="line">ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892</span><br><span class="line"></span><br><span class="line">那么在221.152.61.84的127.0.0.1:2222就转到了内部主机的127.0.0.1:22 ，很实用的功能。</span><br><span class="line">此时只需要C主机ssh 127.0.0.1 -p 2222即可连接到内网主机A</span><br></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjl8sgepr002eajjx3w1l7hzj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjl8spa2v002ecxjx2t2o85o8" class="article-share-link">Share</a>
       
       
     </footer>
