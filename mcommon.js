@@ -29,6 +29,14 @@ function decryptAES1() {
 
 function decryptAES() {
 
+ var pass = String(document.getElementById("pass").value);
+    try {
+        var content = CryptoJS.AES.decrypt(document.getElementById("encrypt-blog").innerHTML.trim(), pass);
+        content = content.toString(CryptoJS.enc.Utf8);
+        content = decodeBase64(content);
+        console.log(content);
+        content = unescape(content);
+        if (content == '') {
 swal({
   position: 'top-end',
   type: 'success',
@@ -36,6 +44,25 @@ swal({
   showConfirmButton: false,
   timer: 1500
 })
+//            alert("大爷常来玩");
+
+        } else {
+            document.getElementById("encrypt-blog").style.display    = "inline";
+            document.getElementById("encrypt-blog").innerHTML        = content;
+            document.getElementById("encrypt-message").style.display = "none";
+
+            document.getElementById("security").style.display        = "none";
+
+            if (document.getElementById("toc-div")) {
+                document.getElementById("toc-div").style.display     = "inline";
+            }
+        }
+    } catch (e) {
+  //      alert("大爷常来玩");
+  //      console.log(e);
+    }
+
+
 
 }
 
