@@ -62,6 +62,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-spider01-基础知识" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/06/python-spider01-基础知识/" class="article-date">
+  <time datetime="2017-12-06T12:51:41.000Z" itemprop="datePublished">2017-12-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web爬虫开发/">Web爬虫开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/06/python-spider01-基础知识/">python-spider-基础知识</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>前言</li>
+<li>爬虫简介</li>
+<li>具备技能</li>
+<li>爬虫实现</li>
+<li>爬虫示例</li>
+</ul>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>爬虫：利用python模块伪造浏览器行为，读取网页源码，再经过正则匹配取出HTML文本的一系列处理，数据分析称为爬虫</p>
+<p>基本内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- python实现浏览器行为： requests</span><br><span class="line">- beautifulsoup4  对HTML内容进行分析</span><br><span class="line">- HTTP相关知识：</span><br><span class="line">  - cookie</span><br><span class="line">  - csftToken</span><br><span class="line">  - 请求头：其中ContenType表明什么格式封装的数据，服务器需要用相应格式解数据</span><br><span class="line">    请求： 请求头(cookie)/请求体(发送的内容)</span><br><span class="line">    响应： 响应头（浏览器读取头数据）/响应体（我们看到的网页或网页源码）</span><br><span class="line">- 数据持久化（数据库存储）</span><br></pre></td></tr></table></figure></p>
+<h3 id="具备技能"><a href="#具备技能" class="headerlink" title="具备技能"></a>具备技能</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">性能相关：批量get URL可想而知性能重要性</span><br><span class="line">1 线程池，进程池，</span><br><span class="line"></span><br><span class="line">2 协程coroutine（微线程）：</span><br><span class="line">     协程本身没有用，只做切换，具有切换特性,要想性能很高，刚好遇到IO时切换</span><br><span class="line">     </span><br><span class="line">3 异步非阻塞（如twisted,gevent,asyncio,tornado内部集成）</span><br><span class="line"></span><br><span class="line">  其中gevent异步模块由2个东西组成:</span><br><span class="line">	   greenlet协程: greenlet就是利用yield实现的协程</span><br><span class="line">	   libevent: libevent做异步IO库</span><br></pre></td></tr></table></figure>
+<p><a href="https://segmentfault.com/a/1190000001813992" target="_blank" rel="noopener">七牛云进程线程分享</a>　</p>
+<p>异步非阻塞<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">遇到IO请求不等待继续执行其它任务,如果IO请求响应内容回来了,自动回调某个函数.</span><br><span class="line">异步： 回调（相关于通知机制）</span><br><span class="line">非阻塞： 不等待</span><br></pre></td></tr></table></figure></p>
+<p>后面会学到爬虫框架：scrapy<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1 内部是twisted实现异步</span><br><span class="line">2 写入URL自动下载网页</span><br><span class="line">3 自动将下载的网页解析为对象方便我们处理</span><br></pre></td></tr></table></figure></p>
+<p>后面也会学到分布式爬虫组件redis-scrapy</p>
+<h3 id="爬虫实现"><a href="#爬虫实现" class="headerlink" title="爬虫实现"></a>爬虫实现</h3><p>基本模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip3 install requests</span><br><span class="line">pip3 install beautifulsoup4   （将网页字符串解析为对象，用于直接取文本内容）</span><br></pre></td></tr></table></figure></p>
+<p>爬虫实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1 代码发送get请求： 请求头+请求体</span><br><span class="line">2 接收返回值： 响应头+响应体（本质字符串）</span><br><span class="line">3 获取响应体后进行解析，方便获取文本内容</span><br><span class="line"> import requests</span><br><span class="line"> from bs4 import BeautifulSoup</span><br></pre></td></tr></table></figure></p>
+<p>注意几点：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1 回车时得到token和cookies,如果有token和cookies的话取出来,一般get请求</span><br><span class="line">2 提交用户名密码时带上token和cookies,一般post请求,并且取出登录成功后的cookies</span><br><span class="line">3 登录后才能看到的网页(前2次请求的cookies都带上)</span><br></pre></td></tr></table></figure></p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>示例这里就不展开了，可以基于这几个站点简单入门</p>
+<ul>
+<li>github或汽车之家</li>
+<li>抽届点赞</li>
+<li>博客园用户名密码密文发送给服务器的情况，其实是利用js三方模块在浏览器端加密再发送的（python rsa模块加密）</li>
+<li>知乎，新浪微博这种有图形验证码的网站，需要第三方平台做图像识别（类似滑动验证码这种验证其实是向后台发送鼠标坐标）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjl90x82700263tjx1kkg7n75" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-23-Django序列化" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/01/web-django-23-Django序列化/" class="article-date">
@@ -101,7 +168,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjl90w33p003i30jxc33jv106" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjl90x837003i3tjx0zdiclw7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -162,7 +229,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjl90w33k003e30jxazuriyfr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjl90x833003e3tjxyr5788v4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -229,7 +296,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjl90w33i003c30jxodn4mv3q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjl90x830003c3tjxgyhtt5b7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -285,7 +352,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjl90w30r000g30jxhb0h2ahu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjl90x80x000g3tjxd3dpfjeu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -357,7 +424,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjl90w30t000j30jx7gcbct8j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjl90x80z000j3tjxprddmu5v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -452,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjl90w313000t30jxnq8whonm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjl90x817000t3tjxett5u1jo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -505,7 +572,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjl90w33n003g30jxdrwmixg4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjl90x834003g3tjxjp3nvowy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -575,7 +642,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjl90w311000r30jxlw8vvau6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjl90x816000r3tjx8ty08scf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -629,57 +696,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjl90w30b000530jxrx63zxci" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-ssh-01-反向代理" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/31/ssh-01-反向代理/" class="article-date">
-  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/31/ssh-01-反向代理/">ssh-01-反向代理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li><p><strong>疑惑</strong>: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。</p>
-</li>
-<li><p><strong>解惑</strong>: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？</p>
-</li>
-</ul>
-<p>实战<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">内部A主机执行下面命令</span><br><span class="line">ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892</span><br><span class="line"></span><br><span class="line">那么在221.152.61.84的127.0.0.1:2222就转到了内部主机的127.0.0.1:22 ，很实用的功能。</span><br><span class="line">此时只需要C主机ssh 127.0.0.1 -p 2222即可连接到内网主机A</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/ssh-01-反向代理/" data-id="cjl90w32o002g30jxk4yidhnc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cjl90x80l00053tjxc92cxafs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -720,7 +737,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -741,15 +758,15 @@
           </li>
         
           <li>
+            <a href="/2018/07/25/mysql-limit/">CentOS 7.x/Mysql limit</a>
+          </li>
+        
+          <li>
             <a href="/2018/05/29/shell-func/">shell function语法</a>
           </li>
         
           <li>
             <a href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
           </li>
         
       </ul>
