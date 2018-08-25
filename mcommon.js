@@ -1,4 +1,4 @@
-function decryptAES() {
+function decryptAES1() {
     var pass = String(document.getElementById("pass").value);
     try {
         var content = CryptoJS.AES.decrypt(document.getElementById("encrypt-blog").innerHTML.trim(), pass);
@@ -24,6 +24,23 @@ function decryptAES() {
         console.log(e);
     }
 }
+
+
+
+function decryptAES() {
+
+swal({
+  position: 'top-end',
+  type: 'success',
+  title: '常来玩',
+  showConfirmButton: false,
+  timer: 1500
+})
+
+}
+
+
+
 
 function htmlDecode (str) {
     var s = "";
