@@ -5,46 +5,17 @@
   
   <title>web-django-17-ModelForm | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录
-回顾Form
-ModelForm特性
-ModelForm使用
-html前端展示
-
-ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用于生成 html标签，并且可以保留数据（如编辑）
-缺点：多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update()
-2 ModelForm特性解决办法，引用ModelForm
-
-1 它可以循环model">
+  <meta name="description" content="目录 回顾Form ModelForm特性 ModelForm使用 html前端展示  ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用于生成 html标签，并且可以保留数据（如编辑） 缺点：多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update() 2 ModelForm特性解决办法，引用ModelForm  1 它可以循环model">
 <meta property="og:type" content="article">
 <meta property="og:title" content="web-django-17-ModelForm">
 <meta property="og:url" content="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/index.html">
-<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="目录
-回顾Form
-ModelForm特性
-ModelForm使用
-html前端展示
-
-ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用于生成 html标签，并且可以保留数据（如编辑）
-缺点：多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update()
-2 ModelForm特性解决办法，引用ModelForm
-
-1 它可以循环model">
-<meta property="og:updated_time" content="2018-01-18T03:48:11.000Z">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="目录 回顾Form ModelForm特性 ModelForm使用 html前端展示  ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用于生成 html标签，并且可以保留数据（如编辑） 缺点：多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update() 2 ModelForm特性解决办法，引用ModelForm  1 它可以循环model">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-01-18T03:48:11.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-django-17-ModelForm">
-<meta name="twitter:description" content="目录
-回顾Form
-ModelForm特性
-ModelForm使用
-html前端展示
-
-ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用于生成 html标签，并且可以保留数据（如编辑）
-缺点：多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update()
-2 ModelForm特性解决办法，引用ModelForm
-
-1 它可以循环model">
+<meta name="twitter:description" content="目录 回顾Form ModelForm特性 ModelForm使用 html前端展示  ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用于生成 html标签，并且可以保留数据（如编辑） 缺点：多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update() 2 ModelForm特性解决办法，引用ModelForm  1 它可以循环model">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -87,7 +58,7 @@ ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用�
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
       </div>
     </div>
   </div>
@@ -142,14 +113,14 @@ ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用�
 <li>Form与ModelForm没有谁好谁不好，只是适用场景不同。</li>
 <li>ModelForm依赖modelsclass, modelForm必须和models.py在一起。</li>
 </ul>
-<h4 id="3-ModelForm使用"><a href="#3-ModelForm使用" class="headerlink" title="3 ModelForm使用"></a>3 ModelForm使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">from django.forms import Form</div><div class="line">from django.forms import ModelForm</div><div class="line">from django.forms import fields</div><div class="line">from django.forms import widgets as fwidgets</div><div class="line">from app01 import models</div><div class="line">class TestForm(ModelForm):</div><div class="line">    class Meta:</div><div class="line">        model = models.Book</div><div class="line">        fields = &quot;__all__&quot; # 可以是[&quot;&quot;,&quot;&quot;,]</div><div class="line">        labels = &#123;</div><div class="line">            &apos;title&apos;:&quot;书名&quot;,</div><div class="line">            &quot;price&quot;:&quot;价格&quot;,</div><div class="line">        &#125;</div><div class="line">        error_messages = &#123;</div><div class="line">            &quot;title&quot;:&#123;&quot;requried&quot;:&quot;书名不能为空&quot;,&#125;,</div><div class="line">        &#125;</div><div class="line">        widgets=&#123;</div><div class="line">            &quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
-<h4 id="4-html前端展示"><a href="#4-html前端展示" class="headerlink" title="4 html前端展示"></a>4 html前端展示</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;form  action=&quot;/addbook/&quot; method=&quot;POST&quot; novalidate&gt;</div><div class="line">    &#123;% csrf_token %&#125;</div><div class="line">    &#123;% for field in form %&#125;</div><div class="line">     &lt;p&gt;&#123;&#123; field.label &#125;&#125;:&#123;&#123; field  &#125;&#125; &#123;&#123; field.errors.0 &#125;&#125;&lt;/p&gt;</div><div class="line">    &#123;% endfor %&#125;</div><div class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure>
-<p>引入bootstrap时，querySet for循环展示:注意时间格式的转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;div class=&quot;container&quot; style=&quot;width: 700px;margin-top: 50px&quot;&gt;</div><div class="line">    &lt;table class=&quot;table table-bordered&quot;&gt;</div><div class="line">        &lt;thead&gt;&lt;/thead&gt;</div><div class="line">        &lt;tbody&gt;</div><div class="line">            &#123;% for row in data_list %&#125;</div><div class="line">                &lt;tr&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; row.title &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; row.price &#125;&#125;&lt;/td&gt;</div><div class="line">                    &lt;td&gt;&#123;&#123; row.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&lt;/td&gt;</div><div class="line">                &lt;/tr&gt;</div><div class="line">            &#123;% endfor %&#125;</div><div class="line">        &lt;/tbody&gt;</div><div class="line">    &lt;/table&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="3-ModelForm使用"><a href="#3-ModelForm使用" class="headerlink" title="3 ModelForm使用"></a>3 ModelForm使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">from django.forms import Form</span><br><span class="line">from django.forms import ModelForm</span><br><span class="line">from django.forms import fields</span><br><span class="line">from django.forms import widgets as fwidgets</span><br><span class="line">from app01 import models</span><br><span class="line">class TestForm(ModelForm):</span><br><span class="line">    class Meta:</span><br><span class="line">        model = models.Book</span><br><span class="line">        fields = &quot;__all__&quot; # 可以是[&quot;&quot;,&quot;&quot;,]</span><br><span class="line">        labels = &#123;</span><br><span class="line">            &apos;title&apos;:&quot;书名&quot;,</span><br><span class="line">            &quot;price&quot;:&quot;价格&quot;,</span><br><span class="line">        &#125;</span><br><span class="line">        error_messages = &#123;</span><br><span class="line">            &quot;title&quot;:&#123;&quot;requried&quot;:&quot;书名不能为空&quot;,&#125;,</span><br><span class="line">        &#125;</span><br><span class="line">        widgets=&#123;</span><br><span class="line">            &quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-html前端展示"><a href="#4-html前端展示" class="headerlink" title="4 html前端展示"></a>4 html前端展示</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;form  action=&quot;/addbook/&quot; method=&quot;POST&quot; novalidate&gt;</span><br><span class="line">    &#123;% csrf_token %&#125;</span><br><span class="line">    &#123;% for field in form %&#125;</span><br><span class="line">     &lt;p&gt;&#123;&#123; field.label &#125;&#125;:&#123;&#123; field  &#125;&#125; &#123;&#123; field.errors.0 &#125;&#125;&lt;/p&gt;</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+<p>引入bootstrap时，querySet for循环展示:注意时间格式的转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;container&quot; style=&quot;width: 700px;margin-top: 50px&quot;&gt;</span><br><span class="line">    &lt;table class=&quot;table table-bordered&quot;&gt;</span><br><span class="line">        &lt;thead&gt;&lt;/thead&gt;</span><br><span class="line">        &lt;tbody&gt;</span><br><span class="line">            &#123;% for row in data_list %&#125;</span><br><span class="line">                &lt;tr&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.title &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.price &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&lt;/td&gt;</span><br><span class="line">                &lt;/tr&gt;</span><br><span class="line">            &#123;% endfor %&#125;</span><br><span class="line">        &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjl8kvrbh00349njxzcmm36bi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjl8oawej0030nsjxpnwe2cdb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -243,11 +214,11 @@ ModelForm简介1 回顾FormForm作用：第一： 用于Form验证第二： 用�
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>

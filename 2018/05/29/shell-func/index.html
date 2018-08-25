@@ -5,19 +5,17 @@
   
   <title>shell function语法 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下
-1234567891011121314151617181920212223242526272829cat /usr/local/bin/show #!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\">
+  <meta name="description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下 1234567891011121314151617181920212223242526272829cat /usr/local/bin/show #!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\">
 <meta property="og:type" content="article">
 <meta property="og:title" content="shell function语法">
 <meta property="og:url" content="http://www.digmyth.com/2018/05/29/shell-func/index.html">
-<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下
-1234567891011121314151617181920212223242526272829cat /usr/local/bin/show #!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\">
-<meta property="og:updated_time" content="2018-06-25T02:18:08.000Z">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下 1234567891011121314151617181920212223242526272829cat /usr/local/bin/show #!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-06-25T02:18:08.139Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="shell function语法">
-<meta name="twitter:description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下
-1234567891011121314151617181920212223242526272829cat /usr/local/bin/show #!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\">
+<meta name="twitter:description" content="Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下 1234567891011121314151617181920212223242526272829cat /usr/local/bin/show #!/bin/basha=&amp;apos;df -hT&amp;apos;b=&amp;quot;ls&amp;quot;echo_print() &amp;#123;	echo -e &amp;quot;\">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -60,7 +58,7 @@
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
       </div>
     </div>
   </div>
@@ -93,13 +91,13 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">cat /usr/local/bin/show </div><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">a=&apos;df -hT&apos;</div><div class="line">b=&quot;ls&quot;</div><div class="line"></div><div class="line"></div><div class="line">echo_print() &#123;</div><div class="line">	echo -e &quot;\033[1;32m$1\033[0m&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">exec() &#123;</div><div class="line">	echo_print &quot;$1&quot;</div><div class="line">	$1</div><div class="line">	echo &quot;&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">info () &#123;</div><div class="line">	exec $a</div><div class="line">	exec $b</div><div class="line"></div><div class="line">&#125;</div><div class="line">case &quot;$1&quot; in</div><div class="line">info)</div><div class="line">	info;;</div><div class="line"></div><div class="line">*)</div><div class="line">	echo &quot;Usage: show info&quot;;;</div><div class="line">esac</div></pre></td></tr></table></figure>
-<p>相当于定制了一个shell命令，运行一下看下效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#[root@wxqnode opt]# show info</div><div class="line">df</div><div class="line">Filesystem              1K-blocks    Used Available Use% Mounted on</div><div class="line">/dev/mapper/centos-root  22001156 1946776  20054380   9% /</div><div class="line">devtmpfs                  2962076       0   2962076   0% /dev</div><div class="line">tmpfs                     2973096       0   2973096   0% /dev/shm</div><div class="line">tmpfs                     2973096   33268   2939828   2% /run</div><div class="line">tmpfs                     2973096       0   2973096   0% /sys/fs/cgroup</div><div class="line">/dev/sda1                 1038336  145652    892684  15% /boot</div><div class="line">tmpfs                      594620       0    594620   0% /run/user/0</div><div class="line"></div><div class="line">ls</div><div class="line">restart_cob  study  venv</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">cat /usr/local/bin/show </span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">a=&apos;df -hT&apos;</span><br><span class="line">b=&quot;ls&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo_print() &#123;</span><br><span class="line">	echo -e &quot;\033[1;32m$1\033[0m&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exec() &#123;</span><br><span class="line">	echo_print &quot;$1&quot;</span><br><span class="line">	$1</span><br><span class="line">	echo &quot;&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">info () &#123;</span><br><span class="line">	exec $a</span><br><span class="line">	exec $b</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">info)</span><br><span class="line">	info;;</span><br><span class="line"></span><br><span class="line">*)</span><br><span class="line">	echo &quot;Usage: show info&quot;;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+<p>相当于定制了一个shell命令，运行一下看下效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#[root@wxqnode opt]# show info</span><br><span class="line">df</span><br><span class="line">Filesystem              1K-blocks    Used Available Use% Mounted on</span><br><span class="line">/dev/mapper/centos-root  22001156 1946776  20054380   9% /</span><br><span class="line">devtmpfs                  2962076       0   2962076   0% /dev</span><br><span class="line">tmpfs                     2973096       0   2973096   0% /dev/shm</span><br><span class="line">tmpfs                     2973096   33268   2939828   2% /run</span><br><span class="line">tmpfs                     2973096       0   2973096   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1                 1038336  145652    892684  15% /boot</span><br><span class="line">tmpfs                      594620       0    594620   0% /run/user/0</span><br><span class="line"></span><br><span class="line">ls</span><br><span class="line">restart_cob  study  venv</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjl8kvray002e9njxq05nvb52" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjl8oawe00021nsjxr13s82xw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -108,11 +106,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2018/08/01/Kubernetes/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/08/01/Openshift/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          kubernetes-入门
+          Openshift-入门
         
       </div>
     </a>
@@ -167,11 +165,11 @@
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>

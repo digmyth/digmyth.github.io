@@ -5,40 +5,17 @@
   
   <title>python-django-26-API验证 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言
-验证原理
-代码实现
-
-讲解Django api验证，基于Tornado签名Cookie源码
-验证原理客户端
-服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
-服务端
-服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
+  <meta name="description" content="前言 验证原理 代码实现  讲解Django api验证，基于Tornado签名Cookie源码 验证原理客户端 服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。 服务端 服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python-django-26-API验证">
 <meta property="og:url" content="http://www.digmyth.com/2018/01/06/python-django-26-API验证/index.html">
-<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="前言
-验证原理
-代码实现
-
-讲解Django api验证，基于Tornado签名Cookie源码
-验证原理客户端
-服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
-服务端
-服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
-<meta property="og:updated_time" content="2018-02-12T12:44:12.000Z">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="前言 验证原理 代码实现  讲解Django api验证，基于Tornado签名Cookie源码 验证原理客户端 服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。 服务端 服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-02-12T12:44:12.444Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-django-26-API验证">
-<meta name="twitter:description" content="前言
-验证原理
-代码实现
-
-讲解Django api验证，基于Tornado签名Cookie源码
-验证原理客户端
-服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。
-服务端
-服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
+<meta name="twitter:description" content="前言 验证原理 代码实现  讲解Django api验证，基于Tornado签名Cookie源码 验证原理客户端 服务端和客户端共同存一个字符串，客户端用这个字符串和时间戳算一个md5值，把这个md5和时间戳组成一个字符串在请求头里发送给服务端。 服务端 服务端收到这个字符串，分别取出md5和时间戳，用这个时间戳与自己存的key&amp;#39;也算一个md5`值，这个md5值与客户端发来的md5值作比">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -81,7 +58,7 @@
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
       </div>
     </div>
   </div>
@@ -130,18 +107,18 @@
 <p>策略三：<br>5秒钟内的请求作进一步验证，维护一个5秒钟内的合法请求<code>md5</code>值,再来这个<code>md5</code>值的，认为是非法请求。5秒钟失效需要借住<code>memcache</code> <code>redis</code>，它们都自带过期时间。</p>
 <p>策略四：<br>如果基于网络原因，黑客的非法请求比客户端的请求先到达服务器，这样只能数据<code>AES</code>加密了。</p>
 <h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>客户端发送请求头</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import time</div><div class="line">import hashlib</div><div class="line">def md5(arg):</div><div class="line">	hs = hashlib.md5()</div><div class="line">	hs.update(arg.encode(&quot;utf-8&quot;))</div><div class="line">	return hs.hexdigest()</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ctime=time.time()</div><div class="line">key=&apos;sdgasgsdgsdffsdf&apos;</div><div class="line">new_key=&quot;%s|%s&quot; %(key,ctime)</div><div class="line">md5_str = md5(new_key)</div><div class="line">auth_md5_str=&quot;%s|%s&quot; %(mdr_str,ctime)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import time</span><br><span class="line">import hashlib</span><br><span class="line">def md5(arg):</span><br><span class="line">	hs = hashlib.md5()</span><br><span class="line">	hs.update(arg.encode(&quot;utf-8&quot;))</span><br><span class="line">	return hs.hexdigest()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ctime=time.time()</span><br><span class="line">key=&apos;sdgasgsdgsdffsdf&apos;</span><br><span class="line">new_key=&quot;%s|%s&quot; %(key,ctime)</span><br><span class="line">md5_str = md5(new_key)</span><br><span class="line">auth_md5_str=&quot;%s|%s&quot; %(mdr_str,ctime)</span><br></pre></td></tr></table></figure>
 <p>发送请求</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requests.get(url=&quot;http://127.0.0.1:8000/test_api/&quot;,headers = &#123;&apos;auth-api&apos;:auth_md5_str&#125;)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requests.get(url=&quot;http://127.0.0.1:8000/test_api/&quot;,headers = &#123;&apos;auth-api&apos;:auth_md5_str&#125;)</span><br></pre></td></tr></table></figure>
 <p>服务端</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">server_float_time = time.time()</div><div class="line">auth_header_val = requests.META.get(&apos;HTTP_AUTH_API&apos;)</div><div class="line">client_md5_str,client_ctime=auth_header_val.rsplit(&apos;|&apos;,maxsplit=1)</div><div class="line">if (client_float_time + 5) &lt; server_float_time :</div><div class="line">    return HttpResponse(&quot;已过期&quot;)</div><div class="line">server_md5_str != client_md5_str:</div><div class="line">    return HttpResponse(&quot;非法请求&quot;)</div><div class="line">if visited_keys.get(client_md5_str):</div><div class="line">    return HttpResponse(&quot;来晚了，你是非法的&quot;)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server_float_time = time.time()</span><br><span class="line">auth_header_val = requests.META.get(&apos;HTTP_AUTH_API&apos;)</span><br><span class="line">client_md5_str,client_ctime=auth_header_val.rsplit(&apos;|&apos;,maxsplit=1)</span><br><span class="line">if (client_float_time + 5) &lt; server_float_time :</span><br><span class="line">    return HttpResponse(&quot;已过期&quot;)</span><br><span class="line">server_md5_str != client_md5_str:</span><br><span class="line">    return HttpResponse(&quot;非法请求&quot;)</span><br><span class="line">if visited_keys.get(client_md5_str):</span><br><span class="line">    return HttpResponse(&quot;来晚了，你是非法的&quot;)</span><br></pre></td></tr></table></figure>
 <p>&lt;数据加密待续&gt;</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjl8kvraq00249njxxrs0b0a7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjl8oawdy001znsjx6keg7l4n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -235,11 +212,11 @@
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>

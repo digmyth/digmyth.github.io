@@ -5,22 +5,17 @@
   
   <title>shell getopts语法 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下
-
-12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
+  <meta name="description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下  12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
 <meta property="og:type" content="article">
 <meta property="og:title" content="shell getopts语法">
 <meta property="og:url" content="http://www.digmyth.com/2017/01/29/shell-getopts语法/index.html">
-<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下
-
-12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
-<meta property="og:updated_time" content="2018-04-23T06:58:29.000Z">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下  12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-23T06:58:29.638Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="shell getopts语法">
-<meta name="twitter:description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下
-
-12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
+<meta name="twitter:description" content="Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下  12345678910111213141516171819202122232425262728293031323334353637root@ubuntu:~# cat getopts.sh #!/bin/bash# a: b: c: 表示脚本运行时接受选项&amp;lt;-a options">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -63,7 +58,7 @@
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
       </div>
     </div>
   </div>
@@ -98,12 +93,12 @@
         <blockquote>
 <p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:~# cat getopts.sh </div><div class="line">#!/bin/bash</div><div class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</div><div class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</div><div class="line"># OPTARG  表示选项给的值</div><div class="line"># OPTIND  表示选项指针（下一位）</div><div class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</div><div class="line"></div><div class="line">while getopts &quot;:a:b:c:&quot; OPT;</div><div class="line">do</div><div class="line">case $OPT in</div><div class="line">  a)</div><div class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</div><div class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  b)</div><div class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</div><div class="line">	;;</div><div class="line">  c)</div><div class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</div><div class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</div><div class="line">        ;;</div><div class="line">  *)</div><div class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</div><div class="line">esac</div><div class="line">done</div><div class="line">shift $(($OPTIND-1))</div><div class="line">echo &quot;\$1 is: $1&quot;</div><div class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</div><div class="line">a is OPTARG: a1</div><div class="line">a is OPTIND: 3</div><div class="line">b is OPTARG: b1</div><div class="line">b is OPTIND: 5</div><div class="line">c is OPTARG: c1</div><div class="line">c is OPTIND: 7</div><div class="line">$1 is: test.sh</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat getopts.sh </span><br><span class="line">#!/bin/bash</span><br><span class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</span><br><span class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</span><br><span class="line"># OPTARG  表示选项给的值</span><br><span class="line"># OPTIND  表示选项指针（下一位）</span><br><span class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</span><br><span class="line"></span><br><span class="line">while getopts &quot;:a:b:c:&quot; OPT;</span><br><span class="line">do</span><br><span class="line">case $OPT in</span><br><span class="line">  a)</span><br><span class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</span><br><span class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  b)</span><br><span class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  c)</span><br><span class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</span><br><span class="line">        ;;</span><br><span class="line">  *)</span><br><span class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</span><br><span class="line">esac</span><br><span class="line">done</span><br><span class="line">shift $(($OPTIND-1))</span><br><span class="line">echo &quot;\$1 is: $1&quot;</span><br><span class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</span><br><span class="line">a is OPTARG: a1</span><br><span class="line">a is OPTIND: 3</span><br><span class="line">b is OPTARG: b1</span><br><span class="line">b is OPTIND: 5</span><br><span class="line">c is OPTARG: c1</span><br><span class="line">c is OPTIND: 7</span><br><span class="line">$1 is: test.sh</span><br></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjl8kvrb0002h9njx5694qv6y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjl8oawe40029nsjxk6akqg0d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -171,11 +166,11 @@
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>

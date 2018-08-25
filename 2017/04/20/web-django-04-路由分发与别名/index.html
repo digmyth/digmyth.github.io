@@ -5,37 +5,17 @@
   
   <title>web-Django-04-路由分发与别名.md | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录
-别名设置
-namespace设置
-reverse
-include本质
-
-Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。
-别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
+  <meta name="description" content="目录 别名设置 namespace设置 reverse include本质  Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。 别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="web-Django-04-路由分发与别名.md">
 <meta property="og:url" content="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/index.html">
-<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="目录
-别名设置
-namespace设置
-reverse
-include本质
-
-Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。
-别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
-<meta property="og:updated_time" content="2018-01-18T03:43:21.000Z">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="目录 别名设置 namespace设置 reverse include本质  Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。 别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-01-18T03:43:21.980Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-Django-04-路由分发与别名.md">
-<meta name="twitter:description" content="目录
-别名设置
-namespace设置
-reverse
-include本质
-
-Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。
-别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
+<meta name="twitter:description" content="目录 别名设置 namespace设置 reverse include本质  Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，reverse反向生成URL，以及include本质如何路由分发的。 别名设置URL有别名name的设置，添加在最后一级分发视图函数的后面1url(r&amp;apos;^login/&amp;apos;, views.login,name=&amp;quot;">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -78,7 +58,7 @@ Django URLS 路由分发流程己经学习过了，这里了解一下url中的�
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
       </div>
     </div>
   </div>
@@ -118,18 +98,18 @@ Django URLS 路由分发流程己经学习过了，这里了解一下url中的�
 <li>include本质</li>
 </ul>
 <p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</div></pre></td></tr></table></figure></p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
 <h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</div><div class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</div></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">from django.urls import reverse</div><div class="line">def login(request):</div><div class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</div><div class="line">    return redirect(url)</div></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</div></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</div></pre></td></tr></table></figure></p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
 <p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjl8kvrbd002y9njxqylmfqd0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjl8oawee002qnsjxswhtf5mu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -138,19 +118,19 @@ Django URLS 路由分发流程己经学习过了，这里了解一下url中的�
     
 <nav id="article-nav">
   
-    <a href="/2017/04/20/web-django-02-基本配置示例/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/04/29/mysql-pyton操作mysql/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          web-Django-02-基本配置示例
+          Python 操作mysql
         
       </div>
     </a>
   
   
-    <a href="/2017/04/15/web-django-orm(一)/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/04/20/web-django-02-基本配置示例/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">web-django-orm(一)</div>
+      <div class="article-nav-title">web-Django-02-基本配置示例</div>
     </a>
   
 </nav>
@@ -223,11 +203,11 @@ Django URLS 路由分发流程己经学习过了，这里了解一下url中的�
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>

@@ -5,40 +5,17 @@
   
   <title>linux haproxy基础 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录
-haproxy基本介绍
-haproxy基础语法
-haproxy应用
-
-haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。
-取模法：key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器
-当有服务器添加或移走这种缓存就失效了
-如何解决，是有办法的，那就是改进上面那种方法，称一致性h">
+  <meta name="description" content="目录 haproxy基本介绍 haproxy基础语法 haproxy应用  haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。 取模法：key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器 当有服务器添加或移走这种缓存就失效了 如何解决，是有办法的，那就是改进上面那种方法，称一致性h">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux haproxy基础">
 <meta property="og:url" content="http://www.digmyth.com/2017/11/12/haproxy-基础/index.html">
-<meta property="og:site_name" content="Welcome to wxq's Blog created in 2017-01-01">
-<meta property="og:description" content="目录
-haproxy基本介绍
-haproxy基础语法
-haproxy应用
-
-haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。
-取模法：key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器
-当有服务器添加或移走这种缓存就失效了
-如何解决，是有办法的，那就是改进上面那种方法，称一致性h">
-<meta property="og:updated_time" content="2018-04-23T06:57:35.000Z">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="目录 haproxy基本介绍 haproxy基础语法 haproxy应用  haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。 取模法：key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器 当有服务器添加或移走这种缓存就失效了 如何解决，是有办法的，那就是改进上面那种方法，称一致性h">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-23T06:57:35.510Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux haproxy基础">
-<meta name="twitter:description" content="目录
-haproxy基本介绍
-haproxy基础语法
-haproxy应用
-
-haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。
-取模法：key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器
-当有服务器添加或移走这种缓存就失效了
-如何解决，是有办法的，那就是改进上面那种方法，称一致性h">
+<meta name="twitter:description" content="目录 haproxy基本介绍 haproxy基础语法 haproxy应用  haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。 取模法：key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器 当有服务器添加或移走这种缓存就失效了 如何解决，是有办法的，那就是改进上面那种方法，称一致性h">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -81,7 +58,7 @@ haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
       </div>
     </div>
   </div>
@@ -125,12 +102,12 @@ haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，
 <p>如何解决，是有办法的，那就是改进上面那种方法，称一致性hash算法：consitent hash</p>
 <p>有一个环，用32位二进制从0开始计数，环上分布有离散的2^32 点。<br>key hash 后的值除以2^32时取余数，这个余数一定在0到2^32-1范围内，也就是在这个环上<br>那么数据就是存储在余数的下一台服务器上，服务器是离散分布在这样的环上的。<br>缺点：服务器分布可能存在偏斜，也就是可能所有服务器集中在环三分之一处。<br>当存储数据找下一台服务器，那台服务器存储量太大了。</p>
 <p>解决办法：<br>使用虚拟节点离散分布在环上来代替物理节点。<br>hadoop前身开源搜索引擎，任何搜索引擎首先是大数据搜索平台，其次才是高性能分析平台。</p>
-<p>流式数据存储处理平台：storm  spark大数据处理平台。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">nginx:</div><div class="line"></div><div class="line">server &#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line">server &#123;</div><div class="line">	proxy_pass: </div><div class="line">&#125;</div><div class="line"></div><div class="line">upstream &#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">upstream &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>流式数据存储处理平台：storm  spark大数据处理平台。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">nginx:</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">	proxy_pass: </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="haproxy应用"><a href="#haproxy应用" class="headerlink" title="haproxy应用"></a>haproxy应用</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjl8kvr9a000q9njxv9q6fmj1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjl8oawcw000gnsjxugau968x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -198,11 +175,11 @@ haproxy基本介绍haproxy基础语法当有多个缓存key/value服务器时，
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>
