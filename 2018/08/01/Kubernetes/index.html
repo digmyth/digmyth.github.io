@@ -5,17 +5,17 @@
   
   <title>kubernetes-入门 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="k8s 的世界12345678910- charts , k8s 的包， 类似 *.rpm 的东西- helm , k8s 的包管理机制，类似 yum 的东西openstack 容器化 ( docker 版本）- kolla-ansible- tripleoopenstack 容器化( k8s  版本）- openstack-helm- kolla-kubernetes">
+  <meta name="description" content="k8s 的世界12345678910- charts , k8s 的包， 类似 *.rpm 的东西- helm , k8s 的包管理机制，类似 yum 的东西openstack 容器化 ( docker 版本）- kolla-ansible- tripleoopenstack 容器化( k8s  版本）- openstack-helm- kolla-kubernetes openshift中有几种">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes-入门">
 <meta property="og:url" content="http://www.digmyth.com/2018/08/01/Kubernetes/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="k8s 的世界12345678910- charts , k8s 的包， 类似 *.rpm 的东西- helm , k8s 的包管理机制，类似 yum 的东西openstack 容器化 ( docker 版本）- kolla-ansible- tripleoopenstack 容器化( k8s  版本）- openstack-helm- kolla-kubernetes">
+<meta property="og:description" content="k8s 的世界12345678910- charts , k8s 的包， 类似 *.rpm 的东西- helm , k8s 的包管理机制，类似 yum 的东西openstack 容器化 ( docker 版本）- kolla-ansible- tripleoopenstack 容器化( k8s  版本）- openstack-helm- kolla-kubernetes openshift中有几种">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-07-29T10:52:14.801Z">
+<meta property="og:updated_time" content="2018-08-26T04:03:32.956Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes-入门">
-<meta name="twitter:description" content="k8s 的世界12345678910- charts , k8s 的包， 类似 *.rpm 的东西- helm , k8s 的包管理机制，类似 yum 的东西openstack 容器化 ( docker 版本）- kolla-ansible- tripleoopenstack 容器化( k8s  版本）- openstack-helm- kolla-kubernetes">
+<meta name="twitter:description" content="k8s 的世界12345678910- charts , k8s 的包， 类似 *.rpm 的东西- helm , k8s 的包管理机制，类似 yum 的东西openstack 容器化 ( docker 版本）- kolla-ansible- tripleoopenstack 容器化( k8s  版本）- openstack-helm- kolla-kubernetes openshift中有几种">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -91,11 +91,17 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="k8s-的世界"><a href="#k8s-的世界" class="headerlink" title="k8s 的世界"></a>k8s 的世界</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- charts , k8s 的包， 类似 *.rpm 的东西</span><br><span class="line">- helm , k8s 的包管理机制，类似 yum 的东西</span><br><span class="line"></span><br><span class="line">openstack 容器化 ( docker 版本）</span><br><span class="line">- kolla-ansible</span><br><span class="line">- tripleo</span><br><span class="line"></span><br><span class="line">openstack 容器化( k8s  版本）</span><br><span class="line">- openstack-helm</span><br><span class="line">- kolla-kubernetes</span><br></pre></td></tr></table></figure>
+<p>openshift中有几种网络端口模式(暴露服务)</p>
+<h3 id="hostnetwork"><a href="#hostnetwork" class="headerlink" title="hostnetwork"></a>hostnetwork</h3><p>hostnetwork 就是Docker的host网络，pod直接占用宿主机IP及端口，没什么可说的</p>
+<h3 id="hostport"><a href="#hostport" class="headerlink" title="hostport"></a>hostport</h3><p>hostport 是在单宿主机通过IP+端口来映射容器或pod(-p 参数), 实现外部能访问容器服务或pod服务</p>
+<h3 id="nodeport"><a href="#nodeport" class="headerlink" title="nodeport"></a>nodeport</h3><p>nodeport也是在宿主机通过IP+端口来映射，与hostport不同之处是映射ServiceIP+端口，再转到pod服务</p>
+<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>router是以hostnetwork网络模式跑在宿主机上的容器化haproxy pod, pod IP和端口就是节点的IP和端，对外暴露80、443、1936端口，haproxy中有service query 信息来自于etcd, 再通过service访问到pod服务。</p>
+<p>注： router是hostnetwork网络模式就意味着一个节点只能运行一个router</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cjlabuaeo00033pjx0mxprf8v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cjlabwyn600035fjxj855kpnb" class="article-share-link">Share</a>
       
       
     </footer>
