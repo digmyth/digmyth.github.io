@@ -62,9 +62,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/01/Openshift/" class="article-date">
+    <a href="/2018/08/01/Kubernetes/" class="article-date">
   <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
 </a>
     
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
+      <a class="article-title" href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
     </h1>
   
 
@@ -88,11 +88,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
+        <h2 id="k8s-的世界"><a href="#k8s-的世界" class="headerlink" title="k8s 的世界"></a>k8s 的世界</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- charts , k8s 的包， 类似 *.rpm 的东西</span><br><span class="line">- helm , k8s 的包管理机制，类似 yum 的东西</span><br><span class="line"></span><br><span class="line">openstack 容器化 ( docker 版本）</span><br><span class="line">- kolla-ansible</span><br><span class="line">- tripleo</span><br><span class="line"></span><br><span class="line">openstack 容器化( k8s  版本）</span><br><span class="line">- openstack-helm</span><br><span class="line">- kolla-kubernetes</span><br></pre></td></tr></table></figure>
+<p>openshift中有几种网络端口模式(暴露服务)</p>
+<h3 id="hostnetwork"><a href="#hostnetwork" class="headerlink" title="hostnetwork"></a>hostnetwork</h3><p>hostnetwork 就是Docker的host网络，pod直接占用宿主机IP及端口，没什么可说的</p>
+<h3 id="hostport"><a href="#hostport" class="headerlink" title="hostport"></a>hostport</h3><p>hostport 是在单宿主机通过IP+端口来映射容器或pod(-p 参数), 实现外部能访问容器服务或pod服务</p>
+<h3 id="nodeport"><a href="#nodeport" class="headerlink" title="nodeport"></a>nodeport</h3><p>nodeport也是在宿主机通过IP+端口来映射，与hostport不同之处是映射ServiceIP+端口，再转到pod服务</p>
+<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>router是以hostnetwork网络模式跑在宿主机上的容器化haproxy pod, pod IP和端口就是节点的IP和端，对外暴露80、443、1936端口，haproxy中有service query 信息来自于etcd, 再通过service访问到pod服务。</p>
+<p>注： router是hostnetwork网络模式就意味着一个节点只能运行一个router</p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cjlac5i9d0004a8jxmvi1srzt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cjlnqlv3s00002wjxyuocfwor" class="article-share-link">Share</a>
       
       
     </footer>
@@ -140,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="cjlac5i960001a8jx28do13tw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="cjlnqlv4000012wjxqfk30p9p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -153,9 +160,9 @@
 
 
   
-    <article id="post-Kubernetes" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes/" class="article-date">
+    <a href="/2018/08/01/Openshift/" class="article-date">
   <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
 </a>
     
@@ -171,7 +178,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
     </h1>
   
 
@@ -179,18 +186,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="k8s-的世界"><a href="#k8s-的世界" class="headerlink" title="k8s 的世界"></a>k8s 的世界</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- charts , k8s 的包， 类似 *.rpm 的东西</span><br><span class="line">- helm , k8s 的包管理机制，类似 yum 的东西</span><br><span class="line"></span><br><span class="line">openstack 容器化 ( docker 版本）</span><br><span class="line">- kolla-ansible</span><br><span class="line">- tripleo</span><br><span class="line"></span><br><span class="line">openstack 容器化( k8s  版本）</span><br><span class="line">- openstack-helm</span><br><span class="line">- kolla-kubernetes</span><br></pre></td></tr></table></figure>
-<p>openshift中有几种网络端口模式(暴露服务)</p>
-<h3 id="hostnetwork"><a href="#hostnetwork" class="headerlink" title="hostnetwork"></a>hostnetwork</h3><p>hostnetwork 就是Docker的host网络，pod直接占用宿主机IP及端口，没什么可说的</p>
-<h3 id="hostport"><a href="#hostport" class="headerlink" title="hostport"></a>hostport</h3><p>hostport 是在单宿主机通过IP+端口来映射容器或pod(-p 参数), 实现外部能访问容器服务或pod服务</p>
-<h3 id="nodeport"><a href="#nodeport" class="headerlink" title="nodeport"></a>nodeport</h3><p>nodeport也是在宿主机通过IP+端口来映射，与hostport不同之处是映射ServiceIP+端口，再转到pod服务</p>
-<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>router是以hostnetwork网络模式跑在宿主机上的容器化haproxy pod, pod IP和端口就是节点的IP和端，对外暴露80、443、1936端口，haproxy中有service query 信息来自于etcd, 再通过service访问到pod服务。</p>
-<p>注： router是hostnetwork网络模式就意味着一个节点只能运行一个router</p>
-
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cjlac5i9b0003a8jx4mmlhbhu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cjlnqlv4700042wjx0rrwso8s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -238,7 +238,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="cjlac5ia6000ya8jxg1ul3q76" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="cjlnqlv4x000y2wjxgxlg16p4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -284,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjlac5ibe002da8jxfe1of05y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjlnqlv5v002e2wjx0jc122k8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +351,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjlac5ib70025a8jxddmzplq6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjlnqlv5o00242wjxaap5dlg4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -394,7 +394,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjlac5ibn002pa8jxykvflly1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjlnqlv60002l2wjxoe3gcsw6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -470,7 +470,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjlac5id2003pa8jxq5tqhupv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjlnqlv6y003q2wjxtgugu177" class="article-share-link">Share</a>
       
       
     </footer>
@@ -533,7 +533,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjlac5id1003na8jx7k92aqrf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjlnqlv6v003o2wjx2rqmbf8e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -602,7 +602,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjlac5icl0036a8jx31xmfqeh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjlnqlv6a00352wjxh70j7x3z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -656,7 +656,7 @@ print(v1.site.name)
       <ul>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
@@ -664,7 +664,7 @@ print(v1.site.name)
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
           </li>
         
           <li>
