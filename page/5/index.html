@@ -62,6 +62,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
+  <time datetime="2017-05-15T12:51:41.000Z" itemprop="datePublished">2017-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/15/python加密解密加签验签/">python-加密解密加签验签</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="python加密解密，加签验签"><a href="#python加密解密，加签验签" class="headerlink" title="python加密解密，加签验签"></a>python加密解密，加签验签</h2><p>(转)<br>在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步</p>
+<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import base64</span><br><span class="line">from Crypto.PublicKey import RSA</span><br><span class="line">from Crypto.Hash import SHA</span><br><span class="line">from Crypto.Cipher import PKCS1_v1_5</span><br><span class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</span><br><span class="line"></span><br><span class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</span><br><span class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</span><br></pre></td></tr></table></figure>
+<p>加密</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def split_data(l, n):</span><br><span class="line">    for i in range(0, len(l), n):</span><br><span class="line">        yield l[i: i+n]</span><br><span class="line">        </span><br><span class="line">def encrypt(params):</span><br><span class="line">    raw = params.encode(&apos;utf-8&apos;)</span><br><span class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</span><br><span class="line">    ＃ 加密超长字节117个字节一加密</span><br><span class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</span><br><span class="line">    return base64.b64encode(content)</span><br></pre></td></tr></table></figure>
+<p>解密<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def decrypt(data):</span><br><span class="line">    raw = data.encode(&apos;utf-8&apos;)</span><br><span class="line">    decrypt = PKCS1_v1_5.new(PRI_KEY).decrypt</span><br><span class="line">    # 解密超长字符128一解密</span><br><span class="line">    content = b&apos;&apos;.join(decrypt(x, object()) for x in chunks(raw, 128))</span><br><span class="line">    return content.decode()</span><br></pre></td></tr></table></figure></p>
+<p>加签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def signer(data):</span><br><span class="line">    signstr = data.encode(&apos;utf-8&apos;)</span><br><span class="line">    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))</span><br><span class="line">    return base64.b64encode(sign)</span><br></pre></td></tr></table></figure></p>
+<p>验签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def verify_sign(unsign, raw_sign):</span><br><span class="line">    # unsign: 签名</span><br><span class="line">    # raw_sign: 待验证签名</span><br><span class="line">    assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), raw_sign)</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjmncnfm000271zjx9m86w4rc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
@@ -97,7 +148,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="cjlnqlv4o000l2wjxj8fwr69u" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="cjmncnfkk000r1zjxivc1l6nw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -148,7 +199,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjlnqlv4q000o2wjxklp7e2bw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjmncnfkr000x1zjxu4uqmsub" class="article-share-link">Share</a>
       
       
     </footer>
@@ -210,65 +261,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjlnqlv4y000z2wjxlk9hlefz" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-02-基本配置示例" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-02-基本配置示例/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-02-基本配置示例/">web-Django-02-基本配置示例</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-django安装"><a href="#1-django安装" class="headerlink" title="1 django安装"></a>1 django安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install django pymysql</span><br></pre></td></tr></table></figure>
-<h3 id="2-新建django-project"><a href="#2-新建django-project" class="headerlink" title="2 新建django project"></a>2 新建django project</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">django-admin.py startproject mysite  或用pycharm新建一个项目</span><br></pre></td></tr></table></figure>
-<h3 id="3-该项目下创建一个应用"><a href="#3-该项目下创建一个应用" class="headerlink" title="3 该项目下创建一个应用"></a>3 该项目下创建一个应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd mysite &amp;&amp; python manage.py startapp  app01</span><br></pre></td></tr></table></figure>
-<h3 id="4-配置Django"><a href="#4-配置Django" class="headerlink" title="4 配置Django"></a>4 配置Django</h3><p>settings.py文件确保有下面代码，用于在static目录放置静态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">STATIC_URL = &apos;/static/&apos;</span><br><span class="line">STATICFILES_DIRS= (</span><br><span class="line">    os.path.join(BASE_DIR, &apos;static&apos;),</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
-<p>确保INSTALLED_APPS = []有app01,应用</p>
-<h3 id="5-Django-mysql配置"><a href="#5-Django-mysql配置" class="headerlink" title="5 Django mysql配置"></a>5 Django mysql配置</h3><p>settings.py文件确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DATABASES = &#123;</span><br><span class="line">    &apos;default&apos;: &#123;</span><br><span class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</span><br><span class="line">        &apos;NAME&apos;: &apos;wxq_db&apos;,</span><br><span class="line">        &apos;USER&apos;: &apos;root&apos;,</span><br><span class="line">        &apos;PASSWORD&apos;: &apos;123&apos;,</span><br><span class="line">        &apos;HOST&apos;: &apos;localhost&apos;,</span><br><span class="line">        &apos;PORT&apos;: &apos;3306&apos;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>app01下 <strong>init</strong>.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import pymysql</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br></pre></td></tr></table></figure></p>
-<p>对于初学者建议配置此项，用于打印orm翻译后的sql语后，便于对照学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">LOGGING = &#123;</span><br><span class="line">    &apos;version&apos;: 1,</span><br><span class="line">    &apos;disable_existing_loggers&apos;: False,</span><br><span class="line">    &apos;handlers&apos;: &#123;</span><br><span class="line">        &apos;console&apos;:&#123;</span><br><span class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</span><br><span class="line">            &apos;class&apos;:&apos;logging.StreamHandler&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &apos;loggers&apos;: &#123;</span><br><span class="line">        &apos;django.db.backends&apos;: &#123;</span><br><span class="line">            &apos;handlers&apos;: [&apos;console&apos;],</span><br><span class="line">            &apos;propagate&apos;: True,</span><br><span class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="6-django生成数据"><a href="#6-django生成数据" class="headerlink" title="6 django生成数据"></a>6 django生成数据</h3><p>models.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from django.db import models</span><br><span class="line">class UserInfo(models.Model):</span><br><span class="line">    username = models.CharField(max_length=32)</span><br><span class="line">    password = models.CharField(max_length=32)</span><br><span class="line">    email = models.CharField(max_length=32)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
-<h3 id="7-urls-py定义"><a href="#7-urls-py定义" class="headerlink" title="7  urls.py定义"></a>7  urls.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from app01 import views</span><br><span class="line">urlpatterns = [</span><br><span class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</span><br><span class="line">    url(r&apos;^users/$&apos;, views.users),</span><br><span class="line">    # url(r&apos;^create_data/&apos;, views.create_data),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<h3 id="8-views-py定义"><a href="#8-views-py定义" class="headerlink" title="8 views.py定义"></a>8 views.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from django.shortcuts import render,HttpResponse, redirect</span><br><span class="line">from app01 import models</span><br><span class="line"></span><br><span class="line">def create_data(request):</span><br><span class="line">    for i in range(1,104):</span><br><span class="line">        models.UserInfo.objects.create(</span><br><span class="line">            username = &quot;root%s&quot; %i,</span><br><span class="line">            password = &quot;123&quot;,</span><br><span class="line">            email = &quot;root%s@qq.com&quot; %i,</span><br><span class="line">    )</span><br><span class="line">    return HttpResponse(&quot;data generate...&quot;)</span><br><span class="line"></span><br><span class="line">def users(request):</span><br><span class="line">    user_list = models.UserInfo.objects.all()</span><br><span class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;user_list &apos;:user_list &#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="9-templates-users-html定义"><a href="#9-templates-users-html定义" class="headerlink" title="9 templates/users.html定义"></a>9 templates/users.html定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;Title&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/static/bootstrap-3.3.7-dist/css/bootstrap.css&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div style=&quot;width: 700px; margin: 10px     auto&quot;&gt;</span><br><span class="line">    &lt;h1&gt;用户列表&lt;/h1&gt;</span><br><span class="line">    &lt;table class=&quot;table table-hover table-bordered&quot;&gt;</span><br><span class="line">        &lt;thead&gt;</span><br><span class="line">            &lt;tr&gt;</span><br><span class="line">                &lt;th&gt; 用户名&lt;/th&gt;</span><br><span class="line">                &lt;th&gt; 密码&lt;/th&gt;</span><br><span class="line">                &lt;th&gt;邮箱&lt;/th&gt;</span><br><span class="line">            &lt;/tr&gt;</span><br><span class="line">        &lt;/thead&gt;</span><br><span class="line">    </span><br><span class="line">        &lt;tbody&gt;</span><br><span class="line">            &#123;% for user in page_obj.object_list  %&#125;</span><br><span class="line">                &lt;tr&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.username &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.password &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.email &#125;&#125;&lt;/td&gt;</span><br><span class="line">                &lt;/tr&gt;</span><br><span class="line">            &#123;% endfor %&#125;</span><br><span class="line">    </span><br><span class="line">        &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="10-注意bootstrap应用"><a href="#10-注意bootstrap应用" class="headerlink" title="10 注意bootstrap应用"></a>10 注意bootstrap应用</h3><p><a href="http://v3.bootcss.com/getting-started/#download" target="_blank" rel="noopener">bootstrap下载链接</a></p>
-<h3 id="11-启动项目"><a href="#11-启动项目" class="headerlink" title="11 启动项目"></a>11 启动项目</h3><p>运行项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver 127.0.0.1:8000</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjlnqlv65002v2wjxdug2a71d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjmncnfkx00151zjxqh9q6mda" class="article-share-link">Share</a>
       
       
     </footer>
@@ -326,7 +319,65 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjlnqlv6b00372wjx2n9ric36" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjmncnfmv00331zjx9b10vhcs" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-django-02-基本配置示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-02-基本配置示例/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-02-基本配置示例/">web-Django-02-基本配置示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-django安装"><a href="#1-django安装" class="headerlink" title="1 django安装"></a>1 django安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install django pymysql</span><br></pre></td></tr></table></figure>
+<h3 id="2-新建django-project"><a href="#2-新建django-project" class="headerlink" title="2 新建django project"></a>2 新建django project</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">django-admin.py startproject mysite  或用pycharm新建一个项目</span><br></pre></td></tr></table></figure>
+<h3 id="3-该项目下创建一个应用"><a href="#3-该项目下创建一个应用" class="headerlink" title="3 该项目下创建一个应用"></a>3 该项目下创建一个应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd mysite &amp;&amp; python manage.py startapp  app01</span><br></pre></td></tr></table></figure>
+<h3 id="4-配置Django"><a href="#4-配置Django" class="headerlink" title="4 配置Django"></a>4 配置Django</h3><p>settings.py文件确保有下面代码，用于在static目录放置静态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">STATIC_URL = &apos;/static/&apos;</span><br><span class="line">STATICFILES_DIRS= (</span><br><span class="line">    os.path.join(BASE_DIR, &apos;static&apos;),</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>确保INSTALLED_APPS = []有app01,应用</p>
+<h3 id="5-Django-mysql配置"><a href="#5-Django-mysql配置" class="headerlink" title="5 Django mysql配置"></a>5 Django mysql配置</h3><p>settings.py文件确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DATABASES = &#123;</span><br><span class="line">    &apos;default&apos;: &#123;</span><br><span class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</span><br><span class="line">        &apos;NAME&apos;: &apos;wxq_db&apos;,</span><br><span class="line">        &apos;USER&apos;: &apos;root&apos;,</span><br><span class="line">        &apos;PASSWORD&apos;: &apos;123&apos;,</span><br><span class="line">        &apos;HOST&apos;: &apos;localhost&apos;,</span><br><span class="line">        &apos;PORT&apos;: &apos;3306&apos;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>app01下 <strong>init</strong>.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import pymysql</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br></pre></td></tr></table></figure></p>
+<p>对于初学者建议配置此项，用于打印orm翻译后的sql语后，便于对照学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">LOGGING = &#123;</span><br><span class="line">    &apos;version&apos;: 1,</span><br><span class="line">    &apos;disable_existing_loggers&apos;: False,</span><br><span class="line">    &apos;handlers&apos;: &#123;</span><br><span class="line">        &apos;console&apos;:&#123;</span><br><span class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</span><br><span class="line">            &apos;class&apos;:&apos;logging.StreamHandler&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &apos;loggers&apos;: &#123;</span><br><span class="line">        &apos;django.db.backends&apos;: &#123;</span><br><span class="line">            &apos;handlers&apos;: [&apos;console&apos;],</span><br><span class="line">            &apos;propagate&apos;: True,</span><br><span class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="6-django生成数据"><a href="#6-django生成数据" class="headerlink" title="6 django生成数据"></a>6 django生成数据</h3><p>models.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from django.db import models</span><br><span class="line">class UserInfo(models.Model):</span><br><span class="line">    username = models.CharField(max_length=32)</span><br><span class="line">    password = models.CharField(max_length=32)</span><br><span class="line">    email = models.CharField(max_length=32)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+<h3 id="7-urls-py定义"><a href="#7-urls-py定义" class="headerlink" title="7  urls.py定义"></a>7  urls.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from app01 import views</span><br><span class="line">urlpatterns = [</span><br><span class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</span><br><span class="line">    url(r&apos;^users/$&apos;, views.users),</span><br><span class="line">    # url(r&apos;^create_data/&apos;, views.create_data),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="8-views-py定义"><a href="#8-views-py定义" class="headerlink" title="8 views.py定义"></a>8 views.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from django.shortcuts import render,HttpResponse, redirect</span><br><span class="line">from app01 import models</span><br><span class="line"></span><br><span class="line">def create_data(request):</span><br><span class="line">    for i in range(1,104):</span><br><span class="line">        models.UserInfo.objects.create(</span><br><span class="line">            username = &quot;root%s&quot; %i,</span><br><span class="line">            password = &quot;123&quot;,</span><br><span class="line">            email = &quot;root%s@qq.com&quot; %i,</span><br><span class="line">    )</span><br><span class="line">    return HttpResponse(&quot;data generate...&quot;)</span><br><span class="line"></span><br><span class="line">def users(request):</span><br><span class="line">    user_list = models.UserInfo.objects.all()</span><br><span class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;user_list &apos;:user_list &#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="9-templates-users-html定义"><a href="#9-templates-users-html定义" class="headerlink" title="9 templates/users.html定义"></a>9 templates/users.html定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;Title&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/static/bootstrap-3.3.7-dist/css/bootstrap.css&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div style=&quot;width: 700px; margin: 10px     auto&quot;&gt;</span><br><span class="line">    &lt;h1&gt;用户列表&lt;/h1&gt;</span><br><span class="line">    &lt;table class=&quot;table table-hover table-bordered&quot;&gt;</span><br><span class="line">        &lt;thead&gt;</span><br><span class="line">            &lt;tr&gt;</span><br><span class="line">                &lt;th&gt; 用户名&lt;/th&gt;</span><br><span class="line">                &lt;th&gt; 密码&lt;/th&gt;</span><br><span class="line">                &lt;th&gt;邮箱&lt;/th&gt;</span><br><span class="line">            &lt;/tr&gt;</span><br><span class="line">        &lt;/thead&gt;</span><br><span class="line">    </span><br><span class="line">        &lt;tbody&gt;</span><br><span class="line">            &#123;% for user in page_obj.object_list  %&#125;</span><br><span class="line">                &lt;tr&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.username &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.password &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.email &#125;&#125;&lt;/td&gt;</span><br><span class="line">                &lt;/tr&gt;</span><br><span class="line">            &#123;% endfor %&#125;</span><br><span class="line">    </span><br><span class="line">        &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="10-注意bootstrap应用"><a href="#10-注意bootstrap应用" class="headerlink" title="10 注意bootstrap应用"></a>10 注意bootstrap应用</h3><p><a href="http://v3.bootcss.com/getting-started/#download" target="_blank" rel="noopener">bootstrap下载链接</a></p>
+<h3 id="11-启动项目"><a href="#11-启动项目" class="headerlink" title="11 启动项目"></a>11 启动项目</h3><p>运行项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver 127.0.0.1:8000</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjmncnfmr002y1zjx9c42sgni" class="article-share-link">Share</a>
       
       
     </footer>
@@ -381,7 +432,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjlnqlv70003s2wjxjjpe8iaa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjmncnfp300491zjx1922oqms" class="article-share-link">Share</a>
       
       
     </footer>
@@ -461,7 +512,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjlnqlv5t00292wjxl4at4qol" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cjmncnfma002h1zjxu3d3x1wi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -521,7 +572,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjlnqlv5j001w2wjxo27jsiw1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cjmncnflo001u1zjxc8zsrlxm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -571,111 +622,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cjlnqlv5n00212wjxrm0f4gda" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python-09-01-进程和线程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/20/python-09-01-进程和线程/" class="article-date">
-  <time datetime="2017-03-20T14:26:37.000Z" itemprop="datePublished">2017-03-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/20/python-09-01-进程和线程/">python-09-01-进程和线程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>基本概念</li>
-<li>进程</li>
-<li>线程</li>
-<li>协程</li>
-<li>总结</li>
-</ul>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>我们都知道现代操作是支持“多任务”的，什么叫“多任务”呢？。<br>简单地说，就是操作系统可以同时运行多个任务。打个比方一边微信一边QQ。</p>
-<p>单核cpu是如何执行“多任务”的？<br>简单的说，就是cpu时间分片，同一时间单核cpu只能执行一个任务，cpu计算时间分片到每个任务交替运行，进程切换或上下文切换时间很短，我们无法感知而己。真正并发执行多任务还要靠多核cpu来完成。</p>
-<p>并发执行任务方案，</p>
-<ul>
-<li>多进程</li>
-<li>多线程</li>
-<li>多进程+多线程</li>
-</ul>
-<p>Python线程有GIL(Global Interpreter Lock), 这种锁在单核cpu单进程里同一时间只能有一个线程被cpu调度。</p>
-<p>那么多线程并发就没有用了吗？<br>计算密集型多进程不就解决了<br>IO密集型多线程不就解决了，同一时间只有一个线程调度，其它时间线程处理IO啊</p>
-<h2 id="进程，多进程，进程池"><a href="#进程，多进程，进程池" class="headerlink" title="进程，多进程，进程池"></a>进程，多进程，进程池</h2><p>进程定义: 程序由指令+数据组成，进程就是这样一种描述的实体(process),简单的认为一个任务就是一个进程。</p>
-<p>一个进程至少一个线程，进程间相互隔离（数据不共享），一个子进程挂了并不影响程序运行，当然主进程挂了程序也就挂了，进程切换开销较大。</p>
-<p>多进程： 用于解决计算密集型作务的多并发。</p>
-<p>进程池： 内部维护一个进程序列，当使用时创建一个新的进程放入池中，再从池中取出来使用，当达到进程池个数时，不再创建进程，请求直接从进程池中取出来用，其它请求只能等待直到进程池中有进程可用。</p>
-<p>进程示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Process</span><br><span class="line">import time</span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(arg)</span><br><span class="line">    print(arg)</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    for i in range(10):</span><br><span class="line">        p  = Process(target=task, args=(i,))</span><br><span class="line">        # p.daemon=True</span><br><span class="line">        p.start()</span><br><span class="line">        p.join(0.5)</span><br><span class="line">    print(&quot;end&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>进程池与线程池用法一样，细节不展开<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from concurrent.futures  import ProcessPoolExecutor</span><br></pre></td></tr></table></figure></p>
-<p>进程锁也是和线程锁一样的用法，细节不展开</p>
-<p>进程与线程不同的是进程数据不共享，那如何实现数据交互，方法很多<code>rpc</code>,<code>Queue</code>,<code>pipe</code>,自己实现socket也可以实现 ,借住第三方工具，python本身也可以实现，2种方法：</p>
-<ul>
-<li>Array  (基于C语言数据类型)</li>
-<li>Manager (基于socket)</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Process</span><br><span class="line"></span><br><span class="line">def task(num,li):</span><br><span class="line">    li.append(num)</span><br><span class="line">    print(li)</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    v = []</span><br><span class="line">    for i in range(10):</span><br><span class="line">        p = Process(target=task,args=(i, v))  #每个进程数据独立存在</span><br><span class="line">        p.start()</span><br></pre></td></tr></table></figure>
-<p>C语言里Array存的元素是定义时定死的，和python 的列表有很大不同。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Process,Array</span><br><span class="line"></span><br><span class="line">def task(num,li):</span><br><span class="line">    li[num] = 1</span><br><span class="line">    print(list(li))</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    v = Array(&apos;i&apos;, 10)   #i在c语言是的int，10表示长度</span><br><span class="line">    for i in range(10):</span><br><span class="line">        p = Process(target=task,args=(i, v))</span><br><span class="line">        p.start()</span><br></pre></td></tr></table></figure></p>
-<p>Manger().list()   Manger().dict()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Process,Array,Manager</span><br><span class="line"></span><br><span class="line">def task(num,li):</span><br><span class="line">    li.append(num)</span><br><span class="line">    print(li)</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">   # dic = Manager().dict()</span><br><span class="line">    v = Manager().list()</span><br><span class="line">    for i in range(10):</span><br><span class="line">        p = Process(target=task,args=(i, v))</span><br><span class="line">        p.start()</span><br><span class="line">        p.join()</span><br></pre></td></tr></table></figure></p>
-<h2 id="线程，多线程，线程池"><a href="#线程，多线程，线程池" class="headerlink" title="线程，多线程，线程池"></a>线程，多线程，线程池</h2><p>线程定义：一个任务可以再划分为多个小任务，进程内独立执行这些小任务的最小单元。</p>
-<p>一个进程可以有多个线程，线程间共享内存数据，一个线程挂了，其它线程也会崩溃，线程切换开销较进程小一些。</p>
-<p>多线程： 用于解决IO密集型任务的多并发</p>
-<p>线程池： 内部维护一个线程序列.  (与进程池同理)</p>
-<p>线程示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    print(arg)</span><br><span class="line">for i in range(5):</span><br><span class="line">	t = threading.Thread(target=task,args=(i,))</span><br><span class="line">	t.setDaemon(False)  # 等子线程完成后再结束主线程</span><br><span class="line">	t.start()</span><br><span class="line">	t.join()  # 变为串行,一直等</span><br><span class="line">	t.join(3)  # 变为串行,只等3秒</span><br><span class="line">print(&quot;end&quot;)  # 先打印主线程的end,再一起打印子线程的i</span><br></pre></td></tr></table></figure></p>
-<p>自定义线程类示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">class MyThread(threading.Thread):</span><br><span class="line">    def __init__(self,target=None,args=(),**kwargs):</span><br><span class="line">        super(MyThread,self).__init__(target=None,args=(),**kwargs)</span><br><span class="line">        self.target =target</span><br><span class="line">        self._args = args</span><br><span class="line">    def run(self,):</span><br><span class="line">        return self.target(*self._args)</span><br><span class="line"></span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    print(arg)</span><br><span class="line"></span><br><span class="line">t = MyThread(target=task, args=(123,))</span><br><span class="line">t.run()</span><br><span class="line">print(&quot;end&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>线程锁<br>线程共享数据，共同修改一份数据是有问题的，pycharm环境下可能看不出效果，<br>cmd命令行下可以看到数据修改混乱了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">v=10</span><br><span class="line">def task(arg):</span><br><span class="line">    global  v</span><br><span class="line">    v-=1</span><br><span class="line">    print(v)</span><br><span class="line"></span><br><span class="line">for i in range(10):</span><br><span class="line">    t=threading.Thread(target=task,args=(i,))</span><br><span class="line">    t.start()</span><br><span class="line">print(&quot;end&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>数据修改乱了，就要加锁了：普通锁，递归锁RLock,事件锁、条件锁，互斥锁<br>普通锁</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">v=10</span><br><span class="line">lock = threading.Lock()</span><br><span class="line"></span><br><span class="line">def task(arg):</span><br><span class="line">    lock.acquire() # 申请锁</span><br><span class="line">    global  v</span><br><span class="line">    v-=1</span><br><span class="line">    print(v)</span><br><span class="line">    lock.release() # 释放锁</span><br></pre></td></tr></table></figure>
-<p>普通锁不能开多重没锁，如果是下面这种设置会造成死锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 死锁</span><br><span class="line">lock = threading.Lock()</span><br><span class="line">lock.acquire() # 申请锁</span><br><span class="line">lock.acquire() # 申请锁</span><br><span class="line">lock.release() # 释放锁</span><br><span class="line">lock.release() # 释放锁</span><br></pre></td></tr></table></figure></p>
-<p>递归锁RLock<br>递归锁RLock可以开多重锁，不会造成死锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 不会死锁</span><br><span class="line">lock = threading.RLock()</span><br><span class="line">lock.acquire() # 申请锁</span><br><span class="line">lock.acquire() # 申请锁</span><br><span class="line">lock.release() # 释放锁</span><br><span class="line">lock.release() # 释放锁</span><br></pre></td></tr></table></figure></p>
-<p>信号量BoundedSemaphore<br>多个线程同时使用锁，当然这里3个同时修改数据也可能混乱。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">v=10</span><br><span class="line">lock = threading.BoundedSemaphore(3)</span><br><span class="line"></span><br><span class="line">def task(arg):</span><br><span class="line">    lock.acquire() # 申请锁</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    global  v</span><br><span class="line">    v-=1</span><br><span class="line">    print(v)</span><br><span class="line">    lock.release() # 释放锁</span><br><span class="line">for i in range(10):</span><br><span class="line">    t=threading.Thread(target=task,args=(i,))</span><br><span class="line">    t.start()</span><br><span class="line">print(&quot;end&quot;)</span><br></pre></td></tr></table></figure>
-<p>事件锁<br>条件式批量解锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">lock = threading.Event()</span><br><span class="line"></span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    lock.wait()    #锁住所有线程</span><br><span class="line">    print(arg)</span><br><span class="line"></span><br><span class="line">for i in range(10):</span><br><span class="line">    t=threading.Thread(target=task,args=(i,))</span><br><span class="line">    t.start()</span><br><span class="line">while True:</span><br><span class="line">    value =  input(&quot;&gt;&gt;&gt;&quot;)</span><br><span class="line">    if value == &apos;1&apos;:</span><br><span class="line">        lock.set()   # 解锁</span><br></pre></td></tr></table></figure></p>
-<p>条件锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">lock = threading.Condition()</span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    lock.acquire()</span><br><span class="line">    lock.wait()    #锁住所有线程</span><br><span class="line">    print(&apos;线程&apos;,arg)</span><br><span class="line">    lock.release()</span><br><span class="line"></span><br><span class="line">for i in range(10):</span><br><span class="line">    t=threading.Thread(target=task,args=(i,))</span><br><span class="line">    t.start()</span><br><span class="line">while True:</span><br><span class="line">    value =  int(input(&quot;&gt;&gt;&gt;&quot;))  </span><br><span class="line">    lock.acquire()</span><br><span class="line">    lock.notify(value)  # 传几就解几个锁</span><br><span class="line">    lock.release()</span><br></pre></td></tr></table></figure></p>
-<p>线程池<br><code>pool.submit(download,url)</code>取出一个线程执行任务，返回future对象<br><code>future.add_done_callback(write)</code>future对象有一个<code>add_done_callback</code>方法，传入我们自己写的回调函数write,  future对象也会自动传给write回调函数。<br><code>download</code> 函数的返回值=<code>future.result()</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import  requests</span><br><span class="line">from concurrent.futures import ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line">def write(future):</span><br><span class="line">    response = future.result()</span><br><span class="line">    f=open(&apos;xx.txt&apos;,&apos;wb+&apos;)</span><br><span class="line">    f.write(response.content)</span><br><span class="line">    f.close()</span><br><span class="line"></span><br><span class="line">url_list = [</span><br><span class="line">    &apos;http://www.baidu.com&apos;,</span><br><span class="line">    &apos;http://www.digmyth.com&apos;,</span><br><span class="line">    &apos;http://www.github.com&apos;,</span><br><span class="line">]</span><br><span class="line">def download(url):</span><br><span class="line">    response=requests.get(url)</span><br><span class="line">    print(&quot;得到结果&quot;,url)</span><br><span class="line">    return response</span><br><span class="line"></span><br><span class="line">pool = ThreadPoolExecutor(2)</span><br><span class="line">for url in url_list:</span><br><span class="line">    print(&quot;开始请求：&quot;,url)</span><br><span class="line">    future=pool.submit(download,url)  # 池中取一个连接</span><br><span class="line">    # ruture自动传给write调函数:write(future)</span><br><span class="line">    future.add_done_callback(write)</span><br></pre></td></tr></table></figure>
-<p>封装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">from  concurrent.futures import ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line">def download(url):</span><br><span class="line">    response=requests.get(url)</span><br><span class="line">    return response</span><br><span class="line"></span><br><span class="line">def run(url_list=None):</span><br><span class="line">    pool = ThreadPoolExecutor(2)</span><br><span class="line">    for item in url_list:</span><br><span class="line">        url = item[&apos;url&apos;]</span><br><span class="line">        callback = item[&apos;callback&apos;]</span><br><span class="line">        future=pool.submit(download, url)</span><br><span class="line">        future.add_done_callback(callback)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def f1(future):</span><br><span class="line">    print(future.result().content)</span><br><span class="line"></span><br><span class="line">def f2(arg):</span><br><span class="line">    print(&quot;future&quot;)</span><br><span class="line"></span><br><span class="line">def f3(future):</span><br><span class="line">    print(&quot;future&quot;)</span><br><span class="line"></span><br><span class="line">url_list = [</span><br><span class="line">    &#123;&apos;url&apos;:&apos;http://www.baidu.com&apos;,&apos;callback&apos;:f1&#125;,</span><br><span class="line">    &#123;&apos;url&apos;:&apos;http://www.digmyth.com&apos;,&apos;callback&apos;:f2&#125;,</span><br><span class="line">    &#123;&apos;url&apos;:&apos;http://www.github.com&apos;,&apos;callback&apos;:f3&#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">import nb_thread</span><br><span class="line">nb_thread.run(url_list)</span><br></pre></td></tr></table></figure>
-<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><p>协程定义： 协程不同于进程，线程对于操作系统可见且是一种资源，协程只是代码层面的来回切换，对于操作系统不可见且并非是一种资源。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install greenlet  # python中原生协程</span><br></pre></td></tr></table></figure>
-<p>单独协程没什么用，结合协程切换特性+IO+select+socket可以编写出牛逼的异步IO模块或异步非阻塞框架</p>
-<p>gevent就是基于greenlet+libvent+IO二次加工实现的python异步模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 instal gevent</span><br></pre></td></tr></table></figure></p>
-<p>示例：<br>和多线程不同，这里是单线程并发IO任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import gevent</span><br><span class="line">import requests</span><br><span class="line"></span><br><span class="line">def func(url):</span><br><span class="line">    response = requests.get(url)</span><br><span class="line">    print(response.url)</span><br><span class="line"></span><br><span class="line">gevent.joinall([</span><br><span class="line">    gevent.spawn(func,&apos;http://www.baidu.com&apos;),</span><br><span class="line">    gevent.spawn(func,&apos;http://www.digmyth.com&apos;),</span><br><span class="line">    gevent.spawn(func,&apos;http://www.github.com&apos;),</span><br><span class="line">])</span><br></pre></td></tr></table></figure></p>
-<p>当然我们也可以自己用select来写IO多路复实现并发</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>即使有了多进程多线程或进程池，线程池处理多任务，但如果一个任务在执行的过程中大部分时间都在等待IO操作，单进程单线程模型也只能处理一个任务，无法并发执行。</p>
-<p>还好现代操作系统支持异步IO，这是一个很牛逼的东东，单进程单线程模型并发执行任务得以实现。这种称为事件驱动模型，Nginx就是支持异步IO的Web服务器。</p>
-<p>单线程的异步编程或异步IO多路复用会是趋势，可以基于事件驱动编写高效的多任务程序。Twisted,Tornado之所以牛逼，就是因为它们的高性能也是基于事件驱动，基于异步IO多路复用。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cjlnqlv5r00262wjxsaokjz9n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cjmncnfly00241zjx4c0phhoh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -716,7 +663,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -729,6 +676,10 @@
       <ul>
         
           <li>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
@@ -737,15 +688,11 @@
           </li>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
-          </li>
-        
-          <li>
             <a href="/2018/07/25/mysql-limit/">CentOS 7.x/Mysql limit</a>
           </li>
         
           <li>
-            <a href="/2018/05/29/shell-func/">shell function语法</a>
+            <a href="/2018/06/15/linux-java-env/">linux_java_env</a>
           </li>
         
       </ul>

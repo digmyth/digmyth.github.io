@@ -62,6 +62,75 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-17-ModelForm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/20/web-django-17-ModelForm/" class="article-date">
+  <time datetime="2017-12-20T12:26:37.000Z" itemprop="datePublished">2017-12-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>回顾Form</li>
+<li>ModelForm特性</li>
+<li>ModelForm使用</li>
+<li>html前端展示</li>
+</ul>
+<h2 id="ModelForm简介"><a href="#ModelForm简介" class="headerlink" title="ModelForm简介"></a>ModelForm简介</h2><h4 id="1-回顾Form"><a href="#1-回顾Form" class="headerlink" title="1 回顾Form"></a>1 回顾Form</h4><p>Form作用：<br>第一： 用于Form验证<br>第二： 用于生成 html标签，并且可以保留数据（如编辑）</p>
+<p>缺点：<br>多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update()</p>
+<h4 id="2-ModelForm特性"><a href="#2-ModelForm特性" class="headerlink" title="2 ModelForm特性"></a>2 ModelForm特性</h4><p>解决办法，引用ModelForm</p>
+<ul>
+<li>1 它可以循环model class字段在前端生成表单或html标签并保留数据</li>
+<li>2  调用save()方法自动跨表保存数据。</li>
+<li>3  可以自定义models class以外的fields字段,很灵活，如果自定义的字段名与model class字段名重名， 那么model class字段将被重写</li>
+<li>4  ModelForm同样可以做数据验证包括钩子函数</li>
+<li>5  ModelForm中的fields字段是可以循环的，循环在前端生成不必写</li>
+<li>6  当编辑数据时传入instance=obj 可以循环生成表单并且表单有值。</li>
+</ul>
+<p>ModelForm适用场景</p>
+<ul>
+<li>Form与ModelForm没有谁好谁不好，只是适用场景不同。</li>
+<li>ModelForm依赖modelsclass, modelForm必须和models.py在一起。</li>
+</ul>
+<h4 id="3-ModelForm使用"><a href="#3-ModelForm使用" class="headerlink" title="3 ModelForm使用"></a>3 ModelForm使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">from django.forms import Form</span><br><span class="line">from django.forms import ModelForm</span><br><span class="line">from django.forms import fields</span><br><span class="line">from django.forms import widgets as fwidgets</span><br><span class="line">from app01 import models</span><br><span class="line">class TestForm(ModelForm):</span><br><span class="line">    class Meta:</span><br><span class="line">        model = models.Book</span><br><span class="line">        fields = &quot;__all__&quot; # 可以是[&quot;&quot;,&quot;&quot;,]</span><br><span class="line">        labels = &#123;</span><br><span class="line">            &apos;title&apos;:&quot;书名&quot;,</span><br><span class="line">            &quot;price&quot;:&quot;价格&quot;,</span><br><span class="line">        &#125;</span><br><span class="line">        error_messages = &#123;</span><br><span class="line">            &quot;title&quot;:&#123;&quot;requried&quot;:&quot;书名不能为空&quot;,&#125;,</span><br><span class="line">        &#125;</span><br><span class="line">        widgets=&#123;</span><br><span class="line">            &quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-html前端展示"><a href="#4-html前端展示" class="headerlink" title="4 html前端展示"></a>4 html前端展示</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;form  action=&quot;/addbook/&quot; method=&quot;POST&quot; novalidate&gt;</span><br><span class="line">    &#123;% csrf_token %&#125;</span><br><span class="line">    &#123;% for field in form %&#125;</span><br><span class="line">     &lt;p&gt;&#123;&#123; field.label &#125;&#125;:&#123;&#123; field  &#125;&#125; &#123;&#123; field.errors.0 &#125;&#125;&lt;/p&gt;</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+<p>引入bootstrap时，querySet for循环展示:注意时间格式的转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;container&quot; style=&quot;width: 700px;margin-top: 50px&quot;&gt;</span><br><span class="line">    &lt;table class=&quot;table table-bordered&quot;&gt;</span><br><span class="line">        &lt;thead&gt;&lt;/thead&gt;</span><br><span class="line">        &lt;tbody&gt;</span><br><span class="line">            &#123;% for row in data_list %&#125;</span><br><span class="line">                &lt;tr&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.title &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.price &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&lt;/td&gt;</span><br><span class="line">                &lt;/tr&gt;</span><br><span class="line">            &#123;% endfor %&#125;</span><br><span class="line">        &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjmncnfn6003f1zjx3ns7bq2g" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-get_post_contentype知识" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/15/web-get_post_contentype知识/" class="article-date">
@@ -157,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjlnqlv76003y2wjxcxy9o6s4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjmncnfpe004h1zjx2qp97lpw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -224,7 +293,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjlnqlv5y002j2wjxg1uicc3g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjmncnfm5002c1zjxfdbuayjn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -276,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjlnqlv6r003k2wjxnqrfrx9n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjmncnfox00451zjxuuivm5ar" class="article-share-link">Share</a>
       
       
     </footer>
@@ -337,7 +406,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjlnqlv6o003i2wjxi0h80vtw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjmncnfn9003i1zjxq01ochn9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -404,7 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjlnqlv6i003e2wjxfneyuh4z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjmncnfnb003k1zjxhax2ww2m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -460,7 +529,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjlnqlv4k000h2wjxqzru2ttc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjmncnfkd000j1zjxcv45inf3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -532,7 +601,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjlnqlv4r000p2wjxg0du8crz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjmncnfke000k1zjx2iwlqyei" class="article-share-link">Share</a>
       
       
     </footer>
@@ -627,7 +696,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjlnqlv4z00122wjxrueup0zw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjmncnfkv00121zjxrkm5o4k2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -680,77 +749,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjlnqlv6t003m2wjxuy1s1n85" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-mysql-Galera" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/08/mysql-Galera/" class="article-date">
-  <time datetime="2017-11-08T01:41:54.000Z" itemprop="datePublished">2017-11-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/08/mysql-Galera/">Mysql Galera集群搭建</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>wsrep简介</li>
-<li>Galera集群搭建</li>
-</ul>
-<h2 id="wsrep简介"><a href="#wsrep简介" class="headerlink" title="wsrep简介"></a>wsrep简介</h2><p><code>wsrep</code>是<code>writeset replication</code>的简称，是一种API，在底层调用各库实现数据库同步写.通过wsrep协议在全局实现复制,任何一节点都可读写.</p>
-<p>基于wsrep协议提供的一种底层复制机制，实现了<code>Galera cluster</code>数据库集群。因此Galera cluster需要特定研发的一个数据库版本,只有支持了特别的研发版本，才能借住于wsrep协议实现复制机制.</p>
-<p>多个节点之上有了信息层，上层应用完成高可用，研发时调用信息层所提供的api去开发，并基于这个api去完成集群事务决策，不然就要自行加入中间层称资源管理器crm，如pacemaker</p>
-<p>galera cluster不是专为数据库提供的，只是一个工作在较为底层能够为你的服务提供数据复制功能的底层组件.</p>
-<p>mysql只有在研发时调用了galera cluster api写的mysql才能利用galera cluster完成复制,它的复制不再是让其它节点通过读取主节点二进制日志文件在本地重放，而是你指明了复制哪个数据库文件，由galera cluster自己在底层完成同步，mysql本身不感知.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">percona-cluster 版本支持galera cluster</span><br><span class="line">MariaDB-cluster 版本支持galera cluster</span><br></pre></td></tr></table></figure>
-<p>复制的问题和解决方案:<br>(1) 数据损坏或丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">语句或行记录二进制日志，从而在从服务器上重放，重放机制也可能主从不一致的情况硬件故障、软件bug也会有数据损坏或丢失</span><br><span class="line">Master: MHA + semi replication(至少有一个从节点接收到了提交的binlog事件才返回成功，也是半同步复制)</span><br><span class="line">如果主节点数据损坏或丢失，就必须手动在从节点通过gtid来判断出己经提交的所有应用或事务，然后合并出一个较新的从节点提升为主节点</span><br><span class="line">Slave: 重新复制数据即可</span><br></pre></td></tr></table></figure></p>
-<p>(2) 运维部署注意事项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">关键业务监控</span><br><span class="line">重要数据要备份和冗余</span><br><span class="line">不能混合使用存储引警</span><br><span class="line">MyISM: 不支持事务</span><br><span class="line">InnoDB: 支持事务</span><br></pre></td></tr></table></figure></p>
-<p>(3) 设置了不唯一的server ID<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">不唯一，整个复制集群数据产生错乱，每一个服务节点都不会在本地重放由同一个server ID 所产生的事件</span><br><span class="line">会导致重新复制数据</span><br></pre></td></tr></table></figure></p>
-<p>(4) 复制延迟<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">需要额外监控工具的辅助</span><br><span class="line">自写一些脚本监控</span><br><span class="line">从节点有一个落后于主节点的时间判定，这个时间不为0时，尝试重启从节点服务</span><br><span class="line">对于从服务器延迟，主节点的事务是可以并发的，往二进制写入是单线程的，有先有后，从服务器重放也是单线程的，从服务器延迟落后也是必然的</span><br><span class="line">mysql5.6/mariadb 10以后引入了多线程复制机制，三节点集群可设置wsrep_slave_threads = 4</span><br></pre></td></tr></table></figure></p>
-<p>数据库服务衡量指标<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">qps : query per second 查询量</span><br><span class="line">tps: transaction per second 事务量</span><br></pre></td></tr></table></figure></p>
-<h2 id="Galera集群搭建"><a href="#Galera集群搭建" class="headerlink" title="Galera集群搭建"></a>Galera集群搭建</h2><p>最新文档请参考<a href="https://mariadb.com/kb/en/library/getting-started-with-mariadb-galera-cluster/#bootstrapping-a-new-cluster" target="_blank" rel="noopener">Galera 集群官方链接</a></p>
-<h3 id="一-准备工作"><a href="#一-准备工作" class="headerlink" title="一 准备工作"></a>一 准备工作</h3><p>1  关闭防火墙<br>2  关闭selinux<br>3  同步主机时间<br>4  设置hosts文件</p>
-<h3 id="二-MariaDB源"><a href="#二-MariaDB源" class="headerlink" title="二  MariaDB源"></a>二  MariaDB源</h3><p>在MariaDB 10.1以前需要卸载<code>mariadb</code>包，单独准备<code>MariaDB-Galera-server源</code>来安装MariaDB-Galera-server包<br>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">yum list all | grep -i galera</span><br><span class="line">yum remove mariadb*</span><br><span class="line">yum -y install MariaDB-Galera-server.rpm galera-25.3</span><br><span class="line">rpm -ql MariaDB-Galera-server</span><br><span class="line">rpm -qa | grep MariaDB</span><br><span class="line">	 MariaDB-common-10.0.32-1.el7.centos.x86_64</span><br><span class="line">	 MariaDB-shared-10.0.32-1.el7.centos.x86_64</span><br><span class="line">	 MariaDB-Galera-server-10.0.32-1.el7.centos.x86_64</span><br><span class="line">	 MariaDB-client-10.0.32-1.el7.centos.x86_64</span><br><span class="line">vim /etc/my.cnf.d/server.cnf</span><br><span class="line">[galera]</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>而在MariaDB 10.1以后MariaDB-server己经自带Galera集群了，不必单独安装<code>MariaDB-Galera-server</code>包，只需准备如下源</p>
-<p>编辑/etc/yum.repos.d/Mariadb.repo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># MariaDB 10.2 CentOS repository list - created 2017-11-07 12:07 UTC</span><br><span class="line"># http://downloads.mariadb.org/mariadb/repositories/</span><br><span class="line">[mariadb]</span><br><span class="line">name = MariaDB</span><br><span class="line">baseurl = http://yum.mariadb.org/10.2/centos7-amd64</span><br><span class="line">gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</span><br><span class="line">gpgcheck=1</span><br></pre></td></tr></table></figure></p>
-<h3 id="三-软件安装"><a href="#三-软件安装" class="headerlink" title="三 软件安装"></a>三 软件安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install MariaDB-server MariaDB-client</span><br></pre></td></tr></table></figure>
-<h3 id="四-修改配置"><a href="#四-修改配置" class="headerlink" title="四  修改配置"></a>四  修改配置</h3><p>编辑/etc/my.cnf.d/server.cnf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[galera]</span><br><span class="line">#Mandatory settings</span><br><span class="line">wsrep_provider=/usr/lib64/galera/libgalera_smm.so  # 可查rpm -ql galera | grep -i smm.so</span><br><span class="line">wsrep_cluster_address = &apos;gcomm://172.16.100.67,172.16.100.68,172.16.100.69&apos;</span><br><span class="line">wsrep_cluster_name = &apos;cluster&apos;</span><br><span class="line">wsrep_node_name = &apos;node1&apos;</span><br><span class="line">wsrep_node_address= &apos;172.16.100.67&apos;</span><br><span class="line">binlog_format = row</span><br><span class="line">default_storage_engine = InnoDB</span><br><span class="line">innodb_autoinc_lock_mode = 2</span><br><span class="line">bind-address = 0.0.0.0</span><br><span class="line">wsrep_on=ON</span><br></pre></td></tr></table></figure></p>
-<h3 id="五-启动服务"><a href="#五-启动服务" class="headerlink" title="五 启动服务"></a>五 启动服务</h3><p>任意一个节点启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/mysql start --wsrep-new-cluster</span><br><span class="line">或service mysql bootstrap</span><br><span class="line">或systemctl  start mariadb --wsrep-new-cluster</span><br></pre></td></tr></table></figure></p>
-<p>然后在其它节点正常启动即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl  start mariadb</span><br><span class="line">MariaDB [(none)]&gt; show status like &apos;%wsrep%&apos;;</span><br></pre></td></tr></table></figure></p>
-<p>简单验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">create database mydb;</span><br><span class="line">use mydb</span><br><span class="line">create table tb1 (id int, name char(10));</span><br><span class="line">desc tb1;</span><br><span class="line">create table tb2 (id int unsigend auto_increment not null primary key, name char(30));</span><br><span class="line">insert into tb2(name) values (&apos;hi&apos;, &apos;hello&apos;)</span><br><span class="line">select * from tb2;</span><br></pre></td></tr></table></figure></p>
-<p>有关认证及集群检测自行研究<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wsrep_sst_method = xtrabackup-v2</span><br><span class="line">wsrep_sst_auth = root:NtEXLlZGF9KeXYUE79e7H8N5C9Vdy0EkHlBfFPtr</span><br><span class="line">wsrep_slave_threads = 4</span><br><span class="line">wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh   # 注意定义这个脚本</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cjlnqlv4u000t2wjxktg43j3n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjmncnfov00441zjxcbfhax8e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -791,7 +790,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -804,6 +803,10 @@
       <ul>
         
           <li>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
@@ -812,15 +815,11 @@
           </li>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
-          </li>
-        
-          <li>
             <a href="/2018/07/25/mysql-limit/">CentOS 7.x/Mysql limit</a>
           </li>
         
           <li>
-            <a href="/2018/05/29/shell-func/">shell function语法</a>
+            <a href="/2018/06/15/linux-java-env/">linux_java_env</a>
           </li>
         
       </ul>
