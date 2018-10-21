@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>proxy-01-代理 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ssh反向代理 疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。  解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？   实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 6089">
+<meta property="og:type" content="article">
+<meta property="og:title" content="proxy-01-代理">
+<meta property="og:url" content="http://www.digmyth.com/2017/10/31/proxy-01-代理/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="ssh反向代理 疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。  解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？   实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 6089">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-10-21T08:32:08.587Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="proxy-01-代理">
+<meta name="twitter:description" content="ssh反向代理 疑惑: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。  解惑: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？   实战12345内部A主机执行下面命令ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 6089">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-proxy-01-代理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/31/proxy-01-代理/" class="article-date">
+  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      proxy-01-代理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="ssh反向代理"><a href="#ssh反向代理" class="headerlink" title="ssh反向代理"></a>ssh反向代理</h2><ul>
+<li><p><strong>疑惑</strong>: 有Linux Iptables 防火墙SNAT、DNAT，为什么要有ssh反向代理，岂不是多此一举，只是你没用到场景罢了。</p>
+</li>
+<li><p><strong>解惑</strong>: 当内网A主机通过外网主机B能连接到互联网主机C ，而B主机不对外开放，那么如何C主机直连A主机呢？</p>
+</li>
+</ul>
+<p>实战<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">内部A主机执行下面命令</span><br><span class="line">ssh -R 2222:127.0.0.1:22 root@221.152.61.84 -p 60892</span><br><span class="line"></span><br><span class="line">那么在221.152.61.84的127.0.0.1:2222就转到了内部主机的127.0.0.1:22 ，很实用的功能。</span><br><span class="line">此时只需要C主机ssh 127.0.0.1 -p 2222即可连接到内网主机A</span><br></pre></td></tr></table></figure></p>
+<h2 id="socks5-client"><a href="#socks5-client" class="headerlink" title="socks5 client"></a>socks5 client</h2><p>当你有一个socks5 server时(如： 202.59.107.99)，并有账号密码，那么你的客户端稍加配置就可以用它来代理上网了</p>
+<p>socks5 client配置如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">yum install python2-pip -y</span><br><span class="line">pip install shadowsocks</span><br><span class="line"></span><br><span class="line">[root@digmyth ]# cat /etc/ss/sock.conf </span><br><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;202.59.107.99&quot;,</span><br><span class="line">    &quot;server_port&quot;:8388,</span><br><span class="line">    &quot;local_port&quot;:1080,</span><br><span class="line">    &quot;password&quot;:&quot;123456&quot;,</span><br><span class="line">    &quot;timeout&quot;:600</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>启动客户端代理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup sslocal -c /etc/ss/sock.conf &amp;</span><br></pre></td></tr></table></figure></p>
+<h2 id="socks5-to-http"><a href="#socks5-to-http" class="headerlink" title="socks5 to http"></a>socks5 to http</h2><p>当然socks5可以直接拿来代理，但是有些应用只支持http/https协议，此时你就要把你的socks5协议转为http/https协议</p>
+<p>或者说把应用的http/https协议转到你的sock5协议上更准确</p>
+<p>这里介绍privoxy工具</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y privoxy</span><br></pre></td></tr></table></figure>
+<p>编辑配置/etc/privoxy/config<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">listen-address  192.168.1.10:8118</span><br><span class="line">forward-socks5   /               192.168.1.20:10080 .</span><br></pre></td></tr></table></figure></p>
+<p>192.168.1.10为privoxy服务器地址，192.168.1.20为socks5 client地址，当然全为本地127.0.0.1本机代理也是可以的，看你需要</p>
+<p>启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl  start privoxy</span><br></pre></td></tr></table></figure></p>
+<h2 id="http代理"><a href="#http代理" class="headerlink" title="http代理"></a>http代理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy=&apos;http://localhost:8118&apos;</span><br><span class="line">export https_proxy=&apos;http://localhost:8118&apos;</span><br></pre></td></tr></table></figure>
+<p>测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget www.google.com</span><br></pre></td></tr></table></figure></p>
+<p>如果把返回200 ，并且把google的首页下载下来了，那就是成功了</p>
+<h2 id="git代理"><a href="#git代理" class="headerlink" title="git代理"></a>git代理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git config --global https.proxy http://$(privoxy-server-ip):1080</span><br><span class="line">git config --global https.proxy https://$(privoxy-server-ip):1080</span><br><span class="line">git config --global http.proxy &apos;socks5://$(shadowsock-client-ip):1080&apos; </span><br><span class="line">git config --global https.proxy &apos;socks5://$(shadowsock-client-ip):1080&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">取消</span><br><span class="line">git config --global --unset http.proxy</span><br><span class="line">git config --global --unset https.proxy</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://xxx.git</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="cjnim62xh001azsjxfrbqxllt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/11/05/ceph-01-运维那事/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ceph-01-运维那事
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/10/09/web-django-19-auth认证系统/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">web-Django-19-auth认证系统</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/25/mysql-limit/">CentOS 7.x/Mysql limit</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/15/linux-java-install/">linux java install</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
