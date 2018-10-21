@@ -62,6 +62,92 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-04-01-装饰器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/04/python-04-01-装饰器/" class="article-date">
+  <time datetime="2017-02-04T10:08:26.000Z" itemprop="datePublished">2017-02-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/04/python-04-01-装饰器/">python-04-01-装饰器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>装饰器</li>
+</ul>
+<p>Python装饰器，英文<code>decorator</code>, 以被装饰函数作为参数对其装饰。这里会用到函数，我们可以像使用变量一样使用函数，函数有对象一致特性。</p>
+<ul>
+<li>函数可以被赋值给其它变量</li>
+<li>函数可以内部再定义函数</li>
+<li>函数可以作为参数传递给另外一个函数</li>
+<li>函数可以直接返回给外层函数</li>
+</ul>
+<h2 id="简单函数进行装饰"><a href="#简单函数进行装饰" class="headerlink" title="简单函数进行装饰"></a>简单函数进行装饰</h2><p>有这么一个函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def hello():  </span><br><span class="line">    return &apos;hello world&apos;</span><br></pre></td></tr></table></figure></p>
+<p>我们想在不修改原函数的情况下，让函数返回特定标签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def maketag(func):</span><br><span class="line">    def wrapper():</span><br><span class="line">        return &quot;&lt;h&gt;&quot; + func() + &quot;&lt;/h&gt;&quot;</span><br><span class="line">    return wrapper</span><br></pre></td></tr></table></figure></p>
+<p>我们定义了一个函数maketag(),该函数有一个参数func,这个参数必须是一个函数，内部又定义了一个wrapper()函数，并直接返回给maketag()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; hello = maketag(hello)  # 将 hello 函数传给 maketag</span><br><span class="line">&gt;&gt;&gt; hello()</span><br><span class="line">&apos;&lt;h&gt;hello world&lt;/h&gt;&apos;</span><br></pre></td></tr></table></figure></p>
+<p>上面我们把最初hello函数传给maketag()函数并将返回赋值给变量hello,此时调用hello得到我们想要的结果。<br><code>注意：</code> maketag()返回赋值给hello,hello函数本身还存在，但函数名引用己经变为了maketag返回函数的名称wrapper,不在是原来的hello,验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">In [6]: a = maketag(hello)</span><br><span class="line">In [8]: a.__name__</span><br><span class="line">Out[8]: &apos;wrapper&apos;</span><br><span class="line"></span><br><span class="line">In [9]: hello = maketag(hello)</span><br><span class="line">In [10]: hello.__name__</span><br><span class="line">Out[10]: &apos;wrapper&apos;</span><br></pre></td></tr></table></figure></p>
+<p>总结一下：为了增强原函数hello的功能定义了一个maketag函数，它接收一个函数作为参数，maketag返回一个新的函数赋值给一个变量hello,然后hello可直接调用。</p>
+<p>一般情况下，我们使用装饰器提供的 @ 语法糖（Syntactic Sugar）来简化上面的写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def maketag(func):</span><br><span class="line">    def wrapper():</span><br><span class="line">        return &quot;&lt;h&gt;&quot; + func() + &quot;&lt;/h&gt;&quot;</span><br><span class="line">    return wrapper</span><br><span class="line"></span><br><span class="line">@maketag</span><br><span class="line">def hello():</span><br><span class="line">    return &apos;hello world&apos;</span><br></pre></td></tr></table></figure></p>
+<p>像上面的情况，可以动态修改函数（或类）功能的函数就是装饰器。本质上，它是一个高阶函数，以被装饰的函数（比如上面的 hello）为参数，并返回一个包装后的函数（比如上面的 wrapper）给被装饰函数（hello）。</p>
+<h2 id="单-多个装饰器的使用形式"><a href="#单-多个装饰器的使用形式" class="headerlink" title="单/多个装饰器的使用形式"></a>单/多个装饰器的使用形式</h2><p>装饰器的一般使用形式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@decorator</span><br><span class="line">def func():</span><br><span class="line">    pass</span><br><span class="line">等价于下面的形式：</span><br><span class="line"></span><br><span class="line">def func():</span><br><span class="line">    pass</span><br><span class="line">func = decorator(func)</span><br></pre></td></tr></table></figure></p>
+<p>装饰器可以定义多个，离函数定义最近的装饰器先被调用，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@decorator_one</span><br><span class="line">@decorator_two</span><br><span class="line">def func():</span><br><span class="line">    pass</span><br><span class="line">等价于：</span><br><span class="line"></span><br><span class="line">def func():</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">func = decorator_one(decorator_two(func))</span><br></pre></td></tr></table></figure></p>
+<p>看下多个装饰器的例子，为了简单起见，下面的例子就不使用带参数的装饰器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def maketag1(func):</span><br><span class="line">    def wrapper():</span><br><span class="line">        return &apos;&lt;html&gt;&apos; + func() + &apos;&lt;/html&gt;&apos;</span><br><span class="line">    return wrapper</span><br><span class="line">    </span><br><span class="line">def maketag2(func):</span><br><span class="line">    def wrapper():</span><br><span class="line">        return &apos;&lt;i&gt;&apos; + func() + &apos;&lt;/i&gt;&apos;</span><br><span class="line">    return wrapper</span><br><span class="line"></span><br><span class="line">@maketag1</span><br><span class="line">@maketag2</span><br><span class="line">def hello():</span><br><span class="line">    return &apos;hello world&apos;</span><br></pre></td></tr></table></figure></p>
+<p>上面定义了两个装饰器，对 hello 进行装饰，上面的最后几行代码相当于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def hello():</span><br><span class="line">    return &apos;hello world&apos;</span><br><span class="line">    </span><br><span class="line">hello = maketag1(maketag2(hello))</span><br><span class="line">调用函数 hello：</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; hello()    </span><br><span class="line">&apos;&lt;html&gt;&lt;i&gt;hello world&lt;/i&gt;&lt;/html&gt;&apos;</span><br></pre></td></tr></table></figure></p>
+<p>似乎理解深刻了：当多个装饰器时，离函数定义最近的装饰器先被调用</p>
+<h2 id="对带参数的函数进行装饰"><a href="#对带参数的函数进行装饰" class="headerlink" title="对带参数的函数进行装饰"></a>对带参数的函数进行装饰</h2><p>让被装饰函数带有参数，对前面例子中的 hello() 函数进行改写使其带参数，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">def maketag(func):</span><br><span class="line">    def wrapper(*args, **kwargs):</span><br><span class="line">        res = func(*args, **kwargs)</span><br><span class="line">        return &apos;&lt;h&gt;&apos; + res + &apos;&lt;/h&gt;&apos;</span><br><span class="line">    return wrapper</span><br><span class="line"></span><br><span class="line">@maketag</span><br><span class="line">def hello(name):</span><br><span class="line">    return &apos;hello %s&apos; % name</span><br><span class="line">    </span><br><span class="line">@maketag</span><br><span class="line">def hello2(name1=&apos;user1&apos;, name2=&apos;user2&apos;):</span><br><span class="line">    return &apos;hello %s, %s&apos; % (name1, name2)</span><br></pre></td></tr></table></figure>
+<p>由于函数 hello 带参数，因此内嵌包装函数 wrapper 也做了一点改变：</p>
+<p>内嵌包装函数的参数传给了 func，即被装饰函数，也就是说内嵌包装函数的参数跟被装饰函数的参数对应，这里使用了 (*args, **kwargs)，是为了适应可变参数。<br>看看使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; hello1(&apos;python&apos;)</span><br><span class="line">&apos;&lt;h&gt;hello python&lt;/h&gt;&apos;</span><br><span class="line">&gt;&gt;&gt; hello2(&apos;python&apos;, &apos;java&apos;)</span><br><span class="line">&apos;&lt;h&gt;hello python, java&lt;/h&gt;&apos;</span><br></pre></td></tr></table></figure></p>
+<h2 id="带参数的装饰器"><a href="#带参数的装饰器" class="headerlink" title="带参数的装饰器"></a>带参数的装饰器</h2><p>装饰器还可以带参数，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@decorator(args1, args2)</span><br><span class="line">def func():</span><br><span class="line">    pass</span><br><span class="line">等价于：</span><br><span class="line"></span><br><span class="line">def func():</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">func = decorator(args1, args2)(func)</span><br></pre></td></tr></table></figure></p>
+<p>我们想改用标签 <code>&lt;html&gt;...&lt;/html&gt;</code> 是不是要再定义一个装饰器呢？不必，其实我们可以装饰器外层再定义一个函数，将标签作为参数，返回一个装饰器，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def outer_decorator(tag):     # 外层函数参数传给装饰器</span><br><span class="line">    def decorator(func):      # 真正的装饰器参数必然是被装饰器函数func</span><br><span class="line">        def wrapper(*args, **kwargs):       # 装饰器内层函数的参数是func的参数</span><br><span class="line">            res = func(*args, **kwargs)     # 被装饰函数正常调用</span><br><span class="line">#           return &apos;&lt;&apos; + tag + &apos;&gt;&apos; + res + &apos;&lt;/&apos; + tag + &apos;&gt;&apos;</span><br><span class="line">            return &apos;&lt;&#123;tag&#125;&gt;&#123;res&#125;&lt;/&#123;tag&#125;&gt;&apos;.format(tag=tag, res=res)</span><br><span class="line">        return wrapper        # 内层函数作返回值返回给装饰器</span><br><span class="line">    return decorator          # 装饰器本身作为返回值返回给最外层函数</span><br></pre></td></tr></table></figure></p>
+<p>现在，我们可以根据需要生成想要的装饰器了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">outer_decorator = outer_decorator(&apos;html&apos;)</span><br><span class="line">@outer_decorator</span><br><span class="line">def hello(name):</span><br><span class="line">    return &apos;hello %s&apos; % name</span><br><span class="line">    </span><br><span class="line">&gt;&gt;&gt; hello(&apos;world&apos;)</span><br><span class="line">&apos;&lt;html&gt;hello world&lt;/html&gt;&apos;</span><br></pre></td></tr></table></figure></p>
+<p>上面的形式也可以写得更加简洁：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@outer_decorator(&apos;html&apos;)     # @语法糖syntactic sugar</span><br><span class="line">def hello(name):</span><br><span class="line">    return &apos;hello,  %s&apos; % name</span><br></pre></td></tr></table></figure></p>
+<p>这就是带参数的装饰器，其实就是在装饰器外面多了一层包装，根据不同的参数返回不同的装饰器。</p>
+<h2 id="基于类的装饰器"><a href="#基于类的装饰器" class="headerlink" title="基于类的装饰器"></a>基于类的装饰器</h2><p>前面的装饰器都是一个函数，其实也可以基于类定义装饰器，看下面的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Deco_C(object):</span><br><span class="line">    def __init__(self, func):</span><br><span class="line">        self.func = func</span><br><span class="line"></span><br><span class="line">    def __call__(self, *args, **kwargs):</span><br><span class="line">        return &apos;&lt;html&gt;&apos; + self.func(*args, **kwargs) + &apos;&lt;/html&gt;&apos;</span><br><span class="line"></span><br><span class="line">@Deco_C</span><br><span class="line">def hello(name):</span><br><span class="line">    return &apos;hello %s&apos; % name</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; hello(&apos;world&apos;)</span><br><span class="line">&apos;&lt;html&gt;hello world&lt;/html&gt;&apos;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，类 Deco_C 有两个方法：</p>
+<p><code>__init__()：</code>它接收一个函数作为参数，也就是被装饰的函数<br><code>__call__()：</code>让类对象可调用，就像函数调用一样，在调用被装饰函数时被调用<br>还可以让类装饰器带参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Tag(object):</span><br><span class="line">    def __init__(self, tag):</span><br><span class="line">        self.tag = tag</span><br><span class="line"></span><br><span class="line">    def __call__(self, func):</span><br><span class="line">        def wrapper(*args, **kwargs):</span><br><span class="line">            return &quot;&lt;&#123;tag&#125;&gt;&#123;res&#125;&lt;/&#123;tag&#125;&gt;&quot;.format(res=func(*args, **kwargs), tag=self.tag)</span><br><span class="line">        return wrapper</span><br><span class="line"></span><br><span class="line">@Tag(&apos;html&apos;)</span><br><span class="line">def hello(name):</span><br><span class="line">    return &apos;hello %s&apos; % name</span><br><span class="line"></span><br><span class="line">&gt;&gt; hello(&apos;, welcome&apos;)</span><br><span class="line">&apos;&lt;html&gt;hello, welcome&lt;/html&gt;&apos;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，如果类装饰器有参数，则 <strong>init</strong> 接收此参数，而 <strong>call</strong> 接收 func函数，并多了一层wrapper(*args, **kwargs)来接收func函数的参数。</p>
+<h2 id="装饰器的副作用"><a href="#装饰器的副作用" class="headerlink" title="装饰器的副作用"></a>装饰器的副作用</h2><p>前面提到装饰器有一个瑕疵，就是被装饰函数的函数名称已经不是原来的名称了，回到最开始的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def maketagc(func):</span><br><span class="line">    def wrapper():</span><br><span class="line">        return &quot;&lt;i&gt;&quot; + func() + &quot;&lt;/i&gt;&quot;</span><br><span class="line">    return wrapper</span><br><span class="line"></span><br><span class="line">@maketag</span><br><span class="line">def hello():</span><br><span class="line">    return &apos;hello world&apos;</span><br></pre></td></tr></table></figure></p>
+<p>函数 hello 被 maketag 装饰后，它的函数名称已经改变了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; hello.__name__</span><br><span class="line">&apos;wrapper&apos;</span><br></pre></td></tr></table></figure></p>
+<p>为了消除这样的副作用，Python 中的 functool 包提供了一个 wraps 的装饰器：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from functools import wraps</span><br><span class="line"></span><br><span class="line">def maketag(func):</span><br><span class="line">    @wraps(func)       # 加上 wraps 装饰器</span><br><span class="line">    def wrapper():</span><br><span class="line">        return &quot;&lt;i&gt;&quot; + func() + &quot;&lt;/i&gt;&quot;</span><br><span class="line">    return wrapper</span><br><span class="line"></span><br><span class="line">@maketag</span><br><span class="line">def hello():</span><br><span class="line">    return &apos;hello world&apos;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; hello.__name__</span><br><span class="line">&apos;hello&apos;</span><br></pre></td></tr></table></figure></p>
+<p><code>小结:</code><br>本质上，装饰器就是一个有返回函数的高阶函数。<br>装饰器可以动态地修改一个类或函数的功能，通过在原有的类或者函数上包裹一层修饰类或修饰函数实现。<br>事实上，装饰器就是闭包的一种应用，但它比较特别，以被装饰函数为参数，并返回一个函数，赋给被装饰函数，闭包则没这种限制。</p>
+<h2 id="装饰器生产化进阶"><a href="#装饰器生产化进阶" class="headerlink" title="装饰器生产化进阶"></a>装饰器生产化进阶</h2><p>eg1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def deco(func):</span><br><span class="line">    def wrapper(x):</span><br><span class="line">        print(&quot;what ...&quot;)</span><br><span class="line">        func(x)</span><br><span class="line">        print(&apos;Game over ...&apos;)</span><br><span class="line">    return wrapper</span><br><span class="line"></span><br><span class="line">@deco</span><br><span class="line">def show(x):</span><br><span class="line">    print(x)</span><br><span class="line">&gt;&gt;&gt;show(&quot;I am a pythoner&quot;)</span><br><span class="line">what ...</span><br><span class="line">I am a pythoner</span><br><span class="line">Game over ...</span><br></pre></td></tr></table></figure></p>
+<p>eg2:</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjnis1qm6001rbxjxckuoep99" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-mysql-基础篇" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/29/mysql-基础篇/" class="article-date">
@@ -143,7 +229,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjnimn164001a68jxvvb17aj0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjnis1qlv001bbxjxifs05972" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +276,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjnimn17n003568jxguolr1m6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjnis1qmr002qbxjx26mwrv48" class="article-share-link">Share</a>
       
       
     </footer>
@@ -444,7 +530,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjnimn16c001m68jx61blflda" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjnis1qm4001obxjxwa230lh8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,7 +601,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjnimn16b001j68jxo5pqd9xa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjnis1qm3001mbxjxspyqqnjn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -582,7 +668,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjnimn16a001i68jxvsf7p8qr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjnis1qm1001jbxjxnhngbrhk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -653,7 +739,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="cjnimn168001f68jxf5hyiaqc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="cjnis1qm0001ibxjxcxdjexrl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -790,7 +876,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="cjnimn167001e68jxq77fvud8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="cjnis1qly001fbxjxl949g8r3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -835,7 +921,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjnimn15a000568jxo92kildf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjnis1qkx0005bxjxhl9tlcu2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -882,59 +968,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cjnimn15k000f68jxz1wyiq61" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-为什么写博客" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/01/为什么写博客/" class="article-date">
-  <time datetime="2017-01-01T00:08:08.000Z" itemprop="datePublished">2017-01-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/生活/">生活</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/01/为什么写博客/">为什么写博客</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>.</p>
-<h2 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h2><h3 id="欢迎大家来到个人博客-我来自成都无疑不幸与万幸是北漂IT-engineer-尤如www-digmyth-com"><a href="#欢迎大家来到个人博客-我来自成都无疑不幸与万幸是北漂IT-engineer-尤如www-digmyth-com" class="headerlink" title="欢迎大家来到个人博客,我来自成都无疑不幸与万幸是北漂IT engineer ! 尤如www.digmyth.com,"></a>欢迎大家来到个人博客,我来自成都无疑不幸与万幸是北漂IT engineer ! 尤如<a href="http://www.digmyth.com">www.digmyth.com</a>,</h3><h3 id="一个想要遆造神话却总在路上的人。"><a href="#一个想要遆造神话却总在路上的人。" class="headerlink" title="一个想要遆造神话却总在路上的人。"></a>一个想要遆造神话却总在路上的人。</h3><hr>
-<p>.</p>
-<h2 id="一个选择"><a href="#一个选择" class="headerlink" title="一个选择"></a>一个选择</h2><h3 id="至于为什么写博客，有很多原因-一段时间，一个心境，一段经历，一个情怀。在一个适当的时间"><a href="#至于为什么写博客，有很多原因-一段时间，一个心境，一段经历，一个情怀。在一个适当的时间" class="headerlink" title="至于为什么写博客，有很多原因, 一段时间，一个心境，一段经历，一个情怀。在一个适当的时间"></a>至于为什么写博客，有很多原因, 一段时间，一个心境，一段经历，一个情怀。在一个适当的时间</h3><h3 id="做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。"><a href="#做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。" class="headerlink" title="做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。"></a>做适当的事，想要做的事，没有目的，如半夜突然起来想写下一段话，转身安然入睡。</h3><hr>
-<p>.</p>
-<h2 id="认知时间"><a href="#认知时间" class="headerlink" title="认知时间"></a>认知时间</h2><h3 id="时间对年轻人来说太快了，2016年己远去，2017年己来临-刚好2017年1月1日-此时成立博客也许是"><a href="#时间对年轻人来说太快了，2016年己远去，2017年己来临-刚好2017年1月1日-此时成立博客也许是" class="headerlink" title="时间对年轻人来说太快了，2016年己远去，2017年己来临,刚好2017年1月1日,此时成立博客也许是"></a>时间对年轻人来说太快了，2016年己远去，2017年己来临,刚好2017年1月1日,此时成立博客也许是</h3><h3 id="天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住"><a href="#天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住" class="headerlink" title="天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住"></a>天时地利。各大互联网产品创业思路一是提供服务优化它人时间如知识产品，二是让它人上瘾拖住</h3><h3 id="它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么"><a href="#它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么" class="headerlink" title="它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么"></a>它的时间如微信朋友圈。会在不知不觉中时间己去，套用罗振宇跨年演讲上的一句话，有时你什么</h3><h3 id="错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感-让人"><a href="#错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感-让人" class="headerlink" title="错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感,让人"></a>错都没有，你就是老了。可能是因为身处互联网圈的原因，信息发展太快着时让人有种焦虑感,让人</h3><h3 id="很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己"><a href="#很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己" class="headerlink" title="很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己"></a>很着急，告别了过去却抓不到未来。此时我要做的就是脚踏实地做自己正在做的事情，就会让自己</h3><h3 id="很充实"><a href="#很充实" class="headerlink" title="很充实."></a>很充实.</h3><hr>
-<p>.</p>
-<h2 id="共鸣共勉"><a href="#共鸣共勉" class="headerlink" title="共鸣共勉"></a>共鸣共勉</h2><h3 id="欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗"><a href="#欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗" class="headerlink" title="欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗"></a>欲望勃发节奏飞速的当下，如果不能够保持淡定和从容，不具有宠辱不惊的修养，就很难拥有一颗</h3><h3 id="平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在"><a href="#平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在" class="headerlink" title="平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在"></a>平常恬淡的心境。更无法在纷乱中理清头绪，认清自我，认清形势，找准坐标，在反思中沉淀，在</h3><h3 id="沉淀中积累-才不会迷失方向-才不会迷失自我。-越是浮躁越是保持淡定，越是功利越是要适度恬静"><a href="#沉淀中积累-才不会迷失方向-才不会迷失自我。-越是浮躁越是保持淡定，越是功利越是要适度恬静" class="headerlink" title="沉淀中积累,才不会迷失方向,才不会迷失自我。 越是浮躁越是保持淡定，越是功利越是要适度恬静."></a>沉淀中积累,才不会迷失方向,才不会迷失自我。 越是浮躁越是保持淡定，越是功利越是要适度恬静.</h3><h3 id="焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难"><a href="#焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难" class="headerlink" title="焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难"></a>焦虑和躁动不仅会折损你的心智，更会戕害你的身体，经过了不平凡不寻常的年头，度过了最艰难</h3><h3 id="的岁月-再大的风险和考验都可以轻轻的付之一笑-有定力的人才有希望，告别2016，迎来2017，善"><a href="#的岁月-再大的风险和考验都可以轻轻的付之一笑-有定力的人才有希望，告别2016，迎来2017，善" class="headerlink" title="的岁月,再大的风险和考验都可以轻轻的付之一笑.有定力的人才有希望，告别2016，迎来2017，善"></a>的岁月,再大的风险和考验都可以轻轻的付之一笑.有定力的人才有希望，告别2016，迎来2017，善</h3><h3 id="待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼-给自己多些淡定和从容"><a href="#待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼-给自己多些淡定和从容" class="headerlink" title="待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼, 给自己多些淡定和从容."></a>待自己，给自己的心灵除除尘，给自己的灵魂洗洗礼, 给自己多些淡定和从容.</h3><hr>
-<p>.</p>
-<h2 id="记录点滴"><a href="#记录点滴" class="headerlink" title="记录点滴"></a>记录点滴</h2><h3 id="记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。"><a href="#记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。" class="headerlink" title="记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。"></a>记录一个想要遆造神话却总在路上的人的点滴，代表曾经来过，有些事我做过。。。</h3>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="cjnimn18p004g68jxloi6c5l9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cjnis1ql8000fbxjxdykhpcao" class="article-share-link">Share</a>
       
       
     </footer>
@@ -950,7 +984,7 @@ Age_of_name = &quot;xx&quot;  #类名
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span>
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/8/">__('next') &raquo;</a>
   </nav>
 </section>
         
