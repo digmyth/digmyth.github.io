@@ -62,6 +62,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mysql-sysbench" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/10/mysql-sysbench/" class="article-date">
+  <time datetime="2017-06-10T01:41:54.000Z" itemprop="datePublished">2017-06-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/10/mysql-sysbench/">Mysql sysbench 压测</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>工具安装</li>
+<li>执行压测</li>
+<li>针对优化</li>
+<li>示例结果</li>
+</ul>
+<h3 id="数据库指标"><a href="#数据库指标" class="headerlink" title="数据库指标"></a>数据库指标</h3><p>对于mysql压力测试，大多用sysbench/tpcc-mysql工具。主要针对数据库OLTP（在线事务处理）指标。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">qps : query per second 查询量</span><br><span class="line">tps: transaction per second 事务量</span><br></pre></td></tr></table></figure>
+<h3 id="工具安装"><a href="#工具安装" class="headerlink" title="工具安装"></a>工具安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install sysbench -y</span><br><span class="line">[root@mysql sysbench]# sysbench  --version</span><br><span class="line">sysbench 1.0.9</span><br></pre></td></tr></table></figure>
+<p>在<code>sysbench</code>压测时会调用内置<code>lua</code>脚本, 这些脚本为于<code>/etc/share/sysbench</code>目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/usr/share/sysbench</span><br><span class="line">[root@mysql sysbench]# ll</span><br><span class="line">total 64</span><br><span class="line">-rwxr-xr-x 1 root root  1452 Sep 18 12:29 bulk_insert.lua</span><br><span class="line">-rw-r--r-- 1 root root 13762 Sep 18 12:29 oltp_common.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1290 Sep 18 12:29 oltp_delete.lua</span><br><span class="line">-rwxr-xr-x 1 root root  2018 Sep 18 12:29 oltp_insert.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1265 Sep 18 12:29 oltp_point_select.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1649 Sep 18 12:29 oltp_read_only.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1824 Sep 18 12:29 oltp_read_write.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1118 Sep 18 12:29 oltp_update_index.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1127 Sep 18 12:29 oltp_update_non_index.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1440 Sep 18 12:29 oltp_write_only.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1919 Sep 18 12:29 select_random_points.lua</span><br><span class="line">-rwxr-xr-x 1 root root  2118 Sep 18 12:29 select_random_ranges.lua</span><br><span class="line">drwxr-xr-x 4 root root  4096 Nov 10 02:57 tests</span><br></pre></td></tr></table></figure></p>
+<h3 id="执行压测"><a href="#执行压测" class="headerlink" title="执行压测"></a>执行压测</h3><p>方便压测时找到内置<code>lua</code>脚本，以下命令都在<code>/etc/share/sysbench</code>目录下执行</p>
+<p>在远端连接数据库时，授权<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant all on test.* to root@&apos;%&apos; identified by &apos;123&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>生成压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/share/sysbench/</span><br><span class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  prepare</span><br></pre></td></tr></table></figure></p>
+<p>执行压测<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  run</span><br></pre></td></tr></table></figure></p>
+<p>清理压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  cleanup</span><br></pre></td></tr></table></figure></p>
+<h3 id="优化数据库"><a href="#优化数据库" class="headerlink" title="优化数据库"></a>优化数据库</h3><p>在压测过程中可能出现一些错误，连接数不够，max_prepared_stmt_count不够，可优化/etc/my.cnf 做适当调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">max_connections = 4096</span><br><span class="line">max_prepared_stmt_count=100000      # 默认16384压测时需调大</span><br><span class="line">query_cache_type = 1</span><br><span class="line">query_cache_size = 10M</span><br><span class="line"></span><br><span class="line">wsrep_slave_threads = 4</span><br><span class="line">#wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh</span><br><span class="line">max_connections = 10000</span><br><span class="line">key_buffer_size = 64M</span><br><span class="line">max_heap_table_size = 64M</span><br><span class="line">tmp_table_size = 64M</span><br><span class="line">innodb_buffer_pool_size = 8192M</span><br></pre></td></tr></table></figure></p>
+<h3 id="示例结果"><a href="#示例结果" class="headerlink" title="示例结果"></a>示例结果</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Initializing worker threads...</span><br><span class="line"></span><br><span class="line">Threads started!</span><br><span class="line"></span><br><span class="line">[ 10s ] thds: 300 tps: 198.33 qps: 5741.67 (r/w/o: 4335.25/830.02/576.41) lat (ms,95%): 3706.08 err/s: 81.77 reconn/s: 0.00</span><br><span class="line">[ 20s ] thds: 300 tps: 222.61 qps: 6095.90 (r/w/o: 4553.90/924.16/617.84) lat (ms,95%): 4203.93 err/s: 102.31 reconn/s: 0.00</span><br><span class="line">[ 30s ] thds: 300 tps: 221.01 qps: 5899.58 (r/w/o: 4399.84/899.83/599.92) lat (ms,95%): 4055.23 err/s: 93.20 reconn/s: 0.00</span><br><span class="line">[ 40s ] thds: 300 tps: 198.06 qps: 5400.91 (r/w/o: 4032.79/827.03/541.09) lat (ms,95%): 4683.57 err/s: 89.98 reconn/s: 0.00</span><br><span class="line">[ 50s ] thds: 300 tps: 186.14 qps: 5162.76 (r/w/o: 3866.39/783.36/513.00) lat (ms,95%): 5312.73 err/s: 90.12 reconn/s: 0.00</span><br><span class="line">[ 60s ] thds: 300 tps: 158.49 qps: 4433.94 (r/w/o: 3325.93/670.45/437.56) lat (ms,95%): 5507.54 err/s: 78.99 reconn/s: 0.00</span><br><span class="line">SQL statistics:</span><br><span class="line">    queries performed:</span><br><span class="line">        read:                            246736</span><br><span class="line">        write:                           50340</span><br><span class="line">        other:                           33317</span><br><span class="line">        total:                           330393</span><br><span class="line">    transactions:                        12147  (195.34 per sec.)</span><br><span class="line">    queries:                             330393 (5313.17 per sec.)</span><br><span class="line">    ignored errors:                      5477   (88.08 per sec.)</span><br><span class="line">    reconnects:                          0      (0.00 per sec.)</span><br><span class="line"></span><br><span class="line">General statistics:</span><br><span class="line">    total time:                          62.1815s</span><br><span class="line">    total number of events:              12147</span><br><span class="line"></span><br><span class="line">Latency (ms):</span><br><span class="line">         min:                                 16.10</span><br><span class="line">         avg:                               1503.84</span><br><span class="line">         max:                              14267.54</span><br><span class="line">         95th percentile:                   4683.57</span><br><span class="line">         sum:                            18267086.41</span><br><span class="line"></span><br><span class="line">Threads fairness:</span><br><span class="line">    events (avg/stddev):           40.4900/6.29</span><br><span class="line">    execution time (avg/stddev):   60.8903/0.59</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjnrj37uw001h17jx3vki9qcz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-KVM-introduction" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/08/KVM-introduction/" class="article-date">
@@ -115,7 +176,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjnmrprr200015bjxj3v63vwo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjnrj37tw000717jxrhqt3naq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -191,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjnmrprri000d5bjxgal2006v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjnrj37u1000d17jxy7yyllfn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -236,7 +297,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjnmrprtj00395bjxwsvue2bz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjnrj37wy003p17jxfr0pfwl1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -287,7 +348,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjnmrprt5002p5bjx11zfw1v9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjnrj37vo002o17jxbso4qxuq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -335,7 +396,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="cjnmrprrv000u5bjxue4q4t9y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="cjnrj37uf000t17jxcxh4d4bv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -386,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjnmrprrt000t5bjxfl91t3fu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjnrj37ui000x17jxgnn1cqrs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -448,65 +509,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjnmrprs7001c5bjxumzkbm80" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
-</ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjnmrprtk003b5bjxqycyiczd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjnrj37ut001d17jx4e0vg308" class="article-share-link">Share</a>
       
       
     </footer>
@@ -564,7 +567,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjnmrprth00365bjxggsjl7uz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjnrj37wq003k17jxhjyr3i7l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -577,10 +580,10 @@
 
 
   
-    <article id="post-web-django-orm(一)" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/04/15/web-django-orm(一)/" class="article-date">
-  <time datetime="2017-04-15T12:51:41.000Z" itemprop="datePublished">2017-04-15</time>
+    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
 </a>
     
   <div class="article-category">
@@ -595,7 +598,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/web-django-orm(一)/">web-django-orm(一)</a>
+      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
     </h1>
   
 
@@ -605,21 +608,24 @@
       
         <ul>
 <li>目录</li>
-<li>简单介绍</li>
-<li>初识ORM</li>
+<li>别名设置</li>
+<li>namespace设置</li>
+<li>reverse</li>
+<li>include本质</li>
 </ul>
-<h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><p>声明：<a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="noopener">ORM原理请参考</a></p>
-<p>一个类对应一张表<br>一个类对象对应一行表记录<br>一个类属性对应记录字段值</p>
-<h2 id="初识ORM"><a href="#初识ORM" class="headerlink" title="初识ORM"></a>初识ORM</h2><p>下面学习下Django里sql操作的基本语法</p>
-<p>通过简单设置，可以在logging查看翻译成的sql语句<br>settings.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">LOGGING = &#123;</span><br><span class="line">    &apos;version&apos;: 1,</span><br><span class="line">    &apos;disable_existing_loggers&apos;: False,</span><br><span class="line">    &apos;handlers&apos;: &#123;</span><br><span class="line">        &apos;console&apos;:&#123;</span><br><span class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</span><br><span class="line">            &apos;class&apos;:&apos;logging.StreamHandler&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &apos;loggers&apos;: &#123;</span><br><span class="line">        &apos;django.db.backends&apos;: &#123;</span><br><span class="line">            &apos;handlers&apos;: [&apos;console&apos;],</span><br><span class="line">            &apos;propagate&apos;: True,</span><br><span class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-1-创建表"><a href="#2-1-创建表" class="headerlink" title="2.1 创建表"></a>2.1 创建表</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from django.db import models</span><br><span class="line">class UserInfo(models.Model):</span><br><span class="line">    nid=models.AutoField(primary_key=True)</span><br><span class="line">    name=models.CharField(max_length=32)</span><br><span class="line">    pwd = models.CharField(max_length=32)</span><br></pre></td></tr></table></figure>
-<h3 id="2-2-操作表"><a href="#2-2-操作表" class="headerlink" title="2.2 操作表"></a>2.2 操作表</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">q = models.UserInfo.objects.all()</span><br><span class="line">Queryset = [obj(id,name,pwd), obj(id,name,pwd),obj(id,name,pwd),]</span><br><span class="line"></span><br><span class="line">q=models.UserInfo.objects.values(&apos;name&apos;,&apos;pwd&apos;)</span><br><span class="line">Queryset = [&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123&#125;, &#123;&quot;name&quot;:&quot;user1&quot;,&quot;pwd&quot;:123&#125;, &#123;&#125;]    # 字典</span><br><span class="line"></span><br><span class="line">q = models.UserInfo.objects.value_list(&apos;name&apos;,&apos;pwd&apos;)</span><br><span class="line">Queryset = [(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123), (&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123),(&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;: 123)]#元组</span><br><span class="line">q = models.UserInfo.objects.filter(name=&quot;wxq&quot;)</span><br><span class="line"></span><br><span class="line">q = models.UserInfo.objects.get(name=&apos;wxq&apos;)               # 多个或没有值都会报错</span><br><span class="line">q = models.UserInfo.objects.filter(name=&apos;wxq&apos;).first()    # 推荐</span><br></pre></td></tr></table></figure>
-<h3 id="2-3-操作表的其它方法"><a href="#2-3-操作表的其它方法" class="headerlink" title="2.3 操作表的其它方法"></a>2.3 操作表的其它方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">1. all()       返回的是querySet</span><br><span class="line">2. filter(id__lt=10, id__gt=1) 并且查，  返回的是querySet</span><br><span class="line"></span><br><span class="line">3. get()  只有一个值，否则报错， 返回的是对象</span><br><span class="line">4. first() 只找第一个值，返回的是对象</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">5. exclude 取反</span><br><span class="line">model.Book.objects.exclude(prince=134) 返回querySet</span><br><span class="line"></span><br><span class="line">6.  count</span><br><span class="line">modeles.Book.objects.exclude(prince=134).count()   #querySet对象才有.count()调用方法 </span><br><span class="line"></span><br><span class="line">7. order_by(*field)</span><br><span class="line"></span><br><span class="line">models.Book.objects.objects.all().order_by(&quot;prince&quot;) 小到大排序</span><br><span class="line">models.Book.objects.objects.all().order_by(&quot;-prince&quot;) 大到小排序</span><br><span class="line"></span><br><span class="line">8.distinct() 提除重复的记录</span><br><span class="line"></span><br><span class="line">9 values   返回字典querySet集合</span><br><span class="line"></span><br><span class="line">10 values_list 返回元组querySet集合</span><br><span class="line"></span><br><span class="line">11 exist</span><br><span class="line">ret = models.Book.objects.all().exist()</span><br></pre></td></tr></table></figure>
+<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
+<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
+<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="cjnmrprun00445bjxe4zhvc2q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="cjnrj37ww003n17jxrim6lni8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -660,7 +666,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -673,11 +679,11 @@
       <ul>
         
           <li>
-            <a href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
+            <a href="/2018/10/01/Kubernetes-dashboard/">kubernetes-dashboard</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
           </li>
         
           <li>
@@ -685,11 +691,11 @@
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/07/25/mysql-limit/">CentOS 7.x/Mysql limit</a>
+            <a href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
           </li>
         
       </ul>
