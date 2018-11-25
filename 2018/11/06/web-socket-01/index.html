@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
 <meta property="og:description" content="WebSocket在什么场景下使用？页面实时展示数据  轮询：setInterval()前端轮询请求，性能低下 长轮询：把请求pending住多少秒后再返回，量大时也损耗服务器性能 WebSocket: 建立socket双向传输数据，高效。  那么什么是WebSocket参考链接 先来看下http协议 http协议：   1 格式：请求头、请求体之间\r\n\r\n分隔，请求头或请求体内部\r\n">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-25T11:22:59.378Z">
+<meta property="og:updated_time" content="2018-11-25T11:24:51.562Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-socket-基础知识">
 <meta name="twitter:description" content="WebSocket在什么场景下使用？页面实时展示数据  轮询：setInterval()前端轮询请求，性能低下 长轮询：把请求pending住多少秒后再返回，量大时也损耗服务器性能 WebSocket: 建立socket双向传输数据，高效。  那么什么是WebSocket参考链接 先来看下http协议 http协议：   1 格式：请求头、请求体之间\r\n\r\n分隔，请求头或请求体内部\r\n">
@@ -132,14 +132,14 @@
 <p>当客户端加密发送了socket data数据时，服务端收到数据是这样的.</p>
 <p><code>b&#39;\x81\x82\xac\xde\xdd\xf4\xdc\xae&#39;</code></p>
 <p>需要对这样的数据解密才能拿到真的数据，跟据第二个字节后7位的值取数据.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-------+-+-------------+-------------------------------+</span><br><span class="line">|F|R|R|R| opcode|M| Payload len |    Extended payload length    |</span><br><span class="line">|I|S|S|S|  (4)  |A|     (7)     |             (16/64)           |</span><br><span class="line">|N|V|V|V|       |S|             |   (if payload len==126/127)   |</span><br><span class="line">| |1|2|3|       |K|             |                               |</span><br><span class="line">+-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +</span><br><span class="line">|     Extended payload length continued, if payload len == 127  |</span><br><span class="line">+ - - - - - - - - - - - - - - - +-------------------------------+</span><br><span class="line">|                               |Masking-key, if MASK set to 1  |</span><br><span class="line">+-------------------------------+-------------------------------+</span><br><span class="line">| Masking-key (continued)       |          Payload Data         |</span><br><span class="line">+-------------------------------- - - - - - - - - - - - - - - - +</span><br><span class="line">:                     Payload Data continued ...                :</span><br><span class="line">+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +</span><br><span class="line">|                     Payload Data continued ...                |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">value  = socket_data[1] &amp; 127</span><br><span class="line">value &lt;=125  b&apos;\x81\x82  \xac\xde\xdd\xf4\xdc\xae&apos; # 数据在第2个节字后</span><br><span class="line">value =126   b&apos;\x81\x82\xac\xde  \xdd\xf4\xdc\xae&apos; # next 16bit(2个字节)，数据在第4个节字后  </span><br><span class="line">value =127   xxx...           # next 64bit(8个字节), 数据在第10个节字后</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">value  = socket_data[1] &amp; 127</span><br><span class="line">value &lt;=125  b&apos;\x81\x82  \xac\xde\xdd\xf4\xdc\xae&apos; # 数据在第2个节字后</span><br><span class="line">value =126   b&apos;\x81\x82\xac\xde  \xdd\xf4\xdc\xae&apos; # next 16bit(2个字节)，数据在第4个节字后  </span><br><span class="line">value =127   xxx...                                # next 64bit(8个字节), 数据在第10个节字后</span><br></pre></td></tr></table></figure>
 <p>其中头32bits为掩码，真正数据还要去掉这4字节，取真正数据真不容易。</p>
 <p>好了,WebSocket所有知识都在这里了，慢慢品味知识的韵味。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cjowsoksg004e2ljx3i1gyyg2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cjowsqx6u004e3vjxagdvrrvl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -236,11 +236,11 @@
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
       </ul>

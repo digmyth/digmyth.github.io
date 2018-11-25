@@ -130,14 +130,14 @@
 <p>当客户端加密发送了socket data数据时，服务端收到数据是这样的.</p>
 <p><code>b&#39;\x81\x82\xac\xde\xdd\xf4\xdc\xae&#39;</code></p>
 <p>需要对这样的数据解密才能拿到真的数据，跟据第二个字节后7位的值取数据.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-------+-+-------------+-------------------------------+</span><br><span class="line">|F|R|R|R| opcode|M| Payload len |    Extended payload length    |</span><br><span class="line">|I|S|S|S|  (4)  |A|     (7)     |             (16/64)           |</span><br><span class="line">|N|V|V|V|       |S|             |   (if payload len==126/127)   |</span><br><span class="line">| |1|2|3|       |K|             |                               |</span><br><span class="line">+-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +</span><br><span class="line">|     Extended payload length continued, if payload len == 127  |</span><br><span class="line">+ - - - - - - - - - - - - - - - +-------------------------------+</span><br><span class="line">|                               |Masking-key, if MASK set to 1  |</span><br><span class="line">+-------------------------------+-------------------------------+</span><br><span class="line">| Masking-key (continued)       |          Payload Data         |</span><br><span class="line">+-------------------------------- - - - - - - - - - - - - - - - +</span><br><span class="line">:                     Payload Data continued ...                :</span><br><span class="line">+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +</span><br><span class="line">|                     Payload Data continued ...                |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">value  = socket_data[1] &amp; 127</span><br><span class="line">value &lt;=125  b&apos;\x81\x82  \xac\xde\xdd\xf4\xdc\xae&apos; # 数据在第2个节字后</span><br><span class="line">value =126   b&apos;\x81\x82\xac\xde  \xdd\xf4\xdc\xae&apos; # next 16bit(2个字节)，数据在第4个节字后  </span><br><span class="line">value =127   xxx...           # next 64bit(8个字节), 数据在第10个节字后</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">value  = socket_data[1] &amp; 127</span><br><span class="line">value &lt;=125  b&apos;\x81\x82  \xac\xde\xdd\xf4\xdc\xae&apos; # 数据在第2个节字后</span><br><span class="line">value =126   b&apos;\x81\x82\xac\xde  \xdd\xf4\xdc\xae&apos; # next 16bit(2个字节)，数据在第4个节字后  </span><br><span class="line">value =127   xxx...                                # next 64bit(8个字节), 数据在第10个节字后</span><br></pre></td></tr></table></figure>
 <p>其中头32bits为掩码，真正数据还要去掉这4字节，取真正数据真不容易。</p>
 <p>好了,WebSocket所有知识都在这里了，慢慢品味知识的韵味。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cjowsoksg004e2ljx3i1gyyg2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cjowsqx6u004e3vjxagdvrrvl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -185,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="cjowsokp000042ljxumav3hzy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="cjowsqx3h00033vjx08lx3cfw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -233,7 +233,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="cjowsokop00002ljxk3t7l5sr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="cjowsqx3800003vjxpr6iacnp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="cjowsqx3j00043vjxlyz4bywt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -283,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cjowsokp100052ljx01hewfv6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cjowsqx3k00053vjx6arln0yx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -326,55 +374,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cjowsokp300072ljxmqtdtk53" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="cjowsokoy00032ljxcj24hdyb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cjowsqx3m00073vjx6ioqwnq4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -422,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="cjowsokq2001d2ljxkap5whmt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="cjowsqx4k001d3vjxcgse06tf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -469,7 +469,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="cjowsokpv00132ljxd8pww1fe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="cjowsqx4c00133vjxmrmxkxie" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,7 +515,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjowsokr3002u2ljxk573janz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjowsqx5o002u3vjxce6yaafk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -582,7 +582,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjowsokqy002n2ljxt6mi624w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjowsqx5k002n3vjxmz7nn0li" class="article-share-link">Share</a>
       
       
     </footer>
@@ -648,11 +648,11 @@
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Openshift/">Openshift-入门</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
       </ul>
