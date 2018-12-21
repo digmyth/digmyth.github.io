@@ -62,6 +62,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-shell-func" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/29/shell-func/" class="article-date">
+  <time datetime="2018-05-29T01:41:54.000Z" itemprop="datePublished">2018-05-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/29/shell-func/">shell function语法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">cat /usr/local/bin/show </span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">a=&apos;df -hT&apos;</span><br><span class="line">b=&quot;ls&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo_print() &#123;</span><br><span class="line">	echo -e &quot;\033[1;32m$1\033[0m&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exec() &#123;</span><br><span class="line">	echo_print &quot;$1&quot;</span><br><span class="line">	$1</span><br><span class="line">	echo &quot;&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">info () &#123;</span><br><span class="line">	exec $a</span><br><span class="line">	exec $b</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">info)</span><br><span class="line">	info;;</span><br><span class="line"></span><br><span class="line">*)</span><br><span class="line">	echo &quot;Usage: show info&quot;;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+<p>相当于定制了一个shell命令，运行一下看下效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#[root@wxqnode opt]# show info</span><br><span class="line">df</span><br><span class="line">Filesystem              1K-blocks    Used Available Use% Mounted on</span><br><span class="line">/dev/mapper/centos-root  22001156 1946776  20054380   9% /</span><br><span class="line">devtmpfs                  2962076       0   2962076   0% /dev</span><br><span class="line">tmpfs                     2973096       0   2973096   0% /dev/shm</span><br><span class="line">tmpfs                     2973096   33268   2939828   2% /run</span><br><span class="line">tmpfs                     2973096       0   2973096   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1                 1038336  145652    892684  15% /boot</span><br><span class="line">tmpfs                      594620       0    594620   0% /run/user/0</span><br><span class="line"></span><br><span class="line">ls</span><br><span class="line">restart_cob  study  venv</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjpyd77xw00351djx7m8kfrrn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-python-django-26-API验证" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/06/python-django-26-API验证/" class="article-date">
@@ -116,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjoz44x3n002jz8jx6jul0por" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjpyd77y200381djxw56mdkax" class="article-share-link">Share</a>
       
       
     </footer>
@@ -159,7 +205,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjoz44x400030z8jxedx72ptq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjpyd77yf003f1djxj43hy491" class="article-share-link">Share</a>
       
       
     </footer>
@@ -235,7 +281,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjoz44x520042z8jxf1iao82k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjpyd77zi004b1djxufqt1qfk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +344,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjoz44x4z0040z8jxto22cdd4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjpyd77zg00491djxkzzb9hru" class="article-share-link">Share</a>
       
       
     </footer>
@@ -367,7 +413,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjoz44x4i003kz8jxurnjf79z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjpyd77z3003x1djxmqv3g8n7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -475,7 +521,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjoz44x5e004fz8jxlh8jltyn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjpyd77zr004j1djxg41c7lpw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -542,7 +588,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjoz44x3s002qz8jx7d0nbtm1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjpyd77xr00301djxejmtky6i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -594,7 +640,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjoz44x4u003wz8jxyma2bq6u" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjpyd77za00431djxjij2ompd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -655,74 +701,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjoz44x4s003uz8jx9qtcx8ix" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-20-ajax" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/20/web-django-20-ajax/" class="article-date">
-  <time datetime="2017-11-20T12:26:37.000Z" itemprop="datePublished">2017-11-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/20/web-django-20-ajax/">web-Django-20-ajax</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>代码例子</li>
-<li>代码例子</li>
-<li>ajax前端组装数据</li>
-<li>ajax涉及的序列化</li>
-<li>ajax错误验证</li>
-<li>ajax的3种csrf_token</li>
-</ul>
-<h1 id="Ajax-学习"><a href="#Ajax-学习" class="headerlink" title="Ajax 学习"></a>Ajax 学习</h1><p><a href="http://www.cnblogs.com/wupeiqi/articles/5703697.html" target="_blank" rel="noopener">详情参考Ajax 武佩齐博客</a></p>
-<p>这里只是对Ajax学习做一个记录和总结，内容还有很多没有包括。</p>
-<h2 id="代码例子"><a href="#代码例子" class="headerlink" title="代码例子"></a>代码例子</h2><p>普通请求    —&gt;  render渲染全部HTML<br>Ajax           – -&gt;  render生成己经渲染好的局部HTML, 功能单一。<br>Ajax           — &gt;  HttpResponse(‘data’) 得到原始数据，ajax前端自行展示，定制化强，一般用于提供接口，为别人提供数据。</p>
-<p>render和HttpResponse的关系？<br>render:<br>1  模板+数据进行替换<br>2 HttpResponse(数据)</p>
-<p>HttpResponse:<br>1 HttpResponse(数据)</p>
-<p>Ajax请求时，响应内容时可以是render和HttpResponse,不要认为只能用HttpResponse. views.py里不能<code>return redirect(&quot;&quot;)</code><br>跳转是在前端跳转location.href = “<a href="http://www.baidu.com&quot;" target="_blank" rel="noopener">http://www.baidu.com&quot;</a></p>
-<h2 id="ajax前端组装数据"><a href="#ajax前端组装数据" class="headerlink" title="ajax前端组装数据"></a>ajax前端组装数据</h2><p>ajax形式发input数据时在前端取数据并组装数据后给后台<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ajax取input数据时，可以用data:&#123;&quot;user&quot;:$(&quot;#user&quot;).val(),&quot;pwd&quot;:$(&quot;#pwd&quot;).val()&#125;获取数据，</span><br><span class="line">更简单的数据组装方法是加form表单:&lt;form id=&quot;ff&quot;&gt;&lt;input /&gt;&lt;/form&gt;</span><br><span class="line">此时取数据可以用：data: $(&quot;#ff&quot;).serialize(),</span><br></pre></td></tr></table></figure></p>
-<h2 id="ajax涉及的序列化"><a href="#ajax涉及的序列化" class="headerlink" title="ajax涉及的序列化"></a>ajax涉及的序列化</h2><p>Django 中Ajax方式获取ORM数据时，涉及序列化操作的5种方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"># # 方式一  我们伪造的数据是可以序列化实现展示的</span><br><span class="line"># #  模板渲染后生成字符串</span><br><span class="line"># # user_list = models.UserInfo.objects.all()</span><br><span class="line"># #</span><br><span class="line"># # return render(request,&quot;tpl.html&quot;,&#123;&quot;user_list&quot;:user_list&#125;)</span><br><span class="line"># user_list = [</span><br><span class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</span><br><span class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</span><br><span class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</span><br><span class="line">#     &#123;&apos;id&apos;:1,&apos;name&apos;:&apos;wxq&apos;, &apos;pwd&apos;:123&#125;,</span><br><span class="line"># ]</span><br><span class="line">#</span><br><span class="line"># import json</span><br><span class="line"># data = json.dumps(user_list)</span><br><span class="line"># return HttpResponse(data)</span><br><span class="line"></span><br><span class="line"># # 方式二：  这里是失败的， QuerySet不支持Json序列化，经测试失败</span><br><span class="line"># user_list = models.UserInfo.objects.all()</span><br><span class="line"># import json</span><br><span class="line"># return  HttpResponse(json.dumps(user_list))</span><br><span class="line"></span><br><span class="line"># # 方式三 也是成功的,但不常见</span><br><span class="line">#</span><br><span class="line"># user_list = models.UserInfo.objects.all()</span><br><span class="line"># from django.core import serializers</span><br><span class="line"># data= serializers.serialize(&quot;json&quot;, user_list)</span><br><span class="line"># return  HttpResponse(data)</span><br><span class="line"></span><br><span class="line"># 方式四 推荐用法</span><br><span class="line"></span><br><span class="line">user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</span><br><span class="line">user_list=list(user_list)</span><br><span class="line">print(user_list)</span><br><span class="line">import json</span><br><span class="line">data = json.dumps(user_list)</span><br><span class="line">return  HttpResponse(data)</span><br><span class="line"># 方式五 </span><br><span class="line"></span><br><span class="line">user_list = models.UserInfo.objects.values_list(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</span><br><span class="line">user_list=list(user_list)</span><br><span class="line">print(user_list)</span><br><span class="line">import json</span><br><span class="line">data = json.dumps(user_list)</span><br><span class="line">return  HttpResponse(data)</span><br></pre></td></tr></table></figure></p>
-<h2 id="Ajax-错误验证"><a href="#Ajax-错误验证" class="headerlink" title="Ajax 错误验证"></a>Ajax 错误验证</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">## 异常判断</span><br><span class="line">   import json</span><br><span class="line">   ret = &#123;&apos;status&apos;:False,&apos;data&apos;:None,&apos;error&apos;:None&#125;</span><br><span class="line">   try:</span><br><span class="line">       user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</span><br><span class="line">       user_list=list(user_list)</span><br><span class="line">       ret[&apos;status&apos;]= True</span><br><span class="line">       ret[&apos;data&apos;] = user_list</span><br><span class="line">   except Exception as e:</span><br><span class="line">       ret[&apos;error&apos;] = &apos;获取数据失败&apos;</span><br><span class="line">   data = json.dumps(ret)</span><br><span class="line">   return  HttpResponse(data)</span><br></pre></td></tr></table></figure>
-<p>或者以类的形式调用更为简洁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">app01项目下新建utls.py</span><br><span class="line">class BaseResponse():</span><br><span class="line">   def __init__(self):</span><br><span class="line">       self.status = False</span><br><span class="line">       self.data = None</span><br><span class="line">       self.error = None</span><br><span class="line">views.py中导入：</span><br><span class="line">from app01.utils import BaseResponse</span><br><span class="line">ret = BaseResponse()</span><br><span class="line">try:</span><br><span class="line">    user_list = models.UserInfo.objects.values(&quot;id&quot;,&quot;username&quot;,&quot;pwd&quot;)</span><br><span class="line">    user_list=list(user_list)</span><br><span class="line">    ret.status= True</span><br><span class="line">    ret.data = user_list</span><br><span class="line">except Exception as e:</span><br><span class="line">        ret.error = &apos;获取数据失败&apos;</span><br><span class="line">    data = json.dumps(ret.__dict__,ensure_ascii=False)       # False表示不要中文为变为unicode编码</span><br><span class="line">    return  HttpResponse(data)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var tag.createElement(&quot;a&quot;)</span><br><span class="line">tag.innertHTML=&quot;hello&quot;</span><br><span class="line">div.append(tag)  # &lt;div&gt; &lt;a&gt;hello&lt;/a&gt;&lt;/div&gt; 加在标签里面</span><br><span class="line">div.after(tag)       # &lt;div&gt;&lt;/div&gt;&lt;a&gt;hello&lt;/a&gt; 加在标签后面</span><br></pre></td></tr></table></figure>
-<h2 id="ajax的3种csrf-token"><a href="#ajax的3种csrf-token" class="headerlink" title="ajax的3种csrf_token"></a>ajax的3种csrf_token</h2><p>方法一： 自己组装数据csrf_token<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;% csrf_token %&#125; 会生成带csrfmiddlewaretoken的input标签</span><br><span class="line">data:&#123;&apos;csrfmiddlewaretoken&apos;:$(&apos;input[name=&quot;csrfmiddlewaretoken&quot;]&apos;).val()&#125;</span><br></pre></td></tr></table></figure></p>
-<p>方法二：加 form表单后用$(“#form_id”).serialize()方法自动组装数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 添加form HTML 标签 &lt;form id=&quot;form_id&quot;&gt;&lt;input /&gt;&lt;/form&gt;</span><br><span class="line">2 用data: $(&quot;#form_id&quot;).serialize(),自动组装数据</span><br></pre></td></tr></table></figure>
-<p>方法三：自行在cookies里取csrf_token放在请求头里<br><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="noopener">参考</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1  导入jquery.cookie.js: &lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">2  jquery方式操作cookie取值:  csrf_token=$.cookie(&apos;csrftoken&apos;)	</span><br><span class="line">3  ajax形式添加到请求头里，注意写法是定死的</span><br><span class="line">   $.ajax(&#123;</span><br><span class="line">		  header: &#123;&quot;X-CSRFToken&quot;: $.cookie(&apos;csrftoken&apos;)&#125;，</span><br><span class="line">		  )&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjoz44x4o003rz8jxwjzp5sz1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjpyd77zd00451djx5hn8zms1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -788,11 +767,11 @@ print(v1.site.name)
           </li>
         
           <li>
-            <a href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
+            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
           </li>
         
           <li>
-            <a href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+            <a href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
           </li>
         
       </ul>

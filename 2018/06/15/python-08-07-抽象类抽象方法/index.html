@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>web-Django-25-DjangoAdmin | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>python-08-07-抽象类抽象方法.md | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+  <meta name="description" content="接口当多个类都有同样的方法，此时可以把相同的方法提练出来放在父类，但对继承父类的子类作约束就要用到接口了。 下面来段伪代码，在其它语言中普遍使用的语法，不适于python,这里主要学习其思想12345678910111213141516interface IFoo():  # 这个叫IFoo接口，约束实现该接口的类必须实现定义的方法    def exec(self):passclass A(IF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="web-Django-25-DjangoAdmin">
-<meta property="og:url" content="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/index.html">
+<meta property="og:title" content="python-08-07-抽象类抽象方法.md">
+<meta property="og:url" content="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+<meta property="og:description" content="接口当多个类都有同样的方法，此时可以把相同的方法提练出来放在父类，但对继承父类的子类作约束就要用到接口了。 下面来段伪代码，在其它语言中普遍使用的语法，不适于python,这里主要学习其思想12345678910111213141516interface IFoo():  # 这个叫IFoo接口，约束实现该接口的类必须实现定义的方法    def exec(self):passclass A(IF">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-01-18T03:43:22.000Z">
+<meta property="og:updated_time" content="2018-12-21T18:24:42.815Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="web-Django-25-DjangoAdmin">
-<meta name="twitter:description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+<meta name="twitter:title" content="python-08-07-抽象类抽象方法.md">
+<meta name="twitter:description" content="接口当多个类都有同样的方法，此时可以把相同的方法提练出来放在父类，但对继承父类的子类作约束就要用到接口了。 下面来段伪代码，在其它语言中普遍使用的语法，不适于python,这里主要学习其思想12345678910111213141516interface IFoo():  # 这个叫IFoo接口，约束实现该接口的类必须实现定义的方法    def exec(self):passclass A(IF">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -64,14 +64,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-web-django-25-DjangoAdmin" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-python-08-07-抽象类抽象方法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/12/28/web-django-25-DjangoAdmin/" class="article-date">
-  <time datetime="2017-12-28T12:37:00.000Z" itemprop="datePublished">2017-12-28</time>
+    <a href="/2018/06/15/python-08-07-抽象类抽象方法/" class="article-date">
+  <time datetime="2018-06-15T12:39:12.000Z" itemprop="datePublished">2018-06-15</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+    <a class="article-category-link" href="/categories/Python/">Python</a>
   </div>
 
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      web-Django-25-DjangoAdmin
+      python-08-07-抽象类抽象方法.md
     </h1>
   
 
@@ -90,44 +90,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>DjangoAdmin工作流程</li>
-<li>制作启动文件 </li>
-<li>单例模式应用 </li>
-</ul>
-<p><a href="http://www.cnblogs.com/wupeiqi/articles/7444717.html" target="_blank" rel="noopener">博客参考</a></p>
-<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">admin.py注册models_class如models.UserInfo</span><br><span class="line">from django.template import admin</span><br><span class="line">from app01 import models</span><br><span class="line">admin.site.registry(models.UserInfo)</span><br></pre></td></tr></table></figure></p>
-<p>2 admin.site.urls<br>  admin.site.urls循环_registry={}字典生成相应URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">生成4个URL分别是如下：</span><br><span class="line">app01/userinfo/</span><br><span class="line">app01/userinfo/add/</span><br><span class="line">app01/userinfo/1/change/</span><br><span class="line">app01/userinfo/1/delete/</span><br></pre></td></tr></table></figure></p>
-<p>其中要深入理解URL include原理：  url(r’^xx’, “可以是视图函数，也可以是元组”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">partterns = [</span><br><span class="line">   url(r&apos;^admin&apos;, admin.site.urls),            </span><br><span class="line">		     # admin.site.urls 返回形如（[],None,None）的元组.</span><br><span class="line">   url(r&apos;^backend&apos;, include(&apos;backend.urls&apos;)), </span><br><span class="line">		    # include 同样返回形如（[],None,None）的元组.</span><br><span class="line">		    # 也可以写成形如 include([],None,None) 格式.</span><br><span class="line"> ]</span><br></pre></td></tr></table></figure></p>
-<h2 id="二-制作stack启动文件"><a href="#二-制作stack启动文件" class="headerlink" title="二  制作stack启动文件"></a>二  制作stack启动文件</h2><ul>
-<li>1  创建一个stack 的app</li>
-<li>2  settings.py 注册app<pre><code>-  &apos;stack.apps.StackConfig&apos;,
-</code></pre></li>
-<li>3  在stack apps.py文件定义ready方法</li>
-</ul>
-<p>stack/apps.py文件ready()方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from django.utils.module_loading import autodiscover_modules</span><br><span class="line">class StackConfig(AppConfig):</span><br><span class="line">   name = &apos;stack&apos;</span><br><span class="line"></span><br><span class="line">   def ready(self):</span><br><span class="line">       autodiscover_modules(&quot;xxx&quot;)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>4 启动项目时会先在执行所有app下的xxx.py文件.<br>   (当然前提是这些app也是settings.py注册好的)</li>
-</ul>
-<h2 id="三-单例模式"><a href="#三-单例模式" class="headerlink" title="三 单例模式"></a>三 单例模式</h2><p>单例模式有很多种实现方式</p>
-<p>其中一种：利用模块多次导入时，除第一次外不会真正执行模块代码。</p>
-<p>如果模块中有实例化对象操作，那么多次导入也不会真正实例化多个对象，而是同一个实例</p>
-<p>如果在一个程序先运行的文件改变了实例数据或属性，后运行的文件导入后读这个实例就会有数据或属性.</p>
-<p>  示例：<br>  随便定义一个实例化对象的文件stack/service.v1</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class StackSite():</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self._registry = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    def register(self,class_name,config_class):</span><br><span class="line">        self._registry[class_name] = config_class</span><br><span class="line"></span><br><span class="line">   site = StackSite()</span><br><span class="line">## 单例</span><br></pre></td></tr></table></figure>
-<p>在我们定义的启动文件app01/xxx.py中写入代码(因为会先执行xxx.py)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from stack.service import v1</span><br><span class="line">v1.site.register(&quot;k1&quot;,&quot;v1&quot;)</span><br><span class="line">v1.site.register(&quot;k2&quot;,&quot;v2&quot;)</span><br><span class="line">v1.site.name = &apos;wxq&apos;</span><br></pre></td></tr></table></figure>
-<p>项目urls.py中写入</p>
-<pre><code>from stack.service import v1
-print(v1.site._registry)
-print(v1.site.name)
-</code></pre><p>总结<br>启动项目时，先执行app01/xxx.py,后执行urls.py文件，程序读到了实例的数据并不是重新实例化新对象，这就是单例模式的运用。</p>
+        <h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>当多个类都有同样的方法，此时可以把相同的方法提练出来放在父类，但对继承父类的子类作约束就要用到接口了。</p>
+<p>下面来段伪代码，在其它语言中普遍使用的语法，不适于python,这里主要学习其思想<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">interface IFoo():  # 这个叫IFoo接口，约束实现该接口的类必须实现定义的方法</span><br><span class="line">    def exec(self):pass</span><br><span class="line"></span><br><span class="line">class A(IFoo):  # 这个叫实现了IFoo接口，接口中的方法必须在当前类实现</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &quot;A.exec&quot;</span><br><span class="line"></span><br><span class="line">class B(IFoo):</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &apos;B.exec&apos;</span><br><span class="line"></span><br><span class="line">def f1(arg):</span><br><span class="line">    arg.exec()</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line">print(f1.obj)</span><br></pre></td></tr></table></figure></p>
+<p>上面就是接口的概念或者用法，下面是用抽象类、抽象方法实现同样功能的原理伪代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">AbstractClass Foo():  抽象类，抽象方法(有继承的特性，也有约束的特性)</span><br><span class="line">    def abstractmethod():pass</span><br><span class="line"></span><br><span class="line">class A(Foo):</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &apos;A.exec&apos;</span><br><span class="line"></span><br><span class="line">    def f1(self):</span><br><span class="line">        return &quot;A.f1&quot;</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line">obj.exec()</span><br></pre></td></tr></table></figure></p>
+<p>那么如何用代码实现python抽象类、抽象方法呢？</p>
+<p>要用到<code>from abc import abstractmethod,ABCMeta</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from abc import abstractmethod,ABCMeta</span><br><span class="line"></span><br><span class="line">class IFoo(metaclass=ABCMeta):</span><br><span class="line">    @abstractmethod</span><br><span class="line">    def exec(self):pass</span><br><span class="line"></span><br><span class="line">    def f1(self):</span><br><span class="line">        return &quot;cloud implement really method&quot;</span><br><span class="line"></span><br><span class="line">class A(IFoo):  # 当前类继承了抽象类，当前类必须实现抽象类中的所有抽象方法，其它方法可以不用定义且可以直接继承使用。</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &quot;really method&quot;</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line"></span><br><span class="line">print(obj.exec())</span><br><span class="line">print(obj.f1())</span><br></pre></td></tr></table></figure></p>
+<p>好了， 这个接口或抽象类、抽象方法的学习完结。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjpyd77zi004b1djxufqt1qfk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="cjpyd77wr002s1djxa11fr3q1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -136,19 +109,19 @@ print(v1.site.name)
     
 <nav id="article-nav">
   
-    <a href="/2018/01/01/web-Flask-基础/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/07/25/mysql-limit/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          web-Flask-基础
+          CentOS 7.x/Mysql limit
         
       </div>
     </a>
   
   
-    <a href="/2017/12/26/web-django-24-Django中间件/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/06/15/linux-java-install/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">web-Django-24-Django中间件</div>
+      <div class="article-nav-title">linux java install</div>
     </a>
   
 </nav>
