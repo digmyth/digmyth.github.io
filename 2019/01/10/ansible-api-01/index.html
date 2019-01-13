@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
 <meta property="og:description" content="1.1 ansible api基础环境说明：  python version: python3 ansible version:  2.7.5 inventory file:  dir1/inventory/multinode  清单文件定义：  dir1/inventory/multinode12345678910[control]192.168.1.6 var1=&amp;quot;ssss&amp;quot">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-13T12:18:06.348Z">
+<meta property="og:updated_time" content="2019-01-13T12:36:03.633Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python3下ansible api学习">
 <meta name="twitter:description" content="1.1 ansible api基础环境说明：  python version: python3 ansible version:  2.7.5 inventory file:  dir1/inventory/multinode  清单文件定义：  dir1/inventory/multinode12345678910[control]192.168.1.6 var1=&amp;quot;ssss&amp;quot">
@@ -103,13 +103,14 @@
 <p>执行测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3  dir1/adhoc.py</span><br></pre></td></tr></table></figure></p>
 <p>输出信息和命令行ansible直接模块运行一样，任务正常执行</p>
 <h3 id="1-3-playbook-示例学习"><a href="#1-3-playbook-示例学习" class="headerlink" title="1.3 playbook 示例学习"></a>1.3 playbook 示例学习</h3><p>编辑dir1/play_book.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python3</span><br><span class="line"></span><br><span class="line">import os,sys,json</span><br><span class="line">import ansible.constants as C</span><br><span class="line">from ansible.parsing.dataloader import  DataLoader</span><br><span class="line">from ansible.vars.manager import  VariableManager</span><br><span class="line">from ansible.inventory.manager import  InventoryManager</span><br><span class="line">from ansible.playbook import Play</span><br><span class="line">from ansible.executor.task_queue_manager import  TaskQueueManager</span><br><span class="line">from ansible.executor.playbook_executor import  PlaybookExecutor</span><br><span class="line">from ansible.plugins.callback import CallbackBase</span><br><span class="line">from ansible.inventory.host import  Host,Group</span><br><span class="line">from  collections import namedtuple</span><br><span class="line"></span><br><span class="line">BaseDir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))</span><br><span class="line">source = os.path.join(BaseDir,&apos;dir1/inventory/multinode&apos;)</span><br><span class="line">loader = DataLoader()   # 实例化loader对象</span><br><span class="line">myinven = InventoryManager(loader=loader,sources=[source,])   # 实例化inventory对象</span><br><span class="line">print(myinven.get_groups_dict())</span><br><span class="line"></span><br><span class="line">varmanager = VariableManager(loader=loader,inventory=myinven)  # 实例化VariableManager对象</span><br><span class="line"></span><br><span class="line"># Options 选项</span><br><span class="line">Options = namedtuple(&apos;Options&apos;,[</span><br><span class="line">                &apos;connection&apos;,&apos;module_path&apos;, &apos;forks&apos;, &apos;timeout&apos;,  &apos;remote_user&apos;,</span><br><span class="line">                &apos;ask_pass&apos;, &apos;private_key_file&apos;, &apos;ssh_common_args&apos;, &apos;ssh_extra_args&apos;, &apos;sftp_extra_args&apos;,</span><br><span class="line">                &apos;scp_extra_args&apos;, &apos;become&apos;, &apos;become_method&apos;, &apos;become_user&apos;, &apos;ask_value_pass&apos;, &apos;verbosity&apos;,</span><br><span class="line">                &apos;check&apos;, &apos;listhosts&apos;, &apos;listtasks&apos;, &apos;listtags&apos;, &apos;syntax&apos;,&apos;diff&apos;</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">options = Options(connection=&apos;smart&apos;, module_path=None, forks=100, timeout=10,</span><br><span class="line">                remote_user=&apos;root&apos;, ask_pass=False, private_key_file=None, ssh_common_args=None, ssh_extra_args=None,</span><br><span class="line">                sftp_extra_args=None, scp_extra_args=None, become=None, become_method=None,</span><br><span class="line">                become_user=&apos;root&apos;, ask_value_pass=False, verbosity=None, check=False, listhosts=False,</span><br><span class="line">                listtasks=False, listtags=False, syntax=False, diff=True)</span><br><span class="line"></span><br><span class="line"># 执行对象和模块</span><br><span class="line">passwords = &#123;&#125;</span><br><span class="line">#传入playbooks, inventory, variable_manager, loader, options, passwords</span><br><span class="line">playbook = PlaybookExecutor(playbooks=[&apos;site.yml&apos;,],</span><br><span class="line">                            inventory=myinven,</span><br><span class="line">                            variable_manager=varmanager,</span><br><span class="line">                            loader=loader,</span><br><span class="line">                            options=options,</span><br><span class="line">                            passwords=passwords)</span><br><span class="line">playbook.run()</span><br></pre></td></tr></table></figure></p>
+<p>用到的site.yml文件示例如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">- hosts: 192.168.1.6</span><br><span class="line">  remote_user: root</span><br><span class="line">  vars:</span><br><span class="line">    touch_file: &quot;site.txt&quot;</span><br><span class="line">  tasks:</span><br><span class="line">    - name: touch file</span><br><span class="line">      shell: &quot;touch /tmp/&#123;&#123;  touch_file &#125;&#125;&quot;</span><br></pre></td></tr></table></figure></p>
 <p>执行测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 play_book.py</span><br></pre></td></tr></table></figure></p>
 <p>输出信息和ansible-playbook命令行输出一样，任务正常执行</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="cjquv86ce00050pjx59th1h7u" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="cjquwrsu2000d8njx13nc3eaf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -117,6 +118,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2019/01/12/ansible-Callback-02/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ansible callback 重写
+        
+      </div>
+    </a>
   
   
     <a href="/2018/11/25/web-socket-02/" id="article-nav-older" class="article-nav-link-wrap">
@@ -194,6 +204,10 @@
       <ul>
         
           <li>
+            <a href="/2019/01/12/ansible-Callback-02/">ansible callback 重写</a>
+          </li>
+        
+          <li>
             <a href="/2019/01/10/ansible-api-01/">python3下ansible api学习</a>
           </li>
         
@@ -207,10 +221,6 @@
         
           <li>
             <a href="/2018/10/01/Kubernetes-dashboard/">kubernetes-dashboard</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
           </li>
         
       </ul>

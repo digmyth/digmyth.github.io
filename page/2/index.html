@@ -62,6 +62,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-08-07-抽象类抽象方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/15/python-08-07-抽象类抽象方法/" class="article-date">
+  <time datetime="2018-06-15T12:39:12.000Z" itemprop="datePublished">2018-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/15/python-08-07-抽象类抽象方法/">python-08-07-抽象类抽象方法.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>当多个类都有同样的方法，此时可以把相同的方法提练出来放在父类，但对继承父类的子类作约束就要用到接口了。</p>
+<p>下面来段伪代码，在其它语言中普遍使用的语法，不适于python,这里主要学习其思想<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">interface IFoo():  # 这个叫IFoo接口，约束实现该接口的类必须实现定义的方法</span><br><span class="line">    def exec(self):pass</span><br><span class="line"></span><br><span class="line">class A(IFoo):  # 这个叫实现了IFoo接口，接口中的方法必须在当前类实现</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &quot;A.exec&quot;</span><br><span class="line"></span><br><span class="line">class B(IFoo):</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &apos;B.exec&apos;</span><br><span class="line"></span><br><span class="line">def f1(arg):</span><br><span class="line">    arg.exec()</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line">print(f1.obj)</span><br></pre></td></tr></table></figure></p>
+<p>上面就是接口的概念或者用法，下面是用抽象类、抽象方法实现同样功能的原理伪代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">AbstractClass Foo():  抽象类，抽象方法(有继承的特性，也有约束的特性)</span><br><span class="line">    def abstractmethod():pass</span><br><span class="line"></span><br><span class="line">class A(Foo):</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &apos;A.exec&apos;</span><br><span class="line"></span><br><span class="line">    def f1(self):</span><br><span class="line">        return &quot;A.f1&quot;</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line">obj.exec()</span><br></pre></td></tr></table></figure></p>
+<p>那么如何用代码实现python抽象类、抽象方法呢？</p>
+<p>要用到<code>from abc import abstractmethod,ABCMeta</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from abc import abstractmethod,ABCMeta</span><br><span class="line"></span><br><span class="line">class IFoo(metaclass=ABCMeta):</span><br><span class="line">    @abstractmethod</span><br><span class="line">    def exec(self):pass</span><br><span class="line"></span><br><span class="line">    def f1(self):</span><br><span class="line">        return &quot;cloud implement really method&quot;</span><br><span class="line"></span><br><span class="line">class A(IFoo):  # 当前类继承了抽象类，当前类必须实现抽象类中的所有抽象方法，其它方法可以不用定义且可以直接继承使用。</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &quot;really method&quot;</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line"></span><br><span class="line">print(obj.exec())</span><br><span class="line">print(obj.f1())</span><br></pre></td></tr></table></figure></p>
+<p>好了， 这个接口或抽象类、抽象方法的学习完结。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="cjquwrsvn002l8njx4paq220v" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-java-install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/15/linux-java-install/" class="article-date">
@@ -96,7 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="cjquv86d300150pjxxhl8rvs2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="cjquwrsun00158njx0o5kr4r1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -142,7 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjquv86e8002w0pjxpdwqa5ww" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjquwrsvx00308njx4yaq7c42" class="article-share-link">Share</a>
       
       
     </footer>
@@ -209,7 +258,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjquv86e3002m0pjxvgmd7qal" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjquwrsvt002t8njx3go4s6xl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -252,7 +301,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjquv86ec00340pjxne4mw4z9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjquwrsw4003a8njxrvwsbm4c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -328,7 +377,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjquv86fn004a0pjxlknckies" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjquwrswx004b8njx82jpwgpq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -391,7 +440,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjquv86fa00440pjxs9da1pkd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjquwrsww00498njxv7e0nbsc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -460,7 +509,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjquv86et003o0pjxnsh8h3yz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjquwrswg003s8njx95oirfil" class="article-share-link">Share</a>
       
       
     </footer>
@@ -568,7 +617,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjquv86fv004l0pjxr2mbtmze" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjquwrsx2004j8njxifllo2nx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -635,59 +684,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjquv86ea002z0pjx8a5sjpx6" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-23-Django序列化" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/01/web-django-23-Django序列化/" class="article-date">
-  <time datetime="2017-12-01T12:26:37.000Z" itemprop="datePublished">2017-12-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>序列化</li>
-</ul>
-<h2 id="Django中的序列化操作"><a href="#Django中的序列化操作" class="headerlink" title="Django中的序列化操作"></a>Django中的序列化操作</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="noopener">序列化操作参考</a><br><a href="http://www.digmyth.com/2017/11/20/web-django-20-ajax/">ajax学习</a><br>Django返回前端数据一般为json格式，那么就要数据进行序列化。<br>方法一：<br>Django内置serializers<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from django.core import serializers</span><br><span class="line">ret = models.BookType.objects.all()</span><br><span class="line">data = serializers.serialize(&quot;json&quot;, ret)</span><br></pre></td></tr></table></figure></p>
-<p>方法二：<br>json.dumps<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import json</span><br><span class="line"> </span><br><span class="line">#ret = models.BookType.objects.all().values(&apos;caption&apos;)</span><br><span class="line">ret = models.BookType.objects.all().values_list(&apos;caption&apos;)</span><br><span class="line">ret=list(ret)</span><br><span class="line">result = json.dumps(ret,nsure_ascii=False)</span><br></pre></td></tr></table></figure></p>
-<p>方法三：<br>由于json.dumps时无法处理datetime日期，所以可以通过自定义处理器来做扩展<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import json </span><br><span class="line">from datetime import date </span><br><span class="line">from datetime import datetime </span><br><span class="line">   </span><br><span class="line">class JsonCustomEncoder(json.JSONEncoder): </span><br><span class="line">    def default(self, field): </span><br><span class="line">        if isinstance(field, datetime): </span><br><span class="line">            return o.strftime(&apos;%Y-%m-%d %H:%M:%S&apos;) </span><br><span class="line">        elif isinstance(field, date): </span><br><span class="line">            return o.strftime(&apos;%Y-%m-%d&apos;) </span><br><span class="line">        else: </span><br><span class="line">            return json.JSONEncoder.default(self, field) </span><br><span class="line"># ds = json.dumps(d, cls=JsonCustomEncoder)</span><br></pre></td></tr></table></figure></p>
-<p>有时在前端渲染也需要<code>date:&#39;Y-m-d&#39;</code>处理一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;出版日期&lt;input  type=&quot;date&quot; name=&quot;pubdate&quot; value=&quot;&#123;&#123; edit_book.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&quot;&gt;&lt;/p&gt;</span><br></pre></td></tr></table></figure></p>
-<p>如果用到了Form或ModelForm，同样需要widgets处理下时间格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">widgets=&#123;</span><br><span class="line">&quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjquv86f3003x0pjx83ojzfg3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjquwrsvu002v8njx7xiyqy47" class="article-share-link">Share</a>
       
       
     </footer>
@@ -741,6 +738,10 @@ print(v1.site.name)
       <ul>
         
           <li>
+            <a href="/2019/01/12/ansible-Callback-02/">ansible callback 重写</a>
+          </li>
+        
+          <li>
             <a href="/2019/01/10/ansible-api-01/">python3下ansible api学习</a>
           </li>
         
@@ -754,10 +755,6 @@ print(v1.site.name)
         
           <li>
             <a href="/2018/10/01/Kubernetes-dashboard/">kubernetes-dashboard</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
           </li>
         
       </ul>
