@@ -62,6 +62,66 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-nmap详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/15/linux-nmap详解/" class="article-date">
+  <time datetime="2019-12-15T01:42:54.000Z" itemprop="datePublished">2019-12-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/15/linux-nmap详解/">nmap工具详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-1-nmap基础"><a href="#1-1-nmap基础" class="headerlink" title="1.1 nmap基础"></a>1.1 nmap基础</h3><p>在运维过程中有时需要主机存活性探测，一般是namp、tcpdump命令结合使用，相关工具包安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ ]# yum install  nmap tcpdump</span><br></pre></td></tr></table></figure></p>
+<p>列出几种nmap命令语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-sS/sT/sA/sW/sM: TCP SYN/Connect()/ACK/Window/Maimon scans</span><br><span class="line">-sU: UDP Scan</span><br><span class="line">-sP: ping Scan</span><br></pre></td></tr></table></figure></p>
+<p>下面我们在2台主机间探测，一主机发nmap探测，另一主机tcpdump抓包分析</p>
+<p>在A主机正常发一个ping包看看正常情况下的icmp包<br> ping -c 1 10.17.200.36</p>
+<p> 在B主机抓包发现icmp包有去有回<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@ ]# tcpdump -np -i ens192 src host 10.17.200.14</span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv for full protocol decode</span><br><span class="line">listening on ens192, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line">16:08:38.392418 IP 10.17.200.14 &gt; 10.17.200.36: ICMP echo request, id 5220, seq 1, length 64</span><br><span class="line">16:08:43.400811 ARP, Reply 10.17.200.14 is-at 00:50:56:b9:b2:fb, length 46</span><br></pre></td></tr></table></figure></p>
+<p>可在一台主机临时禁用icmp协议,再用ping将探测不到这台主机<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-2-nmap-ping探测"><a href="#1-2-nmap-ping探测" class="headerlink" title="1.2 nmap ping探测"></a>1.2 nmap ping探测</h3><p>我们开始nmap ping探测， -n表示不进行DNS解析<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@ ]# nmap -n -sP 10.17.200.36</span><br><span class="line">Starting Nmap 6.40 ( http://nmap.org ) at 2019-01-15 16:12 CST</span><br><span class="line">Nmap scan report for 10.17.200.36</span><br><span class="line">Host is up (0.00030s latency).</span><br><span class="line">MAC Address: 00:50:56:B9:21:18 (VMware)</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 0.05 seconds</span><br></pre></td></tr></table></figure></p>
+<p>在B主机探测发现只收到了对方发的请求包，并未回应，但是还是认为这台主机是存活的，这样提高了探测效率<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost roles]# tcpdump -np -i ens192 src host 10.17.200.14</span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv for full protocol decode</span><br><span class="line">listening on ens192, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line">16:12:28.972321 ARP, Request who-has 10.17.200.36 (Broadcast) tell 10.17.200.14, length 46</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-3-nmapSYN探测"><a href="#1-3-nmapSYN探测" class="headerlink" title="1.3 nmapSYN探测"></a>1.3 nmapSYN探测</h3><p>我们开始nmap TCP的SYN探测， -n表示不进行DNS解析<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@ ]# nmap -n -PE 10.17.200.36</span><br><span class="line">Starting Nmap 6.40 ( http://nmap.org ) at 2019-01-15 16:20 CST</span><br><span class="line">Nmap scan report for 10.17.200.36</span><br><span class="line">Host is up (0.00014s latency).</span><br><span class="line">Not shown: 998 closed ports</span><br><span class="line">PORT    STATE    SERVICE</span><br><span class="line">22/tcp  open     ssh</span><br><span class="line">445/tcp filtered microsoft-ds</span><br><span class="line">MAC Address: 00:50:56:B9:21:18 (VMware)</span><br><span class="line"></span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 1.33 seconds</span><br></pre></td></tr></table></figure></p>
+<p>在B主机探测发现，A主机对B主机的各服务都发送了TCP　SYN包来进行探测<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@　]# tcpdump -np -i ens192 src host 10.17.200.14</span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv for full protocol decode</span><br><span class="line">listening on ens192, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line">16:20:07.124327 ARP, Request who-has 10.17.200.36 (Broadcast) tell 10.17.200.14, length 46</span><br><span class="line">16:20:07.148867 IP 10.17.200.14.40911 &gt; 10.17.200.36.rtsp: Flags [S], seq 3791226815, win 1024, options [mss 1460], length 0</span><br><span class="line">16:20:07.148882 IP 10.17.200.14.40911 &gt; 10.17.200.36.smtp: Flags [S], seq 3791226815, win 1024, options [mss 1460], length 0</span><br><span class="line">16:20:07.148906 IP 10.17.200.14.40911 &gt; 10.17.200.36.domain: Flags [S], seq 3791226815, win 1024, options [mss 1460], length 0</span><br><span class="line">16:20:07.148943 IP 10.17.200.14.40911 &gt; 10.17.200.36.https: Flags [S], seq 3791226815, win 1024, options [mss 1460], length 0</span><br><span class="line">16:20:07.148950 IP 10.17.200.14.40911 &gt; 10.17.200.36.mysql: Flags [S], seq 3791226815, win 1024, options [mss 1460], length 0</span><br><span class="line">16:20:07.148950 IP 10.17.200.14.40911 &gt; 10.17.200.36.ssh: Flags [S], seq 3791226815, win 1024, options [mss 1460], length 0</span><br><span class="line">信息太多，略过...</span><br><span class="line">16:20:12.152833 ARP, Reply 10.17.200.14 is-at 00:50:56:b9:b2:fb, length 46</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-4-arping"><a href="#1-4-arping" class="headerlink" title="1.4 arping"></a>1.4 arping</h3><p>另外补充一下，<code>arping -D</code>可有效检测IP地址冲突问题,如果命令<code>echo $?</code>返回值为0则表示地址冲突，1则表示不冲突.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@ ]# arping  -D  -c 2   -I ens192   10.17.200.36</span><br><span class="line">ARPING 10.17.200.36 from 0.0.0.0 ens192</span><br><span class="line">Unicast reply from 10.17.200.36 [00:50:56:B9:21:18]  0.887ms</span><br><span class="line">Sent 1 probes (1 broadcast(s))</span><br><span class="line">Received 1 response(s)</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-5-总结"><a href="#1-5-总结" class="headerlink" title="1.5 总结"></a>1.5 总结</h3><ul>
+<li>nmap -sP 可进行ping检测</li>
+<li>nmap -PE 可进行tcp SYN检测</li>
+<li>nmap -n -sP -PE 可进行ping与SYN结合检测,以免漏扫</li>
+</ul>
+<p>&lt;完结&gt;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="cjqxjgdn300135jjxmv1y11lk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-ansible-Callback-02" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/01/12/ansible-Callback-02/" class="article-date">
@@ -102,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="cjqx82uap000f0zjxyvw308qh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="cjqxjgdmg000d5jjx09ukf03l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -161,7 +221,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="cjqx82ual000c0zjxlc4bvjqr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="cjqxjgdme000b5jjxywm85p8n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -222,7 +282,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="cjqx82ufp004y0zjx3cdhmnxh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="cjqxjgdr600515jjxaufb19sp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cjqx82ufg004r0zjxol66oomr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cjqxjgdr900525jjxhmudknei" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,55 +418,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="cjqx82ua600030zjx8lpn61tm" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Dockerfile-详解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Dockerfile-详解/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/01/Dockerfile-详解/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="cjqx82ua100010zjxxuc9nlqo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="cjqxjgdm100015jjxq2ka0luu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -449,7 +461,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cjqx82uad00070zjxzw54y5cz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cjqxjgdmb00075jjx3u8j6xpx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="cjqxjgdm700045jjxls8gutn3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -499,7 +559,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cjqx82uaa00050zjxpmw0fpn3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cjqxjgdm800055jjx2hcb0fs3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -512,9 +572,9 @@
 
 
   
-    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Dockerfile-详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
+    <a href="/2018/08/01/Dockerfile-详解/" class="article-date">
   <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
 </a>
     
@@ -530,7 +590,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
+      <a class="article-title" href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
     </h1>
   
 
@@ -541,61 +601,13 @@
         The article has been encrypted, please enter your password to view.<br>
         
           <p class="article-more-link">
-            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
+            <a href="/2018/08/01/Dockerfile-详解/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="cjqx82ua800040zjx2ohobqsi" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-mysql-limit" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/25/mysql-limit/" class="article-date">
-  <time datetime="2018-07-25T01:41:54.000Z" itemprop="datePublished">2018-07-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/25/mysql-limit/">CentOS 7.x/Mysql limit</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/07/25/mysql-limit/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="cjqx82ubh001c0zjxfgs7eixw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="cjqxjgdlv00005jjxgy3oyuh9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -636,7 +648,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -647,6 +659,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/12/15/linux-nmap详解/">nmap工具详解</a>
+          </li>
         
           <li>
             <a href="/2019/01/12/ansible-Callback-02/">ansible callback 重写</a>
@@ -662,10 +678,6 @@
         
           <li>
             <a href="/2018/11/06/web-socket-01/">web-socket-基础知识</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/01/Kubernetes-dashboard/">kubernetes-dashboard</a>
           </li>
         
       </ul>
