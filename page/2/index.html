@@ -98,7 +98,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="cjquwrsvn002l8njx4paq220v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="cjqx82udq00390zjx2fo2vcyu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="cjquwrsun00158njx0o5kr4r1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="cjqx82ubb00160zjxn0t6843a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -191,7 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjquwrsvx00308njx4yaq7c42" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cjqx82ue2003h0zjxlpgbnwm1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -258,7 +258,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjquwrsvt002t8njx3go4s6xl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="cjqx82uds003a0zjxiadafikw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -301,7 +301,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjquwrsw4003a8njxrvwsbm4c" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="cjqx82ue6003m0zjx2xqs0hnp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -347,7 +347,7 @@
 <li>单例模式应用 </li>
 </ul>
 <p><a href="http://www.cnblogs.com/wupeiqi/articles/7444717.html" target="_blank" rel="noopener">博客参考</a></p>
-<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">admin.py注册models_class如models.UserInfo</span><br><span class="line">from django.template import admin</span><br><span class="line">from app01 import models</span><br><span class="line">admin.site.registry(models.UserInfo)</span><br></pre></td></tr></table></figure></p>
+<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">admin.py注册models_class如models.UserInfo</span><br><span class="line">from django.contrib import admin</span><br><span class="line">from app01 import models</span><br><span class="line">admin.site.register(models.UserInfo)</span><br></pre></td></tr></table></figure></p>
 <p>2 admin.site.urls<br>  admin.site.urls循环_registry={}字典生成相应URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">生成4个URL分别是如下：</span><br><span class="line">app01/userinfo/</span><br><span class="line">app01/userinfo/add/</span><br><span class="line">app01/userinfo/1/change/</span><br><span class="line">app01/userinfo/1/delete/</span><br></pre></td></tr></table></figure></p>
 <p>其中要深入理解URL include原理：  url(r’^xx’, “可以是视图函数，也可以是元组”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">partterns = [</span><br><span class="line">   url(r&apos;^admin&apos;, admin.site.urls),            </span><br><span class="line">		     # admin.site.urls 返回形如（[],None,None）的元组.</span><br><span class="line">   url(r&apos;^backend&apos;, include(&apos;backend.urls&apos;)), </span><br><span class="line">		    # include 同样返回形如（[],None,None）的元组.</span><br><span class="line">		    # 也可以写成形如 include([],None,None) 格式.</span><br><span class="line"> ]</span><br></pre></td></tr></table></figure></p>
 <h2 id="二-制作stack启动文件"><a href="#二-制作stack启动文件" class="headerlink" title="二  制作stack启动文件"></a>二  制作stack启动文件</h2><ul>
@@ -377,7 +377,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjquwrswx004b8njx82jpwgpq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjqx82uf1004f0zjxbo178dsl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -440,7 +440,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjquwrsww00498njxv7e0nbsc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cjqx82uf9004l0zjxqw1zq3b6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -509,7 +509,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjquwrswg003s8njx95oirfil" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjqx82ueq00450zjxuhsvuyve" class="article-share-link">Share</a>
       
       
     </footer>
@@ -617,7 +617,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjquwrsx2004j8njxifllo2nx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjqx82ufj004t0zjxxo9z1uyv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -684,7 +684,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjquwrsvu002v8njx7xiyqy47" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjqx82udz003g0zjxvhdkh553" class="article-share-link">Share</a>
       
       
     </footer>

@@ -5,17 +5,17 @@
   
   <title>web-Django-25-DjangoAdmin | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+  <meta name="description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.contrib import adminfrom app01 import mo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="web-Django-25-DjangoAdmin">
 <meta property="og:url" content="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+<meta property="og:description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.contrib import adminfrom app01 import mo">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-01-18T03:43:22.000Z">
+<meta property="og:updated_time" content="2019-01-15T03:53:24.763Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="web-Django-25-DjangoAdmin">
-<meta name="twitter:description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.template import adminfrom app01 import m">
+<meta name="twitter:description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.contrib import adminfrom app01 import mo">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -97,7 +97,7 @@
 <li>单例模式应用 </li>
 </ul>
 <p><a href="http://www.cnblogs.com/wupeiqi/articles/7444717.html" target="_blank" rel="noopener">博客参考</a></p>
-<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">admin.py注册models_class如models.UserInfo</span><br><span class="line">from django.template import admin</span><br><span class="line">from app01 import models</span><br><span class="line">admin.site.registry(models.UserInfo)</span><br></pre></td></tr></table></figure></p>
+<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">admin.py注册models_class如models.UserInfo</span><br><span class="line">from django.contrib import admin</span><br><span class="line">from app01 import models</span><br><span class="line">admin.site.register(models.UserInfo)</span><br></pre></td></tr></table></figure></p>
 <p>2 admin.site.urls<br>  admin.site.urls循环_registry={}字典生成相应URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">生成4个URL分别是如下：</span><br><span class="line">app01/userinfo/</span><br><span class="line">app01/userinfo/add/</span><br><span class="line">app01/userinfo/1/change/</span><br><span class="line">app01/userinfo/1/delete/</span><br></pre></td></tr></table></figure></p>
 <p>其中要深入理解URL include原理：  url(r’^xx’, “可以是视图函数，也可以是元组”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">partterns = [</span><br><span class="line">   url(r&apos;^admin&apos;, admin.site.urls),            </span><br><span class="line">		     # admin.site.urls 返回形如（[],None,None）的元组.</span><br><span class="line">   url(r&apos;^backend&apos;, include(&apos;backend.urls&apos;)), </span><br><span class="line">		    # include 同样返回形如（[],None,None）的元组.</span><br><span class="line">		    # 也可以写成形如 include([],None,None) 格式.</span><br><span class="line"> ]</span><br></pre></td></tr></table></figure></p>
 <h2 id="二-制作stack启动文件"><a href="#二-制作stack启动文件" class="headerlink" title="二  制作stack启动文件"></a>二  制作stack启动文件</h2><ul>
@@ -127,7 +127,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjquwrswx004b8njx82jpwgpq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="cjqx82uf1004f0zjxbo178dsl" class="article-share-link">Share</a>
       
       
     </footer>
