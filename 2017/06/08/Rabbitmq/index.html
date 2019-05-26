@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Rabbitmq集群 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="###一、 安装rabbitmq-server所有节点安装好 rabbitmq-server服务：123yum install centos-release-openstack-ocatayum update &amp;amp;&amp;amp; yum upgradeyum -y install rabbitmq-server 每个节点停止rabbitmq-server服务，把第一个节点MQ  cookie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rabbitmq集群">
+<meta property="og:url" content="http://www.digmyth.com/2017/06/08/Rabbitmq/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="###一、 安装rabbitmq-server所有节点安装好 rabbitmq-server服务：123yum install centos-release-openstack-ocatayum update &amp;amp;&amp;amp; yum upgradeyum -y install rabbitmq-server 每个节点停止rabbitmq-server服务，把第一个节点MQ  cookie">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-26T11:19:02.844Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rabbitmq集群">
+<meta name="twitter:description" content="###一、 安装rabbitmq-server所有节点安装好 rabbitmq-server服务：123yum install centos-release-openstack-ocatayum update &amp;amp;&amp;amp; yum upgradeyum -y install rabbitmq-server 每个节点停止rabbitmq-server服务，把第一个节点MQ  cookie">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Rabbitmq" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/08/Rabbitmq/" class="article-date">
+  <time datetime="2017-06-08T01:41:54.000Z" itemprop="datePublished">2017-06-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Rabbitmq集群
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###一、 安装rabbitmq-server<br>所有节点安装好 rabbitmq-server服务：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install centos-release-openstack-ocata</span><br><span class="line">yum update &amp;&amp; yum upgrade</span><br><span class="line">yum -y install rabbitmq-server</span><br></pre></td></tr></table></figure></p>
+<p>每个节点停止rabbitmq-server服务，把第一个节点MQ  cookie  SCP到二三个节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># scp /var/lib/rabbitmq/.erlang.cookie root@NODE:/var/lib/rabbitmq/.erlang.cookie</span><br></pre></td></tr></table></figure></p>
+<p>验证节点.erlang.cookie文件属主，属组，权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie</span><br><span class="line"># chmod 400 /var/lib/rabbitmq/.erlang.cookie</span><br></pre></td></tr></table></figure></p>
+<p>每个节点启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># systemctl enable rabbitmq-server.service</span><br><span class="line"># systemctl start rabbitmq-server.service</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、部署集群"><a href="#二、部署集群" class="headerlink" title="二、部署集群"></a>二、部署集群</h3><p>除第一个节点外，在第二三个节点上面操作如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># rabbitmqctl stop_app</span><br><span class="line">Stopping node rabbit@NODE...</span><br><span class="line">...done.</span><br></pre></td></tr></table></figure></p>
+<p> 默认磁盘持久化模式/ 内存模式加–ram<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># rabbitmqctl join_cluster --ram rabbit@rabbit1</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># rabbitmqctl start_app</span><br><span class="line">Starting node rabbit@NODE ...</span><br><span class="line">...done.</span><br></pre></td></tr></table></figure>
+<p>###三、集群验证<br> 查看每个节点rabbitmq-server进程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl  status rabbitmq-server</span><br></pre></td></tr></table></figure></p>
+<p>查看集群状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl cluster_Status</span><br></pre></td></tr></table></figure></p>
+<p>添加一个名叫openstack的用户<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># rabbitmqctl add_user openstack RABBIT_PASS</span><br></pre></td></tr></table></figure></p>
+<p>配置用户具有读写权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># rabbitmqctl set_permissions openstack &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;</span><br><span class="line">  Setting permissions for user &quot;openstack&quot; in vhost &quot;/&quot; ...</span><br></pre></td></tr></table></figure></p>
+<p>在其中一个节设置ha-mode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># rabbitmqctl set_policy ha-all &apos;^(?!amq\.).*&apos; &apos;&#123;&quot;ha-mode&quot;: &quot;all&quot;&#125;&apos;</span><br></pre></td></tr></table></figure></p>
+<h3 id="四、集群重启"><a href="#四、集群重启" class="headerlink" title="四、集群重启"></a>四、集群重启</h3><p>重启单个节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl stop   # 某节点下线</span><br><span class="line">rabbitmqctl cluster_Status  # 其它节点看到该节点己下线</span><br><span class="line"># systemctl start rabbitmq-server.service # 节点上线</span><br></pre></td></tr></table></figure></p>
+<p>重启整个集群<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># rabbitmqctl stop   # 集群所有节点</span><br><span class="line"># systemctl  restart rabbitmq-server # 然后服务就可以按正常方式启动</span><br><span class="line"># rabbitmqctl cluster_Status  # 集群状态正常</span><br></pre></td></tr></table></figure></p>
+<h3 id="五、MQ常用命令"><a href="#五、MQ常用命令" class="headerlink" title="五、MQ常用命令"></a>五、MQ常用命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl cluster_status                                             #查看集群状态</span><br><span class="line"></span><br><span class="line">rabbitmqctl list_users                                                 #列出user</span><br><span class="line">rabbitmqctl add_user &lt;username&gt; &lt;password&gt;                             #添加user</span><br><span class="line">rabbitmqctl delete_user &lt;username&gt;                                     #删除user                  </span><br><span class="line">rabbitmqctl change_password &lt;username&gt; &lt;newpassword&gt;                   #修改password</span><br><span class="line">rabbitmqctl clear_password &lt;username&gt;                                  #清除password</span><br><span class="line"></span><br><span class="line">rabbitmqctl add_vhost &lt;vhost&gt;                                          #添加vhost</span><br><span class="line">rabbitmqctl delete_vhost &lt;vhost&gt;                                       #删除vhost</span><br><span class="line">rabbitmqctl list_vhosts [&lt;vhostinfoitem&gt; ...]                          #列出vhost</span><br><span class="line"></span><br><span class="line">rabbitmqctl set_permissions [-p &lt;vhost&gt;] &lt;user&gt; &lt;conf&gt; &lt;write&gt; &lt;read&gt;   #设置permission</span><br><span class="line">rabbitmqctl list_user_permissions &lt;username&gt;                            #列出user‘spermission</span><br><span class="line"></span><br><span class="line">rabbitmqctl list_queues [-p &lt;vhost&gt;] [&lt;queueinfoitem&gt; ...]              #列出queue</span><br><span class="line">rabbitmqctl list_exchanges [-p &lt;vhost&gt;] [&lt;exchangeinfoitem&gt; ...]        #列出exchange</span><br><span class="line">rabbitmqctl list_bindings [-p &lt;vhost&gt;] [&lt;bindinginfoitem&gt; ...]          #列出binding</span><br><span class="line"></span><br><span class="line">在rabbitmq中如何清除没有consumer的queue</span><br><span class="line">cat &gt; ~/.rabbitmqadmin.conf &lt;&lt;EOF</span><br><span class="line">[default]</span><br><span class="line">hostname = 172.18.2.100</span><br><span class="line">username = openstack</span><br><span class="line">password = fSFjsfnNztHrtA2zasfMXjukcPYhZMRyGWEpqGwv</span><br><span class="line">EOF</span><br><span class="line">rabbitmqadmin list queues name consumers | awk &apos;&#123;if ($4==0) print &#125;&apos;</span><br></pre></td></tr></table></figure>
+<p>总结： 实践运维中总结吧</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/08/Rabbitmq/" data-id="cjw4uoqa500056qjx5phe31j7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/06/10/mysql-sysbench/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Mysql sysbench 压测
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/06/08/KVM-introduction/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">KVM introduction</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+    <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+		   能帮到您是我的荣幸！
+        </span>
+        <br>
+      </div>  
+	<div id="donate_guide" class="donate_bar center hidden" >
+		<!-- 支付宝打赏图案 -->
+		<!--img src="/img/zhifubao.jpg" alt="支付宝打赏"--> 
+		<!-- 微信打赏图案 -->
+		<img src="/images/wecharpay.png" alt="微信打赏">  
+    </div>
+	<script type="text/javascript">
+		document.getElementById('btn_donate').onclick = function(){
+			$('#donate_board').addClass('hidden');
+			$('#donate_guide').removeClass('hidden');
+		}
+	</script>
+</div>
+<! -- 添加捐赠图标 -->
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/15/linux-nmap详解/">nmap工具详解</a>
+          </li>
+        
+          <li>
+            <a href="/2019/02/10/python-Celery-Flask/">python-celery-Flask</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/12/ansible-Callback-02/">ansible callback 重写</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/10/ansible-api-01/">python3下ansible api学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/25/web-socket-02/">web-socket-高级篇</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
