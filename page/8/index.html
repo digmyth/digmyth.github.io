@@ -62,6 +62,81 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-01-开发入门" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/15/web-01-开发入门/" class="article-date">
+  <time datetime="2017-02-15T12:51:41.000Z" itemprop="datePublished">2017-02-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/15/web-01-开发入门/">web-01-开发入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从现在开始，此时此刻写点<code>web开发</code>和<code>Django</code> 的知识，便于以后查阅学习。<br>廖雪峰老师的博客写得特别好，我也是摘抄参考其内容。<br><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000" target="_blank" rel="noopener">廖雪峰老师博客原文</a></p>
+<h2 id="一-HTTP协议简介"><a href="#一-HTTP协议简介" class="headerlink" title="一.   HTTP协议简介"></a>一.   HTTP协议简介</h2><h3 id="web历程"><a href="#web历程" class="headerlink" title="web历程"></a>web历程</h3><p>web开发经历几个阶段<br>1  静态页面: 直接由编辑器生成静态html<br>2  CGI:  交互与动态数据处理出现了CGI（common gateway interface）,由C/C++编写<br>3  脚本语言（ASP/JSP/PHP）: 脚本语言开发效率高，与html结合紧密<br>4  框架：mvc mtv mvvm</p>
+<h3 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h3><p>服务器把网页传给浏览器，实际上就是把网页的html代码发送给浏览器，让浏览器显示出来。而浏览器和服务器之间的传输协议就是HTTP</p>
+<p>HTML是一种用来定义网页的文本，会HTML就会编写网页<br>http是在网络上传输html的协议，用于浏览器和服务器的通信</p>
+<p>Elements显示网页的结构，Network显示浏览器和服务器的通信。我们点Network，确保第一个小红灯亮着，Chrome就会记录所有浏览器和服务器之间的通信。</p>
+<p>GET / HTTP/1.1： 注：1.1版本允许多个HTTP请求复用一个TCP连接，以加快传输速度<br>浏览器就是依靠Content-Type来判断响应的内容是网页还是图片，是视频还是音乐</p>
+<p>当浏览器读取到新浪首页的HTML源码后，它会解析HTML，显示页面，然后，根据HTML里面的各种链接，再发送HTTP请求给新浪服务器，拿到相应的图片、视频、Flash、JavaScript脚本、CSS等各种资源，最终显示出一个完整的页面。所以我们在Network下面能看到很多额外的HTTP请求。</p>
+<h3 id="HTTP请求流程"><a href="#HTTP请求流程" class="headerlink" title="HTTP请求流程"></a>HTTP请求流程</h3><p>步骤1：<br>浏览器向服务器发送http请求<br>    方法：GET仅请求资源 POST    会附带用户数据body部份<br>    路径; /full/url/path<br>    域名：</p>
+<p>步骤2：<br>服务器向浏览器返回HTTP响应<br>    响应代码：<code>200</code>表示成功 <code>3**</code> 表示重定向  <code>4**</code> 表示客户端发送的请求有错误 <code>5**</code> 表示服务器处理错误<br>    响应类型： 由Content-Type指定<br>    通常服务器的HTTP响应会携带内容，也就是有一个Body，包含响应的内容，网页的HTML源码就在Body中</p>
+<p>步骤3：如果浏览器还需要继续向服务器请求其他资源，比如图片，就再次发出HTTP请求，重复步骤1、2</p>
+<p>Web采用的HTTP协议采用了非常简单的请求-响应模式，从而大大简化了开发。当我们编写一个页面时，我们只需要在HTTP请求中把HTML发送出去，不需要考虑如何附带图片、视频等，浏览器如果需要请求图片和视频，它会发送另一个HTTP请求，因此，一个HTTP请求只处理一个资源</p>
+<p>HTTP协议同时具备极强的扩展性，虽然浏览器请求的是<code>http://www.sina.com.cn/</code>的首页，但是新浪在HTML中可以链入其他服务器的资源，比如<code>&lt;img src=&quot;#url&quot;/&gt;</code>，从而将请求压力分散到各个服务器上，并且一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web，简称WWW。</p>
+<h2 id="二-HTML简介"><a href="#二-HTML简介" class="headerlink" title="二. HTML简介"></a>二. HTML简介</h2><p>HTML是一种用来定义网页的文本，会HTML就会编写网页 。<br>其它前端知识不在这里展开。略。。。</p>
+<h2 id="三-WSGI接口"><a href="#三-WSGI接口" class="headerlink" title="三 . WSGI接口"></a>三 . WSGI接口</h2><p>了解了HTTP协议和HTML文档，我们其实就明白了一个Web应用的本质就是：<br>浏览器发送一个HTTP请求；<br>服务器收到请求，生成一个HTML文档；<br>服务器把HTML文档作为HTTP响应的Body发送给浏览器；<br>浏览器收到HTTP响应，从HTTP Body取出HTML文档并显示。</p>
+<p>所以，最简单的Web应用就是先把HTML用文件保存好，用一个现成的HTTP服务器软件，接收用户请求，从文件中读取HTML，返回。Apache、Nginx、Lighttpd等这些常见的静态服务器就是干这件事情的。</p>
+<p>如果要动态生成HTML，就需要把上述步骤自己来实现。不过，接受HTTP请求、解析HTTP请求、发送HTTP响应都是苦力活，如果我们自己来写这些底层代码，还没开始写动态HTML呢，就得花个把月去读HTTP规范。</p>
+<p>正确的做法是底层代码由专门的服务器软件实现，我们用Python专注于生成HTML文档。因为我们不希望接触到TCP连接、HTTP原始请求和响应格式，所以，需要一个统一的接口，让我们专心用Python编写Web业务。</p>
+<p>这个接口就是WSGI：Web Server Gateway Interface。</p>
+<p>WSGI接口定义非常简单，它只要求Web开发者实现一个函数，就可以响应HTTP请求。我们来看一个最简单的Web版本的“Hello, web!”：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def application(environ, start_response):</span><br><span class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</span><br><span class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</span><br></pre></td></tr></table></figure></p>
+<p>上面的application()函数就是符合WSGI标准的一个HTTP处理函数，它接收两个参数：</p>
+<p>environ：一个包含所有HTTP请求信息的dict对象；<br>start_response：一个发送HTTP响应的函数。</p>
+<p>在application()函数中，调用：<br><code>start_response(&#39;200 OK&#39;, [(&#39;Content-Type&#39;, &#39;text/html&#39;)])</code><br>就发送了HTTP响应的Header，注意Header只能发送一次，也就是只能调用一次start_response()函数。start_response()函数接收两个参数，一个是HTTP响应码，一个是一组list表示的HTTP Header，每个Header用一个包含两个str的tuple表示。</p>
+<p>通常情况下，都应该把Content-Type头发送给浏览器。其他很多常用的HTTP Header也应该发送。<br>然后，函数的返回值<code>b&#39;&lt;h1&gt;Hello, web!&lt;/h1&gt;&#39;</code>将作为HTTP响应的Body发送给浏览器。</p>
+<p>有了WSGI，我们关心的就是如何从environ这个dict对象拿到HTTP请求信息，然后构造HTML，通过start_response()发送Header，最后返回Body。</p>
+<p>整个application()函数本身没有涉及到任何解析HTTP的部分，也就是说，底层代码不需要我们自己编写，我们只负责在更高层次上考虑如何响应请求就可以了。</p>
+<p>不过，等等，这个application()函数怎么调用？如果我们自己调用，两个参数environ和start_response我们没法提供，返回的bytes也没法发给浏览器。</p>
+<p>所以application()函数必须由WSGI服务器来调用。有很多符合WSGI规范的服务器，我们可以挑选一个来用。但是现在，我们只想尽快测试一下我们编写的application()函数真的可以把HTML输出到浏览器，所以，要赶紧找一个最简单的WSGI服务器，把我们的Web应用程序跑起来。</p>
+<p>好消息是Python内置了一个WSGI服务器，这个模块叫wsgiref，它是用纯Python编写的WSGI服务器的参考实现。所谓“参考实现”是指该实现完全符合WSGI标准，但是不考虑任何运行效率，仅供开发和测试使用。</p>
+<p>运行WSGI服务<br>我们先编写hello.py，实现Web应用程序的WSGI处理函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># hello.py</span><br><span class="line"></span><br><span class="line">def application(environ, start_response):</span><br><span class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</span><br><span class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</span><br></pre></td></tr></table></figure></p>
+<p>然后，再编写一个server.py，负责启动WSGI服务器，加载application()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># server.py</span><br><span class="line"># 从wsgiref模块导入:</span><br><span class="line">from wsgiref.simple_server import make_server</span><br><span class="line"># 导入我们自己编写的application函数:</span><br><span class="line">from hello import application</span><br><span class="line"></span><br><span class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application:</span><br><span class="line">httpd = make_server(&apos;&apos;, 8000, application)</span><br><span class="line">print(&apos;Serving HTTP on port 8000...&apos;)</span><br><span class="line"># 开始监听HTTP请求:</span><br><span class="line">httpd.serve_forever()</span><br><span class="line">确保以上两个文件在同一个目录下，然后在命令行输入python server.py来启动WSGI服务器：</span><br><span class="line">python server.py 执行程序启动</span><br></pre></td></tr></table></figure></p>
+<h2 id="四-web-框架"><a href="#四-web-框架" class="headerlink" title="四　web 框架"></a>四　web 框架</h2><p>了解了WSGI框架，我们发现：其实一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。</p>
+<p>但是如何处理HTTP请求不是问题，问题是如何处理100个不同的URL。方法是一个函数处理一个URL, 我们专注于写业务处理函数，URL和函数对应关系交给web框架完成，这就是 web框架其中一个价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cjw4valnd003hc2jxwq4728gp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-python-04-01-装饰器" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/02/04/python-04-01-装饰器/" class="article-date">
@@ -135,7 +210,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjw4usw3h002594jxdty2x5ip" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="cjw4valmh0028c2jxrmrli6jk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -229,7 +304,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjw4usw34001p94jxn5rlos14" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="cjw4valm5001tc2jx7egxx9sp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -276,7 +351,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjw4usw45003894jxjilws6zd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="cjw4valn4003cc2jx2gj8hzcd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -530,7 +605,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjw4usw3f002294jxkplrqm66" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="cjw4valmg0026c2jx9uxy9fon" class="article-share-link">Share</a>
       
       
     </footer>
@@ -601,7 +676,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjw4usw3e002094jxu25wnf86" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="cjw4valme0023c2jx3iia0ufr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -668,7 +743,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjw4usw3c001x94jxg6bphsxa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="cjw4valmc0021c2jxhb8m0s8h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -739,7 +814,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="cjw4usw3a001w94jx4tx77691" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="cjw4valmb001yc2jx6uvaq5js" class="article-share-link">Share</a>
       
       
     </footer>
@@ -876,7 +951,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="cjw4usw37001t94jxmw8biu3h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="cjw4valm9001xc2jxwrjfuu55" class="article-share-link">Share</a>
       
       
     </footer>
@@ -921,54 +996,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjw4usw1s000794jxanp76911" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-declare" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/01/declare/" class="article-date">
-  <time datetime="2017-01-01T00:47:02.000Z" itemprop="datePublished">2017-01-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/声明/">声明</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/01/declare/">博客声明</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>.</p>
-<h2 id="公告"><a href="#公告" class="headerlink" title="公告"></a>公告</h2><hr>
-<h3 id="本博客属个人所有，不涉及商业用途，本人保留追究其法律责任的权利。"><a href="#本博客属个人所有，不涉及商业用途，本人保留追究其法律责任的权利。" class="headerlink" title="本博客属个人所有，不涉及商业用途，本人保留追究其法律责任的权利。"></a>本博客属个人所有，不涉及商业用途，本人保留追究其法律责任的权利。</h3><h3 id="本博客为个人随笔所写，内容大多取自网络或个人经验，包括老男孩、马哥、廖雪峰、林海峰、小甲鱼"><a href="#本博客为个人随笔所写，内容大多取自网络或个人经验，包括老男孩、马哥、廖雪峰、林海峰、小甲鱼" class="headerlink" title="本博客为个人随笔所写，内容大多取自网络或个人经验，包括老男孩、马哥、廖雪峰、林海峰、小甲鱼"></a>本博客为个人随笔所写，内容大多取自网络或个人经验，包括老男孩、马哥、廖雪峰、林海峰、小甲鱼</h3><h3 id="及Python开发者，纯为个人学习记录所用"><a href="#及Python开发者，纯为个人学习记录所用" class="headerlink" title="及Python开发者，纯为个人学习记录所用."></a>及Python开发者，纯为个人学习记录所用.</h3><h3 id="按金庸武侠秘籍上说就是本博客纯属虚构，如有雷同，纯属巧合"><a href="#按金庸武侠秘籍上说就是本博客纯属虚构，如有雷同，纯属巧合" class="headerlink" title="按金庸武侠秘籍上说就是本博客纯属虚构，如有雷同，纯属巧合."></a>按金庸武侠秘籍上说就是本博客纯属虚构，如有雷同，纯属巧合.</h3><p>.</p>
-<hr>
-<h3 id="如涉及版权问题及时联系作者-wxqnote-163-com"><a href="#如涉及版权问题及时联系作者-wxqnote-163-com" class="headerlink" title="如涉及版权问题及时联系作者  wxqnote@163.com"></a>如涉及版权问题及时联系作者  <a href="mailto:wxqnote@163.com" target="_blank" rel="noopener">wxqnote@163.com</a></h3>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="cjw4usw2a000o94jx3uz1gsyt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="cjw4valku0007c2jx94b6wqv5" class="article-share-link">Share</a>
       
       
     </footer>

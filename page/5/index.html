@@ -62,6 +62,77 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-kolla-on-redhat7.2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/08/kolla-on-redhat7.2/" class="article-date">
+  <time datetime="2017-08-08T01:41:54.000Z" itemprop="datePublished">2017-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/08/kolla-on-redhat7.2/">kolla on redhat 7.2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在一次项目中客户要求在redhat 7.2系统安装部署kolla ocata版本，在这种特定要求下还是实践一把的，在此把详细文档做个记录。</p>
+<h1 id="1-install-wget"><a href="#1-install-wget" class="headerlink" title="1. install wget"></a>1. install wget</h1><p>最小化安装，系统很干净<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh ftp://195.220.108.108/linux/centos/7.3.1611/os/x86_64/Packages/wget-1.14-13.el7.x86_64.rpm</span><br></pre></td></tr></table></figure></p>
+<h1 id="2-remove-yum-of-redhat"><a href="#2-remove-yum-of-redhat" class="headerlink" title="2. remove yum of redhat"></a>2. remove yum of redhat</h1><p> 首先删除redhat原有的yum ，因为redhat 原本的yum 没有注册为redhat用户是用不了的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rpm -aq|grep yum|xargs rpm -e --nodeps </span><br><span class="line">rpm -aq|grep python-iniparse|xargs rpm -e --nodeps</span><br></pre></td></tr></table></figure></p>
+<h1 id="3-install-new-yum"><a href="#3-install-new-yum" class="headerlink" title="3. install new yum"></a>3. install new yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-3.4.3-132.el7.centos.0.1.noarch.rpm</span><br><span class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/python-iniparse-0.4-9.el7.noarch.rpm   </span><br><span class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm </span><br><span class="line">wget http://vault.centos.org/7.2.1511/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm </span><br><span class="line"></span><br><span class="line">rpm ivh *.rpm</span><br></pre></td></tr></table></figure>
+<h1 id="4-yum-sourece-configure"><a href="#4-yum-sourece-configure" class="headerlink" title="4.  yum sourece configure"></a>4.  yum sourece configure</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">edit  /etc/yum.repos.d/Centos72.repo</span><br><span class="line">[base]</span><br><span class="line">name=CentOS-$releasever - Base</span><br><span class="line">baseurl=http://vault.centos.org/7.2.1511/os/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#released updates</span><br><span class="line">[updates]</span><br><span class="line">name=CentOS-$releasever - Updates</span><br><span class="line">baseurl=http://vault.centos.org/7.2.1511/updates/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[extras]</span><br><span class="line">name=CentOS-$releasever - Extras</span><br><span class="line">baseurl=http://vault.centos.org/7.2.1511/extras//$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://vault.centos.org/7.2.1511/os/x86_64/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line">[centosplus]</span><br><span class="line">name=CentOS-$releasever - Plus</span><br><span class="line">baseurl=http://vault.centos.org/7.2.1511/centosplus//$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=0</span><br></pre></td></tr></table></figure>
+<h1 id="5-update-yum"><a href="#5-update-yum" class="headerlink" title="5. update yum"></a>5. update yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum clean all</span><br><span class="line">yum update</span><br><span class="line">yum install epel-release axel vim git curl wget   net-tools git gcc lrzsz python-devel vsftpd createrepo</span><br></pre></td></tr></table></figure>
+<h1 id="6-optimization-system"><a href="#6-optimization-system" class="headerlink" title="6. optimization system"></a>6. optimization system</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">close selinux</span><br><span class="line">close NetworkManager</span><br><span class="line">close firewalld</span><br></pre></td></tr></table></figure>
+<h1 id="7-add-docker-yum"><a href="#7-add-docker-yum" class="headerlink" title="7.  add docker yum"></a>7.  add docker yum</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tee /etc/yum.repos.d/docker.repo &lt;&lt; &apos;EOF&apos;</span><br><span class="line">[dockerrepo]</span><br><span class="line">name=Docker Repository</span><br><span class="line">baseurl=https://yum.dockerproject.org/repo/main/centos/7/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=https://yum.dockerproject.org/gpg</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<h1 id="8-install-docker"><a href="#8-install-docker" class="headerlink" title="8. install docker"></a>8. install docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</span><br></pre></td></tr></table></figure>
+<p>如果安装很慢，可以挂载ocata_20170420.iso光盘进入目录Packages/d 下面有相应软件包，执行下面命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum localinstall docker-engine-selinux-1.12.6-1.el7.centos.noarch.rpm docker-engine-1.12.6-1.el7.centos.x86_64.rpm</span><br></pre></td></tr></table></figure></p>
+<p>再执行完成安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ansible docker-engine-1.12.6 docker-engine-selinux-1.12.6  git gcc python-setuptools python-devel</span><br></pre></td></tr></table></figure></p>
+<h1 id="9-配置docker"><a href="#9-配置docker" class="headerlink" title="9. 配置docker"></a>9. 配置docker</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir  /etc/systemd/system/docker.service.d/</span><br><span class="line">tee /etc/systemd/system/docker.service.d/kolla.conf &lt;&lt; eof  </span><br><span class="line">[Service]</span><br><span class="line">MountFlags=shared</span><br><span class="line">eof</span><br></pre></td></tr></table></figure>
+<p>edit  /usr/lib/systemd/system/docker.service<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExecStart=/usr/bin/dockerd --insecure-registry 192.168.200.2:4000</span><br></pre></td></tr></table></figure></p>
+<p>启动docker:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl enable docker</span><br><span class="line">systemctl restart docker</span><br><span class="line">systemctl status  docker</span><br></pre></td></tr></table></figure></p>
+<h1 id="10-install-pip"><a href="#10-install-pip" class="headerlink" title="10. install pip"></a>10. install pip</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum install python-pip</span><br><span class="line">pip install -U pip</span><br><span class="line">#easy_install -U pip    # 或者easy_install工具安装</span><br><span class="line">pip install docker-py</span><br></pre></td></tr></table></figure>
+<h1 id="11-install-kolla-ansible"><a href="#11-install-kolla-ansible" class="headerlink" title="11. install kolla-ansible"></a>11. install kolla-ansible</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># yum install gcc libffi-devel python-devel openssl-devel</span><br><span class="line"># pip install kolla-ansible</span><br><span class="line">#cp -rf /usr/share/kolla-ansible/etc_examples/kolla/ /etc/</span><br><span class="line"># kolla-genpwd</span><br></pre></td></tr></table></figure>
+<h1 id="12-install-docker-registry"><a href="#12-install-docker-registry" class="headerlink" title="12. install docker registry"></a>12. install docker registry</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/sr0 /mnt</span><br><span class="line">docker load &lt; registry.tar</span><br><span class="line"></span><br><span class="line">mkdir /opt/registry</span><br><span class="line">tar -zxf docker-registry.tar.gz -C /opt/registry</span><br><span class="line">docker run -d -p 4000:5000 --restart=always --name registry -v /opt/registry/:/var/lib/registry registry</span><br><span class="line"># curl http://172.16.100.100:4000/v2/_catalog</span><br><span class="line"># curl http://172.16.100.100:4000/v2/kolla/centos-source-nova-api/tags/list</span><br><span class="line">&#123;&quot;name&quot;:&quot;kolla/centos-source-nova-api&quot;,&quot;tags&quot;:[&quot;4.0.0.3&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="13-ceph-disk-set"><a href="#13-ceph-disk-set" class="headerlink" title="13.  ceph disk set"></a>13.  ceph disk set</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">parted /dev/sdb  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</span><br><span class="line">parted /dev/sdc  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</span><br><span class="line">parted /dev/sdd  -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1</span><br></pre></td></tr></table></figure>
+<h1 id="14-in-case-of-vm"><a href="#14-in-case-of-vm" class="headerlink" title="14.   in case of vm"></a>14.   in case of vm</h1><p>如果只是在虚机中实验搭建kolla，需要额外配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /etc/kolla/config/nova</span><br><span class="line">vim /etc/kolla/config/nova/nova-compute.conf</span><br><span class="line">[libvirt]</span><br><span class="line">virt_type = qemu</span><br><span class="line">cpu_mode = none</span><br></pre></td></tr></table></figure></p>
+<p>创建 /etc/kolla/config/ceph.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">osd pool default size = 1</span><br><span class="line">osd pool default min size = 1</span><br></pre></td></tr></table></figure></p>
+<p>如果有需要，请手动调整副本数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool set rbd size 1</span><br></pre></td></tr></table></figure></p>
+<h1 id="15-edit-global-yml"><a href="#15-edit-global-yml" class="headerlink" title="15.  edit global.yml"></a>15.  edit global.yml</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">edit /etc/kolla/global.yml</span><br><span class="line">此处略过。。。</span><br></pre></td></tr></table></figure>
+<h1 id="16-kolla-ansible-deploy"><a href="#16-kolla-ansible-deploy" class="headerlink" title="16. kolla-ansible deploy"></a>16. kolla-ansible deploy</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kolla-ansible prechecks</span><br><span class="line">kolla-ansible pull</span><br><span class="line">kolla-ansible deploy</span><br><span class="line">kolla-ansible post-deploy</span><br></pre></td></tr></table></figure>
+<h1 id="17-cli-commands-install"><a href="#17-cli-commands-install" class="headerlink" title="17. cli-commands install"></a>17. cli-commands install</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum  install ceph-common </span><br><span class="line">pip python-openstackclient   python-neutronclient</span><br></pre></td></tr></table></figure>
+<h1 id="18-access-dashboard"><a href="#18-access-dashboard" class="headerlink" title="18. access dashboard"></a>18. access dashboard</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://172.16.100.100/horizon</span><br></pre></td></tr></table></figure>
+<p>如果在openstack平台虚机中搭建kolla情况下，让其能通过浮动地址访问内部地址的dashboard<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -d 172.18.128.244 -p tcp --dport 80 -j DNAT --to 172.16.100.100</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">成功访问：http://172.18.128.244</span><br></pre></td></tr></table></figure>
+<p>《成功》。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cjw4valli000zc2jxg9a23yok" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-cephfs-manila" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/05/cephfs-manila/" class="article-date">
@@ -112,7 +183,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjw4usw29000l94jxpw3csmfb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cjw4vallc000rc2jxxb70rdm4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -182,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjw4usw4m003v94jx10xuu8w0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cjw4valno003yc2jxs22znxh5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -257,7 +328,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjw4usw5c005194jx1ngfp0gk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="cjw4valoe0054c2jxexq39p8m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -324,68 +395,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjw4usw4l003s94jxng5b7fkc" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/web-02-前端html/" class="article-date">
-  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</span><br><span class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</span><br><span class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line"></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form&gt;</span><br><span class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</span><br><span class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</span><br><span class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="noopener">参考</a><br>基本概念：</p>
-<ul>
-<li>html很骨感.</li>
-<li>css就是装饰或样式.</li>
-<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
-</ul>
-<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
-<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
-<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
-<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">position</span><br><span class="line">     position: relative  # 与absolute一起使用</span><br><span class="line">     position: absolute  #随滚动条滚动而滚动</span><br><span class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</span><br><span class="line">     position: fixed     # 永远在窗口某位置</span><br></pre></td></tr></table></figure></p>
-<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="noopener">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
-<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
-<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="noopener">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
-<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="noopener">http://fontawesome.dashgame.com/#basic</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjw4usw47003d94jx8x0xnq1m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cjw4valnn003wc2jxcc23iu13" class="article-share-link">Share</a>
       
       
     </footer>
@@ -462,7 +472,68 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjw4usw54004o94jxipicktjg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cjw4valo7004sc2jxfqkh2uia" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/web-02-前端html/" class="article-date">
+  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</span><br><span class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</span><br><span class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line"></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form&gt;</span><br><span class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</span><br><span class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</span><br><span class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="noopener">参考</a><br>基本概念：</p>
+<ul>
+<li>html很骨感.</li>
+<li>css就是装饰或样式.</li>
+<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
+</ul>
+<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
+<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
+<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
+<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">position</span><br><span class="line">     position: relative  # 与absolute一起使用</span><br><span class="line">     position: absolute  #随滚动条滚动而滚动</span><br><span class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</span><br><span class="line">     position: fixed     # 永远在窗口某位置</span><br></pre></td></tr></table></figure></p>
+<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="noopener">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
+<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
+<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="noopener">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
+<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="noopener">http://fontawesome.dashgame.com/#basic</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cjw4valn6003ec2jxialpszdu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -523,7 +594,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjw4usw2c000p94jx4773l7lh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjw4vallb000qc2jxkgeiypoz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -573,7 +644,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjw4usw2k001294jxwdhe5njo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjw4valln0015c2jxugssj6sn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -634,73 +705,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjw4usw32001n94jxwmlzykox" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-KVM-introduction" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/08/KVM-introduction/" class="article-date">
-  <time datetime="2017-06-08T01:41:54.000Z" itemprop="datePublished">2017-06-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/08/KVM-introduction/">KVM introduction</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="1-kvm简介"><a href="#1-kvm简介" class="headerlink" title="1. kvm简介"></a>1. kvm简介</h1><p>kvm as a kernel based virtual machine,现如今较为流行的虚拟化技术，openstack后端就是kvm虚拟化。</p>
-<h1 id="2-模拟与虚拟"><a href="#2-模拟与虚拟" class="headerlink" title="2. 模拟与虚拟"></a>2. 模拟与虚拟</h1><ul>
-<li>模拟： 完全由软件模拟：ring0 ring1 ring2 ring3都需要软件模拟， 底层硬件架构与虚拟机硬件架构可以不同</li>
-<li>虚拟： 底层硬件架构与虚机硬件架构必须相同，如cpu平台架构都为x86_64</li>
-</ul>
-<h1 id="3-虚拟化分类"><a href="#3-虚拟化分类" class="headerlink" title="3.虚拟化分类"></a>3.虚拟化分类</h1><p>虚拟化分类无非2种方式：</p>
-<p>一种：直接运行于硬件平台–&gt; hypervisor: <--> dom0</--></p>
-<ul>
-<li>如xen ,esxi,这里xen不好理解，装xen不也要安装操作系统后安装xen4软件包么？为什么它也说直接运行在硬件平台，是因为安装完xen4后，切换了xen4的内核来启动，并非原有操作系统内核.</li>
-</ul>
-<p>二种：先有host系统，再安装虚拟软件（如vmware station）或统称virtual machine mintor(虚拟机监视器)</p>
-<ul>
-<li>如kvm, 虚拟机的cpu,内存通过kvm模块来调用，但IO不行，虚拟机的IO是通过host系统的qemu程序模拟提供的，再由host系统的内核提供IO</li>
-</ul>
-<p>那么什么是半虚拟化？</p>
-<ul>
-<li>半虚拟化是要修改内核的，要让虚拟机知道自己运行在虚拟机环境下的，知道的结果是当虚拟机发起cpu指令时不能直接操作硬件，需要发起hypercall调用.</li>
-</ul>
-<p>那么什么是完全虚拟化？</p>
-<ul>
-<li>1) 早期BT技术实现加速，binary translation 边运行边翻译,虚机内核就是运行ring1上专用于翻译加速</li>
-<li>2) hvm: 硬件辅助虚拟化，需要cpu硬件支持，就是cpu多了ring-1，这样虚拟机直接运行在ring0上，宿主机内核运行在ring-1,ring-1捕获ring0的特权指令直接运行，性能可想而知提高了</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjw4usw1d000094jxmwflfg6a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjw4valm4001qc2jxj528rlqi" class="article-share-link">Share</a>
       
       
     </footer>
