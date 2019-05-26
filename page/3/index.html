@@ -62,6 +62,75 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-17-ModelForm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/20/web-django-17-ModelForm/" class="article-date">
+  <time datetime="2017-12-20T12:26:37.000Z" itemprop="datePublished">2017-12-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>回顾Form</li>
+<li>ModelForm特性</li>
+<li>ModelForm使用</li>
+<li>html前端展示</li>
+</ul>
+<h2 id="ModelForm简介"><a href="#ModelForm简介" class="headerlink" title="ModelForm简介"></a>ModelForm简介</h2><h4 id="1-回顾Form"><a href="#1-回顾Form" class="headerlink" title="1 回顾Form"></a>1 回顾Form</h4><p>Form作用：<br>第一： 用于Form验证<br>第二： 用于生成 html标签，并且可以保留数据（如编辑）</p>
+<p>缺点：<br>多表查询时需要手动查出数据在前端渲染，跨表保存数据同样需要手动update()</p>
+<h4 id="2-ModelForm特性"><a href="#2-ModelForm特性" class="headerlink" title="2 ModelForm特性"></a>2 ModelForm特性</h4><p>解决办法，引用ModelForm</p>
+<ul>
+<li>1 它可以循环model class字段在前端生成表单或html标签并保留数据</li>
+<li>2  调用save()方法自动跨表保存数据。</li>
+<li>3  可以自定义models class以外的fields字段,很灵活，如果自定义的字段名与model class字段名重名， 那么model class字段将被重写</li>
+<li>4  ModelForm同样可以做数据验证包括钩子函数</li>
+<li>5  ModelForm中的fields字段是可以循环的，循环在前端生成不必写</li>
+<li>6  当编辑数据时传入instance=obj 可以循环生成表单并且表单有值。</li>
+</ul>
+<p>ModelForm适用场景</p>
+<ul>
+<li>Form与ModelForm没有谁好谁不好，只是适用场景不同。</li>
+<li>ModelForm依赖modelsclass, modelForm必须和models.py在一起。</li>
+</ul>
+<h4 id="3-ModelForm使用"><a href="#3-ModelForm使用" class="headerlink" title="3 ModelForm使用"></a>3 ModelForm使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">from django.forms import Form</span><br><span class="line">from django.forms import ModelForm</span><br><span class="line">from django.forms import fields</span><br><span class="line">from django.forms import widgets as fwidgets</span><br><span class="line">from app01 import models</span><br><span class="line">class TestForm(ModelForm):</span><br><span class="line">    class Meta:</span><br><span class="line">        model = models.Book</span><br><span class="line">        fields = &quot;__all__&quot; # 可以是[&quot;&quot;,&quot;&quot;,]</span><br><span class="line">        labels = &#123;</span><br><span class="line">            &apos;title&apos;:&quot;书名&quot;,</span><br><span class="line">            &quot;price&quot;:&quot;价格&quot;,</span><br><span class="line">        &#125;</span><br><span class="line">        error_messages = &#123;</span><br><span class="line">            &quot;title&quot;:&#123;&quot;requried&quot;:&quot;书名不能为空&quot;,&#125;,</span><br><span class="line">        &#125;</span><br><span class="line">        widgets=&#123;</span><br><span class="line">            &quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-html前端展示"><a href="#4-html前端展示" class="headerlink" title="4 html前端展示"></a>4 html前端展示</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;form  action=&quot;/addbook/&quot; method=&quot;POST&quot; novalidate&gt;</span><br><span class="line">    &#123;% csrf_token %&#125;</span><br><span class="line">    &#123;% for field in form %&#125;</span><br><span class="line">     &lt;p&gt;&#123;&#123; field.label &#125;&#125;:&#123;&#123; field  &#125;&#125; &#123;&#123; field.errors.0 &#125;&#125;&lt;/p&gt;</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+<p>引入bootstrap时，querySet for循环展示:注意时间格式的转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;container&quot; style=&quot;width: 700px;margin-top: 50px&quot;&gt;</span><br><span class="line">    &lt;table class=&quot;table table-bordered&quot;&gt;</span><br><span class="line">        &lt;thead&gt;&lt;/thead&gt;</span><br><span class="line">        &lt;tbody&gt;</span><br><span class="line">            &#123;% for row in data_list %&#125;</span><br><span class="line">                &lt;tr&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.title &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.price &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; row.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&lt;/td&gt;</span><br><span class="line">                &lt;/tr&gt;</span><br><span class="line">            &#123;% endfor %&#125;</span><br><span class="line">        &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="cjw4us0ny003z8ajxfsz6lw1i" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-get_post_contentype知识" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/15/web-get_post_contentype知识/" class="article-date">
@@ -157,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjw4uoqep00506qjxdan0bt5l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="cjw4us0og004q8ajxcma1hvib" class="article-share-link">Share</a>
       
       
     </footer>
@@ -224,7 +293,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjw4uoqd0003h6qjxp8eb34dm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="cjw4us0nc00338ajxevvnirxc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -276,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjw4uoqe1004l6qjx7cgkwj5o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cjw4us0o9004e8ajx24790gbz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -337,7 +406,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjw4uoqdw004h6qjxxqda0ocg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cjw4us0o500498ajx10h0f15e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -404,63 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjw4uoqdu004f6qjxy2p8hnsk" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-haproxy-基础" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/12/haproxy-基础/" class="article-date">
-  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>haproxy基本介绍</li>
-<li>haproxy基础语法</li>
-<li>haproxy应用</li>
-</ul>
-<h2 id="haproxy基本介绍"><a href="#haproxy基本介绍" class="headerlink" title="haproxy基本介绍"></a>haproxy基本介绍</h2><h2 id="haproxy基础语法"><a href="#haproxy基础语法" class="headerlink" title="haproxy基础语法"></a>haproxy基础语法</h2><p>当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。</p>
-<p>取模法：<br>key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器</p>
-<p>当有服务器添加或移走这种缓存就失效了</p>
-<p>如何解决，是有办法的，那就是改进上面那种方法，称一致性hash算法：consitent hash</p>
-<p>有一个环，用32位二进制从0开始计数，环上分布有离散的2^32 点。<br>key hash 后的值除以2^32时取余数，这个余数一定在0到2^32-1范围内，也就是在这个环上<br>那么数据就是存储在余数的下一台服务器上，服务器是离散分布在这样的环上的。<br>缺点：服务器分布可能存在偏斜，也就是可能所有服务器集中在环三分之一处。<br>当存储数据找下一台服务器，那台服务器存储量太大了。</p>
-<p>解决办法：<br>使用虚拟节点离散分布在环上来代替物理节点。<br>hadoop前身开源搜索引擎，任何搜索引擎首先是大数据搜索平台，其次才是高性能分析平台。</p>
-<p>流式数据存储处理平台：storm  spark大数据处理平台。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">nginx:</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">	proxy_pass: </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="haproxy应用"><a href="#haproxy应用" class="headerlink" title="haproxy应用"></a>haproxy应用</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjw4uoqas000v6qjxfbnbczb5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cjw4us0o400478ajxkhck3s33" class="article-share-link">Share</a>
       
       
     </footer>
@@ -519,7 +532,63 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="cjw4uoqb100196qjx5wvsaokd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="cjw4us0m2001b8ajxz7fipodr" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-haproxy-基础" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/12/haproxy-基础/" class="article-date">
+  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>haproxy基本介绍</li>
+<li>haproxy基础语法</li>
+<li>haproxy应用</li>
+</ul>
+<h2 id="haproxy基本介绍"><a href="#haproxy基本介绍" class="headerlink" title="haproxy基本介绍"></a>haproxy基本介绍</h2><h2 id="haproxy基础语法"><a href="#haproxy基础语法" class="headerlink" title="haproxy基础语法"></a>haproxy基础语法</h2><p>当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。</p>
+<p>取模法：<br>key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器</p>
+<p>当有服务器添加或移走这种缓存就失效了</p>
+<p>如何解决，是有办法的，那就是改进上面那种方法，称一致性hash算法：consitent hash</p>
+<p>有一个环，用32位二进制从0开始计数，环上分布有离散的2^32 点。<br>key hash 后的值除以2^32时取余数，这个余数一定在0到2^32-1范围内，也就是在这个环上<br>那么数据就是存储在余数的下一台服务器上，服务器是离散分布在这样的环上的。<br>缺点：服务器分布可能存在偏斜，也就是可能所有服务器集中在环三分之一处。<br>当存储数据找下一台服务器，那台服务器存储量太大了。</p>
+<p>解决办法：<br>使用虚拟节点离散分布在环上来代替物理节点。<br>hadoop前身开源搜索引擎，任何搜索引擎首先是大数据搜索平台，其次才是高性能分析平台。</p>
+<p>流式数据存储处理平台：storm  spark大数据处理平台。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">nginx:</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">	proxy_pass: </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="haproxy应用"><a href="#haproxy应用" class="headerlink" title="haproxy应用"></a>haproxy应用</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cjw4us0lq000w8ajx9k2fz2gv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -591,7 +660,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjw4uoqat000x6qjx6vvql9y8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cjw4us0ls000y8ajxrz9npjxp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -686,60 +755,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjw4uoqbd001n6qjxdfmvby3w" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-22-验证码" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/08/web-django-22-验证码/" class="article-date">
-  <time datetime="2017-11-08T12:26:37.000Z" itemprop="datePublished">2017-11-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/08/web-django-22-验证码/">web-Django-22-验证码</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>生成验证码</li>
-<li>认证验证码</li>
-<li>插件认证</li>
-</ul>
-<h2 id="生成验证码"><a href="#生成验证码" class="headerlink" title="生成验证码"></a>生成验证码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">def get_valid_img(request):</span><br><span class="line">    # 第一步</span><br><span class="line">    # f=open(&quot;default.jpg&quot;,&apos;rb&apos;)</span><br><span class="line">    #     data=f.read()</span><br><span class="line"></span><br><span class="line">    # 第二步</span><br><span class="line">    # import PIL</span><br><span class="line">    # from PIL import Image</span><br><span class="line">    # img = Image.new(mode=&apos;RGB&apos;, size=(120, 30), color=(123, 222, 255))</span><br><span class="line">    # f=open(&apos;code.png&apos;,&apos;wb&apos;)</span><br><span class="line">    # img.save(f,&apos;png&apos;)</span><br><span class="line">    # f = open(&apos;code.png&apos;, &apos;rb&apos;)</span><br><span class="line">    # data=f.read()</span><br><span class="line">    # f.close()</span><br><span class="line"></span><br><span class="line">    # 第三步</span><br><span class="line">    # from io import BytesIO</span><br><span class="line">    # f=BytesIO()</span><br><span class="line">    #</span><br><span class="line">    # from PIL import Image</span><br><span class="line">    # img = Image.new(mode=&apos;RGB&apos;, size=(120, 30), color=(255, 255, 66))</span><br><span class="line">    # img.save(f,&quot;png&quot;)</span><br><span class="line">    # data=f.getvalue()</span><br><span class="line"></span><br><span class="line">    # # 第四步：</span><br><span class="line">    #</span><br><span class="line">    # from io import BytesIO</span><br><span class="line">    #</span><br><span class="line">    # f = BytesIO()</span><br><span class="line">    # from PIL import Image, ImageDraw, ImageFont</span><br><span class="line">    #</span><br><span class="line">    # # 画字</span><br><span class="line">    # img = Image.new(mode=&apos;RGB&apos;, size=(120, 30), color=(0, 255, 0))</span><br><span class="line">    # draw = ImageDraw.Draw(img, mode=&apos;RGB&apos;)</span><br><span class="line">    # font=ImageFont.truetype(&quot;blog/static/dist/fonts/kumo.ttf&quot;,28)</span><br><span class="line">    # draw.text([15,0],&apos;y&apos;,&quot;red&quot;,font=font)</span><br><span class="line">    #</span><br><span class="line">    # img.save(f,&quot;png&quot;)</span><br><span class="line">    # data=f.getvalue()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    # 第五步：</span><br><span class="line">    import random</span><br><span class="line">    from io import BytesIO</span><br><span class="line">    from PIL import Image, ImageDraw, ImageFont</span><br><span class="line">    f = BytesIO()</span><br><span class="line">    img = Image.new(mode=&apos;RGB&apos;, size=(120, 30),</span><br><span class="line">                    color=(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))</span><br><span class="line">    draw = ImageDraw.Draw(img, mode=&apos;RGB&apos;)</span><br><span class="line"></span><br><span class="line">    char_list = []</span><br><span class="line">    # # 画字</span><br><span class="line">    for i in range(5):</span><br><span class="line">        char = random.choice([chr(random.randint(65, 90)), str(random.randint(1, 9)), chr(random.randint(97, 122)), ])</span><br><span class="line"></span><br><span class="line">        font = ImageFont.truetype(&quot;blog/static/dist/fonts/kumo.ttf&quot;, 28)</span><br><span class="line">        draw.text([i * 24, 0], char, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),font=font)</span><br><span class="line">        char_list.append(char)</span><br><span class="line">    #</span><br><span class="line">    # # =========================</span><br><span class="line">    width = 120</span><br><span class="line">    height = 30</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def rndColor():</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        生成随机颜色</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return (random.randint(0, 255), random.randint(10, 255), random.randint(64, 255))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    # 写干扰点</span><br><span class="line">    for i in range(40):</span><br><span class="line">        draw.point([random.randint(0, width), random.randint(0, height)], fill=rndColor())</span><br><span class="line"></span><br><span class="line">    # # 写干扰圆圈</span><br><span class="line">    # for i in range(40):</span><br><span class="line">    #     draw.point([random.randint(0, width), random.randint(0, height)], fill=rndColor())</span><br><span class="line">    #     x = random.randint(0, width)</span><br><span class="line">    #     y = random.randint(0, height)</span><br><span class="line">    #     draw.arc((x, y, x + 4, y + 4), 0, 90, fill=rndColor())</span><br><span class="line">    #</span><br><span class="line">    # # 画干扰线</span><br><span class="line">    # for i in range(5):</span><br><span class="line">    #     x1 = random.randint(0, width)</span><br><span class="line">    #     y1 = random.randint(0, height)</span><br><span class="line">    #     x2 = random.randint(0, width)</span><br><span class="line">    #     y2 = random.randint(0, height)</span><br><span class="line">    #</span><br><span class="line">    #     draw.line((x1, y1, x2, y2), fill=rndColor())</span><br><span class="line"></span><br><span class="line">    img.save(f, &quot;png&quot;)</span><br><span class="line">    data = f.getvalue()</span><br><span class="line"></span><br><span class="line">    s = &apos;&apos;.join(char_list)</span><br><span class="line"></span><br><span class="line">    request.session[&quot;valid_code&quot;] = s</span><br><span class="line"></span><br><span class="line">    &apos;&apos;&apos;</span><br><span class="line">    Dajngo:</span><br><span class="line">    set_cookie(&quot;sessionId&quot;,&quot;asdsa234asd3sad&quot;)</span><br><span class="line">    in session表</span><br><span class="line">    sessionkey           sessiondata</span><br><span class="line">    asdsa234asd3sad      &#123;&quot;valid_code&quot;:s&#125;</span><br><span class="line">    &apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line">    return HttpResponse(data)</span><br></pre></td></tr></table></figure>
-<h2 id="认证验证码"><a href="#认证验证码" class="headerlink" title="认证验证码"></a>认证验证码</h2><p>注意： 验证码的验证过程也是基于session/cookie,session/cookie知识必备<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">from PIL import Image</span><br><span class="line">from blog.utils import  BaseResponse</span><br><span class="line">from django.contrib import auth</span><br><span class="line">from blog import models</span><br><span class="line"></span><br><span class="line">import  json</span><br><span class="line">from blog.forms import RegForm</span><br><span class="line">def login(request):</span><br><span class="line">    if request.method==&quot;GET&quot;:</span><br><span class="line">        return render(request,&quot;login.html&quot;)</span><br><span class="line">    elif request.is_ajax():</span><br><span class="line">        username=request.POST.get(&quot;username&quot;)</span><br><span class="line">        password=request.POST.get(&quot;password&quot;)</span><br><span class="line">        valid=request.POST.get(&quot;valid&quot;)    # 输入的验证码</span><br><span class="line">        keep_valid = request.session.get(&quot;valid_code&quot;)</span><br><span class="line">        loginResponse = BaseResponse()</span><br><span class="line"></span><br><span class="line">        if valid.upper() == keep_valid.upper():</span><br><span class="line">            user=auth.authenticate(username=username,password=password)  # auth模块做认证</span><br><span class="line">            if user:</span><br><span class="line">                loginResponse.user = username</span><br><span class="line">                auth.login(request,user)   # auth模块加session</span><br><span class="line">            else:</span><br><span class="line">                loginResponse.error = &quot;用户名或密码错误&quot;</span><br><span class="line">        else:</span><br><span class="line">            loginResponse.error=&quot;验证码错误&quot;</span><br><span class="line"></span><br><span class="line">        return HttpResponse(json.dumps(loginResponse.__dict__))</span><br></pre></td></tr></table></figure></p>
-<h2 id="插件认证"><a href="#插件认证" class="headerlink" title="插件认证"></a>插件认证</h2><p>这个插件用于拦截机器识别，确定人为登录，使认证系统更加安全<br>等补充…</p>
-<p><a href="http://www.cnblogs.com/yuanchenqi/articles/7468816.html" target="_blank" rel="noopener">参考</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cjw4uoqdy004j6qjxxbocofkl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cjw4us0m9001j8ajxvc6h4199" class="article-share-link">Share</a>
       
       
     </footer>
