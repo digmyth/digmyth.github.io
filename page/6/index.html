@@ -62,14 +62,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-git-01" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/06/15/git-01/" class="article-date">
+    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
   <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
   </div>
 
   </div>
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/git-01/">git 利器</a>
+      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
     </h1>
   
 
@@ -88,29 +88,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>git建版本库</li>
-<li>git别名设置</li>
-<li>git基本配置</li>
-<li>git基本命令</li>
-<li>git分支管理</li>
-</ul>
-<h2 id="git创建版本库"><a href="#git创建版本库" class="headerlink" title="git创建版本库"></a>git创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git init # 把当前目录变成git可管理的仓库</span><br><span class="line">生成的.git目录是用来跟踪管理版本库的,称为git的一个版本库</span><br></pre></td></tr></table></figure>
-<h2 id="git别名设置"><a href="#git别名设置" class="headerlink" title="git别名设置"></a>git别名设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">为命令设置别名</span><br><span class="line">$ git config --global alias.co checkout</span><br><span class="line">$ git config --global alias.ci commit</span><br><span class="line">$ git config --global alias.br branch</span><br></pre></td></tr></table></figure>
-<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">每台机器自报家门</span><br><span class="line">$ git config --global user.name &quot;Your Name&quot;</span><br><span class="line">$ git config --global user.email &quot;email@example.com&quot;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">优先级从高到低是</span><br><span class="line">.git/config--&gt;  --global --&gt; system</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">全局生效: 配置保存在/etc/gitconfig</span><br><span class="line">[root@wxq-srv git_work]# git config --system user.name &quot;wxq&quot;</span><br><span class="line">[root@wxq-srv git_work]# cat /etc/gitconfig </span><br><span class="line">[user]</span><br><span class="line">	name = wxq</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">当前用户所有仓库生效：配置保存在~/.gitconfig</span><br><span class="line">[root@wxq-srv git_work]# cat /root/.gitconfig </span><br><span class="line">[user]</span><br><span class="line">	name = wxq</span><br><span class="line">	email = you@example.com</span><br><span class="line"></span><br><span class="line">[root@wxq-srv git_work]# git config --global user.name &quot;wxq&quot;</span><br><span class="line">[root@wxq-srv git_work]# git config --global user.email &quot;you@example.com&quot;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">只对某仓库生效：配置保存在reponame/.git/config</span><br><span class="line">[root@wxq-srv git_work]# git config  user.name &quot;wxq1&quot;</span><br><span class="line">[root@wxq-srv git_work]# cat .git/config </span><br><span class="line">[core]</span><br><span class="line">	repositoryformatversion = 0</span><br><span class="line">	filemode = true</span><br><span class="line">	bare = false</span><br><span class="line">	logallrefupdates = true</span><br><span class="line">[user]</span><br><span class="line">	name = wxq1</span><br></pre></td></tr></table></figure>
-<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git log  # 每一次提交的记录</span><br><span class="line">git reset --hard HEAD^ #HEAD表示当前版本，HEAD^^表示上上个版本，依次类推，上100个版本是HEAD~100</span><br><span class="line">git reset --hard $commit_id   # 回到指定版本</span><br><span class="line">git reflog     # 只要改变都会在这里记录，用于回到未来的某个版本。</span><br><span class="line">git add index.html   # 添加更改至state暂存	区</span><br><span class="line">git reset HEAD index.html  # unstage 退出暂存区</span><br><span class="line">git diff HEAD -- readme.txt  # 查看当前工作区和版本库有什么不同</span><br></pre></td></tr></table></figure>
-<h2 id="放弃修改"><a href="#放弃修改" class="headerlink" title="放弃修改"></a>放弃修改</h2><p>除了版本回退外，只要未commit之前都可以放弃工作区所做的修改。<br>如果有add 动作，需要先从暂存区回退到工作区<code>git reset HEAD index.html</code><br>如果没有add动作，可直接放弃修改<code>git checkout -- index.txt</code><br>或者可以这么理解<code>git checkout -- index.txt</code> 都会从暂存区或版本库(优先从暂存区)恢复到工作区.</p>
-<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">查看分支：git branch</span><br><span class="line">创建分支：git branch &lt;name&gt;</span><br><span class="line">切换分支：git checkout &lt;name&gt;</span><br><span class="line">创建+切换分支：git checkout -b &lt;name&gt;</span><br><span class="line">合并某分支到当前分支：git merge &lt;name&gt;</span><br><span class="line">删除分支：git branch -d &lt;name&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h2>
+        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</span><br></pre></td></tr></table></figure></p>
+<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</span><br><span class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</span><br><span class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</span><br><span class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</span><br><span class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</span><br></pre></td></tr></table></figure></p>
+<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</span><br><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</span><br></pre></td></tr></table></figure></p>
+<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</span><br><span class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cjw4xlypf000wmsjxhndl9drd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cjw4xruva0019nmjx1rb5gza9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -171,7 +160,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjw4xlyq6001vmsjxse86sb4o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cjw4xruvp001tnmjxxgauf8u7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -237,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjw4xlyoh0001msjx89hblabw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cjw4xruu10000nmjxixtajskm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -313,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjw4xlyp8000nmsjxp8ndl9sn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cjw4xruuu000lnmjx3ls59uiy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +347,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjw4xlyrm003xmsjx05d64t54" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cjw4xrux0003vnmjxwr21jbpw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -409,7 +398,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjw4xlyr4003amsjxwry95n9y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cjw4xruwk0036nmjxvplrvk42" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
+  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="cjw4xruv60015nmjx8guz2g5u" class="article-share-link">Share</a>
       
       
     </footer>
@@ -460,55 +497,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjw4xlypl0015msjx007tkhak" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
-  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="cjw4xlypn0016msjx5wxcw14l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="cjw4xruv30012nmjxkwdbkbgs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -570,7 +559,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjw4xlyq4001smsjxsyfdyoc3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="cjw4xruvo001qnmjxrwldod9c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -628,7 +617,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjw4xlyrl003umsjxb0pfh2mi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="cjw4xruwz003snmjxf6y8vsi4" class="article-share-link">Share</a>
       
       
     </footer>
