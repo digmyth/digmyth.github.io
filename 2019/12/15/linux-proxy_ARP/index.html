@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>代理ARP学习 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="代理ARP学习参考戳穿 Calico 的谎言 什么是代理ARP？当 ARP 请求目标跨网段时，网关设备收到此ARP请求会用自己的MAC地址返回给请求者，这就是代理ARP . 知识点：   跨网段通信时会发广播得到网关MAC 之后发出的网络数据包目标MAC是网关的MAC 网关的IP地址不会出现在任何网络包头中 因此，没有人在乎网关地址是否真的存在，只要设备能响应ARP就行了  我这里用了2台linu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代理ARP学习">
+<meta property="og:url" content="http://www.digmyth.com/2019/12/15/linux-proxy_ARP/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="代理ARP学习参考戳穿 Calico 的谎言 什么是代理ARP？当 ARP 请求目标跨网段时，网关设备收到此ARP请求会用自己的MAC地址返回给请求者，这就是代理ARP . 知识点：   跨网段通信时会发广播得到网关MAC 之后发出的网络数据包目标MAC是网关的MAC 网关的IP地址不会出现在任何网络包头中 因此，没有人在乎网关地址是否真的存在，只要设备能响应ARP就行了  我这里用了2台linu">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-19T08:49:58.993Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="代理ARP学习">
+<meta name="twitter:description" content="代理ARP学习参考戳穿 Calico 的谎言 什么是代理ARP？当 ARP 请求目标跨网段时，网关设备收到此ARP请求会用自己的MAC地址返回给请求者，这就是代理ARP . 知识点：   跨网段通信时会发广播得到网关MAC 之后发出的网络数据包目标MAC是网关的MAC 网关的IP地址不会出现在任何网络包头中 因此，没有人在乎网关地址是否真的存在，只要设备能响应ARP就行了  我这里用了2台linu">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-linux-proxy_ARP" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/15/linux-proxy_ARP/" class="article-date">
+  <time datetime="2019-12-15T01:42:54.000Z" itemprop="datePublished">2019-12-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      代理ARP学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="代理ARP学习"><a href="#代理ARP学习" class="headerlink" title="代理ARP学习"></a>代理ARP学习</h2><p>参考<a href="https://cloud.tencent.com/developer/article/1495301" target="_blank" rel="noopener">戳穿 Calico 的谎言</a></p>
+<p>什么是代理ARP？<br>当 ARP 请求目标跨网段时，网关设备收到此ARP请求会用自己的MAC地址返回给请求者，这就是代理ARP .</p>
+<p>知识点： </p>
+<ul>
+<li>跨网段通信时会发广播得到网关MAC</li>
+<li>之后发出的网络数据包目标MAC是网关的MAC</li>
+<li>网关的IP地址不会出现在任何网络包头中</li>
+<li>因此，没有人在乎网关地址是否真的存在，只要设备能响应ARP就行了</li>
+</ul>
+<p>我这里用了2台linux主机实验，主机A：192.168.1.109 主机B:192.168.1.110<br>主机A：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip  link add veth0 type veth peer name veth0_p</span><br><span class="line">ip netns add ns0</span><br><span class="line">ip link set veth0_p netns ns0</span><br><span class="line">ip netns exec ns0  ip link set veth0_p name eth0</span><br><span class="line">ip netns exec ns0  ip a add 10.10.10.10/24 dev eth0</span><br><span class="line">ip netns exec ns0 ip link set eth0 up</span><br><span class="line">ip netns exec ns0 ip route add 169.254.1.1 dev eth0</span><br><span class="line">ip netns exec ns0 ip route add default via 169.254.1.1 dev eth0</span><br><span class="line">[root@testarp-A ~]#ip netns exec ns0 route -n    # 命名空间里的路由</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         169.254.1.1     0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">169.254.1.1     0.0.0.0         255.255.255.255 UH    0      0        0 eth0</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ip route add 10.10.10.10 dev veth0</span><br><span class="line">ip route add   10.10.10.20 via 192.168.1.110  dev eth0</span><br></pre></td></tr></table></figure></p>
+<p>主机B:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip  link add veth0 type veth peer name veth0_p</span><br><span class="line">ip netns add ns0</span><br><span class="line">ip link set veth0_p netns ns0</span><br><span class="line">ip netns exec ns0  ip link set veth0_p name eth0</span><br><span class="line">ip netns exec ns0  ip a add 10.10.10.20/24 dev eth0</span><br><span class="line">ip netns exec ns0 ip link set eth0 up</span><br><span class="line">ip netns exec ns0 ip route add 169.254.1.1 dev eth0</span><br><span class="line">ip netns exec ns0 ip route add default via 169.254.1.1 dev eth0</span><br><span class="line">[root@testarp-B ~]# ip netns exec ns0 route -n  </span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         169.254.1.1     0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">169.254.1.1     0.0.0.0         255.255.255.255 UH    0      0        0 eth0</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ip route add 10.10.10.20 dev veth0</span><br><span class="line">ip route add   10.10.10.10 via 192.168.1.109  dev eth0</span><br></pre></td></tr></table></figure></p>
+<p>Linux主机打开路由转发<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure></p>
+<p>网卡开启代理ARP功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/net/ipv4/conf/veth0/proxy_arp</span><br></pre></td></tr></table></figure></p>
+<p>主机A上网络通信测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@testarp-A ~]# ip netns exec ns0 ping 10.10.10.20</span><br><span class="line">PING 10.10.10.20 (10.10.10.20) 56(84) bytes of data.</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=1 ttl=62 time=0.951 ms</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=2 ttl=62 time=0.484 ms</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=3 ttl=62 time=0.556 ms</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@testarp-A ~]# tcpdump  -nni veth0</span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv for full protocol decode</span><br><span class="line">listening on veth0, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line">08:18:15.999200 IP 10.10.10.10 &gt; 10.10.10.20: ICMP echo request, id 1486, seq 1, length 64</span><br><span class="line">08:18:16.000288 IP 10.10.10.20 &gt; 10.10.10.10: ICMP echo reply, id 1486, seq 1, length 64</span><br><span class="line">08:18:21.008712 ARP, Request who-has 10.10.10.20 tell 10.10.10.10, length 28</span><br><span class="line">08:18:21.008757 ARP, Reply 10.10.10.20 is-at ee:46:7c:2e:d9:ba, length 28</span><br></pre></td></tr></table></figure>
+<p>注意： 这里veth0充当路由角色代理ARP,  who is 10.10.10.20 ,返回自己MAC<code>ee:46:7c:2e:d9:ba</code>来响应.</p>
+<p>转发过程分析：<br>1 广播寻找目标IP对应MAC是谁？<br>2 根据路由规则所有数据包都会转发到169.254.1.1，寻找169.254.1.1MAC是谁？<br>2 vet0开启代理ARP进行ARP拦截，返回自己MAC<code>ee:46:7c:2e:d9:ba</code>给以响应<br>3 封包目标IP为10.10.10.20，MAC为<code>ee:46:7c:2e:d9:ba</code>,发出这样的数据包<br>4 主机A查询本地路由，匹配<code>10.10.10.20 via 192.168.1.110 dev eth0</code> 会把包发送给<code>192.168.1.110</code><br>5 主机B收到<code>10.10.10.20</code>的包时，匹配本地路由<code>10.10.10.20 dev veth0 scope link</code>,数据包发送到veth0上<br>6  完成通信，回程类似</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-proxy_ARP/" data-id="ck5ks5kgt001m15jx2b9dhj3v" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/01/01/openvswit_vlan流表/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          openvswit_vlan流表
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/12/15/linux-nmap详解/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">nmap工具详解</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/01/01/openvswit_vlan流表/">openvswit_vlan流表</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/15/linux-proxy_ARP/">代理ARP学习</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/15/linux-nmap详解/">nmap工具详解</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/">kubernetes-dashboard-TLS坑</a>
+          </li>
+        
+          <li>
+            <a href="/2019/02/10/python-Celery-Flask/">python-celery-Flask</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
