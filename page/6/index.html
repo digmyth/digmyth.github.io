@@ -62,6 +62,81 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
+  <time datetime="2017-07-01T01:41:54.000Z" itemprop="datePublished">2017-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/01/基于CentOS7的PXE装机/">基于CentOS 7的PXE装机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>网上各种贴子各种飞总说不到重点，本人表示不喜欢。</code></p>
+<h3 id="基于Centos7PXE装机"><a href="#基于Centos7PXE装机" class="headerlink" title="基于Centos7PXE装机"></a>基于Centos7PXE装机</h3><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>pxe装机依赖几个服务： dhcp/tftp/fileserver</li>
+<li>dhcp:  为装机分配地址及指明tftp server服务器是谁，下载什么文件</li>
+<li>tftp:   提供网络引导文件pxelinux.0及内核文件vmlinuz、initrd.img<ul>
+<li>(具体文件： boot.msg  initrd.img  pxelinux.0  pxelinux.cfg  splash.png  vesamenu.c32  vmlinuz)</li>
+</ul>
+</li>
+<li>fileserver: 提供安装树输出，一般指yum repository (yum 仓库或yum源)</li>
+<li>syslinux:   网络引导文件pxelinux.0由syslinux软件包提供</li>
+</ul>
+<h2 id="dhcp服务"><a href="#dhcp服务" class="headerlink" title="dhcp服务"></a>dhcp服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum  -y install  dhcp</span><br><span class="line">rpm -ql dhcp</span><br><span class="line">/etc/dhcp/dhcpd.conf      # 主配置文件</span><br><span class="line">/var/lib/dhcpd/dhcpd.leases  # 租约文件</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# cat /etc/dhcp/dhcpd.conf  | grep -v ^# | grep -v ^$</span><br><span class="line">option domain-name &quot;digmyth.com&quot;;</span><br><span class="line">option domain-name-servers 114.114.114.114;</span><br><span class="line">default-lease-time 600;</span><br><span class="line">max-lease-time 7200;</span><br><span class="line">log-facility local7;</span><br><span class="line">subnet 172.16.10.0 netmask 255.255.255.0 &#123;</span><br><span class="line">  range 172.16.10.20 172.16.10.30;</span><br><span class="line">  option domain-name-servers 172.16.10.1;</span><br><span class="line">  option domain-name &quot;digmyth.com&quot;;</span><br><span class="line">  option routers 172.16.10.254;</span><br><span class="line">  default-lease-time 600;</span><br><span class="line">  max-lease-time 7200;</span><br><span class="line">&#125;</span><br><span class="line">filename &quot;pxelinux.0&quot;;     # 定义网络引导文件名</span><br><span class="line">next-server 172.16.10.1;   # 定义tftp server地址</span><br></pre></td></tr></table></figure>
+<p>启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># systemctl  start dhcpd</span><br><span class="line">[root@master ~]# netstat -unlp | grep 67</span><br><span class="line">udp        0      0 0.0.0.0:67              0.0.0.0:*                           995/dhcpd</span><br></pre></td></tr></table></figure></p>
+<h2 id="syslinux提供引导文件"><a href="#syslinux提供引导文件" class="headerlink" title="syslinux提供引导文件"></a>syslinux提供引导文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">准备网络引导文件pxelinux.0  相当于bootloader</span><br><span class="line"># yum -y install syslinux</span><br><span class="line">[root@master tftpboot]# ll /usr/share/syslinux/pxelinux.0 </span><br><span class="line">-rw-r--r--. 1 root root 26764 Nov  6  2016 /usr/share/syslinux/pxelinux.0</span><br></pre></td></tr></table></figure>
+<h2 id="tftp-server"><a href="#tftp-server" class="headerlink" title="tftp server"></a>tftp server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># yum  -y install tftp tftp-server</span><br><span class="line">[root@master ~]# rpm -ql tftp-server</span><br><span class="line">/etc/xinetd.d/tftp   # 启动文件</span><br><span class="line">/usr/sbin/in.tftpd</span><br><span class="line">/var/lib/tftpboot   # 服务根目录</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># cat /etc/xinetd.d/tftp</span><br><span class="line">service tftp</span><br><span class="line">&#123;</span><br><span class="line">	socket_type		= dgram</span><br><span class="line">	protocol		= udp</span><br><span class="line">	wait			= yes</span><br><span class="line">	user			= root</span><br><span class="line">	server			= /usr/sbin/in.tftpd</span><br><span class="line">	server_args		= -s /var/lib/tftpboot</span><br><span class="line">    disable			= no  #改为no</span><br><span class="line">	per_source		= 11</span><br><span class="line">	cps			= 100 2</span><br><span class="line">	flags			= IPv4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>启动tftp服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># cp  /usr/share/syslinux/pxelinux.0  /var/lit/tftpboot</span><br><span class="line"># systemctl  start tftp</span><br><span class="line"># tftp localhost</span><br><span class="line">&gt; get pxelinux.0   # 测试成功</span><br></pre></td></tr></table></figure></p>
+<h2 id="准备内核及其它相关文件"><a href="#准备内核及其它相关文件" class="headerlink" title="准备内核及其它相关文件"></a>准备内核及其它相关文件</h2><p>   此时<code>pxe</code>己经能够获得地址并下载<code>pxelinux.0</code>进行网络引导，接下来是下载内核文件<code>vmlinuz</code>、<code>initrd.img</code>继续完成装机。<br> 这里我拿<code>CentOS7.2</code>为例：<code>CentOS-7-x86_64-DVD-1511.iso</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# mount -o loop CentOS-7-x86_64-DVD-1511.iso  /mnt</span><br><span class="line">mount: /dev/loop0 is write-protected, mounting read-only</span><br><span class="line">[root@master pxeboot]# cd /mnt/images/pxeboot/</span><br><span class="line">[root@master pxeboot]# cp vmlinuz /var/lib/tftpboot/</span><br><span class="line">[root@master pxeboot]# cp initrd.img  /var/lib/tftpboot/</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mkdir /var/lib/tftpboot/pxelinux.cfg</span><br><span class="line">cp /mnt/isolinux/isolinux.cfg  /var/lib/tftpboot/pxelinux.cfg /default </span><br><span class="line">[root@master pxelinux.cfg]# cat default </span><br><span class="line">default vesamenu.c32</span><br><span class="line">#default linux   # 这里是一个标签，对找后面相应的label</span><br><span class="line">timeout 600</span><br><span class="line"></span><br><span class="line">menu title CentOS 7 wxq    # 此处定义title</span><br><span class="line">label linux</span><br><span class="line">  menu label ^Install CentOS 7  # 此处定义系统安装时显示版本</span><br><span class="line">  kernel vmlinuz</span><br><span class="line">  append initrd=initrd.img method=http://172.16.10.1/pub/ ks=http://172.16.10.1/pxe/CentOS72.ks</span><br><span class="line"># 注意： 如果此处只定义method,那么装机过程将全手动。</span><br></pre></td></tr></table></figure>
+<p>此外还有一些额外文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# ls /mnt/isolinux/</span><br><span class="line">boot.cat  grub.conf   isolinux.bin  memtest     TRANS.TBL    vesamenu.c32</span><br><span class="line">boot.msg  initrd.img  isolinux.cfg  splash.png  upgrade.img  vmlinuz</span><br><span class="line">[root@master ~]# ll /var/lib/tftpboot/</span><br><span class="line">boot.msg  initrd.img  pxelinux.0   splash.png  vesamenu.c32  vmlinuz</span><br></pre></td></tr></table></figure></p>
+<h2 id="定义安装树"><a href="#定义安装树" class="headerlink" title="定义安装树"></a>定义安装树</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># yum  -y install httpd</span><br><span class="line"># mkdir /var/www/html/pxe</span><br><span class="line"># mkdir /var/www/html/pub</span><br><span class="line"># mount --bind /mnt /var/www/html/pub/ </span><br><span class="line"># systemctl  start httpd</span><br></pre></td></tr></table></figure>
+<h2 id="定义ks文件"><a href="#定义ks文件" class="headerlink" title="定义ks文件"></a>定义ks文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">/pxe/CentOS72.ks</span><br><span class="line">[root@master pxe]# cat CentOS72.ks</span><br><span class="line">#version=DEVEL</span><br><span class="line"># System authorization information</span><br><span class="line"></span><br><span class="line">install</span><br><span class="line"># Keyboard layouts</span><br><span class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</span><br><span class="line">auth --enableshadow --passalgo=sha512</span><br><span class="line"></span><br><span class="line"># Use CDROM installation media</span><br><span class="line"># Run the Setup Agent on first boot</span><br><span class="line">#firstboot --enable</span><br><span class="line"># System language</span><br><span class="line">lang en_US.UTF-8</span><br><span class="line"></span><br><span class="line">url --url=http://172.16.10.1/pub/</span><br><span class="line"># Use graphical install</span><br><span class="line">graphical</span><br><span class="line">#text</span><br><span class="line"></span><br><span class="line">selinux --disabled</span><br><span class="line">skipx</span><br><span class="line"></span><br><span class="line">reboot</span><br><span class="line"></span><br><span class="line"># Network information</span><br><span class="line">#network  --bootproto=static --device=ens33 --gateway=172.16.10.254 --ip=172.16.10.30 --nameserver=114.114.114.114 --netmask=255.255.255.0 --onboot=on --ipv6=auto --activate</span><br><span class="line">network  --bootproto=dhcp --device=ens33 --onboot=yes --ipv6=auto --activate</span><br><span class="line">network  --hostname=digmyth</span><br><span class="line"></span><br><span class="line"># Root password=123456</span><br><span class="line">rootpw --iscrypted $6$6ErC1johQ5LVAYwQ$cGGxb6Q6./SpvXCZs.K39d9LpV/IeFnspUT6mHmsVsARzToRCSsZ4fLxcOh0tYWpt38Yh6JoMzmSEkEtCtMlS/</span><br><span class="line"># System services</span><br><span class="line">services --disabled=&quot;chronyd&quot;</span><br><span class="line"></span><br><span class="line"># System timezone</span><br><span class="line">timezone Asia/Shanghai --isUtc --nontp</span><br><span class="line"># System bootloader configuration</span><br><span class="line">clearpart --all --initlabel</span><br><span class="line">bootloader --append=&quot; crashkernel=auto&quot; --location=mbr --boot-drive=sda</span><br><span class="line"># Partition clearing information</span><br><span class="line"></span><br><span class="line">#clearpart --drives=sda --initlabel</span><br><span class="line">#clearpart --none --initlabel</span><br><span class="line"># Disk partitioning information</span><br><span class="line"></span><br><span class="line">#ignoredisk --only-use=sda</span><br><span class="line">#part pv.735 --fstype=&quot;lvmpv&quot; --ondisk=sda --size=19979</span><br><span class="line">#volgroup vg --pesize=4096 pv.735</span><br><span class="line">#logvol /boot --fstype=&quot;xfs&quot; --size=500 --name=boot --vgname=vg</span><br><span class="line">#logvol /  --fstype=&quot;xfs&quot; --size=16000 --name=root --vgname=vg</span><br><span class="line">#logvol /data  --fstype=&quot;xfs&quot; --size=3000 --name=data --vgname=vg</span><br><span class="line">#logvol swap --fstype=&quot;swap&quot; --grow --size=1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">%packages</span><br><span class="line">@^minimal</span><br><span class="line">@core</span><br><span class="line">kexec-tools</span><br><span class="line">vim</span><br><span class="line">net-tools</span><br><span class="line">sysstat</span><br><span class="line"></span><br><span class="line">%end</span><br><span class="line"></span><br><span class="line">%post</span><br><span class="line">touch /root/wxq.txt</span><br><span class="line">%end</span><br><span class="line"></span><br><span class="line">%addon com_redhat_kdump --enable --reserve-mb=&apos;auto&apos;</span><br><span class="line">%end</span><br></pre></td></tr></table></figure>
+<p>上面的装机将进入图形界面手动分区安装    </p>
+<p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466910816.jpg" alt="pxeboot"></p>
+<p>到此完结，可以结合cobbler实现多pxe环境并存。</p>
+<ul>
+<li>cobbler 一些概念：</li>
+<li>distro发行版： 其实就是pxe所说的相应内核文件</li>
+<li>profile:  提供pxeboot引导文件、KS文件、安装树（用现有iso镜像mirror/import方式）</li>
+</ul>
+<h5 id="是不是很完美-。。。"><a href="#是不是很完美-。。。" class="headerlink" title="是不是很完美 。。。"></a>是不是很完美 。。。</h5>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ck5ktrqny005g8pjxjlkob1d5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-11-模板渲染" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/20/web-django-11-模板渲染/" class="article-date">
@@ -116,7 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ck5kt4p1n004b7cjx9nbqblrp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ck5ktrqn4004f8pjxz4vrdf3t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -177,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ck5kt4p1e003w7cjxhcfsdlx8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ck5ktrqmt00408pjxak3tsdd0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -254,7 +329,57 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ck5kt4p2300517cjx2e64gpgx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ck5ktrqns00558pjxgp7fe10x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</span><br></pre></td></tr></table></figure></p>
+<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</span><br><span class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</span><br><span class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</span><br><span class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</span><br><span class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</span><br></pre></td></tr></table></figure></p>
+<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</span><br><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</span><br></pre></td></tr></table></figure></p>
+<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</span><br><span class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ck5ktrqkn001h8pjxzw8yb38x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -315,57 +440,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ck5kt4oz3000x7cjxbr8qfqq7" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
-  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</span><br></pre></td></tr></table></figure></p>
-<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</span><br><span class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
-<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</span><br><span class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
-<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</span><br><span class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</span><br><span class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
-<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</span><br></pre></td></tr></table></figure></p>
-<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</span><br><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</span><br></pre></td></tr></table></figure></p>
-<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</span><br><span class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ck5kt4ozh001f7cjxo7a9zull" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ck5ktrqka000y8pjxjo1wc1yw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -426,7 +501,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ck5kt4p0000217cjx259iybat" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ck5ktrql300238pjx8c67o8a3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -492,7 +567,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ck5kt4oy600017cjxbibt2iww" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ck5ktrqja00018pjx5fxfw4ha" class="article-share-link">Share</a>
       
       
     </footer>
@@ -568,7 +643,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ck5kt4oyy000p7cjxnkul1pf4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ck5ktrqk4000p8pjx1ur9ymv9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -613,58 +688,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ck5kt4p1k00467cjx9gctmbug" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
-  <time datetime="2017-05-15T12:51:41.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/python加密解密加签验签/">python-加密解密加签验签</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="python加密解密，加签验签"><a href="#python加密解密，加签验签" class="headerlink" title="python加密解密，加签验签"></a>python加密解密，加签验签</h2><p>(转)<br>在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步</p>
-<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import base64</span><br><span class="line">from Crypto.PublicKey import RSA</span><br><span class="line">from Crypto.Hash import SHA</span><br><span class="line">from Crypto.Cipher import PKCS1_v1_5</span><br><span class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</span><br><span class="line"></span><br><span class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</span><br><span class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</span><br></pre></td></tr></table></figure>
-<p>加密</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def split_data(l, n):</span><br><span class="line">    for i in range(0, len(l), n):</span><br><span class="line">        yield l[i: i+n]</span><br><span class="line">        </span><br><span class="line">def encrypt(params):</span><br><span class="line">    raw = params.encode(&apos;utf-8&apos;)</span><br><span class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</span><br><span class="line">    ＃ 加密超长字节117个字节一加密</span><br><span class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</span><br><span class="line">    return base64.b64encode(content)</span><br></pre></td></tr></table></figure>
-<p>解密<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def decrypt(data):</span><br><span class="line">    raw = data.encode(&apos;utf-8&apos;)</span><br><span class="line">    decrypt = PKCS1_v1_5.new(PRI_KEY).decrypt</span><br><span class="line">    # 解密超长字符128一解密</span><br><span class="line">    content = b&apos;&apos;.join(decrypt(x, object()) for x in chunks(raw, 128))</span><br><span class="line">    return content.decode()</span><br></pre></td></tr></table></figure></p>
-<p>加签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def signer(data):</span><br><span class="line">    signstr = data.encode(&apos;utf-8&apos;)</span><br><span class="line">    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))</span><br><span class="line">    return base64.b64encode(sign)</span><br></pre></td></tr></table></figure></p>
-<p>验签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def verify_sign(unsign, raw_sign):</span><br><span class="line">    # unsign: 签名</span><br><span class="line">    # raw_sign: 待验证签名</span><br><span class="line">    assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), raw_sign)</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ck5kt4p17003k7cjxqlaf857a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ck5ktrqmy004a8pjx9moa5h79" class="article-share-link">Share</a>
       
       
     </footer>
@@ -730,11 +754,11 @@
           </li>
         
           <li>
-            <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/">kubernetes-dashboard-TLS坑</a>
+            <a href="/2019/12/01/k8s_pod1/">k8s_pod资源清单学习1</a>
           </li>
         
           <li>
-            <a href="/2019/02/10/python-Celery-Flask/">python-celery-Flask</a>
+            <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/">kubernetes-dashboard-TLS坑</a>
           </li>
         
       </ul>
