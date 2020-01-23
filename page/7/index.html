@@ -62,6 +62,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
+  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/20/web-django-03-分页示例/">web-Django-02-分页示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-django-分页功能"><a href="#1-django-分页功能" class="headerlink" title="1 django 分页功能"></a>1 django 分页功能</h3><p>app01/views.py Paginator模块的使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">def users(request):</span><br><span class="line">    from django.core.paginator import  Paginator,EmptyPage,PageNotAnInteger</span><br><span class="line">    user_list = models.UserInfo.objects.all()</span><br><span class="line">    paginator = Paginator(user_list,10)</span><br><span class="line">    # paginator.per_page         每页显示条目数量</span><br><span class="line">    # paginator.count            数据总个数  </span><br><span class="line">    # paginator.num_pages        总页数</span><br><span class="line">    # paginator.page_range       总页数的索引范围，如(1,10),(1,20)</span><br><span class="line">    current_page = request.GET.get(&apos;p&apos;)</span><br><span class="line">    try:</span><br><span class="line">        page_obj=paginator.page(current_page)</span><br><span class="line">    except EmptyPage  as e:</span><br><span class="line">        page_obj = paginator.page(1)</span><br><span class="line">    except PageNotAnInteger as e:</span><br><span class="line">        page_obj = paginator.page(1)</span><br><span class="line">    # page_obj.has_next()                 是否有下一页</span><br><span class="line">    # page_obj.next_page_number()         下一页页码</span><br><span class="line">    # page_obj.has_previous()             是否有上一页</span><br><span class="line">    # page_obj.previous_page_number()     上一页页码</span><br><span class="line">    # page_obj.object_list                分页之后的数据列表</span><br><span class="line">    # page_obj.number                     当前页</span><br><span class="line">    # page_obj.paginator                  paginator对象</span><br><span class="line"></span><br><span class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;page_obj&apos;:page_obj&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>templates/users.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;% if page_obj.has_previous %&#125;</span><br><span class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.previous_page_number &#125;&#125;&quot;&gt;上一页&lt;/a&gt;</span><br><span class="line">&#123;% else %&#125;</span><br><span class="line">    &lt;a href=&quot;#&quot;&gt;上一页&lt;/a&gt;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% for i in page_obj.paginator.page_range %&#125;</span><br><span class="line">     &lt;a href=&quot;/users?p=&#123;&#123; i &#125;&#125;&quot;&gt;&#123;&#123; i &#125;&#125;&lt;/a&gt;</span><br><span class="line">&#123;% endfor %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% if page_obj.has_next %&#125;</span><br><span class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.next_page_number &#125;&#125;&quot;&gt;下一页&lt;/a&gt;</span><br><span class="line">&#123;% else %&#125;</span><br><span class="line">    &lt;a href=&quot;#&quot;&gt;下一页&lt;/a&gt;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&lt;span&gt;</span><br><span class="line">    &lt;a&gt;&#123;&#123;  page_obj.number &#125;&#125;/&#123;&#123; page_obj.paginator.num_pages &#125;&#125;&lt;/a&gt;</span><br><span class="line">&lt;/span&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ck5q8m4m9004d5wjxzay7i2gt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
@@ -100,7 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ck5ktur7i003o9vjx2n160q14" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ck5q8m4ln003r5wjxjptoq61t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -148,7 +193,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ck5ktur5i001c9vjxebzjqzkn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ck5q8m4je001f5wjxw7myli96" class="article-share-link">Share</a>
       
       
     </footer>
@@ -199,7 +244,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ck5ktur5g001a9vjxw5i3ppmt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ck5q8m4jc001c5wjxtq5os214" class="article-share-link">Share</a>
       
       
     </footer>
@@ -261,7 +306,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ck5ktur6700209vjx1fhacjym" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ck5q8m4jw00245wjxgzwcn0k0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -319,7 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ck5ktur7v004c9vjxojf9nxca" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ck5q8m4mb004f5wjxz3ihuu8d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -377,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ck5ktur7s00479vjx9puq6zxy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ck5q8m4m2004a5wjx19svdwoq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -432,7 +477,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ck5ktur8a00519vjx5kgvokf6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ck5q8m4mz00545wjxzv94jjad" class="article-share-link">Share</a>
       
       
     </footer>
@@ -512,7 +557,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ck5ktur7c003f9vjxllnwxkoa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ck5q8m4l9003g5wjx8euwyms1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -572,57 +617,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ck5ktur6y00329vjxl0q0wm2y" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python-08-06-异常" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/25/python-08-06-异常/" class="article-date">
-  <time datetime="2017-03-25T12:39:12.000Z" itemprop="datePublished">2017-03-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/25/python-08-06-异常/">python-08-06-异常</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>1</li>
-<li>2</li>
-<li>3</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class WxqException(Exception):</span><br><span class="line">    def __init__(self, msg):</span><br><span class="line">        self.message = msg</span><br><span class="line">    def __str__(self):</span><br><span class="line">        return self.message</span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line">        raise WxqException(&quot;Game Over!&quot;)</span><br><span class="line">except WxqException as e:</span><br><span class="line">    print(e)</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ck5ktur7100379vjxdlmdxens" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ck5q8m4kz00375wjx8q3dt5ao" class="article-share-link">Share</a>
       
       
     </footer>
@@ -676,6 +671,10 @@
       <ul>
         
           <li>
+            <a href="/2020/01/20/ingress-nginx/">ingress-nginx</a>
+          </li>
+        
+          <li>
             <a href="/2020/01/01/openvswit_vlan流表/">openvswit_vlan流表</a>
           </li>
         
@@ -689,10 +688,6 @@
         
           <li>
             <a href="/2019/12/01/k8s_pod1/">k8s_pod资源清单学习1</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/">kubernetes-dashboard-TLS坑</a>
           </li>
         
       </ul>

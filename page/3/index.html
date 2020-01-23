@@ -62,6 +62,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-08-07-抽象类抽象方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/15/python-08-07-抽象类抽象方法/" class="article-date">
+  <time datetime="2018-06-15T12:39:12.000Z" itemprop="datePublished">2018-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/15/python-08-07-抽象类抽象方法/">python-08-07-抽象类抽象方法.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>当多个类都有同样的方法，此时可以把相同的方法提练出来放在父类，但对继承父类的子类作约束就要用到接口了。</p>
+<p>下面来段伪代码，在其它语言中普遍使用的语法，不适于python,这里主要学习其思想<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">interface IFoo():  # 这个叫IFoo接口，约束实现该接口的类必须实现定义的方法</span><br><span class="line">    def exec(self):pass</span><br><span class="line"></span><br><span class="line">class A(IFoo):  # 这个叫实现了IFoo接口，接口中的方法必须在当前类实现</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &quot;A.exec&quot;</span><br><span class="line"></span><br><span class="line">class B(IFoo):</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &apos;B.exec&apos;</span><br><span class="line"></span><br><span class="line">def f1(arg):</span><br><span class="line">    arg.exec()</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line">print(f1.obj)</span><br></pre></td></tr></table></figure></p>
+<p>上面就是接口的概念或者用法，下面是用抽象类、抽象方法实现同样功能的原理伪代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">AbstractClass Foo():  抽象类，抽象方法(有继承的特性，也有约束的特性)</span><br><span class="line">    def abstractmethod():pass</span><br><span class="line"></span><br><span class="line">class A(Foo):</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &apos;A.exec&apos;</span><br><span class="line"></span><br><span class="line">    def f1(self):</span><br><span class="line">        return &quot;A.f1&quot;</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line">obj.exec()</span><br></pre></td></tr></table></figure></p>
+<p>那么如何用代码实现python抽象类、抽象方法呢？</p>
+<p>要用到<code>from abc import abstractmethod,ABCMeta</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from abc import abstractmethod,ABCMeta</span><br><span class="line"></span><br><span class="line">class IFoo(metaclass=ABCMeta):</span><br><span class="line">    @abstractmethod</span><br><span class="line">    def exec(self):pass</span><br><span class="line"></span><br><span class="line">    def f1(self):</span><br><span class="line">        return &quot;cloud implement really method&quot;</span><br><span class="line"></span><br><span class="line">class A(IFoo):  # 当前类继承了抽象类，当前类必须实现抽象类中的所有抽象方法，其它方法可以不用定义且可以直接继承使用。</span><br><span class="line">    def exec(self):</span><br><span class="line">        return &quot;really method&quot;</span><br><span class="line"></span><br><span class="line">obj = A()</span><br><span class="line"></span><br><span class="line">print(obj.exec())</span><br><span class="line">print(obj.f1())</span><br></pre></td></tr></table></figure></p>
+<p>好了， 这个接口或抽象类、抽象方法的学习完结。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ck5q8m4l7003e5wjxc738plvw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-java-install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/15/linux-java-install/" class="article-date">
@@ -96,7 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="ck5ktur5q001k9vjxiytcvt45" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="ck5q8m4jk001o5wjx7litp4c5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -144,7 +193,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ck5ktur4q000d9vjxujayuh1a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ck5q8m4in000d5wjxs6ls1n4p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +239,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ck5ktur7j003q9vjxrf5jkx0u" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ck5q8m4lp003t5wjxgxfcohnj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -234,7 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="ck5ktur7k003s9vjx6h1cs23d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="ck5q8m4ls003v5wjxnruv1ra8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -301,7 +350,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="ck5ktur7e003j9vjx3btlcghe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="ck5q8m4lf003m5wjxcgiy88cl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -344,7 +393,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="ck5ktur7q00429vjx8twk1vhc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="ck5q8m4ly00455wjx7ft2p9hc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -420,7 +469,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="ck5ktur87004z9vjxupzumkds" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="ck5q8m4mx00525wjxtevv5it0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -483,7 +532,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="ck5ktur86004x9vjxn5du8eq3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="ck5q8m4mv00505wjx8phsytzu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -552,115 +601,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="ck5ktur7z004j9vjxtj7orlmg" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-get_post_contentype知识" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/15/web-get_post_contentype知识/" class="article-date">
-  <time datetime="2017-12-15T12:51:41.000Z" itemprop="datePublished">2017-12-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web爬虫开发/">Web爬虫开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/15/web-get_post_contentype知识/">03-GET/POST/ContentType知识</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>前言</li>
-<li>ContentType知识</li>
-<li>requests发送get/post请求分析</li>
-<li>requests发送get/post请求示例</li>
-<li>表格总结</li>
-</ul>
-<h2 id="一、ContentType知识"><a href="#一、ContentType知识" class="headerlink" title="一、ContentType知识"></a>一、ContentType知识</h2><p>contentType 定义： 客户端告知服务器如何组装数据来发送，服务器那边就必须以相应编码解开。</p>
-<p>contentType一般为 application/x-www–form-urlencode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">如form就默认enctype=&quot;application/x-www-form-urlencoded&quot;</span><br><span class="line">形如b&apos;user=wxq&amp;pwd=123&apos; 组装数据。</span><br></pre></td></tr></table></figure></p>
-<p>Django帮我们默认以enctype=”application/x-www-form-urlencoded”解开后放在<br>request.GET或 request.POST里方便我们取数据。如果是application/json 格式，<br>双引号字符串 {“user”:”wxq”,”pwd”:123}，需自行解数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">form文件传送时必须指明enctype=&quot;multipart/form-data&quot;</span><br></pre></td></tr></table></figure>
-<p>如果是<code>application/json</code>,就要用相应格式解开后组装数据。<br>application/json  双引号字符串 {“user”:”wxq”,”pwd”:123}</p>
-<p>request.body   报文元数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">application/json </span><br><span class="line">data: JSON.stringfy(&#123;d&#125;)    # 前端以json 格式发数据</span><br><span class="line">s=request.body.decode(&quot;utf8&quot;)</span><br><span class="line">d=json.loads(s)             # 后端以json格式解数据</span><br><span class="line">d[&apos;name&apos;]</span><br></pre></td></tr></table></figure></p>
-<p>当ajax处理数据时，后端数据以json格式传过来的，那么前端需手动JSON.parse()<br>反序列化操作， 我们可以添加参数datatype: “JSON” ，添加后就自动反序列化了。</p>
-<h2 id="二、-requests发送get-post请求分析"><a href="#二、-requests发送get-post请求分析" class="headerlink" title="二、 requests发送get/post请求分析"></a>二、 requests发送get/post请求分析</h2><p>分析知识点</p>
-<ul>
-<li>分析如何组装数据发送</li>
-<li>分析get/post请求组装数据方式的不同</li>
-<li>分析get/post方式不同，requests参数写法上的不同</li>
-</ul>
-<p>大家都知道请求头之间用<code>\r\n</code>分隔，请求头与请求体用<code>\r\n\r\n</code>分隔。</p>
-<h4 id="GET请求头"><a href="#GET请求头" class="headerlink" title="GET请求头"></a>GET请求头</h4><p>get请求发送数据封装在请求头，形如<a href="http://www.baidu.com/?a=1&amp;b=2" target="_blank" rel="noopener">http://www.baidu.com/?a=1&amp;b=2</a></p>
-<p>get请求发送数据用<code>params</code>,params中的数据会组装在请求头上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">requests.get(url=&quot;http://www.baidu.com/&quot;,params=&#123;&apos;a&apos;:1,&apos;b&apos;:2&#125;)</span><br><span class="line">data=&quot;http GET /index?a=1&amp;b=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\n&quot;</span><br></pre></td></tr></table></figure></p>
-<h4 id="POST请求头"><a href="#POST请求头" class="headerlink" title="POST请求头"></a>POST请求头</h4><p>post请求发送数据可以像get一样<code>?a=1&amp;b=2</code>封装在请求头，但决大多数情况封装在请求体，形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data=&quot;http POST /index?a=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\nname=wxq&amp;age=18&quot;</span><br></pre></td></tr></table></figure></p>
-<p>post时可以data传参，数据在请求体里，封装为<code>name=wxq&amp;age=18</code>,请求头<br>ContentType为application/x-www-form-urlencoded<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">requests.post(url=&quot;http://www.baidu.com/&quot;,params=&#123;&apos;a&apos;:1&#125;,data=&#123;&apos;name&apos;:&apos;wxq&apos;,&apos;age&apos;:18&#125;)</span><br><span class="line"># data=&quot;http POST /index?a=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\nname=wxq&amp;age=18&quot;</span><br></pre></td></tr></table></figure></p>
-<p>post时也可以json传参,数据在请求体里，封装为json.dumps({‘name’:’wxq’,’age’:18})后的字符串。请求头ContentType为application/json<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">requests.post(url=&quot;http://www.baidu.com/&quot;,params=&#123;&apos;a&apos;:1&#125;,json=&#123;&apos;name&apos;:&apos;wxq&apos;,&apos;age&apos;:18&#125;)</span><br><span class="line"># data=&quot;http POST /index?a=1 http1.1\r\nhost:baidu.com\r\n....\r\n\r\n&#123;&quot;name&quot;: &quot;wxq&quot;, &quot;age&quot;: 18&#125;&quot;</span><br></pre></td></tr></table></figure></p>
-<h4 id="服务器解析"><a href="#服务器解析" class="headerlink" title="服务器解析"></a>服务器解析</h4><p>当服务器接收到客户端发来的数据，所有的数据会放到<code>request.FILES</code>或<code>request.body</code>里，再跟据ContentType的不同放到相应变量里,<br>如request.POST里是<code>Content-Type:application/x-www-form-urlencoded; charset=UTF-8</code>,也就是data而非json格式发来的数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">request.method     # 请求方法</span><br><span class="line">request.GET        # 请求方法为GET的数据</span><br><span class="line">request.POST       # 请求方法为POST的数据</span><br><span class="line">    注：      如何获取request.post数据的呢，如果有请求头</span><br><span class="line">             （Content-Type:application/x-www-form-urlencoded; charset=UTF-8），</span><br><span class="line">              则从request.body里取出post数据</span><br><span class="line">request.body       #   请求时发送的所有数据</span><br><span class="line">request.FILES      #   请求时发送的文件数据</span><br></pre></td></tr></table></figure>
-<h2 id="三、requests发送get-post请求示例"><a href="#三、requests发送get-post请求示例" class="headerlink" title="三、requests发送get/post请求示例"></a>三、requests发送get/post请求示例</h2><h4 id="data传参"><a href="#data传参" class="headerlink" title="data传参"></a>data传参</h4><p>可以是字典<br>可以是字符串<br>可以是字节<br>可以是文件对象<br>1 requests.request(method=”post”,data=字典)<br>默认加<code>headers={&#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requests.post(url=&quot;xxx&quot;,data=&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;:123&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>2 requests.request(method=”post”,data=字符串)<br>默认加<code>headers={&#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">requests.post(url=&quot;xxx&quot;,data=&quot;name=wxq&amp;pwd=123&quot;) # 或</span><br><span class="line">requests.post(url=&quot;xxx&quot;,data=&quot;name=wxq;pwd=123&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>基于HTTP本质，上面2种数据最终转为请求体\r\n\r\n<code>name=wxq&amp;pwd=123</code></p>
-<p>3   手动构建json字符串发送<br>手动加<code>headers={&#39;Content-Type&#39;: &#39;application/json&#39;}</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">requests.post(</span><br><span class="line">	url=&quot;xxx&quot;,</span><br><span class="line">	data=json.dumps(&#123;&quot;name&quot;:&quot;wxq&quot;,&quot;pwd&quot;:123&#125;),</span><br><span class="line">	headers=&#123;&apos;Content-Type&apos;: &apos;application/json&apos;&#125;)</span><br></pre></td></tr></table></figure></p>
-<h4 id="json传参"><a href="#json传参" class="headerlink" title="json传参"></a>json传参</h4><p>requests.request(method=”post”,json=…)<br>1) 将json中对应的数据进行序列化成一个字符串，json.dumps(…)<br>2) 然后发送到服务器端的body中<br>3) 并且自动Content-Type是 {‘Content-Type’: ‘application/json’}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def param_json():</span><br><span class="line">    requests.request(method=&apos;POST&apos;,</span><br><span class="line">    		     url=&apos;http://127.0.0.1:8000/test/&apos;,</span><br><span class="line">                     json=&#123;&apos;k1&apos;: &apos;v1&apos;, &apos;k2&apos;: &apos;水电费&apos;&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>json方式传输数据的一种场景<br>Content type: application/x-www-form-urlencode不支持传键所对应的值为字典的字典.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">request.post(url=url,data=&#123;&apos;name&apos;:&#123;&#125; &#125; )     # 不支持</span><br></pre></td></tr></table></figure></p>
-<p>传键所对应的值为字典的字典,这种情况只能以json方式传送数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">request.post(url=url,json=&#123;&apos;name&apos;:&#123;&#125; &#125; ) # 支持</span><br><span class="line">Content type: application/json</span><br></pre></td></tr></table></figure></p>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><table>
-<thead>
-<tr>
-<th>methond</th>
-<th>传参</th>
-<th>解析为</th>
-<th>浏览器显示标识名</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>GET</td>
-<td>params</td>
-<td>?page=1&amp;k1=v1</td>
-<td>Query String Parameter</td>
-</tr>
-<tr>
-<td>POST</td>
-<td>data</td>
-<td>\r\n\r\nname=wxq&amp;pwd=123</td>
-<td>Form Data</td>
-</tr>
-<tr>
-<td>POST</td>
-<td>json</td>
-<td>\r\n\r\n{“name”:”wxq”,”age”:18}”</td>
-<td>Request Payload</td>
-</tr>
-</tbody>
-</table>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="ck5ktur8h00579vjxewpjg8hb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="ck5q8m4mi004m5wjxptif7v3w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -714,6 +655,10 @@ print(v1.site.name)
       <ul>
         
           <li>
+            <a href="/2020/01/20/ingress-nginx/">ingress-nginx</a>
+          </li>
+        
+          <li>
             <a href="/2020/01/01/openvswit_vlan流表/">openvswit_vlan流表</a>
           </li>
         
@@ -727,10 +672,6 @@ print(v1.site.name)
         
           <li>
             <a href="/2019/12/01/k8s_pod1/">k8s_pod资源清单学习1</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/">kubernetes-dashboard-TLS坑</a>
           </li>
         
       </ul>
