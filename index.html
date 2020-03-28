@@ -62,6 +62,66 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-proxy_ARP" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/07/linux-proxy_ARP/" class="article-date">
+  <time datetime="2020-03-07T01:42:54.000Z" itemprop="datePublished">2020-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/07/linux-proxy_ARP/">arp之calico本质</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="arp之calico本质"><a href="#arp之calico本质" class="headerlink" title="arp之calico本质"></a>arp之calico本质</h2><p>参考<a href="https://cloud.tencent.com/developer/article/1495301" target="_blank" rel="noopener">戳穿 Calico 的谎言</a></p>
+<p>什么是代理ARP？<br>当 ARP 请求目标跨网段时，网关设备收到此ARP请求会用自己的MAC地址返回给请求者，这就是代理ARP .</p>
+<p>知识点： </p>
+<ul>
+<li>跨网段通信时会发广播得到网关MAC</li>
+<li>之后发出的网络数据包目标MAC是网关的MAC</li>
+<li>网关的IP地址不会出现在任何网络包头中</li>
+<li>因此，没有人在乎网关地址是否真的存在，只要设备能响应ARP就行了</li>
+</ul>
+<p>我这里用了2台linux主机实验，主机A：192.168.1.109 主机B:192.168.1.110<br>主机A：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip  link add veth0 type veth peer name veth0_p</span><br><span class="line">ip netns add ns0</span><br><span class="line">ip link set veth0_p netns ns0</span><br><span class="line">ip netns exec ns0  ip link set veth0_p name eth0</span><br><span class="line">ip netns exec ns0  ip a add 10.10.10.10/24 dev eth0</span><br><span class="line">ip netns exec ns0 ip link set eth0 up</span><br><span class="line">ip netns exec ns0 ip route add 169.254.1.1 dev eth0</span><br><span class="line">ip netns exec ns0 ip route add default via 169.254.1.1 dev eth0</span><br><span class="line">[root@testarp-A ~]#ip netns exec ns0 route -n    # 命名空间里的路由</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         169.254.1.1     0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">169.254.1.1     0.0.0.0         255.255.255.255 UH    0      0        0 eth0</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ip route add 10.10.10.10 dev veth0</span><br><span class="line">ip route add   10.10.10.20 via 192.168.1.110  dev eth0</span><br></pre></td></tr></table></figure></p>
+<p>主机B:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip  link add veth0 type veth peer name veth0_p</span><br><span class="line">ip netns add ns0</span><br><span class="line">ip link set veth0_p netns ns0</span><br><span class="line">ip netns exec ns0  ip link set veth0_p name eth0</span><br><span class="line">ip netns exec ns0  ip a add 10.10.10.20/24 dev eth0</span><br><span class="line">ip netns exec ns0 ip link set eth0 up</span><br><span class="line">ip netns exec ns0 ip route add 169.254.1.1 dev eth0</span><br><span class="line">ip netns exec ns0 ip route add default via 169.254.1.1 dev eth0</span><br><span class="line">[root@testarp-B ~]# ip netns exec ns0 route -n  </span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         169.254.1.1     0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">169.254.1.1     0.0.0.0         255.255.255.255 UH    0      0        0 eth0</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ip route add 10.10.10.20 dev veth0</span><br><span class="line">ip route add   10.10.10.10 via 192.168.1.109  dev eth0</span><br></pre></td></tr></table></figure></p>
+<p>Linux主机打开路由转发<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure></p>
+<p>网卡开启代理ARP功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/net/ipv4/conf/veth0/proxy_arp</span><br></pre></td></tr></table></figure></p>
+<p>主机A上网络通信测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@testarp-A ~]# ip netns exec ns0 ping 10.10.10.20</span><br><span class="line">PING 10.10.10.20 (10.10.10.20) 56(84) bytes of data.</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=1 ttl=62 time=0.951 ms</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=2 ttl=62 time=0.484 ms</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=3 ttl=62 time=0.556 ms</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@testarp-A ~]# tcpdump  -nni veth0</span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv for full protocol decode</span><br><span class="line">listening on veth0, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line">08:18:15.999200 IP 10.10.10.10 &gt; 10.10.10.20: ICMP echo request, id 1486, seq 1, length 64</span><br><span class="line">08:18:16.000288 IP 10.10.10.20 &gt; 10.10.10.10: ICMP echo reply, id 1486, seq 1, length 64</span><br><span class="line">08:18:21.008712 ARP, Request who-has 10.10.10.20 tell 10.10.10.10, length 28</span><br><span class="line">08:18:21.008757 ARP, Reply 10.10.10.20 is-at ee:46:7c:2e:d9:ba, length 28</span><br></pre></td></tr></table></figure>
+<p>注意： 这里veth0充当路由角色代理ARP,  who is 10.10.10.20 ,返回自己MAC<code>ee:46:7c:2e:d9:ba</code>来响应.</p>
+<p>转发过程分析：<br>1 广播寻找目标IP对应MAC是谁？<br>2 根据路由规则所有数据包都会转发到169.254.1.1，寻找169.254.1.1MAC是谁？<br>2 vet0开启代理ARP进行ARP拦截，返回自己MAC<code>ee:46:7c:2e:d9:ba</code>给以响应<br>3 封包目标IP为10.10.10.20，MAC为<code>ee:46:7c:2e:d9:ba</code>,发出这样的数据包<br>4 主机A查询本地路由，匹配<code>10.10.10.20 via 192.168.1.110 dev eth0</code> 会把包发送给<code>192.168.1.110</code><br>5 主机B收到<code>10.10.10.20</code>的包时，匹配本地路由<code>10.10.10.20 dev veth0 scope link</code>,数据包发送到veth0上<br>6  完成通信，回程类似</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2020/03/07/linux-proxy_ARP/" data-id="ck8bu48lp001w3pjx2tjh1zpn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-pacemaker-corosync" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/15/linux-pacemaker-corosync/" class="article-date">
@@ -148,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ck8bu1tg4001o1ojxfvqif4lf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ck8bu48lo001v3pjxuq2x3izu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -196,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ck8bu1tft00141ojxusaxrtup" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ck8bu48l300133pjxbek78mcl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -247,7 +307,61 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ck8bu1tgi002c1ojx1ksu3nzm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ck8bu48m6002g3pjxcojxlkpm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-disk" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/15/linux-disk/" class="article-date">
+  <time datetime="2019-12-15T01:42:54.000Z" itemprop="datePublished">2019-12-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/15/linux-disk/">linux disk</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Ubuntu系统分区信息查看：<code>fdisk /dev/vda</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x630fdccb</span><br><span class="line"></span><br><span class="line">Device     Boot   Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/vda1  *       2048   1953791   1951744  953M 83 Linux</span><br><span class="line">/dev/vda2       1953792 125829119 123875328 59.1G 83 Linux</span><br></pre></td></tr></table></figure></p>
+<p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
+<p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
+<p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
+<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位是扇区，bs=512代表一个扇区，也就是512bytes</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
+<p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
+<p>总结：</p>
+<ul>
+<li>一个扇区512bytes , 1Block=1KB=2扇区</li>
+<li>dd参数的skip针对if设备，seek针对of设备（跳过多少扇区再处理）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ck8bu48lf001h3pjxts1bys3i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -308,121 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ck8bu1tg6001s1ojxnjtk6dxk" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-disk" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/12/15/linux-disk/" class="article-date">
-  <time datetime="2019-12-15T01:42:54.000Z" itemprop="datePublished">2019-12-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/15/linux-disk/">linux disk</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Ubuntu系统分区信息查看：<code>fdisk /dev/vda</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x630fdccb</span><br><span class="line"></span><br><span class="line">Device     Boot   Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/vda1  *       2048   1953791   1951744  953M 83 Linux</span><br><span class="line">/dev/vda2       1953792 125829119 123875328 59.1G 83 Linux</span><br></pre></td></tr></table></figure></p>
-<p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
-<p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
-<p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
-<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位是扇区，bs=512代表一个扇区，也就是512bytes</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
-<p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
-<p>总结：</p>
-<ul>
-<li>一个扇区512bytes , 1Block=1KB=2扇区</li>
-<li>dd参数的skip针对if设备，seek针对of设备（跳过多少扇区再处理）</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ck8bu1tfz001g1ojx9k5ytq73" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-proxy_ARP" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/12/15/linux-proxy_ARP/" class="article-date">
-  <time datetime="2019-12-15T01:42:54.000Z" itemprop="datePublished">2019-12-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/15/linux-proxy_ARP/">代理ARP学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="代理ARP学习"><a href="#代理ARP学习" class="headerlink" title="代理ARP学习"></a>代理ARP学习</h2><p>参考<a href="https://cloud.tencent.com/developer/article/1495301" target="_blank" rel="noopener">戳穿 Calico 的谎言</a></p>
-<p>什么是代理ARP？<br>当 ARP 请求目标跨网段时，网关设备收到此ARP请求会用自己的MAC地址返回给请求者，这就是代理ARP .</p>
-<p>知识点： </p>
-<ul>
-<li>跨网段通信时会发广播得到网关MAC</li>
-<li>之后发出的网络数据包目标MAC是网关的MAC</li>
-<li>网关的IP地址不会出现在任何网络包头中</li>
-<li>因此，没有人在乎网关地址是否真的存在，只要设备能响应ARP就行了</li>
-</ul>
-<p>我这里用了2台linux主机实验，主机A：192.168.1.109 主机B:192.168.1.110<br>主机A：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip  link add veth0 type veth peer name veth0_p</span><br><span class="line">ip netns add ns0</span><br><span class="line">ip link set veth0_p netns ns0</span><br><span class="line">ip netns exec ns0  ip link set veth0_p name eth0</span><br><span class="line">ip netns exec ns0  ip a add 10.10.10.10/24 dev eth0</span><br><span class="line">ip netns exec ns0 ip link set eth0 up</span><br><span class="line">ip netns exec ns0 ip route add 169.254.1.1 dev eth0</span><br><span class="line">ip netns exec ns0 ip route add default via 169.254.1.1 dev eth0</span><br><span class="line">[root@testarp-A ~]#ip netns exec ns0 route -n    # 命名空间里的路由</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         169.254.1.1     0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">169.254.1.1     0.0.0.0         255.255.255.255 UH    0      0        0 eth0</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ip route add 10.10.10.10 dev veth0</span><br><span class="line">ip route add   10.10.10.20 via 192.168.1.110  dev eth0</span><br></pre></td></tr></table></figure></p>
-<p>主机B:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip  link add veth0 type veth peer name veth0_p</span><br><span class="line">ip netns add ns0</span><br><span class="line">ip link set veth0_p netns ns0</span><br><span class="line">ip netns exec ns0  ip link set veth0_p name eth0</span><br><span class="line">ip netns exec ns0  ip a add 10.10.10.20/24 dev eth0</span><br><span class="line">ip netns exec ns0 ip link set eth0 up</span><br><span class="line">ip netns exec ns0 ip route add 169.254.1.1 dev eth0</span><br><span class="line">ip netns exec ns0 ip route add default via 169.254.1.1 dev eth0</span><br><span class="line">[root@testarp-B ~]# ip netns exec ns0 route -n  </span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         169.254.1.1     0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">169.254.1.1     0.0.0.0         255.255.255.255 UH    0      0        0 eth0</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ip route add 10.10.10.20 dev veth0</span><br><span class="line">ip route add   10.10.10.10 via 192.168.1.109  dev eth0</span><br></pre></td></tr></table></figure></p>
-<p>Linux主机打开路由转发<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure></p>
-<p>网卡开启代理ARP功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/net/ipv4/conf/veth0/proxy_arp</span><br></pre></td></tr></table></figure></p>
-<p>主机A上网络通信测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@testarp-A ~]# ip netns exec ns0 ping 10.10.10.20</span><br><span class="line">PING 10.10.10.20 (10.10.10.20) 56(84) bytes of data.</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=1 ttl=62 time=0.951 ms</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=2 ttl=62 time=0.484 ms</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=3 ttl=62 time=0.556 ms</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@testarp-A ~]# tcpdump  -nni veth0</span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv for full protocol decode</span><br><span class="line">listening on veth0, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line">08:18:15.999200 IP 10.10.10.10 &gt; 10.10.10.20: ICMP echo request, id 1486, seq 1, length 64</span><br><span class="line">08:18:16.000288 IP 10.10.10.20 &gt; 10.10.10.10: ICMP echo reply, id 1486, seq 1, length 64</span><br><span class="line">08:18:21.008712 ARP, Request who-has 10.10.10.20 tell 10.10.10.10, length 28</span><br><span class="line">08:18:21.008757 ARP, Reply 10.10.10.20 is-at ee:46:7c:2e:d9:ba, length 28</span><br></pre></td></tr></table></figure>
-<p>注意： 这里veth0充当路由角色代理ARP,  who is 10.10.10.20 ,返回自己MAC<code>ee:46:7c:2e:d9:ba</code>来响应.</p>
-<p>转发过程分析：<br>1 广播寻找目标IP对应MAC是谁？<br>2 根据路由规则所有数据包都会转发到169.254.1.1，寻找169.254.1.1MAC是谁？<br>2 vet0开启代理ARP进行ARP拦截，返回自己MAC<code>ee:46:7c:2e:d9:ba</code>给以响应<br>3 封包目标IP为10.10.10.20，MAC为<code>ee:46:7c:2e:d9:ba</code>,发出这样的数据包<br>4 主机A查询本地路由，匹配<code>10.10.10.20 via 192.168.1.110 dev eth0</code> 会把包发送给<code>192.168.1.110</code><br>5 主机B收到<code>10.10.10.20</code>的包时，匹配本地路由<code>10.10.10.20 dev veth0 scope link</code>,数据包发送到veth0上<br>6  完成通信，回程类似</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-proxy_ARP/" data-id="ck8bu1tg5001q1ojx6y282fp2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ck8bu48ll001s3pjx8bt36ad3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -470,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ck8bu1tfu00171ojxa0zrurax" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ck8bu48l500163pjxh61w00iv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -518,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ck8bu1tet00011ojxj2qsroe9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ck8bu48k500033pjxilf9lo22" class="article-share-link">Share</a>
       
       
     </footer>
@@ -584,7 +584,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ck8bu1thj003g1ojxe6tgq0sz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ck8bu48nl003y3pjx003ajd2h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -637,7 +637,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ck8bu1tfh000i1ojxmnvcqa4z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ck8bu48kn000g3pjxktyzo5vl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -678,7 +678,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -691,6 +691,10 @@
       <ul>
         
           <li>
+            <a href="/2020/03/07/linux-proxy_ARP/">arp之calico本质</a>
+          </li>
+        
+          <li>
             <a href="/2020/02/15/linux-pacemaker-corosync/">代理ARP学习</a>
           </li>
         
@@ -700,10 +704,6 @@
         
           <li>
             <a href="/2020/01/01/openvswit_vlan流表/">openvswit_vlan流表</a>
-          </li>
-        
-          <li>
-            <a href="/2019/12/15/linux-nmap详解/">nmap工具详解</a>
           </li>
         
           <li>
