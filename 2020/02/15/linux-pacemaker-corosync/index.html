@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>代理ARP学习 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第一章 前言1.1 适用范围本文档用于内部测试和交流学习，未经测试不得用于生产环境. 第二章 相关概念2.1 总体架构 Message Layer: 处在最底层的是消息层，用于传递集群心跳信息和集群事务信息.  API层:  所有软件要实现HA架构，开发应用软件时就必须调用API层实现资源管理和下层消息传递的交互，似乎所有软件没有调用这个API啊，是因为把这个步骤做成了通用架构，即CRM  Clu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代理ARP学习">
+<meta property="og:url" content="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="第一章 前言1.1 适用范围本文档用于内部测试和交流学习，未经测试不得用于生产环境. 第二章 相关概念2.1 总体架构 Message Layer: 处在最底层的是消息层，用于传递集群心跳信息和集群事务信息.  API层:  所有软件要实现HA架构，开发应用软件时就必须调用API层实现资源管理和下层消息传递的交互，似乎所有软件没有调用这个API啊，是因为把这个步骤做成了通用架构，即CRM  Clu">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-28T16:32:05.344Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="代理ARP学习">
+<meta name="twitter:description" content="第一章 前言1.1 适用范围本文档用于内部测试和交流学习，未经测试不得用于生产环境. 第二章 相关概念2.1 总体架构 Message Layer: 处在最底层的是消息层，用于传递集群心跳信息和集群事务信息.  API层:  所有软件要实现HA架构，开发应用软件时就必须调用API层实现资源管理和下层消息传递的交互，似乎所有软件没有调用这个API啊，是因为把这个步骤做成了通用架构，即CRM  Clu">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-linux-pacemaker-corosync" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/15/linux-pacemaker-corosync/" class="article-date">
+  <time datetime="2020-02-15T01:42:54.000Z" itemprop="datePublished">2020-02-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      代理ARP学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="第一章-前言"><a href="#第一章-前言" class="headerlink" title="第一章 前言"></a>第一章 前言</h3><p>1.1 适用范围<br>本文档用于内部测试和交流学习，未经测试不得用于生产环境.</p>
+<h3 id="第二章-相关概念"><a href="#第二章-相关概念" class="headerlink" title="第二章 相关概念"></a>第二章 相关概念</h3><h4 id="2-1-总体架构"><a href="#2-1-总体架构" class="headerlink" title="2.1 总体架构"></a>2.1 总体架构</h4><ul>
+<li><p>Message Layer: 处在最底层的是消息层，用于传递集群心跳信息和集群事务信息.</p>
+</li>
+<li><p>API层:  所有软件要实现HA架构，开发应用软件时就必须调用API层实现资源管理和下层消息传递的交互，似乎所有软件没有调用这个API啊，是因为把这个步骤做成了通用架构，即CRM</p>
+</li>
+<li><p>Cluster Resource Manger: CRM 集群资源管理，实现资源调度完成高可用.</p>
+</li>
+<li><p>Local Resource Manger: LRM本地资源管理，CRM调用LRM完成本机或本地资源管理</p>
+</li>
+<li><p>Resource Agent: RA资源代理，其实就是管理服务的脚本，LRM调用RA完成资源管理(启动、停止、监视、迁移).</p>
+</li>
+</ul>
+<p>详细来说：</p>
+<p>Messaging and Infrastructure Layer<br>The primary or first layer is the messaging/infrastructure layer, also known as the Corosync layer. This layer contains components that send out the messages containing I am alive signals, as well as other information.</p>
+<p>Resource Allocation Layer<br>The next layer is the resource allocation layer. This layer is the most complex, and consists of the following components</p>
+<p>Cluster Resource Manager (CRM)<br>Every action taken in the resource allocation layer passes through the Cluster Resource Manager. If other components of the resource allocation layer (or components which are in a higher layer) need to communicate, they do so through the local CRM. On every node, the CRM maintains the Cluster Information Base (CIB).</p>
+<p>Cluster Information Base (CIB)<br>The Cluster Information Base is an in-memory XML representation of the entire cluster configuration and current status. It contains definitions of all cluster options, nodes, resources, constraints and the relationship to each other. The CIB also synchronizes updates to all cluster nodes. There is one master CIB in the cluster, maintained by the Designated Coordinator (DC). All other nodes contain a CIB replica</p>
+<p>Designated Coordinator (DC)<br>One CRM in the cluster is elected as DC. The DC is the only entity in the cluster that can decide that a cluster-wide change needs to be performed, such as fencing a node or moving resources around. The DC is also the node where the master copy of the CIB is kept. All other nodes get their configuration and resource allocation information from the current DC. The DC is elected from all nodes in the cluster after a membership change</p>
+<p>Policy Engine (PE)<br>Whenever the Designated Coordinator needs to make a cluster-wide change (react to a new CIB), the Policy Engine calculates the next state of the cluster based on the current state and configuration. The PE also produces a transition graph containing a list of (resource) actions and dependencies to achieve the next cluster state. The PE always runs on the DC</p>
+<p>Local Resource Manager (LRM)<br>The LRM calls the local Resource Agents (see Resource Layer) on behalf of the CRM. It can thus perform start / stop / monitor operations and report the result to the CRM. The LRM is the authoritative source for all resource-related information on its local node.</p>
+<p>Resource Layer<br>The highest layer is the Resource Layer. The Resource Layer includes one or more Resource Agents (RA). Resource Agents are programs (usually shell scripts) that have been written to start, stop, and monitor a certain kind of service (a resource). Resource Agents are called only by the LRM. Third parties can include their own agents in a defined location in the file system and thus provide out-of-the-box cluster integration for their own software.</p>
+<p>Process Flow<br>SUSE Linux Enterprise High Availability Extension uses Pacemaker as CRM. The CRM is implemented as daemon (crmd) that has an instance on each cluster node. Pacemaker centralizes all cluster decision-making by electing one of the crmd instances to act as a master. Should the elected crmd process (or the node it is on) fail, a new one is established.<br>A CIB, reflecting the cluster’s configuration and current state of all resources in the cluster is kept on each node. The contents of the CIB are automatically kept synchronous across the entire cluster.<br>Many actions performed in the cluster will cause a cluster-wide change. These actions can include things like adding or removing a cluster resource or changing resource constraints. It is important to understand what happens in the cluster when you perform such an action.<br>For example, suppose you want to add a cluster IP address resource. To do this, you can use one of the command line tools or the Web interface to modify the CIB. It is not required to perform the actions on the DC, you can use either tool on any node in the cluster and they will be relayed to the DC. The DC will then replicate the CIB change to all cluster nodes.<br>Based on the information in the CIB, the PE then computes the ideal state of the cluster and how it should be achieved and feeds a list of instructions to the DC. The DC sends commands via the messaging/infrastructure layer which are received by the crmd peers on other nodes. Each crmd uses its LRM (implemented as lrmd) to perform resource modifications. The lrmd is not cluster-aware and interacts directly with resource agents (scripts).<br>All peer nodes report the results of their operations back to the DC. After the DC concludes that all necessary operations are successfully performed in the cluster, the cluster will go back to the idle state and wait for further events. If any operation was not carried out as planned, the PE is invoked again with the new information recorded in the CIB.<br>In some cases, it may be necessary to power off nodes to protect shared data or complete resource recovery. For this Pacemaker comes with a fencing subsystem, stonithd. STONITH is an acronym for Shoot The Other Node In The Head. It is usually implemented with a STONITH shared block device, remote management boards, or remote power switches. In Pacemaker, STONITH devices are modeled as resources (and configured in the CIB) to enable them to be easily used. However, stonithd takes care of understanding the STONITH topology such that its clients request a node be fenced and it does the rest.<br>什么意思？</p>
+<p>就是说corosync工作在消息层，用于心跳消息传递和集群事务信息传递.向上供集群资源管理CRM调用，再上层是本地资源管理调用Resource Agent完成资源管理。</p>
+<p>在一个集群中只有一个节点为指定协调员(DC: Designated Coordinator), 用于收集整个集群信息供Policy Engine做出事务决策，哪个资源该关闭，哪个资源该迁移，发生脑裂时哪个节点该自裁suicite或shoot the head爆头.</p>
+<p>CIB: Cluster information Base为集群信息库，保存整个集群信息，由主节点统一下发CIB集群息，配置时commit也是一个下发同步过程，副节点只保存CIB副本</p>
+<p>Heartbeat信息传递：<br>Unicast单播 –&gt;基于udpu<br>Multicast多播  –&gt;基于udp<br>Broadcase广播</p>
+<h4 id="2-2-corosync"><a href="#2-2-corosync" class="headerlink" title="2.2 corosync"></a>2.2 corosync</h4><p>消息层除了corosync还有哪些？<br>Heartbeat v1: 不仅有消息层，还自带haresource资源管理层.<br>Heartbeat v2: 不仅有消息层，还自带名为CRM的资源管理层.<br>Heartbeat v3: 只有消息层，资源管理层己经独立为pacemaker.<br>Corosync v2: 拥有良好的vote system投票系统<br>Cman： Redhat研发，自带投票系统.</p>
+<p>2.3 pacemaker<br>Pacemaker工作在资源管理层，除了pacemaker还有哪些可以作为资源管理?</p>
+<p>Heartbeat v1的haresource.<br>Heartbeat v2的CRM<br>Rgmanager: Redhat研发</p>
+<p>2.4 集群组合<br>○1Heartbeat v1自带完整消息层和资源管理.<br>○2Heartbeat v2自带完整消息层和资源管理.<br>○3Heartbeat v3 + 独立出来的pacemaker.<br>○4corosync v2 + pacemaker完美组合.<br>○5cman + rgmanager 其实就是红帽的RHCS集群套件.<br>○6cman+corosync v1 + pacemaker: cman作为 corosync的插件，工作为corosync v1版本的投票系统，因为cman拥有良好投票系统而corosync v1没有投票系统，再结合pacemaker一同工作.</p>
+<p>结论： corosync v2 + pacemaker完美组合.</p>
+<h3 id="第三章-集群安装"><a href="#第三章-集群安装" class="headerlink" title="第三章 集群安装"></a>第三章 集群安装</h3><p>3.1 提前条件<br>1 关闭Selinux<br>2 同步时间<br>3 主机名或DNS解析<br>4 关闭防火墙 systemctl stop firewalld</p>
+<p>3.2 集群安装<br>集群安装：</p>
+<p>所有节点软件安装pcs，pcs客户端工具可以完成集群全生命周期管理，包括集群软件自动安装，初始化、配置和删除.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# yum install pcs  resource-agents</span><br><span class="line">corosync  pacemaker   policycoreutils # 自动依赖软件</span><br><span class="line">[root@node1 ~]# systemctl  enable pcsd</span><br><span class="line">[root@node1 ~]# systemctl  start  pcsd</span><br><span class="line">[root@node1 ~]# pcs cluster -h    查看帮助</span><br></pre></td></tr></table></figure></p>
+<p>集群认证：<br>自动生成集群用户hacluster,这里需要设置hacluster密码用于初始化集群认证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# echo &quot;hacluster:hacluster&quot; | chpasswd</span><br><span class="line">[root@node1 ~]# pcs cluster auth node1 node2 -h hacluster -p hacluster</span><br></pre></td></tr></table></figure></p>
+<p>集群初始化：<br>初始化完成后自动生成/etc/corosync/corosync.conf配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]#pcs cluster setup --name mycluster node1 node2</span><br></pre></td></tr></table></figure></p>
+<p>启动集群：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# pcs cluster start -all</span><br><span class="line">[root@node1 ~]# pcs status</span><br></pre></td></tr></table></figure>
+<p>集群验证：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# corosync-cfgtool  -s</span><br><span class="line">Printing ring status.</span><br><span class="line">Local node ID 1</span><br><span class="line">RING ID 0</span><br><span class="line">	id	= 192.168.1.39</span><br><span class="line">	status	= ring 0 active with no faults</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# corosync-cmapctl  | grep member</span><br><span class="line">runtime.totem.pg.mrp.srp.members.1.config_version (u64) = 0</span><br><span class="line">runtime.totem.pg.mrp.srp.members.1.ip (str) = r(0) ip(192.168.1.39) </span><br><span class="line">runtime.totem.pg.mrp.srp.members.1.join_count (u32) = 1</span><br><span class="line">runtime.totem.pg.mrp.srp.members.1.status (str) = joined</span><br><span class="line">runtime.totem.pg.mrp.srp.members.2.config_version (u64) = 0</span><br><span class="line">runtime.totem.pg.mrp.srp.members.2.ip (str) = r(0) ip(192.168.1.40) </span><br><span class="line">runtime.totem.pg.mrp.srp.members.2.join_count (u32) = 1</span><br><span class="line">runtime.totem.pg.mrp.srp.members.2.status (str) = joined</span><br></pre></td></tr></table></figure>
+<h3 id="第四章-集群配置"><a href="#第四章-集群配置" class="headerlink" title="第四章 集群配置"></a>第四章 集群配置</h3><p>4.1 管理工具<br>客户端工具除了红帽研发自带的pcs ,还有suse研发的crmsh</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# cd /etc/yum.repos.d/</span><br><span class="line"># wget http://download.opensuse.org/repositories/network:/ha-clustering:/Stable/CentOS_CentOS-7/network:ha-clustering:Stable.repo</span><br><span class="line"># yum install crmsh pssh</span><br></pre></td></tr></table></figure>
+<p>4.2 集群配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># pcs  property list --all</span><br><span class="line"># pcs  property  set stonith-enabled=false</span><br><span class="line"># crm_verify  -L -V</span><br><span class="line">#crm configur verify</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">eg:</span><br><span class="line"># yum install httpd</span><br><span class="line"># systemctl start httpd</span><br><span class="line"># systemctl enable httpd</span><br><span class="line"># crm configure primitive webip ocf:heartbeat:IPaddr params ip=192.168.1.99</span><br><span class="line"># crm configure primitive webserver systemd:httpd</span><br><span class="line"># crm configure group web_group webip webserver</span><br><span class="line">#crm configur verify</span><br><span class="line">#crm configur commit</span><br></pre></td></tr></table></figure>
+<p>Study crmsh<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">configure#</span><br><span class="line">primitive webip ocf:heartbeat:IPaddr2 params ip=&quot;172.16.100.92&quot; op monitor interval=30s timeout=20s</span><br><span class="line">primitive webserver systemd:httpd op monitor interval=20s timeout=20s</span><br><span class="line">primitive webstore ocf:heartbeat:Filesystem params device=&quot;172.16.100.6:/www/htdocs&quot; directory=&quot;/var/www/html&quot; fstype=&quot;nfs&quot; op start timeout=60s op stop timeout=60s op monitor interval=20s timeout=40s</span><br><span class="line"># 排列约束(定义资源必须在一起或必须不能在一起)</span><br><span class="line">colocation webserver_with_webstore_and_webip inf: webserver ( webip webstore )</span><br><span class="line">order webstore_after_webip Mandatory: web webstore</span><br><span class="line">show xml</span><br><span class="line">order webserver_after_webstore Mandatory: webstore webserver</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">####pcs study ....</span><br><span class="line">pcs resource create webip ocf:heartbeat:IPaddr ip=&quot;172.16.100.93&quot; op monitor interval=20s timeout=10s</span><br><span class="line">pcs resource create webstore ocf:heartbeat:Filesystem device=&quot;172.16.100.6:/www/htdocs&quot; directory=&quot;/var/www/html&quot; fstype=&quot;nfs&quot; op start timeout=60s op stop timeout=60s op monitor interval=20s timeout=40s</span><br><span class="line">pcs resourece create webserver systemd:httpd op monitor interval=30s timeout=20s</span><br><span class="line">pcs status</span><br><span class="line"></span><br><span class="line">pcs resource group add webservice webip webstore webserver</span><br><span class="line"></span><br><span class="line">crm configure property stonith-enabled=false</span><br><span class="line">crm configure property no-quorum-policy=ignore</span><br><span class="line">crm configure show</span><br></pre></td></tr></table></figure>
+<p>4.3 资源类别与属性</p>
+<p>资源类别<br>○1primitive: 主资源，集群中或全局唯一资源<br>○2clone: 克隆资源，允许在集群中多份存在<br>○3multi-state:多状态资源（master/slave）<br>○4group: 组资源，多个资源归为一组便于统一调度，统一启停，统一监视，统一相关性设置</p>
+<p>资源属性<br>○1Priority: 优先级.<br>○2target-role: 目标角色，资源在节点上默认所处状态started/stopped/master.<br>○3is-managed: 可被管理.<br>○4resource-stickiness: 资源粘性.定义资源对当前节点的粘性</p>
+<p>资源约束<br>位置约束： location  constraint,资源对某点的倾向性.<br>排列约束： colocation contraint,定义多个资源必须在一起或必须不能在一起.<br>顺序约束： order constraint,定义多个资源启动时的先后顺序.</p>
+<p>例：<br>比如B节点上有3个资源排列约束后必须在一起，并设置了每个资源的粘性值为50，总值为150，对A点节设置location  constraint倾向值为100，150&gt;100,完好的运行于B节点，如果B节点挂了，资源将迁移至A节点，那么A节点的值为150+100，没有比这个值大的节点存在时，资源将永久运行于A节点.</p>
+<p>第五章 参考文献<br>5.1 附录<br>参考命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# crm configure show</span><br><span class="line">node 1: node1</span><br><span class="line">node 2: node2</span><br><span class="line">property cib-bootstrap-options: \</span><br><span class="line">	have-watchdog=false \</span><br><span class="line">	dc-version=1.1.20-5.el7_7.2-3c4c782f70 \</span><br><span class="line">	cluster-infrastructure=corosync \</span><br><span class="line">	cluster-name=mycluster \</span><br><span class="line">	stonith-enabled=false \</span><br><span class="line">	cluster-recheck-interval=5min \</span><br><span class="line">	pe-warn-series-max=1000 \</span><br><span class="line">	pe-error-series-max=1000 \</span><br><span class="line">	pe-input-series-max=1000</span><br><span class="line"></span><br><span class="line">列出资源类别，称为class</span><br><span class="line">[root@node1 ~]#	pcs resource standards</span><br><span class="line">[root@node1 ~]# crm ra</span><br><span class="line">crm(live)ra# classes    # 列出资源类别，heartbeat openstack pacemaker分别为资源提供者(provider)</span><br><span class="line">lsb</span><br><span class="line">ocf / .isolation heartbeat openstack pacemaker</span><br><span class="line">service</span><br><span class="line">systemd</span><br><span class="line">crm(live)ra# list systemd  # 列出每个类别下各个资源,称为type</span><br><span class="line">crm(live)ra# list ocf heartbeat # 类别下heartbeat提供者下的各个资源,称为type</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">crm(live)ra# info  systemd:httpd # 查看每个特定type使用时参数用法</span><br><span class="line">systemd unit file for httpd (systemd:httpd)</span><br><span class="line">The Apache HTTP Server</span><br><span class="line">Operations&apos; defaults (advisory minimum):</span><br><span class="line"></span><br><span class="line">    start         timeout=100</span><br><span class="line">    stop          timeout=100</span><br><span class="line">    status        timeout=100</span><br><span class="line">    monitor       timeout=100 interval=60</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">crm(live)ra# info ocf:heartbeat:Filesystem  # 查看每个特定type使用时参数用法，device、directory、fstype必需给</span><br><span class="line">Parameters (*: required, []: default):</span><br><span class="line">device* (string): block device</span><br><span class="line">    The name of block device for the filesystem, or -U, -L options for mount, or NFS mount specification.</span><br><span class="line">directory* (string): mount point</span><br><span class="line">    The mount point for the filesystem.</span><br><span class="line">fstype* (string): filesystem type</span><br><span class="line">    The type of filesystem to be mounted.</span><br><span class="line">	</span><br><span class="line">以ocf:heartbeat:Filesystem为例，那么就有了如下params 使用参数</span><br><span class="line">primitive webstore ocf:heartbeat:Filesystem params device=&quot;172.16.100.6:/www/htdocs&quot;  \</span><br><span class="line">directory=&quot;/var/www/html&quot; fstype=&quot;nfs&quot; op start timeout=60s op stop timeout=60s \</span><br><span class="line">op monitor interval=20s timeout=40s</span><br><span class="line">	</span><br><span class="line">[root@node1 ~]# crm configure</span><br><span class="line">crm(live)configure# help primitive  # 主资源配置帮助</span><br><span class="line">	Example:</span><br><span class="line">primitive apcfence stonith:apcsmart \</span><br><span class="line">  params ttydev=/dev/ttyS0 hostlist=&quot;node1 node2&quot; \</span><br><span class="line">  op start timeout=60s \</span><br><span class="line">  op monitor interval=30m timeout=60s</span><br><span class="line"></span><br><span class="line">primitive www8 apache \</span><br><span class="line">  configfile=/etc/apache/www8.conf \</span><br><span class="line">  operations $id-ref=apache_ops</span><br><span class="line">  </span><br><span class="line">pcs resource list</span><br><span class="line">pcs resource  list ocf</span><br><span class="line">  </span><br><span class="line">组资源可以使多个资源集中分布在一个节点上，排列约束也可以使一些资源绑定在一起</span><br></pre></td></tr></table></figure></p>
+<p>添加一个常识<br>组播地址： 用于标识一个IP组播域：IANA把D类地址留给组播使用。<br>范围 ：224.0.0.0-239.255.255.255<br>永久组播地址：224.0.0.0-224.0.0.255<br>临时组播地址：224.0.1.0-238.255.255.255<br>本地组播地址：239.0.0.0-239.255.255.255<br>一般选用临时组播地址即可</p>
+<p>5.2 参考文献<br>[1]clusterlabs官方文档：<a href="https://clusterlabs.org/quickstart-redhat.html" target="_blank" rel="noopener">https://clusterlabs.org/quickstart-redhat.html</a> </p>
+<p>[2] SUSE enterprise server官方明细文档<br><a href="https://www.suse.com/documentation/sle-ha-12/book_sleha/data/sec_ha_architecture.html" target="_blank" rel="noopener">https://www.suse.com/documentation/sle-ha-12/book_sleha/data/sec_ha_architecture.html</a> </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ck8bu1tg4001o1ojxfvqif4lf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/01/20/ingress-nginx/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ingress-nginx</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/02/15/linux-pacemaker-corosync/">代理ARP学习</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/20/ingress-nginx/">ingress-nginx</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/01/openvswit_vlan流表/">openvswit_vlan流表</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/15/linux-nmap详解/">nmap工具详解</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/15/linux-disk/">linux disk</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
