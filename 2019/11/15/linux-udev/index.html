@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>udev定义network | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="The article has been encrypted, please enter your password to view.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="udev定义network">
+<meta property="og:url" content="http://www.digmyth.com/2019/11/15/linux-udev/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="The article has been encrypted, please enter your password to view.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-29T02:10:23.637Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="udev定义network">
+<meta name="twitter:description" content="The article has been encrypted, please enter your password to view.">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-linux-udev" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/15/linux-udev/" class="article-date">
+  <time datetime="2019-11-15T01:42:54.000Z" itemprop="datePublished">2019-11-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      udev定义network
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <script src="/crypto-js.js"></script><script src="/mcommon.js"></script><h3 id="encrypt-message"></h3><link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"> <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"> <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script> <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.26.12/dist/sweetalert2.all.min.js"></script>  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>   <div id="security"> <div style="width:300px; float:right"> <div class="input-group"> <input type="password" class="form-control" aria-label="Enter the password." id="pass"  placeholder="逗你玩儿"  /> <div class="input-group-btn"> <button type="button" class="btn btn-success" onclick="decryptAES()">同意条款</button> </div> </div> </div> </div> <div id="encrypt-blog" style="display:none"> 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 </div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ck8cepb1k00212tjxpojh3wfd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/12/01/k8s_pod1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          k8s_pod资源清单学习1
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">kubernetes-dashboard-TLS坑</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/07/linux-proxy_ARP/">proxy_arp原理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/15/linux-pacemaker-corosync/">corosync/PacemakerHA</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/20/ingress-nginx/">ingress-nginx</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/01/openvswit_vlan流表/">openvswit_vlan流表</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/15/linux-disk/">linux disk</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
