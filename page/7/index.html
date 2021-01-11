@@ -62,6 +62,69 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-cephfs-manila" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/05/cephfs-manila/" class="article-date">
+  <time datetime="2017-08-05T01:41:54.000Z" itemprop="datePublished">2017-08-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/05/cephfs-manila/">cephfs-ganesha-manila</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>openstack manila项目最近很活跃，ceph刚好发布luminous版,具说cephfs性能得到很大提升，那么manila 后端存储cephfs找到了着力点，得到在大力发展。这里对manila cephfs实验做下记录。<a href="https://docs.openstack.org/manila/pike/contributor/cephfs_driver.html#authorize-ceph-driver" target="_blank" rel="noopener">官网链接参考</a></p>
+<h2 id="驱动简介"><a href="#驱动简介" class="headerlink" title="驱动简介"></a>驱动简介</h2><p>manila cephfs驱动分为两种：<br>一种：  cephfs native share<br>相当于租户虚机直接连接cephfs集群，存在安全问题，生产环境中很难推行。</p>
+<p>1  <code>ceph-common</code>包安装在<code>manila-share</code>中<br>2  ceph-common/ceph-fuse 软件安装在租户虚机Guest里<br>3  ceph集群与manila-share网络打通<br>4  ceph集群与租户虚机网络打通</p>
+<p>二种： cephfs nfs share<br>官网说明<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1 Pike or later versions of manila.</span><br><span class="line">2 Kraken or later versions of Ceph.</span><br><span class="line">3 2.5 or later versions of NFS-Ganesha.</span><br><span class="line">4 A Ceph cluster with a filesystem configured</span><br><span class="line">5 ceph-common package installed in the servers running the manila-share service.</span><br><span class="line">6 NFS client installed in the guest.</span><br><span class="line">7 Network connectivity between your Ceph cluster’s public network and the servers running the manila-share service.</span><br><span class="line">8 Network connectivity between your Ceph cluster’s public network and NFS-Ganesha server.</span><br><span class="line">9 Network connectivity between your NFS-Ganesha server and the manila guest.</span><br></pre></td></tr></table></figure></p>
+<p>在cephfs nfs share驱动，借住nfs-Ganesha解决了网络安全性问题，避免ceph public网直接暴露。<br>直观的理解就是Ganesha为协议转换层，FSAL_CEPH把guest vm的NFS协议调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</p>
+<h2 id="安装openstack-ceph"><a href="#安装openstack-ceph" class="headerlink" title="安装openstack+ceph"></a>安装openstack+ceph</h2><p>跟据官网所说准备一套openstack pike + ceph  luminous 环境，安装过程略。。。。</p>
+<p>ceph  luminous 源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[ceph]</span><br><span class="line">name=ceph</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/x86_64/</span><br><span class="line">gpgcheck=0</span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=cephnoarch</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/noarch/</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装nfs-ganesha"><a href="#安装nfs-ganesha" class="headerlink" title="安装nfs-ganesha"></a>安装nfs-ganesha</h2><p> 需要nfs-ganesha 版本为2.5以上，只能编译安装了,具体[请参考(<a href="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/">http://www.digmyth.com/2017/06/05/cephfs-Ganesha/</a>)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</span><br><span class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</span><br><span class="line">yum install librgw2-devel -y </span><br><span class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</span><br><span class="line">yum install libcephfs1-devel -y</span><br><span class="line">cd /opt</span><br><span class="line">git clone --recursive git://github.com/nfs-ganesha/nfs-ganesha.git</span><br><span class="line">mkdir /opt/build &amp;&amp; cd /opt/build</span><br><span class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置manila-share"><a href="#配置manila-share" class="headerlink" title="配置manila-share"></a>配置manila-share</h2><p>必要客户端安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum instal ceph ceph-fuse ceph-common libcephfs1-devel librgw2-devel</span><br><span class="line">scp ceph_mon:/etc/ceph/* /etc/ceph    #^# 复制相关配置文件</span><br><span class="line"></span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+<h2 id="ceph授权"><a href="#ceph授权" class="headerlink" title="ceph授权"></a>ceph授权</h2><p> 如下命令会生成<code>manila.keyring</code>文件，一并复制到 manila-share的/etc/ceph目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">read -d &apos;&apos; MON_CAPS &lt;&lt; EOF</span><br><span class="line">allow r,</span><br><span class="line">allow command &quot;auth del&quot;,</span><br><span class="line">allow command &quot;auth caps&quot;,</span><br><span class="line">allow command &quot;auth get&quot;,</span><br><span class="line">allow command &quot;auth get-or-create&quot;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ceph auth get-or-create client.manila -o manila.keyring \</span><br><span class="line">mds &apos;allow *&apos; \</span><br><span class="line">osd &apos;allow rw&apos; \</span><br><span class="line">mon &quot;$MON_CAPS&quot;</span><br></pre></td></tr></table></figure></p>
+<p>编辑manila-share的/etc/ceph/ceph.conf 添加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">[client.manila]</span><br><span class="line">client mount uid = 0</span><br><span class="line">client mount gid = 0</span><br><span class="line">log file = /var/logs/ceph-client.manila.log</span><br><span class="line">admin socket = /run/ceph/ceph-mon.172.18.23.17.asok</span><br><span class="line">keyring = /etc/ceph/manila.keyring</span><br></pre></td></tr></table></figure></p>
+<p>允许快照支持<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph mds set allow_new_snaps true --yes-i-really-mean-it</span><br></pre></td></tr></table></figure></p>
+<p>编辑manila-share的/etc/manila/manila.conf 添加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[DEFAULT]</span><br><span class="line">...</span><br><span class="line">enabled_share_backends = generic, cephfsnfs1</span><br><span class="line">default_share_type = default_share_type</span><br><span class="line">enabled_share_protocols = NFS,CIFS,CEPHFS</span><br><span class="line">[cephfsnfs1]</span><br><span class="line">driver_handles_share_servers = False</span><br><span class="line">share_backend_name = CEPHFSNFS1</span><br><span class="line">share_driver = manila.share.drivers.cephfs.driver.CephFSDriver</span><br><span class="line">cephfs_protocol_helper_type = NFS</span><br><span class="line">cephfs_conf_path = /etc/ceph/ceph.conf</span><br><span class="line">cephfs_auth_id = manila</span><br><span class="line">cephfs_cluster_name = ceph</span><br><span class="line">cephfs_enable_snapshots = False</span><br><span class="line">cephfs_ganesha_server_is_remote= False</span><br><span class="line">cephfs_ganesha_server_ip = 172.18.23.17   # 指明nfs-ganesha服务器位置</span><br></pre></td></tr></table></figure></p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>服务验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(manila-share)[root@pike-vm /]# manila service-list</span><br><span class="line"></span><br><span class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</span><br><span class="line">| Id | Binary           | Host               | Zone | Status  | State | Updated_at                 |</span><br><span class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</span><br><span class="line">| 1  | manila-data      | pike-vm            | nova | enabled | up    | 2017-11-15T10:14:37.000000 |</span><br><span class="line">| 2  | manila-scheduler | pike-vm            | nova | enabled | up    | 2017-11-15T10:14:38.000000 |</span><br><span class="line">| 3  | manila-share     | pike-vm@generic    | nova | enabled | up    | 2017-11-15T10:14:40.000000 |</span><br><span class="line">| 4  | manila-share     | pike-vm@cephfsnfs1 | nova | enabled | up    | 2017-11-15T10:14:40.000000 |</span><br><span class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</span><br></pre></td></tr></table></figure></p>
+<p>创建manila实例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">manila type-create cephfsnfstype false</span><br><span class="line">manila type-key cephfsnfstype set vendor_name=Ceph storage_protocol=NFS</span><br><span class="line">manila create --share-type cephfsnfstype --name cephnfsshare1 nfs 1</span><br></pre></td></tr></table></figure></p>
+<p>查看共享路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(manila-share)[root@pike-vm /]# manila share-export-location-list cephnfsshare1</span><br><span class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</span><br><span class="line">| ID                                   | Path                                                                | Preferred |</span><br><span class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</span><br><span class="line">| 18cf503a-9357-40e2-925a-53333031a3e6 | 172.18.23.17:/volumes/_nogroup/7f53c663-57c5-4740-977b-039e4df7fc86 | False     |</span><br><span class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</span><br></pre></td></tr></table></figure></p>
+<p>权限管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">manila access-allow cephnfsshare1 ip 172.24.4.225</span><br></pre></td></tr></table></figure>
+<h2 id="guest-vm-挂载"><a href="#guest-vm-挂载" class="headerlink" title="guest vm 挂载"></a>guest vm 挂载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t nfs 172.18.23.17:/volumes/_nogroup/7f53c663-57c5-4740-977b-039e4df7fc86 /mnt/nfs/</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="ckjse6os9000wc8jxd9ib4d4x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-16-Form" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/20/web-django-16-Form/" class="article-date">
@@ -119,7 +182,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="ckjsb8t4v00565tjxor8j17z0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="ckjse6ovo0058c8jxspu4eaim" class="article-share-link">Share</a>
       
       
     </footer>
@@ -194,7 +257,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckjsb8t5f00655tjxnog4yipy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckjse6owb0067c8jxoxc4yvrx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -261,7 +324,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckjsb8t4t00545tjxxkbevcrp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckjse6ovm0056c8jxtbcvjyi8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -338,7 +401,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckjsb8t59005u5tjxhogr90o0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckjse6ow4005wc8jxcxcz0ma4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -399,7 +462,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckjsb8t4g004p5tjx3e516v09" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckjse6ov9004rc8jxm3ta5eft" class="article-share-link">Share</a>
       
       
     </footer>
@@ -460,7 +523,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckjsb8t1o00105tjxijukpcjd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckjse6osf0014c8jxg8qi2eq0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -510,7 +573,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckjsb8t2e001x5tjxar0six67" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckjse6ot3001yc8jxr5givdwt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -571,7 +634,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckjsb8t31002t5tjxn4h0ev8p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckjse6otz002wc8jx28fdfony" class="article-share-link">Share</a>
       
       
     </footer>
@@ -637,83 +700,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckjsb8t0d00005tjxtdd1i88b" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-cephfs-Ganesha" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/05/cephfs-Ganesha/" class="article-date">
-  <time datetime="2017-06-05T01:41:54.000Z" itemprop="datePublished">2017-06-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/05/cephfs-Ganesha/">cephfs-Ganesha</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="nfs-ganesha简介"><a href="#nfs-ganesha简介" class="headerlink" title="nfs-ganesha简介"></a>nfs-ganesha简介</h2><p>因工作需要调研了cephfs 导为nfs,目前有两种方法：</p>
-<ul>
-<li>方法一：内核mount挂载或 ceph-fuse 挂载至NFS server，如/data再正常搭建NFS-server即可。</li>
-<li>方法二 :   借用nfs-ganesha协议转换间接存储在cephfs集群中。</li>
-</ul>
-<p>nfs-ganesha不仅可以导 cephfs,也可以导RGW.<br>ceph RGW理解:   相当于协议转换层，把符合S3和swift协议的 restFul API 请求转换为rados存储在ceph对象存储中.</p>
-<p>换一种说法： Ceph 导出为 NFS，一种通过 RGW，一种通过 CephFS，通过 FSAL 模块 连接到 RGW 或者 CephFS</p>
-<ul>
-<li>FSAL_RGW 调用 librgw2 将 NFS 协议转义为 S3 协议再通过 RGW 存入到 Ceph 中.</li>
-<li>FSAL_CEPH 调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</li>
-</ul>
-<p>FSAL： File System Abstraction Layer  文件系统抽像层</p>
-<p>题外话，openstack项目manila后端存储驱动，其中一种就是Ganesha Driver<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">## manila 4驱动</span><br><span class="line">Default Driver: 使用 RBD 作为 Manila Service VM 的后端，在 VM 上启动 NFS 实例提供服务</span><br><span class="line">Ganesha Driver: 使用 Ganesha 将 CephFS 重新 Reexport 出去</span><br><span class="line">Native CephFS Driver: 在 Guest VM 上直接使用原生 CephFS Module 访问</span><br><span class="line">VirtFS Driver: 将 CephFS 挂载在 Host 端，VM 通过 VirtFS 访问</span><br></pre></td></tr></table></figure></p>
-<h2 id="nfs-ganesha安装"><a href="#nfs-ganesha安装" class="headerlink" title="nfs-ganesha安装"></a>nfs-ganesha安装</h2><p>在CentOS7系统中有nfs-ganesha rpm软件包，但没有ceph相关模块，所以我这里是编译安装，把FSAL_RGW 模块/FSAL_CEPH 模块编译进去。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone -b V2.4-stable https://github.com/nfs-ganesha/nfs-ganesha.git --recursive</span><br></pre></td></tr></table></figure>
-<p>由于ceph-jewel版本才有libcephfs1-devel软件包，所以这里ganesha客户端 ceph用 jewel版本，服务器ceph版本Luminous<br>ceph-jewel源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@ ganesha]# cat  /etc/yum.repos.d/ceph.repo </span><br><span class="line">[ceph]</span><br><span class="line">name=ceph</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/x86_64/</span><br><span class="line">gpgcheck=0</span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=cephnoarch</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/noarch/</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure></p>
-<p>软件安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</span><br><span class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</span><br><span class="line">yum install librgw2-devel -y </span><br><span class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</span><br><span class="line">yum install libcephfs1-devel -y</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>如果需要生成 FSAL_RGW 模块，则在编译选项中添加： -DUSE_FSAL_RGW=ON</li>
-<li>如果需要生成 FSAL_CEPH 模块，则在编译选项中添加： -DUSE_FSAL_CEPH=ON</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir /opt/build/</span><br><span class="line">cd /opt/build/</span><br><span class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-<p>在cmake输出中确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- USE_FSAL_CEPH = ON</span><br><span class="line">-- USE_FSAL_CEPH_MKNOD = OFF</span><br><span class="line">-- USE_FSAL_CEPH_SETLK = OFF</span><br><span class="line">-- USE_FSAL_CEPH_LL_LOOKUP_ROOT = ON</span><br><span class="line">-- USE_FSAL_RGW = ON</span><br></pre></td></tr></table></figure></p>
-<p>确保： – USE_FSAL_CEPH 为 ON,以及 – USE_FSAL_RGW 为 ON。</p>
-<p>如果过程中出错，请删除/tmp/build/* 及/tmp/build/CMakeCache.txt重新编译</p>
-<p>make install成功输出中有:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/rgw.conf</span><br><span class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/ceph.conf</span><br></pre></td></tr></table></figure></p>
-<p>这两个文件就是配置将 RGW 和 CephFS 配置为 nfs-ganesha的配置模板。</p>
-<h2 id="nfs-ganesha-配置"><a href="#nfs-ganesha-配置" class="headerlink" title="nfs-ganesha 配置"></a>nfs-ganesha 配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/ganesha/ganesha.conf</span><br><span class="line">EXPORT</span><br><span class="line">&#123;</span><br><span class="line">        Export_ID=1;</span><br><span class="line">        Path = /;</span><br><span class="line">        Pseudo = /cephfs;</span><br><span class="line">        Access_Type = RW;</span><br><span class="line">        NFS_Protocols = 4;</span><br><span class="line">        Transport_Protocols = TCP;</span><br><span class="line">        Squash = No_Root_Squash;</span><br><span class="line">        FSAL &#123;</span><br><span class="line">                Name = CEPH;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">EXPORT</span><br><span class="line">&#123;</span><br><span class="line">        Export_ID=2;</span><br><span class="line">        Path = /;</span><br><span class="line">        Pseudo = /rgw;</span><br><span class="line">        Access_Type = RW;</span><br><span class="line">        Squash = No_root_squash;</span><br><span class="line">        NFS_Protocols = 4;</span><br><span class="line">        Transport_Protocols = TCP;</span><br><span class="line">        FSAL &#123;</span><br><span class="line">                Name = RGW;</span><br><span class="line">                User_Id = &quot;admin&quot;;</span><br><span class="line">                Access_Key_Id =&quot;RDS4VW60OA48ZW1HSU61&quot;;</span><br><span class="line">                Secret_Access_Key = &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">RGW &#123;</span><br><span class="line">    ceph_conf = &quot;/etc/ceph/ceph.conf&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  其中<code>Access_Key_Id</code> <code>Secret_Access_Key</code>部份在ceph-rgw中读取<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">  (ceph-mon)[root@pike-vm /]# radosgw-admin user info --uid=admin</span><br><span class="line">&#123;</span><br><span class="line">    &quot;user_id&quot;: &quot;admin&quot;,</span><br><span class="line">    &quot;display_name&quot;: &quot;admin&quot;,</span><br><span class="line">    &quot;email&quot;: &quot;&quot;,</span><br><span class="line">    &quot;suspended&quot;: 0,</span><br><span class="line">    &quot;max_buckets&quot;: 1000,</span><br><span class="line">    &quot;auid&quot;: 0,</span><br><span class="line">    &quot;subusers&quot;: [],</span><br><span class="line">    &quot;keys&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;user&quot;: &quot;admin&quot;,</span><br><span class="line">            &quot;access_key&quot;: &quot;RDS4VW60OA48ZW1HSU61&quot;,</span><br><span class="line">            &quot;secret_key&quot;: &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<h2 id="启动nfs-ganesha"><a href="#启动nfs-ganesha" class="headerlink" title="启动nfs-ganesha"></a>启动nfs-ganesha</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ganesha.nfsd -L /var/log/ganesha.log</span><br></pre></td></tr></table></figure>
-<h2 id="挂载使用"><a href="#挂载使用" class="headerlink" title="挂载使用"></a>挂载使用</h2><p>在客户端进行挂载使用：<br>1  安装<code>ceph-common</code> <code>ceph-fuse</code> <code>libcephfs1-devel</code> <code>librgw2-devel</code><br>2 拷贝ceph.conf配置文件及keyring文件至/etc/ceph<br>3 挂载：<code>mount -t nfs4 {$ganesha-server-ip}:/  /mnt</code><br>如果出现I/O error,请ceph-fuse  -m 172.18.23.17:6789 /mnt 挂载一遍，就是这么神奇，不要问我为什么。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 mnt]# ls</span><br><span class="line">ls: reading directory .: Remote I/O error</span><br></pre></td></tr></table></figure></p>
-<p>成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 cephfs]# ll /mnt/</span><br><span class="line">total 1</span><br><span class="line">drwxrwxrwx 1 root root 33 Nov 14 08:31 cephfs</span><br><span class="line">[root@-3 cephfs]# echo &quot;99cloud new data...&quot; &gt; cephfs.txt </span><br><span class="line">[root@-3 cephfs]# cat cephfs.txt </span><br><span class="line">cephfs data...</span><br></pre></td></tr></table></figure></p>
-<p>在cephfs集群中我们可以看到客户端写入的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 ~]# ceph-fuse  -m 172.18.23.17:6789 /data/</span><br><span class="line">ceph-fuse[4579]: starting ceph client</span><br><span class="line">ceph-fuse[4579]: starting fuse</span><br><span class="line">[root@-3 ~]# cd /data/</span><br><span class="line">[root@-3 data]# ls</span><br><span class="line">cephfs.txt</span><br><span class="line">[root@3 data]# cat cephfs.txt </span><br><span class="line">cephfs data...</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ckjsb8t1i000r5tjxa0huxv5b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckjse6or00000c8jxbt3a3gop" class="article-share-link">Share</a>
       
       
     </footer>
@@ -729,7 +716,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/8/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/8/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -754,7 +741,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -767,23 +754,23 @@
       <ul>
         
           <li>
-            <a href="/2021/01/09/kubernetes-configmap/">kubernetes configmap</a>
+            <a href="/2021/01/03/kubernetes-secret/">kubernetes secret</a>
           </li>
         
           <li>
-            <a href="/2021/01/08/kubernetes-volumes/">kubernetes volumes</a>
+            <a href="/2021/01/02/kubernetes-configmap/">kubernetes configmap</a>
           </li>
         
           <li>
-            <a href="/2021/01/05/Kubernetes-ubuntu20.04/">Ubuntu20.04 Run k8s</a>
+            <a href="/2021/01/01/kubernetes-volumes/">kubernetes volumes</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/30/Kubernetes-ubuntu20.04/">Ubuntu20.04 Run k8s</a>
           </li>
         
           <li>
             <a href="/2020/07/10/mariadb-cluster-recovery/">mariadb cluster recovery</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/14/openstack-HA/">openstack-HA</a>
           </li>
         
       </ul>
