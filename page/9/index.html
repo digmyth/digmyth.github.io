@@ -62,6 +62,110 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-09-01-进程和线程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/20/python-09-01-进程和线程/" class="article-date">
+  <time datetime="2017-03-20T14:26:37.000Z" itemprop="datePublished">2017-03-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/20/python-09-01-进程和线程/">python-09-01-进程和线程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>基本概念</li>
+<li>进程</li>
+<li>线程</li>
+<li>协程</li>
+<li>总结</li>
+</ul>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>我们都知道现代操作是支持“多任务”的，什么叫“多任务”呢？。<br>简单地说，就是操作系统可以同时运行多个任务。打个比方一边微信一边QQ。</p>
+<p>单核cpu是如何执行“多任务”的？<br>简单的说，就是cpu时间分片，同一时间单核cpu只能执行一个任务，cpu计算时间分片到每个任务交替运行，进程切换或上下文切换时间很短，我们无法感知而己。真正并发执行多任务还要靠多核cpu来完成。</p>
+<p>并发执行任务方案，</p>
+<ul>
+<li>多进程</li>
+<li>多线程</li>
+<li>多进程+多线程</li>
+</ul>
+<p>Python线程有GIL(Global Interpreter Lock), 这种锁在单核cpu单进程里同一时间只能有一个线程被cpu调度。</p>
+<p>那么多线程并发就没有用了吗？<br>计算密集型多进程不就解决了<br>IO密集型多线程不就解决了，同一时间只有一个线程调度，其它时间线程处理IO啊</p>
+<h2 id="进程，多进程，进程池"><a href="#进程，多进程，进程池" class="headerlink" title="进程，多进程，进程池"></a>进程，多进程，进程池</h2><p>进程定义: 程序由指令+数据组成，进程就是这样一种描述的实体(process),简单的认为一个任务就是一个进程。</p>
+<p>一个进程至少一个线程，进程间相互隔离（数据不共享），一个子进程挂了并不影响程序运行，当然主进程挂了程序也就挂了，进程切换开销较大。</p>
+<p>多进程： 用于解决计算密集型作务的多并发。</p>
+<p>进程池： 内部维护一个进程序列，当使用时创建一个新的进程放入池中，再从池中取出来使用，当达到进程池个数时，不再创建进程，请求直接从进程池中取出来用，其它请求只能等待直到进程池中有进程可用。</p>
+<p>进程示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Process</span><br><span class="line">import time</span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(arg)</span><br><span class="line">    print(arg)</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    for i in range(10):</span><br><span class="line">        p  = Process(target=task, args=(i,))</span><br><span class="line">        # p.daemon=True</span><br><span class="line">        p.start()</span><br><span class="line">        p.join(0.5)</span><br><span class="line">    print(&quot;end&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>进程池与线程池用法一样，细节不展开<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from concurrent.futures  import ProcessPoolExecutor</span><br></pre></td></tr></table></figure></p>
+<p>进程锁也是和线程锁一样的用法，细节不展开</p>
+<p>进程与线程不同的是进程数据不共享，那如何实现数据交互，方法很多<code>rpc</code>,<code>Queue</code>,<code>pipe</code>,自己实现socket也可以实现 ,借住第三方工具，python本身也可以实现，2种方法：</p>
+<ul>
+<li>Array  (基于C语言数据类型)</li>
+<li>Manager (基于socket)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Process</span><br><span class="line"></span><br><span class="line">def task(num,li):</span><br><span class="line">    li.append(num)</span><br><span class="line">    print(li)</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    v = []</span><br><span class="line">    for i in range(10):</span><br><span class="line">        p = Process(target=task,args=(i, v))  #每个进程数据独立存在</span><br><span class="line">        p.start()</span><br></pre></td></tr></table></figure>
+<p>C语言里Array存的元素是定义时定死的，和python 的列表有很大不同。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Process,Array</span><br><span class="line"></span><br><span class="line">def task(num,li):</span><br><span class="line">    li[num] = 1</span><br><span class="line">    print(list(li))</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    v = Array(&apos;i&apos;, 10)   #i在c语言是的int，10表示长度</span><br><span class="line">    for i in range(10):</span><br><span class="line">        p = Process(target=task,args=(i, v))</span><br><span class="line">        p.start()</span><br></pre></td></tr></table></figure></p>
+<p>Manger().list()   Manger().dict()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from multiprocessing import Process,Array,Manager</span><br><span class="line"></span><br><span class="line">def task(num,li):</span><br><span class="line">    li.append(num)</span><br><span class="line">    print(li)</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">   # dic = Manager().dict()</span><br><span class="line">    v = Manager().list()</span><br><span class="line">    for i in range(10):</span><br><span class="line">        p = Process(target=task,args=(i, v))</span><br><span class="line">        p.start()</span><br><span class="line">        p.join()</span><br></pre></td></tr></table></figure></p>
+<h2 id="线程，多线程，线程池"><a href="#线程，多线程，线程池" class="headerlink" title="线程，多线程，线程池"></a>线程，多线程，线程池</h2><p>线程定义：一个任务可以再划分为多个小任务，进程内独立执行这些小任务的最小单元。</p>
+<p>一个进程可以有多个线程，线程间共享内存数据，一个线程挂了，其它线程也会崩溃，线程切换开销较进程小一些。</p>
+<p>多线程： 用于解决IO密集型任务的多并发</p>
+<p>线程池： 内部维护一个线程序列.  (与进程池同理)</p>
+<p>线程示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    print(arg)</span><br><span class="line">for i in range(5):</span><br><span class="line">	t = threading.Thread(target=task,args=(i,))</span><br><span class="line">	t.setDaemon(False)  # 等子线程完成后再结束主线程</span><br><span class="line">	t.start()</span><br><span class="line">	t.join()  # 变为串行,一直等</span><br><span class="line">	t.join(3)  # 变为串行,只等3秒</span><br><span class="line">print(&quot;end&quot;)  # 先打印主线程的end,再一起打印子线程的i</span><br></pre></td></tr></table></figure></p>
+<p>自定义线程类示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">class MyThread(threading.Thread):</span><br><span class="line">    def __init__(self,target=None,args=(),**kwargs):</span><br><span class="line">        super(MyThread,self).__init__(target=None,args=(),**kwargs)</span><br><span class="line">        self.target =target</span><br><span class="line">        self._args = args</span><br><span class="line">    def run(self,):</span><br><span class="line">        return self.target(*self._args)</span><br><span class="line"></span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    print(arg)</span><br><span class="line"></span><br><span class="line">t = MyThread(target=task, args=(123,))</span><br><span class="line">t.run()</span><br><span class="line">print(&quot;end&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>线程锁<br>线程共享数据，共同修改一份数据是有问题的，pycharm环境下可能看不出效果，<br>cmd命令行下可以看到数据修改混乱了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">v=10</span><br><span class="line">def task(arg):</span><br><span class="line">    global  v</span><br><span class="line">    v-=1</span><br><span class="line">    print(v)</span><br><span class="line"></span><br><span class="line">for i in range(10):</span><br><span class="line">    t=threading.Thread(target=task,args=(i,))</span><br><span class="line">    t.start()</span><br><span class="line">print(&quot;end&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>数据修改乱了，就要加锁了：普通锁，递归锁RLock,事件锁、条件锁，互斥锁<br>普通锁</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">v=10</span><br><span class="line">lock = threading.Lock()</span><br><span class="line"></span><br><span class="line">def task(arg):</span><br><span class="line">    lock.acquire() # 申请锁</span><br><span class="line">    global  v</span><br><span class="line">    v-=1</span><br><span class="line">    print(v)</span><br><span class="line">    lock.release() # 释放锁</span><br></pre></td></tr></table></figure>
+<p>普通锁不能开多重没锁，如果是下面这种设置会造成死锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 死锁</span><br><span class="line">lock = threading.Lock()</span><br><span class="line">lock.acquire() # 申请锁</span><br><span class="line">lock.acquire() # 申请锁</span><br><span class="line">lock.release() # 释放锁</span><br><span class="line">lock.release() # 释放锁</span><br></pre></td></tr></table></figure></p>
+<p>递归锁RLock<br>递归锁RLock可以开多重锁，不会造成死锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 不会死锁</span><br><span class="line">lock = threading.RLock()</span><br><span class="line">lock.acquire() # 申请锁</span><br><span class="line">lock.acquire() # 申请锁</span><br><span class="line">lock.release() # 释放锁</span><br><span class="line">lock.release() # 释放锁</span><br></pre></td></tr></table></figure></p>
+<p>信号量BoundedSemaphore<br>多个线程同时使用锁，当然这里3个同时修改数据也可能混乱。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">v=10</span><br><span class="line">lock = threading.BoundedSemaphore(3)</span><br><span class="line"></span><br><span class="line">def task(arg):</span><br><span class="line">    lock.acquire() # 申请锁</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    global  v</span><br><span class="line">    v-=1</span><br><span class="line">    print(v)</span><br><span class="line">    lock.release() # 释放锁</span><br><span class="line">for i in range(10):</span><br><span class="line">    t=threading.Thread(target=task,args=(i,))</span><br><span class="line">    t.start()</span><br><span class="line">print(&quot;end&quot;)</span><br></pre></td></tr></table></figure>
+<p>事件锁<br>条件式批量解锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">lock = threading.Event()</span><br><span class="line"></span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    lock.wait()    #锁住所有线程</span><br><span class="line">    print(arg)</span><br><span class="line"></span><br><span class="line">for i in range(10):</span><br><span class="line">    t=threading.Thread(target=task,args=(i,))</span><br><span class="line">    t.start()</span><br><span class="line">while True:</span><br><span class="line">    value =  input(&quot;&gt;&gt;&gt;&quot;)</span><br><span class="line">    if value == &apos;1&apos;:</span><br><span class="line">        lock.set()   # 解锁</span><br></pre></td></tr></table></figure></p>
+<p>条件锁<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line">lock = threading.Condition()</span><br><span class="line">def task(arg):</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    lock.acquire()</span><br><span class="line">    lock.wait()    #锁住所有线程</span><br><span class="line">    print(&apos;线程&apos;,arg)</span><br><span class="line">    lock.release()</span><br><span class="line"></span><br><span class="line">for i in range(10):</span><br><span class="line">    t=threading.Thread(target=task,args=(i,))</span><br><span class="line">    t.start()</span><br><span class="line">while True:</span><br><span class="line">    value =  int(input(&quot;&gt;&gt;&gt;&quot;))  </span><br><span class="line">    lock.acquire()</span><br><span class="line">    lock.notify(value)  # 传几就解几个锁</span><br><span class="line">    lock.release()</span><br></pre></td></tr></table></figure></p>
+<p>线程池<br><code>pool.submit(download,url)</code>取出一个线程执行任务，返回future对象<br><code>future.add_done_callback(write)</code>future对象有一个<code>add_done_callback</code>方法，传入我们自己写的回调函数write,  future对象也会自动传给write回调函数。<br><code>download</code> 函数的返回值=<code>future.result()</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import  requests</span><br><span class="line">from concurrent.futures import ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line">def write(future):</span><br><span class="line">    response = future.result()</span><br><span class="line">    f=open(&apos;xx.txt&apos;,&apos;wb+&apos;)</span><br><span class="line">    f.write(response.content)</span><br><span class="line">    f.close()</span><br><span class="line"></span><br><span class="line">url_list = [</span><br><span class="line">    &apos;http://www.baidu.com&apos;,</span><br><span class="line">    &apos;http://www.digmyth.com&apos;,</span><br><span class="line">    &apos;http://www.github.com&apos;,</span><br><span class="line">]</span><br><span class="line">def download(url):</span><br><span class="line">    response=requests.get(url)</span><br><span class="line">    print(&quot;得到结果&quot;,url)</span><br><span class="line">    return response</span><br><span class="line"></span><br><span class="line">pool = ThreadPoolExecutor(2)</span><br><span class="line">for url in url_list:</span><br><span class="line">    print(&quot;开始请求：&quot;,url)</span><br><span class="line">    future=pool.submit(download,url)  # 池中取一个连接</span><br><span class="line">    # ruture自动传给write调函数:write(future)</span><br><span class="line">    future.add_done_callback(write)</span><br></pre></td></tr></table></figure>
+<p>封装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">from  concurrent.futures import ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line">def download(url):</span><br><span class="line">    response=requests.get(url)</span><br><span class="line">    return response</span><br><span class="line"></span><br><span class="line">def run(url_list=None):</span><br><span class="line">    pool = ThreadPoolExecutor(2)</span><br><span class="line">    for item in url_list:</span><br><span class="line">        url = item[&apos;url&apos;]</span><br><span class="line">        callback = item[&apos;callback&apos;]</span><br><span class="line">        future=pool.submit(download, url)</span><br><span class="line">        future.add_done_callback(callback)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def f1(future):</span><br><span class="line">    print(future.result().content)</span><br><span class="line"></span><br><span class="line">def f2(arg):</span><br><span class="line">    print(&quot;future&quot;)</span><br><span class="line"></span><br><span class="line">def f3(future):</span><br><span class="line">    print(&quot;future&quot;)</span><br><span class="line"></span><br><span class="line">url_list = [</span><br><span class="line">    &#123;&apos;url&apos;:&apos;http://www.baidu.com&apos;,&apos;callback&apos;:f1&#125;,</span><br><span class="line">    &#123;&apos;url&apos;:&apos;http://www.digmyth.com&apos;,&apos;callback&apos;:f2&#125;,</span><br><span class="line">    &#123;&apos;url&apos;:&apos;http://www.github.com&apos;,&apos;callback&apos;:f3&#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">import nb_thread</span><br><span class="line">nb_thread.run(url_list)</span><br></pre></td></tr></table></figure>
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><p>协程定义： 协程不同于进程，线程对于操作系统可见且是一种资源，协程只是代码层面的来回切换，对于操作系统不可见且并非是一种资源。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install greenlet  # python中原生协程</span><br></pre></td></tr></table></figure>
+<p>单独协程没什么用，结合协程切换特性+IO+select+socket可以编写出牛逼的异步IO模块或异步非阻塞框架</p>
+<p>gevent就是基于greenlet+libvent+IO二次加工实现的python异步模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 instal gevent</span><br></pre></td></tr></table></figure></p>
+<p>示例：<br>和多线程不同，这里是单线程并发IO任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import gevent</span><br><span class="line">import requests</span><br><span class="line"></span><br><span class="line">def func(url):</span><br><span class="line">    response = requests.get(url)</span><br><span class="line">    print(response.url)</span><br><span class="line"></span><br><span class="line">gevent.joinall([</span><br><span class="line">    gevent.spawn(func,&apos;http://www.baidu.com&apos;),</span><br><span class="line">    gevent.spawn(func,&apos;http://www.digmyth.com&apos;),</span><br><span class="line">    gevent.spawn(func,&apos;http://www.github.com&apos;),</span><br><span class="line">])</span><br></pre></td></tr></table></figure></p>
+<p>当然我们也可以自己用select来写IO多路复实现并发</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>即使有了多进程多线程或进程池，线程池处理多任务，但如果一个任务在执行的过程中大部分时间都在等待IO操作，单进程单线程模型也只能处理一个任务，无法并发执行。</p>
+<p>还好现代操作系统支持异步IO，这是一个很牛逼的东东，单进程单线程模型并发执行任务得以实现。这种称为事件驱动模型，Nginx就是支持异步IO的Web服务器。</p>
+<p>单线程的异步编程或异步IO多路复用会是趋势，可以基于事件驱动编写高效的多任务程序。Twisted,Tornado之所以牛逼，就是因为它们的高性能也是基于事件驱动，基于异步IO多路复用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckjs9lz3e00430zjxcch565o3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-01-入门" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/03/20/web-django-01-入门/" class="article-date">
@@ -134,7 +238,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckjmh5qis004o7xjxyq4op64b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckjs9lz4d004v0zjx8p0979sl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -220,7 +324,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="ckjmh5qhz003q7xjxkfukpx05" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="ckjs9lz2y003t0zjx426g53j5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -292,7 +396,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="ckjmh5qhr003k7xjxnglgrhkw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="ckjs9lz2o003m0zjxyz71gdnz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -369,7 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="ckjmh5qhu003m7xjxguk1i0ir" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="ckjs9lz2t003p0zjxg22h26ui" class="article-share-link">Share</a>
       
       
     </footer>
@@ -583,7 +687,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="ckjmh5qhq003i7xjxkoq51u1a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="ckjs9lz31003v0zjxrjlntzb4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -669,7 +773,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="ckjmh5qho003g7xjx7hwx0nif" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="ckjs9lz2m003l0zjxqo6n50nk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -744,7 +848,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="ckjmh5qin004g7xjxoi5rnknf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="ckjs9lz43004n0zjxnthk7rlt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -830,7 +934,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="ckjmh5qhn003e7xjxorun30aq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="ckjs9lz2r003n0zjxmgwbamza" class="article-share-link">Share</a>
       
       
     </footer>
@@ -924,54 +1028,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="ckjmh5qgv002r7xjx1grrec1n" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
-  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Shell/">Shell</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat getopts.sh </span><br><span class="line">#!/bin/bash</span><br><span class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</span><br><span class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</span><br><span class="line"># OPTARG  表示选项给的值</span><br><span class="line"># OPTIND  表示选项指针（下一位）</span><br><span class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</span><br><span class="line"></span><br><span class="line">while getopts &quot;:a:b:c:&quot; OPT;</span><br><span class="line">do</span><br><span class="line">case $OPT in</span><br><span class="line">  a)</span><br><span class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</span><br><span class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  b)</span><br><span class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  c)</span><br><span class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</span><br><span class="line">        ;;</span><br><span class="line">  *)</span><br><span class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</span><br><span class="line">esac</span><br><span class="line">done</span><br><span class="line">shift $(($OPTIND-1))</span><br><span class="line">echo &quot;\$1 is: $1&quot;</span><br><span class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</span><br><span class="line">a is OPTARG: a1</span><br><span class="line">a is OPTIND: 3</span><br><span class="line">b is OPTARG: b1</span><br><span class="line">b is OPTIND: 5</span><br><span class="line">c is OPTARG: c1</span><br><span class="line">c is OPTIND: 7</span><br><span class="line">$1 is: test.sh</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ckjmh5qim004e7xjx0a1sl2gs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="ckjs9lz18002u0zjxinjrpo1e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1025,6 +1082,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/08/kubernetes-volumes/">kubernetes volumes</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/05/Kubernetes-ubuntu20.04/">Ubuntu20.04 Run k8s</a>
           </li>
         
@@ -1038,10 +1099,6 @@
         
           <li>
             <a href="/2020/03/07/calico-原理剖析/">calico-原理剖析</a>
-          </li>
-        
-          <li>
-            <a href="/2020/02/15/linux-pacemaker-corosync/">corosync/PacemakerHA</a>
           </li>
         
       </ul>

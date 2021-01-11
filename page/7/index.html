@@ -62,6 +62,81 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
+  <time datetime="2017-07-01T01:41:54.000Z" itemprop="datePublished">2017-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/01/基于CentOS7的PXE装机/">基于CentOS 7的PXE装机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>网上各种贴子各种飞总说不到重点，本人表示不喜欢。</code></p>
+<h3 id="基于Centos7PXE装机"><a href="#基于Centos7PXE装机" class="headerlink" title="基于Centos7PXE装机"></a>基于Centos7PXE装机</h3><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>pxe装机依赖几个服务： dhcp/tftp/fileserver</li>
+<li>dhcp:  为装机分配地址及指明tftp server服务器是谁，下载什么文件</li>
+<li>tftp:   提供网络引导文件pxelinux.0及内核文件vmlinuz、initrd.img<ul>
+<li>(具体文件： boot.msg  initrd.img  pxelinux.0  pxelinux.cfg  splash.png  vesamenu.c32  vmlinuz)</li>
+</ul>
+</li>
+<li>fileserver: 提供安装树输出，一般指yum repository (yum 仓库或yum源)</li>
+<li>syslinux:   网络引导文件pxelinux.0由syslinux软件包提供</li>
+</ul>
+<h2 id="dhcp服务"><a href="#dhcp服务" class="headerlink" title="dhcp服务"></a>dhcp服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum  -y install  dhcp</span><br><span class="line">rpm -ql dhcp</span><br><span class="line">/etc/dhcp/dhcpd.conf      # 主配置文件</span><br><span class="line">/var/lib/dhcpd/dhcpd.leases  # 租约文件</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# cat /etc/dhcp/dhcpd.conf  | grep -v ^# | grep -v ^$</span><br><span class="line">option domain-name &quot;digmyth.com&quot;;</span><br><span class="line">option domain-name-servers 114.114.114.114;</span><br><span class="line">default-lease-time 600;</span><br><span class="line">max-lease-time 7200;</span><br><span class="line">log-facility local7;</span><br><span class="line">subnet 172.16.10.0 netmask 255.255.255.0 &#123;</span><br><span class="line">  range 172.16.10.20 172.16.10.30;</span><br><span class="line">  option domain-name-servers 172.16.10.1;</span><br><span class="line">  option domain-name &quot;digmyth.com&quot;;</span><br><span class="line">  option routers 172.16.10.254;</span><br><span class="line">  default-lease-time 600;</span><br><span class="line">  max-lease-time 7200;</span><br><span class="line">&#125;</span><br><span class="line">filename &quot;pxelinux.0&quot;;     # 定义网络引导文件名</span><br><span class="line">next-server 172.16.10.1;   # 定义tftp server地址</span><br></pre></td></tr></table></figure>
+<p>启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># systemctl  start dhcpd</span><br><span class="line">[root@master ~]# netstat -unlp | grep 67</span><br><span class="line">udp        0      0 0.0.0.0:67              0.0.0.0:*                           995/dhcpd</span><br></pre></td></tr></table></figure></p>
+<h2 id="syslinux提供引导文件"><a href="#syslinux提供引导文件" class="headerlink" title="syslinux提供引导文件"></a>syslinux提供引导文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">准备网络引导文件pxelinux.0  相当于bootloader</span><br><span class="line"># yum -y install syslinux</span><br><span class="line">[root@master tftpboot]# ll /usr/share/syslinux/pxelinux.0 </span><br><span class="line">-rw-r--r--. 1 root root 26764 Nov  6  2016 /usr/share/syslinux/pxelinux.0</span><br></pre></td></tr></table></figure>
+<h2 id="tftp-server"><a href="#tftp-server" class="headerlink" title="tftp server"></a>tftp server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># yum  -y install tftp tftp-server</span><br><span class="line">[root@master ~]# rpm -ql tftp-server</span><br><span class="line">/etc/xinetd.d/tftp   # 启动文件</span><br><span class="line">/usr/sbin/in.tftpd</span><br><span class="line">/var/lib/tftpboot   # 服务根目录</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># cat /etc/xinetd.d/tftp</span><br><span class="line">service tftp</span><br><span class="line">&#123;</span><br><span class="line">	socket_type		= dgram</span><br><span class="line">	protocol		= udp</span><br><span class="line">	wait			= yes</span><br><span class="line">	user			= root</span><br><span class="line">	server			= /usr/sbin/in.tftpd</span><br><span class="line">	server_args		= -s /var/lib/tftpboot</span><br><span class="line">    disable			= no  #改为no</span><br><span class="line">	per_source		= 11</span><br><span class="line">	cps			= 100 2</span><br><span class="line">	flags			= IPv4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>启动tftp服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># cp  /usr/share/syslinux/pxelinux.0  /var/lit/tftpboot</span><br><span class="line"># systemctl  start tftp</span><br><span class="line"># tftp localhost</span><br><span class="line">&gt; get pxelinux.0   # 测试成功</span><br></pre></td></tr></table></figure></p>
+<h2 id="准备内核及其它相关文件"><a href="#准备内核及其它相关文件" class="headerlink" title="准备内核及其它相关文件"></a>准备内核及其它相关文件</h2><p>   此时<code>pxe</code>己经能够获得地址并下载<code>pxelinux.0</code>进行网络引导，接下来是下载内核文件<code>vmlinuz</code>、<code>initrd.img</code>继续完成装机。<br> 这里我拿<code>CentOS7.2</code>为例：<code>CentOS-7-x86_64-DVD-1511.iso</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# mount -o loop CentOS-7-x86_64-DVD-1511.iso  /mnt</span><br><span class="line">mount: /dev/loop0 is write-protected, mounting read-only</span><br><span class="line">[root@master pxeboot]# cd /mnt/images/pxeboot/</span><br><span class="line">[root@master pxeboot]# cp vmlinuz /var/lib/tftpboot/</span><br><span class="line">[root@master pxeboot]# cp initrd.img  /var/lib/tftpboot/</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mkdir /var/lib/tftpboot/pxelinux.cfg</span><br><span class="line">cp /mnt/isolinux/isolinux.cfg  /var/lib/tftpboot/pxelinux.cfg /default </span><br><span class="line">[root@master pxelinux.cfg]# cat default </span><br><span class="line">default vesamenu.c32</span><br><span class="line">#default linux   # 这里是一个标签，对找后面相应的label</span><br><span class="line">timeout 600</span><br><span class="line"></span><br><span class="line">menu title CentOS 7 wxq    # 此处定义title</span><br><span class="line">label linux</span><br><span class="line">  menu label ^Install CentOS 7  # 此处定义系统安装时显示版本</span><br><span class="line">  kernel vmlinuz</span><br><span class="line">  append initrd=initrd.img method=http://172.16.10.1/pub/ ks=http://172.16.10.1/pxe/CentOS72.ks</span><br><span class="line"># 注意： 如果此处只定义method,那么装机过程将全手动。</span><br></pre></td></tr></table></figure>
+<p>此外还有一些额外文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]# ls /mnt/isolinux/</span><br><span class="line">boot.cat  grub.conf   isolinux.bin  memtest     TRANS.TBL    vesamenu.c32</span><br><span class="line">boot.msg  initrd.img  isolinux.cfg  splash.png  upgrade.img  vmlinuz</span><br><span class="line">[root@master ~]# ll /var/lib/tftpboot/</span><br><span class="line">boot.msg  initrd.img  pxelinux.0   splash.png  vesamenu.c32  vmlinuz</span><br></pre></td></tr></table></figure></p>
+<h2 id="定义安装树"><a href="#定义安装树" class="headerlink" title="定义安装树"></a>定义安装树</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># yum  -y install httpd</span><br><span class="line"># mkdir /var/www/html/pxe</span><br><span class="line"># mkdir /var/www/html/pub</span><br><span class="line"># mount --bind /mnt /var/www/html/pub/ </span><br><span class="line"># systemctl  start httpd</span><br></pre></td></tr></table></figure>
+<h2 id="定义ks文件"><a href="#定义ks文件" class="headerlink" title="定义ks文件"></a>定义ks文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">/pxe/CentOS72.ks</span><br><span class="line">[root@master pxe]# cat CentOS72.ks</span><br><span class="line">#version=DEVEL</span><br><span class="line"># System authorization information</span><br><span class="line"></span><br><span class="line">install</span><br><span class="line"># Keyboard layouts</span><br><span class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</span><br><span class="line">auth --enableshadow --passalgo=sha512</span><br><span class="line"></span><br><span class="line"># Use CDROM installation media</span><br><span class="line"># Run the Setup Agent on first boot</span><br><span class="line">#firstboot --enable</span><br><span class="line"># System language</span><br><span class="line">lang en_US.UTF-8</span><br><span class="line"></span><br><span class="line">url --url=http://172.16.10.1/pub/</span><br><span class="line"># Use graphical install</span><br><span class="line">graphical</span><br><span class="line">#text</span><br><span class="line"></span><br><span class="line">selinux --disabled</span><br><span class="line">skipx</span><br><span class="line"></span><br><span class="line">reboot</span><br><span class="line"></span><br><span class="line"># Network information</span><br><span class="line">#network  --bootproto=static --device=ens33 --gateway=172.16.10.254 --ip=172.16.10.30 --nameserver=114.114.114.114 --netmask=255.255.255.0 --onboot=on --ipv6=auto --activate</span><br><span class="line">network  --bootproto=dhcp --device=ens33 --onboot=yes --ipv6=auto --activate</span><br><span class="line">network  --hostname=digmyth</span><br><span class="line"></span><br><span class="line"># Root password=123456</span><br><span class="line">rootpw --iscrypted $6$6ErC1johQ5LVAYwQ$cGGxb6Q6./SpvXCZs.K39d9LpV/IeFnspUT6mHmsVsARzToRCSsZ4fLxcOh0tYWpt38Yh6JoMzmSEkEtCtMlS/</span><br><span class="line"># System services</span><br><span class="line">services --disabled=&quot;chronyd&quot;</span><br><span class="line"></span><br><span class="line"># System timezone</span><br><span class="line">timezone Asia/Shanghai --isUtc --nontp</span><br><span class="line"># System bootloader configuration</span><br><span class="line">clearpart --all --initlabel</span><br><span class="line">bootloader --append=&quot; crashkernel=auto&quot; --location=mbr --boot-drive=sda</span><br><span class="line"># Partition clearing information</span><br><span class="line"></span><br><span class="line">#clearpart --drives=sda --initlabel</span><br><span class="line">#clearpart --none --initlabel</span><br><span class="line"># Disk partitioning information</span><br><span class="line"></span><br><span class="line">#ignoredisk --only-use=sda</span><br><span class="line">#part pv.735 --fstype=&quot;lvmpv&quot; --ondisk=sda --size=19979</span><br><span class="line">#volgroup vg --pesize=4096 pv.735</span><br><span class="line">#logvol /boot --fstype=&quot;xfs&quot; --size=500 --name=boot --vgname=vg</span><br><span class="line">#logvol /  --fstype=&quot;xfs&quot; --size=16000 --name=root --vgname=vg</span><br><span class="line">#logvol /data  --fstype=&quot;xfs&quot; --size=3000 --name=data --vgname=vg</span><br><span class="line">#logvol swap --fstype=&quot;swap&quot; --grow --size=1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">%packages</span><br><span class="line">@^minimal</span><br><span class="line">@core</span><br><span class="line">kexec-tools</span><br><span class="line">vim</span><br><span class="line">net-tools</span><br><span class="line">sysstat</span><br><span class="line"></span><br><span class="line">%end</span><br><span class="line"></span><br><span class="line">%post</span><br><span class="line">touch /root/wxq.txt</span><br><span class="line">%end</span><br><span class="line"></span><br><span class="line">%addon com_redhat_kdump --enable --reserve-mb=&apos;auto&apos;</span><br><span class="line">%end</span><br></pre></td></tr></table></figure>
+<p>上面的装机将进入图形界面手动分区安装    </p>
+<p><img src="http://bmvjfw.img48.wal8.com/img48/17283444_20170906112306/150466910816.jpg" alt="pxeboot"></p>
+<p>到此完结，可以结合cobbler实现多pxe环境并存。</p>
+<ul>
+<li>cobbler 一些概念：</li>
+<li>distro发行版： 其实就是pxe所说的相应内核文件</li>
+<li>profile:  提供pxeboot引导文件、KS文件、安装树（用现有iso镜像mirror/import方式）</li>
+</ul>
+<h5 id="是不是很完美-。。。"><a href="#是不是很完美-。。。" class="headerlink" title="是不是很完美 。。。"></a>是不是很完美 。。。</h5>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckjs9lz5p005z0zjxioj7ksxy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-11-模板渲染" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/20/web-django-11-模板渲染/" class="article-date">
@@ -116,68 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckjmh5qiw004y7xjx5t9mu6a4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/web-02-前端html/" class="article-date">
-  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</span><br><span class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</span><br><span class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line"></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form&gt;</span><br><span class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</span><br><span class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</span><br><span class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="noopener">参考</a><br>基本概念：</p>
-<ul>
-<li>html很骨感.</li>
-<li>css就是装饰或样式.</li>
-<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
-</ul>
-<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
-<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
-<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
-<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">position</span><br><span class="line">     position: relative  # 与absolute一起使用</span><br><span class="line">     position: absolute  #随滚动条滚动而滚动</span><br><span class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</span><br><span class="line">     position: fixed     # 永远在窗口某位置</span><br></pre></td></tr></table></figure></p>
-<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="noopener">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
-<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
-<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="noopener">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
-<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="noopener">http://fontawesome.dashgame.com/#basic</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckjmh5qio004j7xjx4ncy9oji" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckjs9lz4g004x0zjxhsmcktpk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -254,7 +268,68 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckjmh5qjd005o7xjxl6kehl86" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckjs9lz5c005o0zjxzae8k4c7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/web-02-前端html/" class="article-date">
+  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</span><br><span class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</span><br><span class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line"></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form&gt;</span><br><span class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</span><br><span class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</span><br><span class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="noopener">参考</a><br>基本概念：</p>
+<ul>
+<li>html很骨感.</li>
+<li>css就是装饰或样式.</li>
+<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
+</ul>
+<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
+<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
+<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
+<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">position</span><br><span class="line">     position: relative  # 与absolute一起使用</span><br><span class="line">     position: absolute  #随滚动条滚动而滚动</span><br><span class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</span><br><span class="line">     position: fixed     # 永远在窗口某位置</span><br></pre></td></tr></table></figure></p>
+<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="noopener">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
+<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
+<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="noopener">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
+<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="noopener">http://fontawesome.dashgame.com/#basic</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckjs9lz3y004j0zjx2243ew1q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -304,7 +379,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckjmh5qg1001t7xjx3idga7vz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckjs9lz0i001u0zjxj0hn149s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -365,7 +440,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckjmh5qfb00147xjxdnuh1e0o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckjs9lyzs00140zjxmi9kz7kh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -426,7 +501,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckjmh5qgt002o7xjxuxnkp3ny" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckjs9lz14002p0zjxak6lrklb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -492,7 +567,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckjmh5qdt00017xjxipsswsrf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckjs9lyyp00010zjx5s46xegx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -568,7 +643,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ckjmh5qf3000u7xjxnkddq5sn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ckjs9lyzl000u0zjx8r3mqfu1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -613,58 +688,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ckjmh5qiu004t7xjxwyc19f71" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
-  <time datetime="2017-05-15T12:51:41.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/python加密解密加签验签/">python-加密解密加签验签</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="python加密解密，加签验签"><a href="#python加密解密，加签验签" class="headerlink" title="python加密解密，加签验签"></a>python加密解密，加签验签</h2><p>(转)<br>在与第三方服务对接时，加密与解密，加签与验签是这个过程中的关键一步</p>
-<p>一般情况下，对接服务中会有两对公私钥。使用对方公钥进行加密，使用自己私钥进行加签。传回来的数据，使用自己的私钥解密，使用对方的公钥验签。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import base64</span><br><span class="line">from Crypto.PublicKey import RSA</span><br><span class="line">from Crypto.Hash import SHA</span><br><span class="line">from Crypto.Cipher import PKCS1_v1_5</span><br><span class="line">from Crypto.Signature import PKCS1_v1_5 as SIGN_PKCS</span><br><span class="line"></span><br><span class="line">PUB_KEY = RSA.importKey(open(&apos;rsa_public_key.pem&apos;,&apos;r&apos;).read())</span><br><span class="line">PRI_KEY = RSA.importKey(open(&apos;rsa_private_key.pem&apos;,&apos;r&apos;).read())</span><br></pre></td></tr></table></figure>
-<p>加密</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def split_data(l, n):</span><br><span class="line">    for i in range(0, len(l), n):</span><br><span class="line">        yield l[i: i+n]</span><br><span class="line">        </span><br><span class="line">def encrypt(params):</span><br><span class="line">    raw = params.encode(&apos;utf-8&apos;)</span><br><span class="line">    cipher = PKCS1_v1_5.new(PUB_KEY)</span><br><span class="line">    ＃ 加密超长字节117个字节一加密</span><br><span class="line">    content = b&apos;&apos;.join([cipher.encrypt(x) for x in chunks(raw, 117)])</span><br><span class="line">    return base64.b64encode(content)</span><br></pre></td></tr></table></figure>
-<p>解密<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def decrypt(data):</span><br><span class="line">    raw = data.encode(&apos;utf-8&apos;)</span><br><span class="line">    decrypt = PKCS1_v1_5.new(PRI_KEY).decrypt</span><br><span class="line">    # 解密超长字符128一解密</span><br><span class="line">    content = b&apos;&apos;.join(decrypt(x, object()) for x in chunks(raw, 128))</span><br><span class="line">    return content.decode()</span><br></pre></td></tr></table></figure></p>
-<p>加签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def signer(data):</span><br><span class="line">    signstr = data.encode(&apos;utf-8&apos;)</span><br><span class="line">    sign = SIGN_PKCS.new(PRI_KEY).sign(SHA.new(signstr))</span><br><span class="line">    return base64.b64encode(sign)</span><br></pre></td></tr></table></figure></p>
-<p>验签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def verify_sign(unsign, raw_sign):</span><br><span class="line">    # unsign: 签名</span><br><span class="line">    # raw_sign: 待验证签名</span><br><span class="line">    assert SIGN_PKCS.new(PUB_KEY).verify(SHA.new(unsign.encode(&apos;utf-8&apos;)), raw_sign)</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ckjmh5qie00477xjx8c95sh6i" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ckjs9lz49004s0zjx9wmk2ioq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -718,6 +742,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/08/kubernetes-volumes/">kubernetes volumes</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/05/Kubernetes-ubuntu20.04/">Ubuntu20.04 Run k8s</a>
           </li>
         
@@ -731,10 +759,6 @@
         
           <li>
             <a href="/2020/03/07/calico-原理剖析/">calico-原理剖析</a>
-          </li>
-        
-          <li>
-            <a href="/2020/02/15/linux-pacemaker-corosync/">corosync/PacemakerHA</a>
           </li>
         
       </ul>

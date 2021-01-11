@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>kubernetes volumes | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="12# kubectl  explain  pods.spec.volumes# kubectl  explain  pods.spec.containers.volumeMounts hostPath 为node节点本地卷1234567891011121314151617181920212223root@k8s-m:/data/volumes# cat 01-volume-demo.yaml a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes volumes">
+<meta property="og:url" content="http://www.digmyth.com/2021/01/08/kubernetes-volumes/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="12# kubectl  explain  pods.spec.volumes# kubectl  explain  pods.spec.containers.volumeMounts hostPath 为node节点本地卷1234567891011121314151617181920212223root@k8s-m:/data/volumes# cat 01-volume-demo.yaml a">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-01-11T07:48:49.236Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kubernetes volumes">
+<meta name="twitter:description" content="12# kubectl  explain  pods.spec.volumes# kubectl  explain  pods.spec.containers.volumeMounts hostPath 为node节点本地卷1234567891011121314151617181920212223root@k8s-m:/data/volumes# cat 01-volume-demo.yaml a">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-kubernetes-volumes" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/01/08/kubernetes-volumes/" class="article-date">
+  <time datetime="2021-01-08T12:51:41.000Z" itemprop="datePublished">2021-01-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      kubernetes volumes
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># kubectl  explain  pods.spec.volumes</span><br><span class="line"># kubectl  explain  pods.spec.containers.volumeMounts</span><br></pre></td></tr></table></figure>
+<h3 id="hostPath-为node节点本地卷"><a href="#hostPath-为node节点本地卷" class="headerlink" title="hostPath 为node节点本地卷"></a>hostPath 为node节点本地卷</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/volumes# cat 01-volume-demo.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: vol-demo</span><br><span class="line">  namespace: vol</span><br><span class="line">  labels:</span><br><span class="line">    app: vol-demo</span><br><span class="line">spec:</span><br><span class="line">  nodeName: k8s-n</span><br><span class="line">  containers:</span><br><span class="line">  - name: vol-demo</span><br><span class="line">    image: docker.io/ikubernetes/myapp:v1</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - mountPath: /data</span><br><span class="line">      name: webstore   </span><br><span class="line">  volumes:</span><br><span class="line">  - name: webstore</span><br><span class="line">    hostPath:</span><br><span class="line">      path: /volumes/vol-demo</span><br><span class="line">      type: DirectoryOrCreate</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes# kubectl  apply -f 01-volume-demo.yaml</span><br></pre></td></tr></table></figure>
+<p>empty 临时存储，pod重启数据丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/volumes# cat  02-emptydir.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: vol-emptydir-pod</span><br><span class="line">  namespace: vol</span><br><span class="line">spec:</span><br><span class="line">  volumes:</span><br><span class="line">  - name: html</span><br><span class="line">    emptyDir: &#123;&#125;</span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx</span><br><span class="line">    image: nginx:1.14-alpine</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - name: html</span><br><span class="line">      mountPath: /usr/share/nginx/html</span><br><span class="line">  - name: createpage</span><br><span class="line">    image: alpine</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - name: html</span><br><span class="line">      mountPath: /html</span><br><span class="line">    command: [&quot;/bin/sh&quot;,&quot;-c&quot;]</span><br><span class="line">    args:</span><br><span class="line">    - while true;do</span><br><span class="line">        echo $(hostname) $(date) &gt;&gt; /html/index.html;</span><br><span class="line">        sleep 2;</span><br><span class="line">        done</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes# kubectl  apply -f  02-emptydir.yaml</span><br><span class="line">root@k8s-m:/data/volumes# kubectl  get pods -n vol -o wide</span><br><span class="line">NAME               READY   STATUS    RESTARTS   AGE     IP              NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">vol-emptydir-pod   2/2     Running   0          2m47s   172.16.234.11   k8s-n   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes# wget -O - -q http://172.16.234.11</span><br><span class="line">vol-emptydir-pod Mon Jan 11 03:30:24 UTC 2021</span><br><span class="line">vol-emptydir-pod Mon Jan 11 03:30:26 UTC 2021</span><br><span class="line">vol-emptydir-pod Mon Jan 11 03:30:28 UTC 2021   # 正如我们期望的那样，每2秒钟生成一条记录</span><br></pre></td></tr></table></figure></p>
+<h3 id="nfs-存储卷"><a href="#nfs-存储卷" class="headerlink" title="nfs 存储卷"></a>nfs 存储卷</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/volumes# cat 03-nfs-pod.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: liveness-httpget-pod</span><br><span class="line">  namespace: vol</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: liveness-httpget-pod</span><br><span class="line">    image: nginx</span><br><span class="line">    imagePullPolicy: IfNotPresent</span><br><span class="line">    ports:</span><br><span class="line">    - name: http</span><br><span class="line">      containerPort: 80</span><br><span class="line">    livenessProbe:</span><br><span class="line">      httpGet:</span><br><span class="line">       port: http</span><br><span class="line">       path: /index.html</span><br><span class="line">      initialDelaySeconds: 1</span><br><span class="line">      periodSeconds: 3</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - name: html</span><br><span class="line">      mountPath: /usr/share/nginx/html/</span><br><span class="line">  volumes:</span><br><span class="line">  - name: html</span><br><span class="line">    nfs:</span><br><span class="line">      path: /nginx_share</span><br><span class="line">      server: 192.168.1.10</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes# kubectl  apply -f  03-nfs-pod.yaml</span><br><span class="line">apt install nfs-kernel-server</span><br><span class="line">root@k8s-m:/data/volumes# kubectl  get pods -n vol   -o wide</span><br><span class="line">NAME                   READY   STATUS    RESTARTS   AGE     IP              NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">liveness-httpget-pod   1/1     Running   0          16m     172.16.234.13   k8s-n   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes# wget -O - -q 172.16.234.13</span><br><span class="line">test nginx for nfs vol      # 成功</span><br></pre></td></tr></table></figure>
+<p>redis Pod挂载nfs类型的卷,实现重建pod数据不丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/volumes# cat 04-nfs-redis.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: redis</span><br><span class="line">  namespace: vol</span><br><span class="line">  labels:</span><br><span class="line">    app: redis</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: redis</span><br><span class="line">    image: redis:5.0.4</span><br><span class="line">    ports:</span><br><span class="line">    - name: redis-port</span><br><span class="line">      containerPort: 6379</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - name: data</span><br><span class="line">      mountPath: /data</span><br><span class="line">  volumes:</span><br><span class="line">  - name: data</span><br><span class="line">    nfs:</span><br><span class="line">      path: /vols/v6</span><br><span class="line">      server: 192.168.1.10</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes# kubectl apply -f  04-nfs-redis.yaml</span><br><span class="line">root@k8s-m:/data/volumes# kubectl  get pods -n vol -o wide</span><br><span class="line">NAME                   READY   STATUS    RESTARTS   AGE   IP              NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">redis                  1/1     Running   0          12m   172.16.234.12   k8s-n   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes# kubectl   exec  -it pods/redis  -n vol -- bash</span><br><span class="line">root@redis:/data# redis-cli </span><br><span class="line">127.0.0.1:6379&gt; set name wxq</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; set age 25</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; save</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes# kubectl  delete -f 04-nfs-redis.yaml</span><br><span class="line">root@k8s-m:/data/volumes# kubectl apply -f  04-nfs-redis.yaml</span><br><span class="line">root@k8s-m:/data/volumes# kubectl   exec -it  pods/redis -n vol -- bash</span><br><span class="line">root@redis:/data# redis-cli </span><br><span class="line">127.0.0.1:6379&gt; get name</span><br><span class="line">&quot;wxq&quot;  # 挂载卷后数据仍然存在</span><br></pre></td></tr></table></figure></p>
+<h3 id="利用-nfs创建一个pv"><a href="#利用-nfs创建一个pv" class="headerlink" title="利用 nfs创建一个pv"></a>利用 nfs创建一个pv</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/volumes/pvc# cat 01-pv-nfs.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: test-vol</span><br><span class="line">  labels:</span><br><span class="line">    storages: nfs</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 2Gi</span><br><span class="line">  volumeMode: Filesystem</span><br><span class="line">  accessModes:</span><br><span class="line">  - ReadWriteMany</span><br><span class="line">  - ReadWriteOnce</span><br><span class="line">  - ReadOnlyMany</span><br><span class="line">  persistentVolumeReclaimPolicy: Retain</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.1.10</span><br><span class="line">    path: /vols/v7</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes/pvc# kubectl apply -f  01-pv-nfs.yaml</span><br></pre></td></tr></table></figure>
+<h3 id="创建pvc"><a href="#创建pvc" class="headerlink" title="创建pvc"></a>创建pvc</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/volumes/pvc# cat 02-pvc-nfs-yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">metadata:</span><br><span class="line">  name: test-pvc</span><br><span class="line">  namespace: vol</span><br><span class="line">spec:</span><br><span class="line">  accessModes:</span><br><span class="line">  - ReadWriteOnce</span><br><span class="line">  volumeMode: Filesystem</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 1Gi</span><br><span class="line"></span><br><span class="line">#storageClassName: slow</span><br><span class="line">#  selector:</span><br><span class="line">#    matchLabels:</span><br><span class="line">#      release: &quot;stable&quot;</span><br><span class="line">#    matchExpressions:</span><br><span class="line">#      - &#123;key: environment, operator: In, values: [dev]&#125;</span><br><span class="line">root@k8s-m:/data/volumes/pvc# kubectl apply -f  02-pvc-nfs-yaml</span><br></pre></td></tr></table></figure>
+<h3 id="创建一个pod申请pvc"><a href="#创建一个pod申请pvc" class="headerlink" title="创建一个pod申请pvc"></a>创建一个pod申请pvc</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/volumes/pvc# cat 03-pod-demo.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: pvc-pod-demo</span><br><span class="line">  namespace: vol</span><br><span class="line">  labels:</span><br><span class="line">    app: pvc-pod</span><br><span class="line">spec:</span><br><span class="line">  nodeName: k8s-n</span><br><span class="line">  containers:</span><br><span class="line">  - name: pvc-pod</span><br><span class="line">    image: docker.io/ikubernetes/myapp:v1</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - mountPath: /data</span><br><span class="line">      name: testpvc</span><br><span class="line">  volumes:</span><br><span class="line">  - name: testpvc</span><br><span class="line">    persistentVolumeClaim:</span><br><span class="line">      claimName: test-pvc</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/volumes/pvc# kubectl apply -f 03-pod-demo.yaml</span><br><span class="line">root@k8s-m:/data# kubectl  get pv</span><br><span class="line">NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM          STORAGECLASS   REASON   AGE</span><br><span class="line">test-vol   2Gi        RWO,ROX,RWX    Retain           Bound    vol/test-pvc                           11m</span><br><span class="line">root@k8s-m:/data# kubectl  get pvc -n vol</span><br><span class="line">NAME       STATUS   VOLUME     CAPACITY   ACCESS MODES   STORAGECLASS   AGE</span><br><span class="line">test-pvc   Bound    test-vol   2Gi        RWO,ROX,RWX                   6m47s</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>无它，唯手熟而，理解运用更重要</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/01/08/kubernetes-volumes/" data-id="ckjs9lyzz001a0zjxkcie78rz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2021/01/05/Kubernetes-ubuntu20.04/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Ubuntu20.04 Run k8s</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/08/kubernetes-volumes/">kubernetes volumes</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/05/Kubernetes-ubuntu20.04/">Ubuntu20.04 Run k8s</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/10/mariadb-cluster-recovery/">mariadb cluster recovery</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/14/openstack-HA/">openstack-HA</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/07/calico-原理剖析/">calico-原理剖析</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
