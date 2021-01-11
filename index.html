@@ -62,6 +62,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-kubernetes-configmap" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/01/09/kubernetes-configmap/" class="article-date">
+  <time datetime="2021-01-09T12:51:41.000Z" itemprop="datePublished">2021-01-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/01/09/kubernetes-configmap/">kubernetes-configmap</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># kubectl  get cm/calico-config -n kube-system  -o yaml</span><br><span class="line"># kubectl  get cm/kube-flannel-cfg -n kube-system -o yaml</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl  create ns  cm-ns</span><br><span class="line">kubectl create cm  -h</span><br><span class="line">kubectl create cm filebeat-cfg  -n cm-ns \</span><br><span class="line">   --from-literal=redis_host=&quot;redis.default.svc.cluster.local&quot; \</span><br><span class="line">   --from-literal=log_level=&quot;Info&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">kubectl get cm/filebeat-cfg -n cm-ns -o yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">data:</span><br><span class="line">  log_level: Info</span><br><span class="line">  redis_host: redis.default.svc.cluster.local</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: &quot;2021-01-11T05:58:23Z&quot;</span><br><span class="line">  managedFields:</span><br><span class="line">  - apiVersion: v1</span><br><span class="line">    fieldsType: FieldsV1</span><br><span class="line">    fieldsV1:</span><br><span class="line">      f:data:</span><br><span class="line">        .: &#123;&#125;</span><br><span class="line">        f:log_level: &#123;&#125;</span><br><span class="line">        f:redis_host: &#123;&#125;</span><br><span class="line">    manager: kubectl-create</span><br><span class="line">    operation: Update</span><br><span class="line">    time: &quot;2021-01-11T05:58:23Z&quot;</span><br><span class="line">  name: filebeat-cfg</span><br><span class="line">  namespace: cm-ns</span><br><span class="line">  resourceVersion: &quot;573737&quot;</span><br><span class="line">  uid: b06442dc-90e6-446b-8a3c-f119f26226d4</span><br></pre></td></tr></table></figure>
+<p>启一个pod运用configmap<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/configmap# cat filebeat-pod.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: filebeat-pod</span><br><span class="line">  namespace: cm-ns</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: filebeat</span><br><span class="line">    image: ikubernetes/filebeat:5.6.5-alpine</span><br><span class="line">    env:</span><br><span class="line">    - name: REDIS_HOST</span><br><span class="line">      valueFrom:</span><br><span class="line">        configMapKeyRef:</span><br><span class="line">          name: filebeat-cfg    # configmap名字</span><br><span class="line">          key: redis_host       # 定义的键名</span><br><span class="line">    - name: LOG_LEVEL</span><br><span class="line">      valueFrom:</span><br><span class="line">        configMapKeyRef:</span><br><span class="line">          name: filebeat-cfg    # configmap名字</span><br><span class="line">          key: log_level        # 定义的键名</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/configmap# kubectl apply -f filebeat-pod.yaml</span><br><span class="line">#pod内部是能查到的定义变量的</span><br><span class="line">root@k8s-m:/data/configmap# kubectl   exec -it  pods/filebeat-pod  -n cm-ns -- env | grep  REDIS_HOST</span><br><span class="line">REDIS_HOST=redis.default.svc.cluster.local</span><br></pre></td></tr></table></figure></p>
+<h3 id="定义2个数据文件"><a href="#定义2个数据文件" class="headerlink" title="定义2个数据文件"></a>定义2个数据文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/configmap/nginx# cat server1.conf </span><br><span class="line">server &#123;</span><br><span class="line"> 	server_name www.first.com;</span><br><span class="line">        listen 80;</span><br><span class="line">        location / &#123;</span><br><span class="line">            	root &quot;/html/first&quot;;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">root@k8s-m:/data/configmap/nginx# cat server2.conf </span><br><span class="line">server &#123;</span><br><span class="line"> 	server_name www.second.com;</span><br><span class="line">        listen 80;</span><br><span class="line">        location / &#123;</span><br><span class="line">            	root &quot;/html/second&quot;;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="创建nginx-cfg"><a href="#创建nginx-cfg" class="headerlink" title="创建nginx-cfg"></a>创建nginx-cfg</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl  create cm nginx-cfg --from-file=server1.conf  --from-file=server-sec.conf=server2.conf -n cm-ns</span><br></pre></td></tr></table></figure>
+<h3 id="pod使用nginx-cfg"><a href="#pod使用nginx-cfg" class="headerlink" title="pod使用nginx-cfg"></a>pod使用nginx-cfg</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster nginx]# cat nginx-pod.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx-pod</span><br><span class="line">  namespace: cm-ns</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx-t</span><br><span class="line">    image: nginx</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - name: config-vol</span><br><span class="line">      mountPath: /etc/nginx/conf.d/</span><br><span class="line">  volumes:</span><br><span class="line">  - name: config-vol</span><br><span class="line">    configMap:</span><br><span class="line">      name: nginx-cfg</span><br><span class="line">      items:</span><br><span class="line">      - key: server1.conf         # 定义configmap时的key</span><br><span class="line">        path: server-first.conf   # pod内部的文件名</span><br><span class="line">      - key: server-sec.conf      # 定义configmap时的key</span><br><span class="line">        path: server-second.conf  # pod内部的文件名</span><br><span class="line"></span><br><span class="line">[root@k8smaster nginx]# kubectl apply -f nginx-pod.yaml</span><br><span class="line">[root@k8smaster nginx]# kubectl  exec -it pods/nginx-pod -n cm-ns -- ls /etc/nginx/conf.d</span><br><span class="line">server-first.conf  server-second.conf</span><br><span class="line"></span><br><span class="line">kubectl   edit cm/nginx-cfg -n cm-ns    #  修改能在60s生效</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>configmap也是一种存储卷，特殊的存储卷，用于保存pod内程序变量配置或文件等</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/01/09/kubernetes-configmap/" data-id="ckjsb2k3t001h3ajxvtuwvagt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-kubernetes-volumes" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/01/08/kubernetes-volumes/" class="article-date">
@@ -101,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/08/kubernetes-volumes/" data-id="ckjs9lyzz001a0zjxkcie78rz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/08/kubernetes-volumes/" data-id="ckjsb2k3v001j3ajxes1g9493" class="article-share-link">Share</a>
       
       
     </footer>
@@ -149,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/05/Kubernetes-ubuntu20.04/" data-id="ckjs9lyz2000b0zjxa9y1kcu2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/05/Kubernetes-ubuntu20.04/" data-id="ckjsb2k2n00073ajxlfmsc3gq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -215,7 +266,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckjs9lz0u002d0zjx3vvldfc4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckjsb2k4i002e3ajx780idvy2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -263,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckjs9lz1b002w0zjxndzvsljo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckjsb2k4v002x3ajx6lnfcx80" class="article-share-link">Share</a>
       
       
     </footer>
@@ -323,7 +374,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckjs9lyzc000k0zjxn3ijcyg9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckjsb2k34000m3ajxb8ulrbik" class="article-share-link">Share</a>
       
       
     </footer>
@@ -371,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckjs9lz0q00250zjxuqdu1wui" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckjsb2k4d00283ajx85gh62qu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -419,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckjs9lz02001d0zjx6qhynqwe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckjsb2k3k00183ajxegoq8qvd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -473,7 +524,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/15/linux-awk/" data-id="ckjs9lz0f001p0zjx8s7zyyvu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/15/linux-awk/" data-id="ckjsb2k40001q3ajxwc3hftej" class="article-share-link">Share</a>
       
       
     </footer>
@@ -524,61 +575,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckjs9lz1e002y0zjx2prqhdo0" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-disk" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/12/15/linux-disk/" class="article-date">
-  <time datetime="2019-12-15T01:42:54.000Z" itemprop="datePublished">2019-12-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/15/linux-disk/">linux disk</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Ubuntu系统分区信息查看：<code>fdisk /dev/vda</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x630fdccb</span><br><span class="line"></span><br><span class="line">Device     Boot   Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/vda1  *       2048   1953791   1951744  953M 83 Linux</span><br><span class="line">/dev/vda2       1953792 125829119 123875328 59.1G 83 Linux</span><br></pre></td></tr></table></figure></p>
-<p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
-<p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
-<p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
-<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位是扇区，bs=512代表一个扇区，也就是512bytes</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
-<p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
-<p>总结：</p>
-<ul>
-<li>一个扇区512bytes , 1Block=1KB=2扇区</li>
-<li>dd参数的skip针对if设备，seek针对of设备（跳过多少扇区再处理）</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ckjs9lz0h001s0zjxgr7ffve9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckjsb2k4w002z3ajxlwmj1r0q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -632,6 +629,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/09/kubernetes-configmap/">kubernetes-configmap</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/08/kubernetes-volumes/">kubernetes volumes</a>
           </li>
         
@@ -645,10 +646,6 @@
         
           <li>
             <a href="/2020/03/14/openstack-HA/">openstack-HA</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/07/calico-原理剖析/">calico-原理剖析</a>
           </li>
         
       </ul>
