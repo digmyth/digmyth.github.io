@@ -88,7 +88,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># kubectl  get cm/calico-config -n kube-system  -o yaml</span><br><span class="line"># kubectl  get cm/kube-flannel-cfg -n kube-system -o yaml</span><br></pre></td></tr></table></figure>
+        <h3 id="创建configmap"><a href="#创建configmap" class="headerlink" title="创建configmap"></a>创建configmap</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># kubectl  get cm/calico-config -n kube-system  -o yaml</span><br><span class="line"># kubectl  get cm/kube-flannel-cfg -n kube-system -o yaml</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl  create ns  cm-ns</span><br><span class="line">kubectl create cm  -h</span><br><span class="line">kubectl create cm filebeat-cfg  -n cm-ns \</span><br><span class="line">   --from-literal=redis_host=&quot;redis.default.svc.cluster.local&quot; \</span><br><span class="line">   --from-literal=log_level=&quot;Info&quot;</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">kubectl get cm/filebeat-cfg -n cm-ns -o yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">data:</span><br><span class="line">  log_level: Info</span><br><span class="line">  redis_host: redis.default.svc.cluster.local</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: &quot;2021-01-11T05:58:23Z&quot;</span><br><span class="line">  managedFields:</span><br><span class="line">  - apiVersion: v1</span><br><span class="line">    fieldsType: FieldsV1</span><br><span class="line">    fieldsV1:</span><br><span class="line">      f:data:</span><br><span class="line">        .: &#123;&#125;</span><br><span class="line">        f:log_level: &#123;&#125;</span><br><span class="line">        f:redis_host: &#123;&#125;</span><br><span class="line">    manager: kubectl-create</span><br><span class="line">    operation: Update</span><br><span class="line">    time: &quot;2021-01-11T05:58:23Z&quot;</span><br><span class="line">  name: filebeat-cfg</span><br><span class="line">  namespace: cm-ns</span><br><span class="line">  resourceVersion: &quot;573737&quot;</span><br><span class="line">  uid: b06442dc-90e6-446b-8a3c-f119f26226d4</span><br></pre></td></tr></table></figure>
 <p>启一个pod运用configmap<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/configmap# cat filebeat-pod.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: filebeat-pod</span><br><span class="line">  namespace: cm-ns</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: filebeat</span><br><span class="line">    image: ikubernetes/filebeat:5.6.5-alpine</span><br><span class="line">    env:</span><br><span class="line">    - name: REDIS_HOST</span><br><span class="line">      valueFrom:</span><br><span class="line">        configMapKeyRef:</span><br><span class="line">          name: filebeat-cfg    # configmap名字</span><br><span class="line">          key: redis_host       # 定义的键名</span><br><span class="line">    - name: LOG_LEVEL</span><br><span class="line">      valueFrom:</span><br><span class="line">        configMapKeyRef:</span><br><span class="line">          name: filebeat-cfg    # configmap名字</span><br><span class="line">          key: log_level        # 定义的键名</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/configmap# kubectl apply -f filebeat-pod.yaml</span><br><span class="line">#pod内部是能查到的定义变量的</span><br><span class="line">root@k8s-m:/data/configmap# kubectl   exec -it  pods/filebeat-pod  -n cm-ns -- env | grep  REDIS_HOST</span><br><span class="line">REDIS_HOST=redis.default.svc.cluster.local</span><br></pre></td></tr></table></figure></p>
@@ -100,7 +100,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/09/kubernetes-configmap/" data-id="ckjsb7hup001h4kjx3ki3ia8n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/09/kubernetes-configmap/" data-id="ckjsb8t21001f5tjxn75svuco" class="article-share-link">Share</a>
       
       
     </footer>
@@ -152,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/08/kubernetes-volumes/" data-id="ckjsb7hur001j4kjxt8nkwa70" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/08/kubernetes-volumes/" data-id="ckjsb8t23001i5tjxvrwy1s88" class="article-share-link">Share</a>
       
       
     </footer>
@@ -200,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/05/Kubernetes-ubuntu20.04/" data-id="ckjsb7htj00074kjxqp71r4r6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/05/Kubernetes-ubuntu20.04/" data-id="ckjsb8t0v00055tjx3c3wjp70" class="article-share-link">Share</a>
       
       
     </footer>
@@ -266,7 +266,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckjsb7hvh002e4kjxfdhapkxt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckjsb8t2s002e5tjxbmqmstvi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -314,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckjsb7hw0002x4kjx8ignp5on" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckjsb8t34002y5tjxto2toqfa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -374,7 +374,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckjsb7hu1000m4kjxrht39emh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckjsb8t1d000k5tjx2ttsqyei" class="article-share-link">Share</a>
       
       
     </footer>
@@ -422,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckjsb7hvc00284kjxaz5db4ds" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckjsb8t2l00275tjxyaaynxcn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -470,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckjsb7hug00184kjxtv6l41mx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckjsb8t1r00155tjx55sh2xay" class="article-share-link">Share</a>
       
       
     </footer>
@@ -524,7 +524,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/15/linux-awk/" data-id="ckjsb7huw001q4kjxjzvfgex8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/15/linux-awk/" data-id="ckjsb8t29001p5tjx2qdchte3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -575,7 +575,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckjsb7hw2002z4kjx17l1osaw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckjsb8t3500305tjx79t7dg67" class="article-share-link">Share</a>
       
       
     </footer>
