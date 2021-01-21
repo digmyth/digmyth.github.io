@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>kubernetes dashboard | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="查找对端veth pair12345678root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink 4root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1NIC statistics:     peer_ifindex: 4     rx_queue_0_x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes dashboard">
+<meta property="og:url" content="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="查找对端veth pair12345678root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink 4root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1NIC statistics:     peer_ifindex: 4     rx_queue_0_x">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-01-21T08:11:48.354Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kubernetes dashboard">
+<meta name="twitter:description" content="查找对端veth pair12345678root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink 4root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1NIC statistics:     peer_ifindex: 4     rx_queue_0_x">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-kubernetes-dashboard" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/01/15/kubernetes-dashboard/" class="article-date">
+  <time datetime="2021-01-15T12:51:41.000Z" itemprop="datePublished">2021-01-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      kubernetes dashboard
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="查找对端veth-pair"><a href="#查找对端veth-pair" class="headerlink" title="查找对端veth pair"></a>查找对端veth pair</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink </span><br><span class="line">4</span><br><span class="line">root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1</span><br><span class="line">NIC statistics:</span><br><span class="line">     peer_ifindex: 4</span><br><span class="line">     rx_queue_0_xdp_packets: 0</span><br><span class="line">     rx_queue_0_xdp_bytes: 0</span><br><span class="line">     rx_queue_0_xdp_drops: 0</span><br></pre></td></tr></table></figure>
+<p>重新疏理k8s dashboard安装<br>github地址：<a href="https://github.com/kubernetes/dashboard" target="_blank" rel="noopener">https://github.com/kubernetes/dashboard</a></p>
+<p>在线dashboard2.1 deployment清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.1.0/aio/deploy/recommended.yaml</span><br></pre></td></tr></table></figure></p>
+<p>默认type为<code>ClusterIp</code>即只能看到Service地址，需要穿透集群边界让外部进行访问<br>方式有ingress、NodePort、外部LoadBalance、pod HostPort端口转发、pod HostNetwork 等方式，这里采用最简单的NodePort</p>
+<p>修改recommended.yaml清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">kind: Service</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    k8s-app: kubernetes-dashboard</span><br><span class="line">  name: kubernetes-dashboard</span><br><span class="line">  namespace: kubernetes-dashboard</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">    - nodePort: 30443</span><br><span class="line">      port: 443</span><br><span class="line">      targetPort: 8443</span><br><span class="line">  selector:</span><br><span class="line">    k8s-app: kubernetes-dashboard</span><br><span class="line">  type: NodePort</span><br></pre></td></tr></table></figure></p>
+<p>或者跑起来后再直接修改svc/kubernetes-dashboard<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl edit svc/kubernetes-dashboard  -n kubernetes-dashboard  # type: NodePort</span><br></pre></td></tr></table></figure></p>
+<p>按你的需要添加单独的NameSpace<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# kubectl    create namespace admin-ns --dry-run=client -o yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Namespace</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: null</span><br><span class="line">  name: admin-ns</span><br><span class="line">spec: &#123;&#125;</span><br><span class="line">status: &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>按你的需要添加<code>kubernetes-dashboard</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# kubectl    create sa  superadmin -n admin-ns</span><br><span class="line">serviceaccount/superadmin created</span><br><span class="line">root@k8s-m:/data/dashboard# kubectl    create sa  superadmin -n admin-ns --dry-run=client -o yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ServiceAccount</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: null</span><br><span class="line">  name: superadmin</span><br><span class="line">  namespace: admin-ns</span><br></pre></td></tr></table></figure></p>
+<p>创建一个<code>clusterrolebinding</code>,让内置的集群管理员角色<code>--clusterrole=cluster-admin</code>与刚创建的<code>serviceaccount</code>绑定<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# kubectl  create clusterrolebinding  superadmin  --clusterrole=cluster-admin  --serviceaccount=admin-ns:superadmin --dry-run=client -o yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: null</span><br><span class="line">  name: superadmin</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: cluster-admin</span><br><span class="line">subjects:</span><br><span class="line">- kind: ServiceAccount</span><br><span class="line">  name: superadmin</span><br><span class="line">  namespace: admin-ns</span><br></pre></td></tr></table></figure></p>
+<p>获取Token登录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# kubectl  describe   sa/superadmin -n admin-ns</span><br><span class="line">Name:                superadmin</span><br><span class="line">Namespace:           admin-ns</span><br><span class="line">Labels:              &lt;none&gt;</span><br><span class="line">Annotations:         &lt;none&gt;</span><br><span class="line">Image pull secrets:  &lt;none&gt;</span><br><span class="line">Mountable secrets:   superadmin-token-gtrj5</span><br><span class="line">Tokens:              superadmin-token-gtrj5</span><br><span class="line">Events:              &lt;none&gt;</span><br><span class="line">root@k8s-m:/data/dashboard# kubectl  describe secret/superadmin-token-gtrj5 -n admin-ns</span><br><span class="line">Name:         superadmin-token-gtrj5</span><br><span class="line">Namespace:    admin-ns</span><br><span class="line">Labels:       &lt;none&gt;</span><br><span class="line">Annotations:  kubernetes.io/service-account.name: superadmin</span><br><span class="line">              kubernetes.io/service-account.uid: 339d914d-3ae8-440a-a590-4a304400ef17</span><br><span class="line"></span><br><span class="line">Type:  kubernetes.io/service-account-token</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">token:      eyJhbGciOiJSUzI1NiIsImtpZCI6InZk--xxx #  Token字段</span><br><span class="line">ca.crt:     1066 bytes</span><br><span class="line">namespace:  8 bytes</span><br></pre></td></tr></table></figure></p>
+<p>界面自带CPU、内存监控图，只是数据是来源于Metrics Server, 需要部署MetricsServer才能展示，如果后期要部署kube-prometheus 就不需要单独部署Metrics Server，因为它己经集成了</p>
+<p>metrics-server github 地址： <a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/metrics-server</a></p>
+<p>在线清单文件部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</span><br></pre></td></tr></table></figure></p>
+<p>发现老是无限重启，说是就绪性探测和存活性探测有问题，我这里换了一个镜像好了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">spec:</span><br><span class="line">  hostNetwork: true</span><br><span class="line">  serviceAccountName: metrics-server</span><br><span class="line">  containers:</span><br><span class="line">  - name: metrics-server</span><br><span class="line">    image: bitnami/metrics-server:0.4.1    # 可能官方镜像有问题我换了一个</span><br><span class="line">    imagePullPolicy: IfNotPresent</span><br><span class="line">    args:</span><br><span class="line">      - --cert-dir=/tmp</span><br><span class="line">      - --secure-port=4443</span><br><span class="line">      - --kubelet-insecure-tls</span><br><span class="line">      - --kubelet-use-node-status-port</span><br><span class="line">      - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname</span><br><span class="line">    livenessProbe:</span><br><span class="line">      failureThreshold: 3</span><br><span class="line">      httpGet:</span><br><span class="line">        path: /livez</span><br><span class="line">        port: https</span><br><span class="line">        scheme: HTTPS</span><br><span class="line">      periodSeconds: 10</span><br><span class="line">    readinessProbe:</span><br><span class="line">      failureThreshold: 3</span><br><span class="line">      httpGet:</span><br><span class="line">        path: /readyz</span><br><span class="line">        port: https</span><br><span class="line">        scheme: HTTPS</span><br><span class="line">      periodSeconds: 10</span><br><span class="line">    ports:</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>dashboard只是提供web GUI服务，本身并做认证授权，只是代为拿着账号向kubernetes API进行认证</li>
+<li>dashboard 运行于pod,  pod代为向kubernetes API进行认证的账号也必须是ServiceAccount账号，不可以是User自然人的属性账号</li>
+<li>clusterrolebinding只能绑定clusterrole, rolebinding  即可以绑role,也可以绑clusterrole,口决是： 小绑大降权</li>
+<li>Metrics-server用于收集pod内部CPU、内存使用量资源，kube-prometheus项目内部集成此功能，所以部署与否看你需要</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckk6ktz8c001d12jxwui3jbiu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2021/01/12/kubernetes-ingress/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">kubernetes ingress进阶</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/15/kubernetes-dashboard/">kubernetes dashboard</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/12/kubernetes-ingress/">kubernetes ingress进阶</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/11/kubernetes-rbac/">kubernetes rbac</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/03/kubernetes-secret/">kubernetes secret</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/02/kubernetes-configmap/">kubernetes configmap</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

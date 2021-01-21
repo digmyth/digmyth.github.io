@@ -62,6 +62,64 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-02-基本配置示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-02-基本配置示例/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-02-基本配置示例/">web-Django-02-基本配置示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-django安装"><a href="#1-django安装" class="headerlink" title="1 django安装"></a>1 django安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install django pymysql</span><br></pre></td></tr></table></figure>
+<h3 id="2-新建django-project"><a href="#2-新建django-project" class="headerlink" title="2 新建django project"></a>2 新建django project</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">django-admin.py startproject mysite  或用pycharm新建一个项目</span><br></pre></td></tr></table></figure>
+<h3 id="3-该项目下创建一个应用"><a href="#3-该项目下创建一个应用" class="headerlink" title="3 该项目下创建一个应用"></a>3 该项目下创建一个应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd mysite &amp;&amp; python manage.py startapp  app01</span><br></pre></td></tr></table></figure>
+<h3 id="4-配置Django"><a href="#4-配置Django" class="headerlink" title="4 配置Django"></a>4 配置Django</h3><p>settings.py文件确保有下面代码，用于在static目录放置静态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">STATIC_URL = &apos;/static/&apos;</span><br><span class="line">STATICFILES_DIRS= (</span><br><span class="line">    os.path.join(BASE_DIR, &apos;static&apos;),</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>确保INSTALLED_APPS = []有app01,应用</p>
+<h3 id="5-Django-mysql配置"><a href="#5-Django-mysql配置" class="headerlink" title="5 Django mysql配置"></a>5 Django mysql配置</h3><p>settings.py文件确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DATABASES = &#123;</span><br><span class="line">    &apos;default&apos;: &#123;</span><br><span class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,</span><br><span class="line">        &apos;NAME&apos;: &apos;wxq_db&apos;,</span><br><span class="line">        &apos;USER&apos;: &apos;root&apos;,</span><br><span class="line">        &apos;PASSWORD&apos;: &apos;123&apos;,</span><br><span class="line">        &apos;HOST&apos;: &apos;localhost&apos;,</span><br><span class="line">        &apos;PORT&apos;: &apos;3306&apos;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>app01下 <strong>init</strong>.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import pymysql</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br></pre></td></tr></table></figure></p>
+<p>对于初学者建议配置此项，用于打印orm翻译后的sql语后，便于对照学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">LOGGING = &#123;</span><br><span class="line">    &apos;version&apos;: 1,</span><br><span class="line">    &apos;disable_existing_loggers&apos;: False,</span><br><span class="line">    &apos;handlers&apos;: &#123;</span><br><span class="line">        &apos;console&apos;:&#123;</span><br><span class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</span><br><span class="line">            &apos;class&apos;:&apos;logging.StreamHandler&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &apos;loggers&apos;: &#123;</span><br><span class="line">        &apos;django.db.backends&apos;: &#123;</span><br><span class="line">            &apos;handlers&apos;: [&apos;console&apos;],</span><br><span class="line">            &apos;propagate&apos;: True,</span><br><span class="line">            &apos;level&apos;:&apos;DEBUG&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="6-django生成数据"><a href="#6-django生成数据" class="headerlink" title="6 django生成数据"></a>6 django生成数据</h3><p>models.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from django.db import models</span><br><span class="line">class UserInfo(models.Model):</span><br><span class="line">    username = models.CharField(max_length=32)</span><br><span class="line">    password = models.CharField(max_length=32)</span><br><span class="line">    email = models.CharField(max_length=32)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+<h3 id="7-urls-py定义"><a href="#7-urls-py定义" class="headerlink" title="7  urls.py定义"></a>7  urls.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from app01 import views</span><br><span class="line">urlpatterns = [</span><br><span class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</span><br><span class="line">    url(r&apos;^users/$&apos;, views.users),</span><br><span class="line">    # url(r&apos;^create_data/&apos;, views.create_data),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="8-views-py定义"><a href="#8-views-py定义" class="headerlink" title="8 views.py定义"></a>8 views.py定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from django.shortcuts import render,HttpResponse, redirect</span><br><span class="line">from app01 import models</span><br><span class="line"></span><br><span class="line">def create_data(request):</span><br><span class="line">    for i in range(1,104):</span><br><span class="line">        models.UserInfo.objects.create(</span><br><span class="line">            username = &quot;root%s&quot; %i,</span><br><span class="line">            password = &quot;123&quot;,</span><br><span class="line">            email = &quot;root%s@qq.com&quot; %i,</span><br><span class="line">    )</span><br><span class="line">    return HttpResponse(&quot;data generate...&quot;)</span><br><span class="line"></span><br><span class="line">def users(request):</span><br><span class="line">    user_list = models.UserInfo.objects.all()</span><br><span class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;user_list &apos;:user_list &#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="9-templates-users-html定义"><a href="#9-templates-users-html定义" class="headerlink" title="9 templates/users.html定义"></a>9 templates/users.html定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;Title&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;/static/bootstrap-3.3.7-dist/css/bootstrap.css&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div style=&quot;width: 700px; margin: 10px     auto&quot;&gt;</span><br><span class="line">    &lt;h1&gt;用户列表&lt;/h1&gt;</span><br><span class="line">    &lt;table class=&quot;table table-hover table-bordered&quot;&gt;</span><br><span class="line">        &lt;thead&gt;</span><br><span class="line">            &lt;tr&gt;</span><br><span class="line">                &lt;th&gt; 用户名&lt;/th&gt;</span><br><span class="line">                &lt;th&gt; 密码&lt;/th&gt;</span><br><span class="line">                &lt;th&gt;邮箱&lt;/th&gt;</span><br><span class="line">            &lt;/tr&gt;</span><br><span class="line">        &lt;/thead&gt;</span><br><span class="line">    </span><br><span class="line">        &lt;tbody&gt;</span><br><span class="line">            &#123;% for user in page_obj.object_list  %&#125;</span><br><span class="line">                &lt;tr&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.username &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.password &#125;&#125;&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;&#123;&#123; user.email &#125;&#125;&lt;/td&gt;</span><br><span class="line">                &lt;/tr&gt;</span><br><span class="line">            &#123;% endfor %&#125;</span><br><span class="line">    </span><br><span class="line">        &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="10-注意bootstrap应用"><a href="#10-注意bootstrap应用" class="headerlink" title="10 注意bootstrap应用"></a>10 注意bootstrap应用</h3><p><a href="http://v3.bootcss.com/getting-started/#download" target="_blank" rel="noopener">bootstrap下载链接</a></p>
+<h3 id="11-启动项目"><a href="#11-启动项目" class="headerlink" title="11 启动项目"></a>11 启动项目</h3><p>运行项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver 127.0.0.1:8000</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckk6ktze7004u12jxog55hple" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-orm(一)" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/04/15/web-django-orm(一)/" class="article-date">
@@ -104,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckjwor9x5005obojx6p974dtl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckk6ktzf2005o12jx1bdguf95" class="article-share-link">Share</a>
       
       
     </footer>
@@ -184,7 +242,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckjwor9w60042bojxsuqpafqa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckk6ktzdh004g12jxt48jmbf5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -244,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckjwor9vy003sbojxt59yh9p3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckk6ktzd0004712jxr1zan7x7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -294,7 +352,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckjwor9w1003wbojxgtw68o62" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckk6ktzce003z12jx1mjerhp0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -398,7 +456,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckjwor9w40040bojxi0flbb69" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckk6ktzcr004312jxf4zdea5h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -483,7 +541,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckjwor9wm004sbojxf8ml280e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckk6ktze5004t12jx1t0p3p06" class="article-share-link">Share</a>
       
       
     </footer>
@@ -569,7 +627,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="ckjwor9w0003ubojxdggtmvp6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="ckk6ktzcc003y12jxypfs8grf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -641,7 +699,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="ckjwor9vv003obojxgno7qwa8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="ckk6ktzbg003o12jxyguiyceo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -718,221 +776,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="ckjwor9vw003qbojxuufkcjhp" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python-05-02-模块" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/20/python-05-02-模块/" class="article-date">
-  <time datetime="2017-02-20T02:09:10.000Z" itemprop="datePublished">2017-02-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/20/python-05-02-模块/">python-05-02-模块</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>相关概念</li>
-<li>模块os</li>
-<li>模块sys</li>
-<li>模块time</li>
-<li>模块random</li>
-<li>模块pickle</li>
-<li>模块json</li>
-<li>模块logging</li>
-<li>模块paramiko</li>
-<li>模块configparser</li>
-<li>模块MySQLdb</li>
-<li>模块hashlib</li>
-<li>模块uuid</li>
-<li>模块md5</li>
-<li>模块</li>
-</ul>
-<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><ul>
-<li>过程编程 , 函数式编程, 模块化编程是一个意思，区别于面向对象编程</li>
-<li>面向对象编程好处：（特性:  封装，继承，多态）</li>
-</ul>
-<p>python程序可以分解成模块，语句，表达式和 对象</p>
-<ul>
-<li>程序由模块构成</li>
-<li>模块包含语句</li>
-<li>语句包含表达式</li>
-<li>表达式建立并处理对象<br>表达式是”某事“， 语句是“做某事”即指令<br>语句的特性：它们改变了事物，例如，赋值语句改变了变量，print改变了屏幕输出。</li>
-</ul>
-<p>模块导入的使用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import platform</span><br><span class="line">&gt;&gt;&gt; print(platform.uname())</span><br><span class="line">uname_result(system=&apos;Linux&apos;, node=&apos;ubuntu&apos;, release=&apos;4.2.0-35-generic&apos;, version=&apos;#40~14.04.1-Ubuntu SMP Fri Mar 18 16:37:35 UTC 2016&apos;, machine=&apos;x86_64&apos;, processor=&apos;x86_64&apos;)</span><br><span class="line">&gt;&gt;&gt; import platform</span><br><span class="line">&gt;&gt;&gt; dir(platform)</span><br><span class="line">[&apos;DEV_NULL&apos;, &apos;_UNIXCONFDIR&apos;, &apos;__builtins__&apos; 此处略... ]</span><br></pre></td></tr></table></figure>
-<p>模块导入区别</p>
-<p>import 导入会形成以模块名同名的名称空间，如果有个方法叫uname(),那么我们调用是print(platform.uname())加上platform名称空间前缀不会冲突</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import random     # 独立名称空间</span><br><span class="line">&gt;&gt;&gt; random.choice([3,5,6,7,8,9])  </span><br><span class="line">7</span><br><span class="line">&gt;&gt;&gt; from random import choice  # 没有独立名称空间，当前有choice方法会覆盖，这就是区别</span><br><span class="line">&gt;&gt;&gt; choice([3,5,6,7,8,9])</span><br><span class="line">6</span><br></pre></td></tr></table></figure>
-<p>from-import是导入指定模块的某些方法和属性，会导入在当前名称空间里，如果当前名称空间也有choice方法，那么会覆盖choice方法。<br>import和from-import是可执行语句，独立可执行片断，可以嵌套在if测试中，或出现在def中，这样在我们满足条件再导入模块。</p>
-<p>己知模块查找此模块在系统中的路径，用法<code>module_name.__file__</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import random</span><br><span class="line">&gt;&gt;&gt; random.__file__</span><br><span class="line">&apos;/usr/lib/python3.4/random.py&apos;</span><br></pre></td></tr></table></figure></p>
-<p>反射<br>有一种说法叫反射<br>1 以字符串的形式导入模块<br>2 以字符串的形式调用函数</p>
-<p>例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@apt:~# cat /usr/local/lib/python2.7/dist-packages/pkg/mysql.py</span><br><span class="line">#!/usr/bin/python2.7</span><br><span class="line">def count():</span><br><span class="line">    return 3306</span><br><span class="line">root@apt:~#</span><br><span class="line">In [1]: var = &apos;pkg.mysql&apos;</span><br><span class="line">In [2]: mode = __import__(var)</span><br><span class="line">In [3]: mode.mysql.count()</span><br><span class="line">Out[3]: 3306</span><br><span class="line">In [4]: func = &apos;count&apos;</span><br><span class="line">In [5]: Func = getattr(mode.mysql, func)</span><br><span class="line">In [6]: Func()</span><br><span class="line">Out[6]: 3306</span><br></pre></td></tr></table></figure></p>
-<h2 id="模块os"><a href="#模块os" class="headerlink" title="模块os"></a>模块os</h2><p>More info <a href="http://www.digmyth.com/2017/01/20/python-03-01-IO/">详情</a></p>
-<h2 id="模块sys"><a href="#模块sys" class="headerlink" title="模块sys"></a>模块sys</h2><p>利用sys模块模拟#滚动条<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import sys,time</span><br><span class="line"></span><br><span class="line">In [111]: for i in range(50):</span><br><span class="line">   .....:         sys.stdout.write(&quot;\033[32;1m#\033[0m&quot;)</span><br><span class="line">   .....:         sys.stdout.flush()</span><br><span class="line">   .....:         time.sleep(0.05)</span><br><span class="line">   .....:     </span><br><span class="line">##################################################</span><br></pre></td></tr></table></figure></p>
-<h2 id="time模块"><a href="#time模块" class="headerlink" title="time模块"></a>time模块</h2><h2 id="random模块"><a href="#random模块" class="headerlink" title="random模块"></a>random模块</h2><p><a href="http://www.cnblogs.com/alex3714/articles/5161349.html" target="_blank" rel="noopener">博客参考</a></p>
-<p>几个有用的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import  random</span><br><span class="line">print(random.randint(1,10))  #  取1-9</span><br><span class="line">print(random.randrange(1,20,2)) # 步长为2，意味着取奇数</span><br><span class="line">print(random.sample([1,2,3,4,5,6,7,8],3))  # 取一个3个元素的列表[3, 6, 1]</span><br></pre></td></tr></table></figure></p>
-<p>生成随机码(一)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">checkcode = &apos;&apos;</span><br><span class="line">for i in range(4):</span><br><span class="line">    current=random.randrange(0,4)</span><br><span class="line">    if current != i:</span><br><span class="line">        tmp = chr(random.randint(65,90))</span><br><span class="line">    else:</span><br><span class="line">        tmp = random.randint(0,9)</span><br><span class="line">    checkcode += str(tmp)</span><br><span class="line">print(checkcode)</span><br></pre></td></tr></table></figure></p>
-<p>生成随机码(二)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import string</span><br><span class="line"># print(string.ascii_uppercase + string.ascii_lowercase+string.digits)</span><br><span class="line">source = string.ascii_uppercase + string.ascii_lowercase+string.digits</span><br><span class="line">print(&quot;&quot;.join(random.sample(source,4)))</span><br></pre></td></tr></table></figure></p>
-<h2 id="pickle模块"><a href="#pickle模块" class="headerlink" title="pickle模块"></a>pickle模块</h2><p>pickle只是python支持，那么可以序列化python内所有数据类型</p>
-<p>在程序运行的过程中，所有的变量都是在内存中,过程中可能改变变量，程序结束，内存变量回收。此时如果没有把修改过的变量存到磁盘上，下次程序运行又是最初的变量，怎么解决这个问题，序列化就派上用场了。</p>
-<p>序列化：   把内存中的变量变成可存储可传输的过程称为序列化，pickling<br>反序列化：把变量从序列化对象重新读入内存称为反序列化，unpickling</p>
-<p>pickle.dump()    序列化入文件<br>pickle.dumps()   序列化为字符串，可赋值<br>pickle.load()       从文件加载<br>pickle.loads()      从字符串加载</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">In [27]: import pickle</span><br><span class="line">In [29]: my_list</span><br><span class="line">Out[29]: [0, 2, 4, 6, 8, 10]</span><br><span class="line"></span><br><span class="line">In [30]: pickle_file = open(&apos;/root/my_list.pkl&apos;, &apos;wb&apos;)  # 打开一个文件</span><br><span class="line">In [31]: pickle.dump(my_list, pickle_file)   # 序列化入这个文件</span><br><span class="line">In [32]: pickle_file.close()</span><br><span class="line"></span><br><span class="line">In [33]: pickle_file = open(&apos;/root/my_list.pkl&apos;, &apos;rb&apos;)  # 打开文件</span><br><span class="line">In [34]: pickle.load(pickle_file)  # 从一个文件加载回来</span><br><span class="line">Out[34]: [0, 2, 4, 6, 8, 10]</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">In [36]: import pickle</span><br><span class="line">In [37]: list1 = [&apos;wxq&apos;, 11, 22,&apos;good&apos;]</span><br><span class="line"></span><br><span class="line">In [38]: dumpsed = pickle.dumps(list1)</span><br><span class="line">In [39]: type(dumpsed)</span><br><span class="line">Out[39]: builtins.bytes</span><br><span class="line"></span><br><span class="line">In [40]: loadsed = pickle.loads(dumpsed)</span><br><span class="line">In [41]: loadsed</span><br><span class="line">Out[41]: [&apos;wxq&apos;, 11, 22, &apos;good&apos;]</span><br><span class="line"></span><br><span class="line">In [42]: type(loadsed)</span><br><span class="line">Out[42]: builtins.list</span><br></pre></td></tr></table></figure>
-<h2 id="json模块"><a href="#json模块" class="headerlink" title="json模块"></a>json模块</h2><p>json是各语言通用的序列化数据交换格式，只支持序列化数据类型：str int float  set dict list tuple</p>
-<p>JSON表示出来就是一个字符串，可以被所有语言读取，也可以方便地存储到磁盘或者通过网络传输，并且可以直接在Web页面中读取，这也是为什么json这么通用的原因。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import json</span><br><span class="line"># d=&#123;&quot;user&quot;:&quot;wxq&quot;&#125;</span><br><span class="line">#</span><br><span class="line"># json_s=(json.dumps(d))    # 这里d是什么不管，json.dumps后是把d 序列化为符合json标准(只支持双引号)的字符串</span><br><span class="line"># json.loads(json_s)        # json_s必须符合json双引号标准才能反序列化</span><br><span class="line">#</span><br><span class="line"># json.loads(&quot;&#123;&apos;user&apos;:&apos;wxq&apos;&#125;&quot;)   # 这里虽然是字符串，但里面是单引号，不符合json标准，会报错的</span><br><span class="line"></span><br><span class="line">json_s=json.dumps(&#123;&apos;user&apos;:&apos;wxq&apos;&#125;)</span><br><span class="line"># 可以看到这里传入的不是标准的(双引号)，但json_dumps后成为字符串&#123;&quot;user&quot;: &quot;wxq&quot;&#125;，是符合json标准(只支持双引号)的字符串。</span><br><span class="line"></span><br><span class="line">in javascript</span><br><span class="line">JSON.stringfy()     # 序列化</span><br><span class="line">JSON.parse()		# 反序列化</span><br></pre></td></tr></table></figure>
-<h2 id="logging模块"><a href="#logging模块" class="headerlink" title="logging模块"></a>logging模块</h2><p>python的logging模块提供了标准的日志接口，我们来看一下简单用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@apt:/tmp# cat log.py </span><br><span class="line">#!/usr/bin/env python3</span><br><span class="line"></span><br><span class="line">import logging</span><br><span class="line">#日志级别：	DEGUG INFO WARNING ERROR CRITICAL</span><br><span class="line">#数字表示分别为 10     20     30     40     50</span><br><span class="line"></span><br><span class="line">logging.warning(&quot;warning message&quot;)</span><br><span class="line">logging.error(&quot;error message&quot;)</span><br><span class="line">root@apt:/tmp# python3 log.py </span><br><span class="line">WARNING:root:warning message</span><br><span class="line">ERROR:root:error message</span><br></pre></td></tr></table></figure></p>
-<p>上面的日志是直接输出，怎么才能让应用程序日志写入文件呢？ 也很简单<br>定义一个log.py的文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@apt:/tmp# cat log.py </span><br><span class="line">#!/usr/bin/env python3</span><br><span class="line"></span><br><span class="line">import logging</span><br><span class="line">#日志级别：	DEGUG INFO WARNING ERROR CRITICAL</span><br><span class="line">#数字表示分别为 10     20     30     40     50</span><br><span class="line"></span><br><span class="line">log_file = &apos;example.log&apos;</span><br><span class="line">logging.basicConfig(filename=log_file,level=logging.INFO)</span><br><span class="line">logging.debug(&apos;program debug message ...&apos;)</span><br><span class="line">logging.info(&apos;info message&apos;)</span><br><span class="line">logging.warning(&quot;warning message&quot;)</span><br><span class="line">logging.error(&quot;error message&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>运行一下log.py文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@apt:/tmp# python3 log.py</span><br><span class="line">root@apt:/tmp# cat example.log </span><br><span class="line">INFO:root:info message</span><br><span class="line">WARNING:root:warning message</span><br><span class="line">ERROR:root:error message</span><br></pre></td></tr></table></figure></p>
-<p>我们注意到logging.debug信息并没有写入，为什么呢？因为<code>level=logging.INFO</code>定义要写入日志的日志级别，只有达到定义的日志级别才会记录。</p>
-<p>但是发现记录的日志太丑了，怎么样才能让打印的日志人性化呢，就需要格式化输出。</p>
-<table>
-<thead>
-<tr>
-<th>格式</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>%(name)s</td>
-<td>Logger的名字</td>
-</tr>
-<tr>
-<td>%(levelno)s</td>
-<td>数字形式的日志级别</td>
-</tr>
-<tr>
-<td>%(levelname)s</td>
-<td>文本形式的日志级别</td>
-</tr>
-<tr>
-<td>%(pathname)s</td>
-<td>调用日志输出函数的模块的完整路径名，可能没有</td>
-</tr>
-<tr>
-<td>%(filename)s</td>
-<td>调用日志输出函数的模块的文件名</td>
-</tr>
-<tr>
-<td>%(module)s</td>
-<td>调用日志输出函数的模块名</td>
-</tr>
-<tr>
-<td>%(funcName)s</td>
-<td>调用日志输出函数的函数名</td>
-</tr>
-<tr>
-<td>%(lineno)d</td>
-<td>调用日志输出函数的语句所在的代码行</td>
-</tr>
-<tr>
-<td>%(created)f</td>
-<td>当前时间，用UNIX标准的表示时间的浮 点数表示</td>
-</tr>
-<tr>
-<td>%(relativeCreated)d</td>
-<td>输出日志信息时的，自Logger创建以 来的毫秒数</td>
-</tr>
-<tr>
-<td>%(asctime)s</td>
-<td>字符串形式的当前时间。默认格式是 “2017-02-01 16:49:45,896”。逗号后面的是毫秒</td>
-</tr>
-<tr>
-<td>%(thread)d</td>
-<td>线程ID。可能没有</td>
-</tr>
-<tr>
-<td>%(threadName)s</td>
-<td>线程名。可能没有</td>
-</tr>
-<tr>
-<td>%(process)d</td>
-<td>进程ID。可能没有</td>
-</tr>
-<tr>
-<td>%(message)s</td>
-<td>用户输出的消息</td>
-</tr>
-</tbody>
-</table>
-<p>如果想同时把log打印在屏幕和文件日志里，或者有日志切割的需求，可能要复杂些</p>
-<ul>
-<li>logger提供了应用程序可以直接使用的接口；</li>
-<li>handler将(logger创建的)日志记录发什么方式输出，是屏幕还是文件，或二都都要；</li>
-<li>filter提供了细度过滤来决定哪些日志不要输出，如密码敏感信息；</li>
-<li>formatter决定日志记录的最终输出格式。</li>
-</ul>
-<p>logger工作原理图<br><img src="http://p1.bqimg.com/586082/bfd381fb697c135fs.png" alt="logger工作原理图"></p>
-<p>屏幕和文件都输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">import logging</span><br><span class="line"> </span><br><span class="line">#create logger</span><br><span class="line">logger = logging.getLogger(&apos;TEST-LOG&apos;)</span><br><span class="line">logger.setLevel(logging.DEBUG)</span><br><span class="line"> </span><br><span class="line"># create console handler and set level to debug</span><br><span class="line">sh = logging.StreamHandler()</span><br><span class="line">sh.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line"># create file handler and set level to warning</span><br><span class="line">fh = logging.FileHandler(&quot;access.log&quot;)</span><br><span class="line">fh.setLevel(logging.WARNING)</span><br><span class="line"># create formatter</span><br><span class="line">formatter = logging.Formatter(&apos;%(asctime)s - %(name)s - %(levelname)s - %(message)s&apos;)</span><br><span class="line"></span><br><span class="line"># add formatter to sh and fh</span><br><span class="line">sh.setFormatter(formatter)</span><br><span class="line">fh.setFormatter(formatter)</span><br><span class="line"></span><br><span class="line"># add ch and fh to logger</span><br><span class="line">logger.addHandler(sh)</span><br><span class="line">logger.addHandler(fh)</span><br><span class="line"></span><br><span class="line"># &apos;application&apos; code</span><br><span class="line">logger.debug(&apos;debug message&apos;)</span><br><span class="line">logger.info(&apos;info message&apos;)</span><br><span class="line">logger.warn(&apos;warn message&apos;)</span><br><span class="line">logger.error(&apos;error message&apos;)</span><br><span class="line">logger.critical(&apos;critical message&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>日志切割<br>handlers.RotatingFileHandler：按文件大小切割<br>handlers.TimedRotatingFileHandler： 按时间切割</p>
-<p>示例1：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">大小切割略</span><br></pre></td></tr></table></figure></p>
-<p>示例2：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import logging</span><br><span class="line">from logging import handler</span><br><span class="line">logger = logging.getLogger(__name__)</span><br><span class="line"></span><br><span class="line">log_file = &quot;timelog.log&quot;</span><br><span class="line">#fh = handlers.RotatingFileHandler(filename=log_file,maxBytes=10,backupCount=3)</span><br><span class="line">fh = handlers.TimedRotatingFileHandler(filename=log_file,when=&quot;S&quot;,interval=5,backupCount=3)</span><br><span class="line"></span><br><span class="line">formatter = logging.Formatter(&apos;%(asctime)s %(module)s:%(lineno)d %(message)s&apos;)</span><br><span class="line">fh.setFormatter(formatter)</span><br><span class="line">logger.addHandler(fh)</span><br><span class="line"></span><br><span class="line">logger.warning(&quot;test1&quot;)</span><br><span class="line">logger.warning(&quot;test12&quot;)</span><br><span class="line">logger.warning(&quot;test13&quot;)</span><br><span class="line">logger.warning(&quot;test14&quot;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="模块paramiko"><a href="#模块paramiko" class="headerlink" title="模块paramiko"></a>模块paramiko</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">`pycrypto-2.6.1.tar.gz`# 下载安装</span><br><span class="line">apt-get install python-dev</span><br><span class="line">python setup.py build</span><br><span class="line">python setup.py install</span><br><span class="line">import Crypto</span><br><span class="line">`paramiko-1.10.1.tar.gz` 下载安装</span><br><span class="line">python setup.py build</span><br><span class="line">python setup.py install</span><br><span class="line">import paramiko</span><br></pre></td></tr></table></figure>
-<h2 id="模块configparser"><a href="#模块configparser" class="headerlink" title="模块configparser"></a>模块configparser</h2><p>生成如下example.ini 文件，该如何做呢<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat example.ini</span><br><span class="line">[DEFAULT]</span><br><span class="line">compression = yes</span><br><span class="line">serveraliveinterval = 45</span><br><span class="line">compressionlevel = 9</span><br><span class="line">forwardx11 = yes</span><br><span class="line"></span><br><span class="line">[bitbucket.org]</span><br><span class="line">user = wxq</span><br><span class="line"></span><br><span class="line">[topsecret.server.com]</span><br><span class="line">host port = 5000</span><br><span class="line">forwardx11 = no</span><br></pre></td></tr></table></figure></p>
-<p>编写如下脚本执行 python3  create_example.py即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat create_example.py </span><br><span class="line">#!/usr/bin/env python3</span><br><span class="line">#</span><br><span class="line">import configparser</span><br><span class="line"></span><br><span class="line">config = configparser.ConfigParser()</span><br><span class="line">config[&quot;DEFAULT&quot;] = &#123;&apos;ServerAliveInterval&apos;: &apos;45&apos;,</span><br><span class="line">                      &apos;Compression&apos;: &apos;yes&apos;,</span><br><span class="line">                      &apos;CompressionLevel&apos;: &apos;9&apos;&#125;</span><br><span class="line"></span><br><span class="line">config[&apos;bitbucket.org&apos;] = &#123;&#125;</span><br><span class="line">config[&apos;bitbucket.org&apos;][&apos;User&apos;] = &apos;wxq&apos;</span><br><span class="line">config[&apos;topsecret.server.com&apos;] = &#123;&#125;</span><br><span class="line">topsecret = config[&apos;topsecret.server.com&apos;]</span><br><span class="line">topsecret[&apos;Host Port&apos;] = &apos;5000&apos;   # mutates the parser</span><br><span class="line">topsecret[&apos;Forwardx11&apos;] = &apos;no&apos;  # same here</span><br><span class="line">config[&apos;DEFAULT&apos;][&apos;Forwardx11&apos;] = &apos;yes&apos;</span><br><span class="line">with open(&apos;example.ini&apos;, &apos;w&apos;) as configfile:</span><br><span class="line">    config.write(configfile)</span><br></pre></td></tr></table></figure>
-<p>那么有了example.ini  这样的文件，如何读取呢<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import configparser   # 导入模块</span><br><span class="line">&gt;&gt;&gt; config = configparser.ConfigParser() # 类实例化</span><br><span class="line">&gt;&gt;&gt; config.sections()      # 调用类中一个方法</span><br><span class="line">[]</span><br><span class="line">&gt;&gt;&gt; config.read(&apos;example.ini&apos;)   # 文件读入</span><br><span class="line">[&apos;example.ini&apos;]</span><br><span class="line">&gt;&gt;&gt; config.sections()      # 除了[DEFAULT]还有哪些区块，列表呈现</span><br><span class="line">[&apos;bitbucket.org&apos;, &apos;topsecret.server.com&apos;]</span><br><span class="line">&gt;&gt;&gt; &apos;bitbucket.org&apos; in config</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; config[&apos;bitbucket.org&apos;][&apos;user&apos;]   # 指定区块指定字典键对应值</span><br><span class="line">&apos;wxq&apos;</span><br><span class="line">&gt;&gt;&gt; config[&apos;DEFAULT&apos;][&apos;compression&apos;]</span><br><span class="line">&apos;yes&apos;</span><br><span class="line">&gt;&gt;&gt; for i in config[&apos;bitbucket.org&apos;]:  # 指定区块打印键</span><br><span class="line">...     print(i)    # 注意：包括[DEFAULT]区块的键也在这里呈现</span><br><span class="line">... </span><br><span class="line">user</span><br><span class="line">compression</span><br><span class="line">serveraliveinterval</span><br><span class="line">compressionlevel</span><br><span class="line">forwardx11</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; d1 = config[&apos;bitbucket.org&apos;]  # 指定区块读出其实是一个字典</span><br><span class="line">&gt;&gt;&gt; for k,v in d1.items():</span><br><span class="line">...    print(&quot;%s = %s&quot; % (k,v))</span><br><span class="line">... </span><br><span class="line">user = wxq</span><br><span class="line">compression = yes</span><br><span class="line">serveraliveinterval = 45</span><br><span class="line">compressionlevel = 9</span><br><span class="line">forwardx11 = yes</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat wxq.txt   # 有这么一个文件</span><br><span class="line">[section1]</span><br><span class="line">k1 = v1</span><br><span class="line">k2: v2</span><br><span class="line"></span><br><span class="line">[section2]</span><br><span class="line">k1 = v111</span><br><span class="line">&gt;&gt;&gt; import configparser</span><br><span class="line">&gt;&gt;&gt; config = configparser.ConfigParser()</span><br><span class="line">&gt;&gt;&gt; config.read(&apos;/root/wxq.txt&apos;)   # 读入这样的文件</span><br><span class="line">[&apos;/root/wxq.txt&apos;]</span><br><span class="line">&gt;&gt;&gt; config.sections()       # 查看这个文件的区块</span><br><span class="line">[&apos;section1&apos;, &apos;section2&apos;]</span><br><span class="line">&gt;&gt;&gt; config.items(&apos;section1&apos;)  # 查看指定区块的键值对</span><br><span class="line">[(&apos;k1&apos;, &apos;v1&apos;), (&apos;k2&apos;, &apos;v2&apos;)]</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; config.options(&apos;section1&apos;) ＃　只显示指定区块的键</span><br><span class="line">[&apos;k1&apos;, &apos;k2&apos;]</span><br><span class="line">&gt;&gt;&gt; config.has_section(&apos;section3&apos;)　# 判断某区块是否存在返回True/False</span><br><span class="line">False</span><br><span class="line">&gt;&gt;&gt; config.add_section(&apos;section3&apos;) # 添加一个区块</span><br><span class="line">&gt;&gt;&gt; config.has_section(&apos;section3&apos;) # 有了这个区块</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; config.set(&apos;section3&apos;, &apos;k1&apos;, &apos;v1&apos;) ＃　添加一行配置，也就是设置一个区块的键值对</span><br><span class="line">&gt;&gt;&gt; config.write(open(&apos;wxq&apos;, &apos;w&apos;))</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat wxq   # 按照上面的写入会生成了一个新文件</span><br><span class="line">[section1]</span><br><span class="line">k1 = v1</span><br><span class="line">k2 = v2</span><br><span class="line"></span><br><span class="line">[section2]</span><br><span class="line">k1 = v111</span><br><span class="line"></span><br><span class="line">[section3]</span><br><span class="line">k1 = v1</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; config.remove_option(&apos;section3&apos;, &apos;k1&apos;)  # 删除某键值对</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; config.write(open(&apos;wxq.txt&apos;, &apos;w&apos;))</span><br><span class="line">&gt;&gt;&gt; config.remove_section(&apos;section3&apos;)      #　删除某区块</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; config.write(open(&apos;wxq.txt&apos;, &apos;w&apos;))</span><br></pre></td></tr></table></figure>
-<h2 id="模块MySQLdb"><a href="#模块MySQLdb" class="headerlink" title="模块MySQLdb"></a>模块MySQLdb</h2><p>python连接数据库操作</p>
-<ul>
-<li>建立数据库连接</li>
-<li>创建游标cursor(用于发送sql语句，获取sql结果，解析返回结果)</li>
-<li>关闭游标cursor  curname.close()</li>
-<li>关闭数据库连接 conname.close()</li>
-</ul>
-<p>模块安装<br>apt-get install python-mysqldb<br>查看模块<br>help(‘modules’)<br>加载数据库模块<br>import MySQLdb as mysql</p>
-<p>创建连接，会生成一个con.cursor()的类<br>con = mysql.connect(host=’127.0.0.1’,user=’root’,passwd=’dbpass’)</p>
-<p>游标类实例化<br>cur = con.cursor()</p>
-<p>cur.execute      传入一个参数执行sql语句<br>cur.executemany  传入多个参数执行sql语句</p>
-<p>cur.fetchall   查询执行后的结果返回所有<br>cur.fetchmany查询执行后的结果返回多个<br>cur.fetchone  查询执行后的结果返回一个<br>游标回滚<br>help(cur.scroll)<br>scroll(self, value, mode=’relative’)</p>
-<p>cur.scroll(0,mode=’absolute’)</p>
-<h2 id="hashlib模块"><a href="#hashlib模块" class="headerlink" title="hashlib模块"></a>hashlib模块</h2><p>用于加密相关操作，3.x里代替了md5模块和sha模块，主要提供 SHA1, SHA224, SHA256, SHA384, SHA512 ，MD5 算法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import hashlib</span><br><span class="line">str = hashlib.sha1(b&apos;admin123&apos;)  # python3中必须bytes格式</span><br><span class="line">str.hexdigest()</span><br><span class="line">&apos;f865b53623b121fd34ee5426c792e5c33af8c227&apos;</span><br><span class="line"></span><br><span class="line">str = hashlib.md5(b&apos;admin123&apos;)</span><br><span class="line"></span><br><span class="line">str.hexdigest()</span><br><span class="line">&apos;0192023a7bbd73250516f069df18b500&apos;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">import hashlib</span><br><span class="line"> </span><br><span class="line">m = hashlib.md5()</span><br><span class="line">m.update(b&quot;Hello&quot;)</span><br><span class="line">m.update(b&quot;It&apos;s me&quot;)</span><br><span class="line">print(m.digest())</span><br><span class="line">m.update(b&quot;It&apos;s been a long time since last time we ...&quot;)</span><br><span class="line"> </span><br><span class="line">print(m.digest()) #2进制格式hash</span><br><span class="line">print(len(m.hexdigest())) #16进制格式hash</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">def digest(self, *args, **kwargs): # real signature unknown</span><br><span class="line">    &quot;&quot;&quot; Return the digest value as a string of binary data. &quot;&quot;&quot;</span><br><span class="line">    pass</span><br><span class="line"> </span><br><span class="line">def hexdigest(self, *args, **kwargs): # real signature unknown</span><br><span class="line">    &quot;&quot;&quot; Return the digest value as a string of hexadecimal digits. &quot;&quot;&quot;</span><br><span class="line">    pass</span><br><span class="line"> </span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">import hashlib</span><br><span class="line"></span><br><span class="line"># ######## md5 ########</span><br><span class="line">hash = hashlib.md5()</span><br><span class="line">hash.update(b&apos;admin&apos;)</span><br><span class="line">print(hash.hexdigest())</span><br><span class="line"> </span><br><span class="line"># ######## sha1 ########</span><br><span class="line">hash = hashlib.sha1()</span><br><span class="line">hash.update(b&apos;admin&apos;)</span><br><span class="line">print(hash.hexdigest())</span><br><span class="line"> </span><br><span class="line"># ######## sha256 ########</span><br><span class="line">hash = hashlib.sha256()</span><br><span class="line">hash.update(b&apos;admin&apos;)</span><br><span class="line">print(hash.hexdigest())</span><br><span class="line"> </span><br><span class="line"># ######## sha384 ########</span><br><span class="line">hash = hashlib.sha384()</span><br><span class="line">hash.update(b&apos;admin&apos;)</span><br><span class="line">print(hash.hexdigest())</span><br><span class="line"> </span><br><span class="line"># ######## sha512 ########</span><br><span class="line">hash = hashlib.sha512()</span><br><span class="line">hash.update(b&apos;admin&apos;)</span><br><span class="line">print(hash.hexdigest())</span><br></pre></td></tr></table></figure>
-<p>python 还有一个 hmac 模块，它内部对我们创建 key 和 内容 再进行处理然后再加密<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import hmac</span><br><span class="line">h = hmac.new(b&apos;wxq&apos;)</span><br><span class="line">h.update(b&apos;hi&apos;)</span><br><span class="line">print(h.hexdigest())</span><br></pre></td></tr></table></figure></p>
-<p>来个实用例子：<br>注意：bytes只接收ascii的值，字符串为unicode,需转为ascii样的值，比如utf-8</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">root@wxq:~# cat md5.py </span><br><span class="line">#!/usr/bin/env python3</span><br><span class="line">import hashlib</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">def create_md5():</span><br><span class="line">    m = hashlib.md5()</span><br><span class="line">    m.update(bytes(str(time.time()),encoding=&apos;utf-8&apos;))</span><br><span class="line">    return m.hexdigest()</span><br><span class="line"></span><br><span class="line">res = create_md5()</span><br><span class="line">print(res)</span><br><span class="line"></span><br><span class="line">root@wxq:~# python3 md5.py </span><br><span class="line">ebd8a4dd680e2e29b1a44b27b2bdd2f7</span><br><span class="line">root@wxq:~# python3 md5.py </span><br><span class="line">4e178ffe5eaa58584434d3b519708638</span><br></pre></td></tr></table></figure>
-<p>更多关于md5,sha1,sha256等介绍的文章.<a href="https://www.tbs-certificates.co.uk/FAQ/en/sha256.html" target="_blank" rel="noopener">看这里</a></p>
-<h2 id="模块uuid"><a href="#模块uuid" class="headerlink" title="模块uuid"></a>模块uuid</h2><p>直接来个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@wxq:~# cat create_uuid.py </span><br><span class="line">#!/usr/bin/env python3</span><br><span class="line">import uuid</span><br><span class="line">def create_uuid():</span><br><span class="line">    return (str(uuid.uuid1()))</span><br><span class="line"></span><br><span class="line">res = create_uuid()</span><br><span class="line">print(res)</span><br><span class="line">root@wxq:~# python3 create_uuid.py </span><br><span class="line">2cad772c-fe7d-11e6-b3db-3a71234db8d2</span><br></pre></td></tr></table></figure></p>
-<h2 id="模块md5"><a href="#模块md5" class="headerlink" title="模块md5"></a>模块md5</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#password=form.cleaned_data[&apos;password&apos;]</span><br><span class="line">from utils import md5</span><br><span class="line">form.cleaned_data[&apos;password&apos;]=md5(form.cleaned_data[&apos;password&apos;])</span><br><span class="line">app01/utils/md.py</span><br><span class="line">import hashlib</span><br><span class="line">def md5(text):</span><br><span class="line">    m = hashlib.md5()</span><br><span class="line">    m.update(text.encode(&apos;utf-8&apos;))  # python3接收bytes格式，encode后就是bytes</span><br><span class="line">    return m.hexdigest()</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    text=&apos;123&apos;</span><br><span class="line">    return md5(text)</span><br></pre></td></tr></table></figure>
-<p>update可以执行多次，效果一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">m.update(b&quot;hello &quot;)</span><br><span class="line">m.update(b&quot;world&quot;)</span><br><span class="line">等同于m.update(b&quot;hello world&quot;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-1"><a href="#模块-1" class="headerlink" title="模块"></a>模块</h2><h2 id="模块-2"><a href="#模块-2" class="headerlink" title="模块"></a>模块</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="ckjwor9vt003mbojxui0ehstf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="ckk6ktzfi006712jxtd4458vr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -986,6 +830,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/15/kubernetes-dashboard/">kubernetes dashboard</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/12/kubernetes-ingress/">kubernetes ingress进阶</a>
           </li>
         
@@ -999,10 +847,6 @@
         
           <li>
             <a href="/2021/01/02/kubernetes-configmap/">kubernetes configmap</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/01/kubernetes-volumes/">kubernetes volumes</a>
           </li>
         
       </ul>
