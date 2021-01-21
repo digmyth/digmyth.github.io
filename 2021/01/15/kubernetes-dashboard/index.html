@@ -5,17 +5,17 @@
   
   <title>kubernetes dashboard | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="查找对端veth pair12345678root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink 4root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1NIC statistics:     peer_ifindex: 4     rx_queue_0_x">
+  <meta name="description" content="重新疏理k8s dashboard安装github地址：https://github.com/kubernetes/dashboard 在线dashboard2.1 deployment清单文件1kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.1.0/aio/deploy/recommended.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes dashboard">
 <meta property="og:url" content="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="查找对端veth pair12345678root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink 4root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1NIC statistics:     peer_ifindex: 4     rx_queue_0_x">
+<meta property="og:description" content="重新疏理k8s dashboard安装github地址：https://github.com/kubernetes/dashboard 在线dashboard2.1 deployment清单文件1kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.1.0/aio/deploy/recommended.">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-01-21T08:11:48.354Z">
+<meta property="og:updated_time" content="2021-01-21T08:14:23.886Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes dashboard">
-<meta name="twitter:description" content="查找对端veth pair12345678root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink 4root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1NIC statistics:     peer_ifindex: 4     rx_queue_0_x">
+<meta name="twitter:description" content="重新疏理k8s dashboard安装github地址：https://github.com/kubernetes/dashboard 在线dashboard2.1 deployment清单文件1kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.1.0/aio/deploy/recommended.">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -90,8 +90,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="查找对端veth-pair"><a href="#查找对端veth-pair" class="headerlink" title="查找对端veth pair"></a>查找对端veth pair</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink </span><br><span class="line">4</span><br><span class="line">root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1</span><br><span class="line">NIC statistics:</span><br><span class="line">     peer_ifindex: 4</span><br><span class="line">     rx_queue_0_xdp_packets: 0</span><br><span class="line">     rx_queue_0_xdp_bytes: 0</span><br><span class="line">     rx_queue_0_xdp_drops: 0</span><br></pre></td></tr></table></figure>
-<p>重新疏理k8s dashboard安装<br>github地址：<a href="https://github.com/kubernetes/dashboard" target="_blank" rel="noopener">https://github.com/kubernetes/dashboard</a></p>
+        <p>重新疏理k8s dashboard安装<br>github地址：<a href="https://github.com/kubernetes/dashboard" target="_blank" rel="noopener">https://github.com/kubernetes/dashboard</a></p>
 <p>在线dashboard2.1 deployment清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.1.0/aio/deploy/recommended.yaml</span><br></pre></td></tr></table></figure></p>
 <p>默认type为<code>ClusterIp</code>即只能看到Service地址，需要穿透集群边界让外部进行访问<br>方式有ingress、NodePort、外部LoadBalance、pod HostPort端口转发、pod HostNetwork 等方式，这里采用最简单的NodePort</p>
 <p>修改recommended.yaml清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">kind: Service</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    k8s-app: kubernetes-dashboard</span><br><span class="line">  name: kubernetes-dashboard</span><br><span class="line">  namespace: kubernetes-dashboard</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">    - nodePort: 30443</span><br><span class="line">      port: 443</span><br><span class="line">      targetPort: 8443</span><br><span class="line">  selector:</span><br><span class="line">    k8s-app: kubernetes-dashboard</span><br><span class="line">  type: NodePort</span><br></pre></td></tr></table></figure></p>
@@ -114,7 +113,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckk6ktz8c001d12jxwui3jbiu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckk6kx8fq001h2fjxvyfyfjfq" class="article-share-link">Share</a>
       
       
     </footer>

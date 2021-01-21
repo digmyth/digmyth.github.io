@@ -88,8 +88,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="查找对端veth-pair"><a href="#查找对端veth-pair" class="headerlink" title="查找对端veth pair"></a>查找对端veth pair</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink </span><br><span class="line">4</span><br><span class="line">root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1</span><br><span class="line">NIC statistics:</span><br><span class="line">     peer_ifindex: 4</span><br><span class="line">     rx_queue_0_xdp_packets: 0</span><br><span class="line">     rx_queue_0_xdp_bytes: 0</span><br><span class="line">     rx_queue_0_xdp_drops: 0</span><br></pre></td></tr></table></figure>
-<p>重新疏理k8s dashboard安装<br>github地址：<a href="https://github.com/kubernetes/dashboard" target="_blank" rel="noopener">https://github.com/kubernetes/dashboard</a></p>
+        <p>重新疏理k8s dashboard安装<br>github地址：<a href="https://github.com/kubernetes/dashboard" target="_blank" rel="noopener">https://github.com/kubernetes/dashboard</a></p>
 <p>在线dashboard2.1 deployment清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.1.0/aio/deploy/recommended.yaml</span><br></pre></td></tr></table></figure></p>
 <p>默认type为<code>ClusterIp</code>即只能看到Service地址，需要穿透集群边界让外部进行访问<br>方式有ingress、NodePort、外部LoadBalance、pod HostPort端口转发、pod HostNetwork 等方式，这里采用最简单的NodePort</p>
 <p>修改recommended.yaml清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">kind: Service</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    k8s-app: kubernetes-dashboard</span><br><span class="line">  name: kubernetes-dashboard</span><br><span class="line">  namespace: kubernetes-dashboard</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">    - nodePort: 30443</span><br><span class="line">      port: 443</span><br><span class="line">      targetPort: 8443</span><br><span class="line">  selector:</span><br><span class="line">    k8s-app: kubernetes-dashboard</span><br><span class="line">  type: NodePort</span><br></pre></td></tr></table></figure></p>
@@ -112,7 +111,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckk6ktz8c001d12jxwui3jbiu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckk6kx8fq001h2fjxvyfyfjfq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -160,7 +159,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckk6ktz8h001j12jxzmc92ccu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckk6kx8fr001j2fjxqps0atbo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -208,7 +207,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckk6ktz8m001o12jx10a6hwkq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckk6kx8fs001m2fjxu1thwrvp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +255,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckk6ktz8s001t12jxpaq5f31o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckk6kx8fu001o2fjxefi52b5q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -307,7 +306,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckk6ktz8a001a12jxqrc7bge5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckk6kx8fo001e2fjxgzjzkkeq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -359,7 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-volumes/" data-id="ckk6ktz8p001q12jxkqnqhe33" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-volumes/" data-id="ckk6kx8fv001q2fjxpbitws9f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -407,7 +406,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/12/30/Kubernetes-ubuntu20.04/" data-id="ckk6ktz7a000712jx74mmn4nb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/12/30/Kubernetes-ubuntu20.04/" data-id="ckk6kx8ep00072fjxtpor5gyz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -473,7 +472,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckk6ktz9u002j12jxejevjck1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckk6kx8gf002j2fjxkf43cdfx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -521,7 +520,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckk6ktzae003012jxbwxubp1a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckk6kx8gz00322fjxtoe7str3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -581,7 +580,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckk6ktz7r000k12jxknbyen55" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckk6kx8f4000m2fjxghptyj4f" class="article-share-link">Share</a>
       
       
     </footer>
