@@ -100,7 +100,8 @@
 <p>界面自带CPU、内存监控图，只是数据是来源于Metrics Server, 需要部署MetricsServer才能展示，如果后期要部署kube-prometheus 就不需要单独部署Metrics Server，因为它己经集成了</p>
 <p>metrics-server github 地址： <a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/metrics-server</a></p>
 <p>在线清单文件部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</span><br></pre></td></tr></table></figure></p>
-<p>发现老是无限重启，说是就绪性探测和存活性探测有问题，我这里换了一个镜像好了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">spec:</span><br><span class="line">  hostNetwork: true</span><br><span class="line">  serviceAccountName: metrics-server</span><br><span class="line">  containers:</span><br><span class="line">  - name: metrics-server</span><br><span class="line">    image: bitnami/metrics-server:0.4.1    # 可能官方镜像有问题我换了一个</span><br><span class="line">    imagePullPolicy: IfNotPresent</span><br><span class="line">    args:</span><br><span class="line">      - --cert-dir=/tmp</span><br><span class="line">      - --secure-port=4443</span><br><span class="line">      - --kubelet-insecure-tls</span><br><span class="line">      - --kubelet-use-node-status-port</span><br><span class="line">      - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname</span><br><span class="line">    livenessProbe:</span><br><span class="line">      failureThreshold: 3</span><br><span class="line">      httpGet:</span><br><span class="line">        path: /livez</span><br><span class="line">        port: https</span><br><span class="line">        scheme: HTTPS</span><br><span class="line">      periodSeconds: 10</span><br><span class="line">    readinessProbe:</span><br><span class="line">      failureThreshold: 3</span><br><span class="line">      httpGet:</span><br><span class="line">        path: /readyz</span><br><span class="line">        port: https</span><br><span class="line">        scheme: HTTPS</span><br><span class="line">      periodSeconds: 10</span><br><span class="line">    ports:</span><br></pre></td></tr></table></figure></p>
+<p>发现老是无限重启，说是就绪性探测和存活性探测有问题，我这里换换镜像以及添加2个参数好了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">spec:</span><br><span class="line">  hostNetwork: true</span><br><span class="line">  serviceAccountName: metrics-server</span><br><span class="line">  containers:</span><br><span class="line">  - name: metrics-server</span><br><span class="line">    image: bitnami/metrics-server:0.4.1    # 可能官方镜像有问题我换了一个</span><br><span class="line">    #image: k8s.gcr.io/metrics-server/metrics-server:v0.4.1</span><br><span class="line">    imagePullPolicy: IfNotPresent</span><br><span class="line">    args:</span><br><span class="line">      - --cert-dir=/tmp</span><br><span class="line">      - --secure-port=4443</span><br><span class="line">      - --kubelet-insecure-tls     # 禁用https</span><br><span class="line">      - --kubelet-use-node-status-port</span><br><span class="line">      - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname   # 添加地址解析类型</span><br><span class="line">    livenessProbe:</span><br><span class="line">      failureThreshold: 3</span><br><span class="line">      httpGet:</span><br><span class="line">        path: /livez</span><br><span class="line">        port: https</span><br><span class="line">        scheme: HTTPS</span><br><span class="line">      periodSeconds: 10</span><br><span class="line">    readinessProbe:</span><br><span class="line">      failureThreshold: 3</span><br><span class="line">      httpGet:</span><br><span class="line">        path: /readyz</span><br><span class="line">        port: https</span><br><span class="line">        scheme: HTTPS</span><br><span class="line">      periodSeconds: 10</span><br><span class="line">    ports:</span><br></pre></td></tr></table></figure>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
 <li>dashboard只是提供web GUI服务，本身并做认证授权，只是代为拿着账号向kubernetes API进行认证</li>
 <li>dashboard 运行于pod,  pod代为向kubernetes API进行认证的账号也必须是ServiceAccount账号，不可以是User自然人的属性账号</li>
@@ -111,7 +112,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckk6mksl9001j6ijxreq3qsyb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckk7ovbrp0015y6jxnivw4w20" class="article-share-link">Share</a>
       
       
     </footer>
@@ -159,7 +160,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckk6mksla001l6ijxg35qsp63" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckk7ovbrx001by6jx83se95ed" class="article-share-link">Share</a>
       
       
     </footer>
@@ -207,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckk6mkslb001o6ijxfdvtz6rq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckk7ovbs7001jy6jxb1ujsurl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -255,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckk6mksld001q6ijxk6jji7ss" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckk7ovbs9001ly6jxb1txxwyl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -306,7 +307,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckk6mksl7001g6ijxe8e61o4m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckk7ovbrr0016y6jxpq51yn4w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +359,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-volumes/" data-id="ckk6mksle001t6ijxyswpx26z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-volumes/" data-id="ckk7ovbsb001oy6jxnrmn3ekv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -406,7 +407,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/12/30/Kubernetes-ubuntu20.04/" data-id="ckk6mksjp00056ijxivbpgp1v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/12/30/Kubernetes-ubuntu20.04/" data-id="ckk7ovbqf0003y6jxr5y7jf8a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -472,7 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckk6mkslx002l6ijxqa52dy7o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckk7ovbth002iy6jxyp3fibcw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -520,7 +521,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckk6mksm800346ijx8a8pw3ge" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckk7ovbtw002xy6jxxsnqgx55" class="article-share-link">Share</a>
       
       
     </footer>
@@ -580,7 +581,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckk6mkskg000m6ijxti12yat6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckk7ovbr2000ly6jxrcr1mzup" class="article-share-link">Share</a>
       
       
     </footer>
