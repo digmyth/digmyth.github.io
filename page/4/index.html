@@ -62,14 +62,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-cinder-vol-多后端" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/01/Openshift/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+    <a href="/2018/08/08/cinder-vol-多后端/" class="article-date">
+  <time datetime="2018-08-08T01:41:54.000Z" itemprop="datePublished">2018-08-08</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
   </div>
 
   </div>
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
+      <a class="article-title" href="/2018/08/08/cinder-vol-多后端/">cinder多后端逻辑</a>
     </h1>
   
 
@@ -88,107 +88,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
+        <h3 id="cinder配置逻辑"><a href="#cinder配置逻辑" class="headerlink" title="cinder配置逻辑"></a>cinder配置逻辑</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">enable_backens=backend1,backend2,backend3</span><br><span class="line">[backend1]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=sata</span><br><span class="line"></span><br><span class="line">[backend2]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=ssd</span><br><span class="line">[backend3]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=rbd</span><br><span class="line"></span><br><span class="line">cinder type-create sata</span><br><span class="line">cinder type-key  sata set volume_backend_name=sata</span><br><span class="line">cinder create  --volume-type sata  --display-name vol_stat 20</span><br></pre></td></tr></table></figure>
+<h3 id="vmware启用thick配置"><a href="#vmware启用thick配置" class="headerlink" title="vmware启用thick配置"></a>vmware启用thick配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、运行命令：cinder type-create thick_volume（注：创建云硬盘类型）</span><br><span class="line"></span><br><span class="line">2、运行命令：cinder type-key thick_volume set vmware:vmdk_type=thick（注：thick为Vmware使用）</span><br><span class="line"></span><br><span class="line">3、运行命令：cinder type-key thick_volume set volume_backend_name=fusionstorage_sata3copy（注：指定后端）</span><br><span class="line"></span><br><span class="line">4、运行命令：glance image-list（注：查看镜像ID）</span><br><span class="line"></span><br><span class="line">5、运行命令：cinder create --image-id “镜像ID” --volume-type thick_volume --display-name vol-thick 20</span><br><span class="line">（注：创建一个20G大小的云硬盘，使用刚刚创建的云硬盘类型）</span><br></pre></td></tr></table></figure>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckk7qv8vo000cyfjx5ta3gdpr" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Dockerfile-详解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Dockerfile-详解/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/01/Dockerfile-详解/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckk7qv8v60001yfjxy77rcsoz" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckk7qv8ve0005yfjxbf4ako0a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckkeu0ey4000vyqjxz3vcdxpk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -238,7 +144,146 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckk7qv8vi0008yfjxz59dli2o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckkeu0exf0005yqjx8lpuzlty" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Dockerfile-详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Dockerfile-详解/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/01/Dockerfile-详解/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckkeu0ex60001yqjxnqlyw9ap" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Openshift/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckkeu0exm000byqjxglbtcdap" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckkeu0exk0008yqjx7lg3qj1l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -286,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckk7qv8y7002syfjxfrlssofe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckkeu0ezp002ryqjxj54i6jfv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -335,7 +380,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckk7qv9050040yfjxrv7dzpw6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckkeu0f190042yqjxdsel7rlo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -382,7 +427,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="ckk7qv8xm002byfjxviqplb4c" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="ckkeu0ezg002cyqjxeprg1dia" class="article-share-link">Share</a>
       
       
     </footer>
@@ -430,7 +475,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckk7qv8vr000fyfjxhlbaafw0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckkeu0exu000iyqjx2vfizyj9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -476,51 +521,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ckk7qv90q004hyfjx0zupugxr" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-shell-get-namespace" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/01/29/shell-get-namespace/" class="article-date">
-  <time datetime="2018-01-29T01:41:54.000Z" itemprop="datePublished">2018-01-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Shell/">Shell</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/29/shell-get-namespace/">get namespace</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="get-namespace-shell"><a href="#get-namespace-shell" class="headerlink" title="get namespace shell"></a>get namespace shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># read me :please mv this file to ns;use method #ns info</span><br><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line">echo_print () &#123;</span><br><span class="line">        echo -e &quot;\033[32m$1\033[0m&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">nsinfo () &#123;</span><br><span class="line">for i in $(ip netns);do echo_print $i;ip netns exec $i ifconfig | grep &quot;inet addr:10&quot; |awk &apos;$1=$1&apos;;echo &apos;&apos; ;done</span><br><span class="line">&#125;</span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">info)</span><br><span class="line">	nsinfo</span><br><span class="line">	;;</span><br><span class="line">*)</span><br><span class="line">	echo_print &quot;Usage: ns info command&quot;</span><br><span class="line">	;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="ckk7qv90z004myfjx3d9bs8qq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ckkeu0f2f004tyqjxzuhl1fwr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -546,7 +547,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
     </div>
   </div>
 
@@ -574,6 +575,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/25/prometheus-01/">prometheus</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/15/kubernetes-dashboard/">kubernetes dashboard</a>
           </li>
         
@@ -587,10 +592,6 @@
         
           <li>
             <a href="/2021/01/03/kubernetes-secret/">kubernetes secret</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/02/kubernetes-configmap/">kubernetes configmap</a>
           </li>
         
       </ul>
