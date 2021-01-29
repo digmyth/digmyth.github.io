@@ -62,14 +62,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-linux-awk" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-shell-func" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/01/15/linux-awk/" class="article-date">
-  <time datetime="2018-01-15T01:42:54.000Z" itemprop="datePublished">2018-01-15</time>
+    <a href="/2018/05/29/shell-func/" class="article-date">
+  <time datetime="2018-05-29T01:41:54.000Z" itemprop="datePublished">2018-05-29</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
   </div>
 
   </div>
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/15/linux-awk/">linux awk</a>
+      <a class="article-title" href="/2018/05/29/shell-func/">shell function语法</a>
     </h1>
   
 
@@ -88,22 +88,58 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li><p>知识1： awk中,字符串或空串参与运算时会被当作数字0</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud-site mnt]# awk &apos;BEGIN&#123;a=&quot;test&quot;;print a; a=a+1;print a;a++;print a&#125;&apos;</span><br><span class="line">test</span><br><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>知识2：<br>直接引用一个数组中不存在的元素时，awk会自动创建这个元素，并且为其赋值为”空字符串”，同样参与运算时被当作数字0</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud-site mnt]# awk  &apos;BEGIN&#123;print t[&quot;ip&quot;]; t[&quot;ip&quot;]++;print t[&quot;ip&quot;]&#125;&apos;</span><br><span class="line"></span><br><span class="line">1</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">示例;</span><br><span class="line">[root@cloud-site mnt]# cat test.txt</span><br><span class="line">aa  99</span><br><span class="line">bb  75</span><br><span class="line">cc  55</span><br><span class="line">aa  100</span><br><span class="line">cc  99</span><br><span class="line">bb  40</span><br><span class="line">[root@cloud-site mnt]# cat test.txt  | awk  &apos;&#123;A[$1]++&#125;END&#123;for (i in A)&#123; print i,A[i]&#125; &#125;&apos;</span><br><span class="line">bb 2</span><br><span class="line">cc 2</span><br><span class="line">aa 2</span><br></pre></td></tr></table></figure>
-<p>示例一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud-site mnt]# cat a.log</span><br><span class="line">1|aa|3|45|5|6|7|8|9|</span><br><span class="line">2|aa|3|44|5|6|7|8|9|</span><br><span class="line">3|aa|3|43|5|6|7|8|9|</span><br><span class="line">4|aa|3|44|5|6|7|8|9|</span><br><span class="line">5|bb|3|45|5|6|7|8|9|</span><br><span class="line">6|bb|3|4 |5|6|7|8|9|</span><br><span class="line">[root@cloud-site mnt]# awk -F&apos;|&apos; &apos;&#123;counxxt[$4]++;&#125;END&#123;for (i in counxxt) &#123;print i&quot;|&quot;counxxt[i]&#125;&#125;&apos; a.log</span><br><span class="line">44|2</span><br><span class="line">45|2</span><br><span class="line">4 |1</span><br><span class="line">43|1</span><br></pre></td></tr></table></figure></p>
-<p>示例二<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">if  表达式1？那么表达式2 ： 否则 表达式3</span><br><span class="line">[root@cloud-site mnt]# cat test.txt </span><br><span class="line">aa  99</span><br><span class="line">bb  75</span><br><span class="line">cc  55</span><br><span class="line">aa  100</span><br><span class="line">cc  99</span><br><span class="line">bb  40</span><br><span class="line">[root@cloud-site mnt]# cat test.sh</span><br><span class="line">#awk &apos;BEGIN &#123;</span><br><span class="line">#printf &quot;%s,%5s,%4s\n&quot;,&quot;IP&quot;,&quot;AVG&quot;,&quot;MAX&quot;</span><br><span class="line">#&#125;</span><br><span class="line">awk &apos;&#123;</span><br><span class="line">A[$1]++;SNF[$1]+=$NF;</span><br><span class="line">MAXNF[$1]=($NF&gt;MAXNF[$1]?$NF:MAXNF[$1])</span><br><span class="line">&#125;END&#123;</span><br><span class="line">for (IP in A) print IP,SNF[IP]/A[IP],MAXNF[IP]</span><br><span class="line">&#125;&apos; test.txt</span><br><span class="line">[root@cloud-site mnt]# sh test.sh</span><br><span class="line">bb 57.5 75</span><br><span class="line">cc 77 99</span><br><span class="line">aa 99.5 100</span><br></pre></td></tr></table></figure></p>
+        <p>Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">cat /usr/local/bin/show </span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">a=&apos;df -hT&apos;</span><br><span class="line">b=&quot;ls&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo_print() &#123;</span><br><span class="line">	echo -e &quot;\033[1;32m$1\033[0m&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exec() &#123;</span><br><span class="line">	echo_print &quot;$1&quot;</span><br><span class="line">	$1</span><br><span class="line">	echo &quot;&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">info () &#123;</span><br><span class="line">	exec $a</span><br><span class="line">	exec $b</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">info)</span><br><span class="line">	info;;</span><br><span class="line"></span><br><span class="line">*)</span><br><span class="line">	echo &quot;Usage: show info&quot;;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+<p>相当于定制了一个shell命令，运行一下看下效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#[root@wxqnode opt]# show info</span><br><span class="line">df</span><br><span class="line">Filesystem              1K-blocks    Used Available Use% Mounted on</span><br><span class="line">/dev/mapper/centos-root  22001156 1946776  20054380   9% /</span><br><span class="line">devtmpfs                  2962076       0   2962076   0% /dev</span><br><span class="line">tmpfs                     2973096       0   2973096   0% /dev/shm</span><br><span class="line">tmpfs                     2973096   33268   2939828   2% /run</span><br><span class="line">tmpfs                     2973096       0   2973096   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1                 1038336  145652    892684  15% /boot</span><br><span class="line">tmpfs                      594620       0    594620   0% /run/user/0</span><br><span class="line"></span><br><span class="line">ls</span><br><span class="line">restart_cob  study  venv</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/15/linux-awk/" data-id="ckki3vazo001z34jx67mdcvdu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ckki43uh4004k5ejxerp3sv7p" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-shell-get-namespace" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/29/shell-get-namespace/" class="article-date">
+  <time datetime="2018-01-29T01:41:54.000Z" itemprop="datePublished">2018-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/29/shell-get-namespace/">get namespace</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="get-namespace-shell"><a href="#get-namespace-shell" class="headerlink" title="get namespace shell"></a>get namespace shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># read me :please mv this file to ns;use method #ns info</span><br><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line">echo_print () &#123;</span><br><span class="line">        echo -e &quot;\033[32m$1\033[0m&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">nsinfo () &#123;</span><br><span class="line">for i in $(ip netns);do echo_print $i;ip netns exec $i ifconfig | grep &quot;inet addr:10&quot; |awk &apos;$1=$1&apos;;echo &apos;&apos; ;done</span><br><span class="line">&#125;</span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">info)</span><br><span class="line">	nsinfo</span><br><span class="line">	;;</span><br><span class="line">*)</span><br><span class="line">	echo_print &quot;Usage: ns info command&quot;</span><br><span class="line">	;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="ckki43uh5004m5ejxptziqiqh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -170,7 +206,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="ckki3vb1t004d34jx8zux15qs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="ckki43ugz004d5ejxk6qpcmzs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -213,7 +249,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="ckki3vb27004z34jxq3ce59qh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="ckki43uhe004z5ejxxudrs3hz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -289,7 +325,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="ckki3vb2v005v34jxryfsp8s3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="ckki43uhz005v5ejx5m544hux" class="article-share-link">Share</a>
       
       
     </footer>
@@ -352,7 +388,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="ckki3vb2u005t34jxk6u7bsou" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="ckki43uhy005t5ejxxw9w89pl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -421,7 +457,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="ckki3vb2k005f34jx9ckuckag" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="ckki43uhp005f5ejxgvb1g2t7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -529,7 +565,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="ckki3vb30006334jx210mndou" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="ckki43ui700635ejxcbn8cok8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -596,7 +632,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="ckki3vb1v004f34jxp920e386" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="ckki43uh0004f5ejx7ibptu3t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -648,68 +684,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="ckki3vb2t005r34jx74dwi8nz" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-21-图片上传" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/21/web-django-21-图片上传/" class="article-date">
-  <time datetime="2017-11-21T12:26:37.000Z" itemprop="datePublished">2017-11-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>上传文件版本一</li>
-<li>上传文件版本二</li>
-<li>上传文件版本三</li>
-</ul>
-<h2 id="上传文件版本一"><a href="#上传文件版本一" class="headerlink" title="上传文件版本一"></a>上传文件版本一</h2><p>定义views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">def upload(request):</span><br><span class="line">    if request.method==&quot;GET&quot;:</span><br><span class="line">        return render(request,&quot;upload.html&quot;)</span><br><span class="line">    else:</span><br><span class="line">        obj=request.FILES.get(&quot;fff&quot;)</span><br><span class="line">        # obj.name 文件名</span><br><span class="line">        # obj.chunks 文件块</span><br><span class="line">        f = open(obj.name,&apos;wb&apos;)</span><br><span class="line">        for chunk in obj.chunks():</span><br><span class="line">            f.write(chunk)</span><br><span class="line">        f.close()</span><br><span class="line">        return render(request,&quot;upload.html&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>upload.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action=&quot;/upload/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</span><br><span class="line">    &#123;%  csrf_token %&#125;</span><br><span class="line">    &lt;p&gt;&lt;input type=&quot;file&quot; name=&quot;fff&quot;/&gt;&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;&lt;/p&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="上传文件版本二"><a href="#上传文件版本二" class="headerlink" title="上传文件版本二"></a>上传文件版本二</h2><p>版本一中form表单上传文件或图片无法做预览，并无法做失败验证及上传文件大小限制，那么就要用到ajax 方式发送。下面学习下ajax方式上传文件。<br>定义views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">def upload(request):</span><br><span class="line">    if request.method==&quot;GET&quot;:</span><br><span class="line">        return render(request,&quot;upload.html&quot;)</span><br><span class="line">    elif request.is_ajax():</span><br><span class="line">        file_obj= request.FILES.get(&apos;obj&apos;)</span><br><span class="line">        print(obj)</span><br><span class="line">        f = open(file_obj.name, &apos;wb&apos;)</span><br><span class="line">        for chunk in file_obj.chunks():</span><br><span class="line">            f.write(chunk)</span><br><span class="line">        f.close()</span><br><span class="line">        return HttpResponse(&quot;ok&quot;)</span><br><span class="line">    else:</span><br><span class="line">		pass</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1&gt;ajax形式上传文件&lt;/h1&gt;</span><br><span class="line">&lt;input type=&quot;file&quot; id=&quot;f4&quot;/&gt;</span><br><span class="line">&lt;input type=&quot;button&quot; value=&quot;提交&quot; id=&quot;btn&quot;&gt; #input的button默认不会有任何事件，除非绑定事件</span><br><span class="line">&#123;% csrf_token %&#125;</span><br><span class="line">&lt;script src=&quot;/static/jquery-1.12.4.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">    $(function () &#123;</span><br><span class="line">        $(&quot;#btn&quot;).click(function () &#123;</span><br><span class="line">            var fm=new FormData();</span><br><span class="line">            fm.append(&apos;obj&apos;,$(&quot;#f4&quot;)[0].files[0]);</span><br><span class="line">            fm.append(&apos;csrfmiddlewaretoken&apos;,$.cookie(&apos;csrftoken&apos;));     //自行组数据$(&quot;input[name=&apos;csrfmiddlewaretoken&apos;]&quot;).val());</span><br><span class="line">           // fm.append(&apos;file_obj&apos;,document.getElementById(&quot;f4&quot;).files[0]);</span><br><span class="line">            //document.getElementById(&quot;f4&quot;)  # dom对象</span><br><span class="line">            // $(&quot;#f4&quot;)                     # jquery对象</span><br><span class="line">            // $(&quot;#f4&quot;)[0]                  #jquery对象转dom对象</span><br><span class="line">            $.ajax(&#123;</span><br><span class="line">                url:&apos;/upload/&apos;,</span><br><span class="line">                type:&apos;POST&apos;,</span><br><span class="line">                data:fm,</span><br><span class="line">                processData: false,</span><br><span class="line">                contentType: false,</span><br><span class="line">                success:function (data) &#123;</span><br><span class="line">                    console.log(data);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="上传文件版本三"><a href="#上传文件版本三" class="headerlink" title="上传文件版本三"></a>上传文件版本三</h2><p>版本二中对各种浏览器兼容不好，可以再次改进. 利用form+iframe特性做的，业内都是这么做的，很重要，兼容性非常好。形式上与ajax很像但不是ajax,称伪ajax,后端不能用request.is_ajax()判断请求方式。<br>不得不先来学习下iframe标签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;iframe id=&quot;ifm&quot; src=&quot;http://www.chouti.com&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">$(&quot;#ifm&quot;).attr(&apos;src&apos;, &apos;http://www.qq.com&apos;)  # 修改iframe src属性但页面不刷新，返回的数据不在整个页面，而在iframe body里，基于这样的特性我们可以上传文件。</span><br></pre></td></tr></table></figure></p>
-<p>当form表单以iframe形式发送数据到后端，后端返回的数据会在iframe body里<br>form 的target属性值要与iframe的name属性值保持一致。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form  id=&quot;ff1&quot; action=&quot;/upload/&quot; method=&quot;POST&quot; enctype=&quot;multipart/form-data&quot; target=&quot;ifr&quot;&gt;</span><br><span class="line">    &lt;p&gt;&lt;input   onchange=&quot;changeImg();&quot; type=&quot;file&quot; name=&quot;fff&quot;/&gt;&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;&lt;input id=&quot;sb&quot; type=&quot;submit&quot; value=&quot;提交&quot;/&gt;&lt;/p&gt; </span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;iframe id=&quot;ifm&quot;  name=&quot;ifr&quot; onload=&quot;sucessBack();&quot; &gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure></p>
-<p>那么如何取出iframe body里的值呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(&quot;#ifm&quot;).html();  # iframe会重新生成一个子document,有html/head/body,这种方法无法取出。</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(&quot;#ifm&quot;).find(&apos;body&apos;).html(); # 有这种想法是好的，这种找只会在当前document里找，但是这样的document嵌套递归查找需要一个额外方法处理.contents()后再查找</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(&quot;#ifm&quot;).contents().find(&apos;body&apos;).html();   # iframe最终正确的方法</span><br></pre></td></tr></table></figure>
-<p>文件上传完整版<br>utils.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class BaseResponse():</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.status=False</span><br><span class="line">        self.data=None</span><br><span class="line">        self.error=None</span><br></pre></td></tr></table></figure></p>
-<p>views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">from django.shortcuts import render,HttpResponse,redirect</span><br><span class="line">import os,json</span><br><span class="line">from utils import BaseResponse</span><br><span class="line">ret=BaseResponse()</span><br><span class="line">def upload(request):</span><br><span class="line">    if request.method == &quot;GET&quot;:</span><br><span class="line">        return render(request, &quot;upload.html&quot;)</span><br><span class="line">    else:</span><br><span class="line">        try:</span><br><span class="line">            file_obj=request.FILES.get(&apos;fff&apos;)</span><br><span class="line">            # file_obj.name  # file name</span><br><span class="line">            # file_obj.chunks() #file block</span><br><span class="line">            file_path = os.path.join(&apos;static&apos;, file_obj.name)</span><br><span class="line">            with open(file_path,&apos;wb&apos;) as f:</span><br><span class="line">                for chunk in file_obj.chunks():</span><br><span class="line">                    f.write(chunk)</span><br><span class="line">            ret.status=True</span><br><span class="line">            ret.data=file_path</span><br><span class="line">        except Exception as e:</span><br><span class="line">            ret.error=&quot;上传失败&quot;</span><br><span class="line">        return  HttpResponse(json.dumps(ret.__dict__,ensure_ascii=False))</span><br></pre></td></tr></table></figure></p>
-<p>upload.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;form id=&quot;sb&quot; action=&quot;/upload/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; target=&quot;ifr&quot;&gt;</span><br><span class="line">    &#123;% csrf_token %&#125;</span><br><span class="line">   &lt;input type=&quot;file&quot;  name=&quot;fff&quot; onchange=&quot;changeImg();&quot;/&gt;</span><br><span class="line">   &lt;!-- 元素更新时触发onchange事件  --&gt;</span><br><span class="line">&#123;#    &lt;input type=&quot;submit&quot;&gt;#&#125;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"></span><br><span class="line">&lt;iframe  id=&quot;ifr&quot; name=&quot;ifr&quot;  onload=&quot;successBack();&quot; style=&quot;display: none&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;div id=&quot;prevImg&quot;&gt;&lt;/div&gt;</span><br><span class="line">&lt;!-- 我们这里不是真正的ajax,是没有success回调函数的,上传成功后会返回数据到前端，文本载入会触发onload事件。 --&gt;</span><br><span class="line"></span><br><span class="line">&lt;script src=&quot;/static/jquery-1.12.4.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    function successBack() &#123;</span><br><span class="line">        var v=$(&quot;#ifr&quot;).contents().find(&quot;body&quot;).html();</span><br><span class="line">        var v=JSON.parse(v);</span><br><span class="line">        if(v.status)&#123;</span><br><span class="line">             var tag=document.createElement(&apos;img&apos;);</span><br><span class="line">            tag.src=&quot;/&quot;+v.data;</span><br><span class="line">            $(&quot;#prevImg&quot;).append(tag);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            console.log(v.error)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    function changeImg() &#123;</span><br><span class="line">       $(&quot;#sb&quot;)[0].submit();</span><br><span class="line">      //  document.getElementById(&apos;sb&apos;).submit();</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="ckki3vb2r005n34jx9tb1i7wn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="ckki43uhx005r5ejxxqx0e8tw" class="article-share-link">Share</a>
       
       
     </footer>
