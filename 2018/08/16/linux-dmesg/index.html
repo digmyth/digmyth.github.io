@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>web-Django-25-DjangoAdmin | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>linux dmesg时间戳换算 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.contrib import adminfrom app01 import mo">
+  <meta name="description" content="dmesg系统内核里的时间戳转换为人类可以看懂的时间 dmesg记录的是自系统开机那刻到出事故时的时间戳 开机时间戳=当时时间戳-机器运行时间戳dmesg_time=开机时间戳+ dmesg记录时间戳再拿着dmesg_time时间戳换算就好了 123456789dmesg_time=`echo &amp;quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d">
 <meta property="og:type" content="article">
-<meta property="og:title" content="web-Django-25-DjangoAdmin">
-<meta property="og:url" content="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/index.html">
+<meta property="og:title" content="linux dmesg时间戳换算">
+<meta property="og:url" content="http://www.digmyth.com/2018/08/16/linux-dmesg/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.contrib import adminfrom app01 import mo">
+<meta property="og:description" content="dmesg系统内核里的时间戳转换为人类可以看懂的时间 dmesg记录的是自系统开机那刻到出事故时的时间戳 开机时间戳=当时时间戳-机器运行时间戳dmesg_time=开机时间戳+ dmesg记录时间戳再拿着dmesg_time时间戳换算就好了 123456789dmesg_time=`echo &amp;quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-15T03:53:24.763Z">
+<meta property="og:updated_time" content="2021-01-29T09:46:40.249Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="web-Django-25-DjangoAdmin">
-<meta name="twitter:description" content="目录 DjangoAdmin工作流程 制作启动文件  单例模式应用   博客参考 一  Django admin工作流程1  注册models_class，生成_registry 中model_class 字典1234admin.py注册models_class如models.UserInfofrom django.contrib import adminfrom app01 import mo">
+<meta name="twitter:title" content="linux dmesg时间戳换算">
+<meta name="twitter:description" content="dmesg系统内核里的时间戳转换为人类可以看懂的时间 dmesg记录的是自系统开机那刻到出事故时的时间戳 开机时间戳=当时时间戳-机器运行时间戳dmesg_time=开机时间戳+ dmesg记录时间戳再拿着dmesg_time时间戳换算就好了 123456789dmesg_time=`echo &amp;quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -64,14 +64,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-web-django-25-DjangoAdmin" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-linux-dmesg" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/12/28/web-django-25-DjangoAdmin/" class="article-date">
-  <time datetime="2017-12-28T12:37:00.000Z" itemprop="datePublished">2017-12-28</time>
+    <a href="/2018/08/16/linux-dmesg/" class="article-date">
+  <time datetime="2018-08-16T01:42:54.000Z" itemprop="datePublished">2018-08-16</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
   </div>
 
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      web-Django-25-DjangoAdmin
+      linux dmesg时间戳换算
     </h1>
   
 
@@ -90,44 +90,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>DjangoAdmin工作流程</li>
-<li>制作启动文件 </li>
-<li>单例模式应用 </li>
-</ul>
-<p><a href="http://www.cnblogs.com/wupeiqi/articles/7444717.html" target="_blank" rel="noopener">博客参考</a></p>
-<h2 id="一-Django-admin工作流程"><a href="#一-Django-admin工作流程" class="headerlink" title="一  Django admin工作流程"></a>一  Django admin工作流程</h2><p>1  注册models_class，生成_registry 中model_class 字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">admin.py注册models_class如models.UserInfo</span><br><span class="line">from django.contrib import admin</span><br><span class="line">from app01 import models</span><br><span class="line">admin.site.register(models.UserInfo)</span><br></pre></td></tr></table></figure></p>
-<p>2 admin.site.urls<br>  admin.site.urls循环_registry={}字典生成相应URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">生成4个URL分别是如下：</span><br><span class="line">app01/userinfo/</span><br><span class="line">app01/userinfo/add/</span><br><span class="line">app01/userinfo/1/change/</span><br><span class="line">app01/userinfo/1/delete/</span><br></pre></td></tr></table></figure></p>
-<p>其中要深入理解URL include原理：  url(r’^xx’, “可以是视图函数，也可以是元组”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">partterns = [</span><br><span class="line">   url(r&apos;^admin&apos;, admin.site.urls),            </span><br><span class="line">		     # admin.site.urls 返回形如（[],None,None）的元组.</span><br><span class="line">   url(r&apos;^backend&apos;, include(&apos;backend.urls&apos;)), </span><br><span class="line">		    # include 同样返回形如（[],None,None）的元组.</span><br><span class="line">		    # 也可以写成形如 include([],None,None) 格式.</span><br><span class="line"> ]</span><br></pre></td></tr></table></figure></p>
-<h2 id="二-制作stack启动文件"><a href="#二-制作stack启动文件" class="headerlink" title="二  制作stack启动文件"></a>二  制作stack启动文件</h2><ul>
-<li>1  创建一个stack 的app</li>
-<li>2  settings.py 注册app<pre><code>-  &apos;stack.apps.StackConfig&apos;,
-</code></pre></li>
-<li>3  在stack apps.py文件定义ready方法</li>
-</ul>
-<p>stack/apps.py文件ready()方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from django.utils.module_loading import autodiscover_modules</span><br><span class="line">class StackConfig(AppConfig):</span><br><span class="line">   name = &apos;stack&apos;</span><br><span class="line"></span><br><span class="line">   def ready(self):</span><br><span class="line">       autodiscover_modules(&quot;xxx&quot;)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>4 启动项目时会先在执行所有app下的xxx.py文件.<br>   (当然前提是这些app也是settings.py注册好的)</li>
-</ul>
-<h2 id="三-单例模式"><a href="#三-单例模式" class="headerlink" title="三 单例模式"></a>三 单例模式</h2><p>单例模式有很多种实现方式</p>
-<p>其中一种：利用模块多次导入时，除第一次外不会真正执行模块代码。</p>
-<p>如果模块中有实例化对象操作，那么多次导入也不会真正实例化多个对象，而是同一个实例</p>
-<p>如果在一个程序先运行的文件改变了实例数据或属性，后运行的文件导入后读这个实例就会有数据或属性.</p>
-<p>  示例：<br>  随便定义一个实例化对象的文件stack/service.v1</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class StackSite():</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self._registry = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    def register(self,class_name,config_class):</span><br><span class="line">        self._registry[class_name] = config_class</span><br><span class="line"></span><br><span class="line">   site = StackSite()</span><br><span class="line">## 单例</span><br></pre></td></tr></table></figure>
-<p>在我们定义的启动文件app01/xxx.py中写入代码(因为会先执行xxx.py)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from stack.service import v1</span><br><span class="line">v1.site.register(&quot;k1&quot;,&quot;v1&quot;)</span><br><span class="line">v1.site.register(&quot;k2&quot;,&quot;v2&quot;)</span><br><span class="line">v1.site.name = &apos;wxq&apos;</span><br></pre></td></tr></table></figure>
-<p>项目urls.py中写入</p>
-<pre><code>from stack.service import v1
-print(v1.site._registry)
-print(v1.site.name)
-</code></pre><p>总结<br>启动项目时，先执行app01/xxx.py,后执行urls.py文件，程序读到了实例的数据并不是重新实例化新对象，这就是单例模式的运用。</p>
+        <p>dmesg系统内核里的时间戳转换为人类可以看懂的时间</p>
+<p>dmesg记录的是自系统开机那刻到出事故时的时间戳</p>
+<p>开机时间戳=当时时间戳-机器运行时间戳<br>dmesg_time=开机时间戳+ dmesg记录时间戳<br>再拿着dmesg_time时间戳换算就好了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">dmesg_time=`echo &quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d&apos; &apos;) + 84679.822059&quot; | bc`</span><br><span class="line"></span><br><span class="line">echo $dmesg_time</span><br><span class="line"></span><br><span class="line">/proc/uptime 第一列表示为系统开机时间，根据这个值和当前时间可以获取到dmesg日志中时间发生的时间</span><br><span class="line"></span><br><span class="line">时间戳的转换为时间</span><br><span class="line">[root@site1 ~]# date -d &quot;@$&#123;dmesg_time&#125;&quot; &apos;+%Y-%m-%d %H:%M:%S&apos;</span><br><span class="line">2019-01-03 11:10:54</span><br></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="ckki3qpsu005v18jx27ddh9ze" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="ckki3qppz002318jxm4asm79g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -136,50 +107,24 @@ print(v1.site.name)
     
 <nav id="article-nav">
   
-    <a href="/2018/01/01/web-Flask-基础/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/10/01/Kubernetes-dashboard/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          web-Flask-基础
+          kubernetes-dashboard
         
       </div>
     </a>
   
   
-    <a href="/2017/12/26/web-django-24-Django中间件/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/08/08/cinder-vol-多后端/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">web-Django-24-Django中间件</div>
+      <div class="article-nav-title">cinder多后端逻辑</div>
     </a>
   
 </nav>
 
   
-
-  
-    <! -- 添加捐赠图标 -->
-<div class ="post-donate">
-    <div id="donate_board" class="donate_bar center">
-        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
-        <span class="donate_txt">
-           &uarr;<br>
-		   能帮到您是我的荣幸！
-        </span>
-        <br>
-      </div>  
-	<div id="donate_guide" class="donate_bar center hidden" >
-		<!-- 支付宝打赏图案 -->
-		<!--img src="/img/zhifubao.jpg" alt="支付宝打赏"--> 
-		<!-- 微信打赏图案 -->
-		<img src="/images/wecharpay.png" alt="微信打赏">  
-    </div>
-	<script type="text/javascript">
-		document.getElementById('btn_donate').onclick = function(){
-			$('#donate_board').addClass('hidden');
-			$('#donate_guide').removeClass('hidden');
-		}
-	</script>
-</div>
-<! -- 添加捐赠图标 -->
 
   
 </article>

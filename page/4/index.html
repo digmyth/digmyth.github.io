@@ -62,14 +62,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Kubernetes-dashboard" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-linux-dmesg" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/10/01/Kubernetes-dashboard/" class="article-date">
-  <time datetime="2018-10-01T12:51:41.000Z" itemprop="datePublished">2018-10-01</time>
+    <a href="/2018/08/16/linux-dmesg/" class="article-date">
+  <time datetime="2018-08-16T01:42:54.000Z" itemprop="datePublished">2018-08-16</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
   </div>
 
   </div>
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/01/Kubernetes-dashboard/">kubernetes-dashboard</a>
+      <a class="article-title" href="/2018/08/16/linux-dmesg/">linux dmesg时间戳换算</a>
     </h1>
   
 
@@ -88,16 +88,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/10/01/Kubernetes-dashboard/#more">Read More</a>
-          </p>
-        
+        <p>dmesg系统内核里的时间戳转换为人类可以看懂的时间</p>
+<p>dmesg记录的是自系统开机那刻到出事故时的时间戳</p>
+<p>开机时间戳=当时时间戳-机器运行时间戳<br>dmesg_time=开机时间戳+ dmesg记录时间戳<br>再拿着dmesg_time时间戳换算就好了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">dmesg_time=`echo &quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d&apos; &apos;) + 84679.822059&quot; | bc`</span><br><span class="line"></span><br><span class="line">echo $dmesg_time</span><br><span class="line"></span><br><span class="line">/proc/uptime 第一列表示为系统开机时间，根据这个值和当前时间可以获取到dmesg日志中时间发生的时间</span><br><span class="line"></span><br><span class="line">时间戳的转换为时间</span><br><span class="line">[root@site1 ~]# date -d &quot;@$&#123;dmesg_time&#125;&quot; &apos;+%Y-%m-%d %H:%M:%S&apos;</span><br><span class="line">2019-01-03 11:10:54</span><br></pre></td></tr></table></figure>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="ckki3o4490004zhjxpnblvi4t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="ckki3qppz002318jxm4asm79g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -142,7 +141,103 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckki3o453000wzhjxzidny7hy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckki3qpoy000z18jxicuxijzh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckki3qpo5000518jx57b3t6jz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Dockerfile-详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Dockerfile-详解/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/01/Dockerfile-详解/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckki3qpnk000018jxb8fvp0ky" class="article-share-link">Share</a>
       
       
     </footer>
@@ -192,103 +287,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckki3o44f0008zhjx7j5drbmm" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckki3o44b0005zhjxtx8tzs9f" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Dockerfile-详解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Dockerfile-详解/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/01/Dockerfile-详解/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckki3o4400001zhjxk8kuvoa7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckki3qpo9000818jxvqjik7rh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -331,7 +330,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckki3o44i000bzhjxma6jegy8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckki3qpoc000b18jxt17rcwsa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -379,7 +378,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckki3o477002uzhjxyrohu0j1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckki3qpqs002u18jxgkvz6tza" class="article-share-link">Share</a>
       
       
     </footer>
@@ -428,7 +427,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckki3o48q0045zhjxrxu86dgh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckki3qprp004518jx00wthssd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -475,7 +474,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="ckki3o46s002hzhjxq6y625v5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="ckki3qpq5002918jx0dag60w8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -523,7 +522,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckki3o44p000fzhjxanm0804b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckki3qpoi000f18jxdnsjixmm" class="article-share-link">Share</a>
       
       
     </footer>
