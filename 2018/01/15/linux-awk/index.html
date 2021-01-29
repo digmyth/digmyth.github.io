@@ -3,15 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>归档 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>linux awk | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:url" content="http://www.digmyth.com/archives/page/3/index.html">
+  <meta name="description" content="知识1： awk中,字符串或空串参与运算时会被当作数字0 1234[root@cloud-site mnt]# awk &amp;apos;BEGIN&amp;#123;a=&amp;quot;test&amp;quot;;print a; a=a+1;print a;a++;print a&amp;#125;&amp;apos;test12  知识2：直接引用一个数组中不存在的元素时，awk会自动创建这个元素，并且为其赋值为”空字符串”，同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux awk">
+<meta property="og:url" content="http://www.digmyth.com/2018/01/15/linux-awk/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="知识1： awk中,字符串或空串参与运算时会被当作数字0 1234[root@cloud-site mnt]# awk &amp;apos;BEGIN&amp;#123;a=&amp;quot;test&amp;quot;;print a; a=a+1;print a;a++;print a&amp;#125;&amp;apos;test12  知识2：直接引用一个数组中不存在的元素时，awk会自动创建这个元素，并且为其赋值为”空字符串”，同">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-01-29T09:50:03.781Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta name="twitter:title" content="linux awk">
+<meta name="twitter:description" content="知识1： awk中,字符串或空串参与运算时会被当作数字0 1234[root@cloud-site mnt]# awk &amp;apos;BEGIN&amp;#123;a=&amp;quot;test&amp;quot;;print a; a=a+1;print a;a++;print a&amp;#125;&amp;apos;test12  知识2：直接引用一个数组中不存在的元素时，awk会自动创建这个元素，并且为其赋值为”空字符串”，同">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -60,225 +64,79 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/02/10/python-Celery-Flask/" class="archive-article-date">
-  <time datetime="2019-02-10T09:03:01.000Z" itemprop="datePublished">2月 10</time>
+        <section id="main"><article id="post-linux-awk" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/15/linux-awk/" class="article-date">
+  <time datetime="2018-01-15T01:42:54.000Z" itemprop="datePublished">2018-01-15</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/10/python-Celery-Flask/">python-celery-Flask</a>
+    <h1 class="article-title" itemprop="name">
+      linux awk
     </h1>
   
 
-    </header>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>知识1： awk中,字符串或空串参与运算时会被当作数字0</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud-site mnt]# awk &apos;BEGIN&#123;a=&quot;test&quot;;print a; a=a+1;print a;a++;print a&#125;&apos;</span><br><span class="line">test</span><br><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>知识2：<br>直接引用一个数组中不存在的元素时，awk会自动创建这个元素，并且为其赋值为”空字符串”，同样参与运算时被当作数字0</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud-site mnt]# awk  &apos;BEGIN&#123;print t[&quot;ip&quot;]; t[&quot;ip&quot;]++;print t[&quot;ip&quot;]&#125;&apos;</span><br><span class="line"></span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">示例;</span><br><span class="line">[root@cloud-site mnt]# cat test.txt</span><br><span class="line">aa  99</span><br><span class="line">bb  75</span><br><span class="line">cc  55</span><br><span class="line">aa  100</span><br><span class="line">cc  99</span><br><span class="line">bb  40</span><br><span class="line">[root@cloud-site mnt]# cat test.txt  | awk  &apos;&#123;A[$1]++&#125;END&#123;for (i in A)&#123; print i,A[i]&#125; &#125;&apos;</span><br><span class="line">bb 2</span><br><span class="line">cc 2</span><br><span class="line">aa 2</span><br></pre></td></tr></table></figure>
+<p>示例一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud-site mnt]# cat a.log</span><br><span class="line">1|aa|3|45|5|6|7|8|9|</span><br><span class="line">2|aa|3|44|5|6|7|8|9|</span><br><span class="line">3|aa|3|43|5|6|7|8|9|</span><br><span class="line">4|aa|3|44|5|6|7|8|9|</span><br><span class="line">5|bb|3|45|5|6|7|8|9|</span><br><span class="line">6|bb|3|4 |5|6|7|8|9|</span><br><span class="line">[root@cloud-site mnt]# awk -F&apos;|&apos; &apos;&#123;counxxt[$4]++;&#125;END&#123;for (i in counxxt) &#123;print i&quot;|&quot;counxxt[i]&#125;&#125;&apos; a.log</span><br><span class="line">44|2</span><br><span class="line">45|2</span><br><span class="line">4 |1</span><br><span class="line">43|1</span><br></pre></td></tr></table></figure></p>
+<p>示例二<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">if  表达式1？那么表达式2 ： 否则 表达式3</span><br><span class="line">[root@cloud-site mnt]# cat test.txt </span><br><span class="line">aa  99</span><br><span class="line">bb  75</span><br><span class="line">cc  55</span><br><span class="line">aa  100</span><br><span class="line">cc  99</span><br><span class="line">bb  40</span><br><span class="line">[root@cloud-site mnt]# cat test.sh</span><br><span class="line">#awk &apos;BEGIN &#123;</span><br><span class="line">#printf &quot;%s,%5s,%4s\n&quot;,&quot;IP&quot;,&quot;AVG&quot;,&quot;MAX&quot;</span><br><span class="line">#&#125;</span><br><span class="line">awk &apos;&#123;</span><br><span class="line">A[$1]++;SNF[$1]+=$NF;</span><br><span class="line">MAXNF[$1]=($NF&gt;MAXNF[$1]?$NF:MAXNF[$1])</span><br><span class="line">&#125;END&#123;</span><br><span class="line">for (IP in A) print IP,SNF[IP]/A[IP],MAXNF[IP]</span><br><span class="line">&#125;&apos; test.txt</span><br><span class="line">[root@cloud-site mnt]# sh test.sh</span><br><span class="line">bb 57.5 75</span><br><span class="line">cc 77 99</span><br><span class="line">aa 99.5 100</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/01/15/linux-awk/" data-id="ckki3vazo001z34jx67mdcvdu" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/01/29/shell-get-namespace/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          get namespace
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/06/python-django-26-API验证/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">python-django-26-API验证</div>
+    </a>
+  
+</nav>
+
+  
+
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/01/12/ansible-Callback-02/" class="archive-article-date">
-  <time datetime="2019-01-12T12:39:12.000Z" itemprop="datePublished">1月 12</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/12/ansible-Callback-02/">ansible callback 重写</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/01/10/ansible-api-01/" class="archive-article-date">
-  <time datetime="2019-01-10T12:39:12.000Z" itemprop="datePublished">1月 10</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/10/ansible-api-01/">python3下ansible api学习</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/01/10/veth-pair+namespace/" class="archive-article-date">
-  <time datetime="2019-01-10T01:41:54.000Z" itemprop="datePublished">1月 10</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/10/veth-pair+namespace/">veth-pair+namespace</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/01/08/openvswitch/" class="archive-article-date">
-  <time datetime="2019-01-08T01:41:54.000Z" itemprop="datePublished">1月 8</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/01/08/openvswitch/">OpenVSwitch</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/12/01/linux-download-technique/" class="archive-article-date">
-  <time datetime="2018-12-01T00:48:08.000Z" itemprop="datePublished">12月 1</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/12/01/linux-download-technique/">download technique</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/11/25/web-socket-02/" class="archive-article-date">
-  <time datetime="2018-11-25T12:51:41.000Z" itemprop="datePublished">11月 25</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/11/25/web-socket-02/">web-socket-高级篇</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/11/06/web-socket-01/" class="archive-article-date">
-  <time datetime="2018-11-06T12:51:41.000Z" itemprop="datePublished">11月 6</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/11/06/web-socket-01/">web-socket-基础知识</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/10/01/Kubernetes-dashboard/" class="archive-article-date">
-  <time datetime="2018-10-01T12:51:41.000Z" itemprop="datePublished">10月 1</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/10/01/Kubernetes-dashboard/">kubernetes-dashboard</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/08/16/linux-dmesg/" class="archive-article-date">
-  <time datetime="2018-08-16T01:42:54.000Z" itemprop="datePublished">8月 16</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/08/16/linux-dmesg/">linux dmesg时间戳换算</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
 
-  <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/archives/page/2/">&laquo; __('prev')</a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/11/">11</a><a class="extend next" rel="next" href="/archives/page/4/">__('next') &raquo;</a>
-  </nav>
 </section>
         
           <aside id="sidebar">
