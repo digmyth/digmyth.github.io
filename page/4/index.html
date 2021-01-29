@@ -62,53 +62,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-linux-dmesg" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/16/linux-dmesg/" class="article-date">
-  <time datetime="2018-08-16T01:42:54.000Z" itemprop="datePublished">2018-08-16</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/16/linux-dmesg/">linux dmesg时间戳换算</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>dmesg系统内核里的时间戳转换为人类可以看懂的时间</p>
-<p>dmesg记录的是自系统开机那刻到出事故时的时间戳</p>
-<p>开机时间戳=当时时间戳-机器运行时间戳<br>dmesg_time=开机时间戳+ dmesg记录时间戳<br>再拿着dmesg_time时间戳换算就好了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">dmesg_time=`echo &quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d&apos; &apos;) + 84679.822059&quot; | bc`</span><br><span class="line"></span><br><span class="line">echo $dmesg_time</span><br><span class="line"></span><br><span class="line">/proc/uptime 第一列表示为系统开机时间，根据这个值和当前时间可以获取到dmesg日志中时间发生的时间</span><br><span class="line"></span><br><span class="line">时间戳的转换为时间</span><br><span class="line">[root@site1 ~]# date -d &quot;@$&#123;dmesg_time&#125;&quot; &apos;+%Y-%m-%d %H:%M:%S&apos;</span><br><span class="line">2019-01-03 11:10:54</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="ckki43ufb00235ejx55e1jlv4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
     <article id="post-cinder-vol-多后端" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/08/08/cinder-vol-多后端/" class="article-date">
@@ -141,7 +94,50 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckki43uec000z5ejxz1go7ana" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckki47khg000z74jx041tjp74" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Openshift/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckki47kgw000b74jxzkupyzow" class="article-share-link">Share</a>
       
       
     </footer>
@@ -189,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckki43udj00055ejxd1dhx7rv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckki47kgm000574jx1p0xdx7k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -237,7 +233,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckki43ud100005ejxnvxue03h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckki47kg2000074jxr52l8m7h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -287,50 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckki43udn00085ejxhu7n3pec" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Openshift/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckki43udr000b5ejx1cl3habm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckki47kgr000874jxmy0qu9fz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -378,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckki43ufu002u5ejx0l15oi81" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckki47kiw002u74jxfy32bnsn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -427,54 +380,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckki43ugu00455ejxvxghvotw" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-java-install" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/06/15/linux-java-install/" class="article-date">
-  <time datetime="2018-06-15T03:42:54.000Z" itemprop="datePublished">2018-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/15/linux-java-install/">linux java install</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>download jdk1.8<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@nodeadm ]# mkdir /usr/local/java</span><br><span class="line">[root@nodeadm ]# tar xf jdk-8u181-linux-x64.tar.gz -C /usr/local/java</span><br></pre></td></tr></table></figure></p>
-<p>uncompress<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@nodeadm java]# pwd</span><br><span class="line">/usr/local/java</span><br><span class="line">[root@nodeadm java]# ll jdk1.8.0_181/</span><br><span class="line">total 25976</span><br><span class="line">drwxr-xr-x 2 root root     4096 Sep 21 08:54 bin</span><br><span class="line">-r--r--r-- 1 root root     3244 Sep 21 08:54 COPYRIGHT</span><br><span class="line">drwxr-xr-x 3 root root      132 Sep 21 08:54 include</span><br><span class="line">-rw-r--r-- 1 root root  5207314 Sep 21 08:54 javafx-src.zip</span><br><span class="line">drwxr-xr-x 5 root root      185 Sep 21 08:54 jre</span><br><span class="line">drwxr-xr-x 5 root root      245 Sep 21 08:54 lib</span><br><span class="line">-r--r--r-- 1 root root       40 Sep 21 08:54 LICENSE</span><br><span class="line">drwxr-xr-x 4 root root       47 Sep 21 08:54 man</span><br><span class="line">-r--r--r-- 1 root root      159 Sep 21 08:54 README.html</span><br><span class="line">-rw-r--r-- 1 root root      424 Sep 21 08:54 release</span><br><span class="line">-rw-r--r-- 1 root root 21099920 Sep 21 08:54 src.zip</span><br><span class="line">-rw-r--r-- 1 root root   106782 Sep 21 08:54 THIRDPARTYLICENSEREADME-JAVAFX.txt</span><br><span class="line">-r--r--r-- 1 root root   154222 Sep 21 08:54 THIRDPARTYLICENSEREADME.txt</span><br></pre></td></tr></table></figure></p>
-<p>set java_env<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@nodeadm java]# tail -n 5 /etc/profile</span><br><span class="line"></span><br><span class="line">export JAVA_HOME=/usr/local/java/jdk1.8.0_181</span><br><span class="line">export JRE_HOME=/usr/local/java/jdk1.8.0_181/jre</span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib</span><br><span class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH</span><br></pre></td></tr></table></figure></p>
-<p>仅作记录</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/linux-java-install/" data-id="ckki43ufg00295ejxx5qqkwvm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckki47kk7004574jx2t2mbaqg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -522,7 +428,97 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckki43udx000f5ejx7i5yctq1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckki47kh2000f74jxghycgxj8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-shell-func" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/29/shell-func/" class="article-date">
+  <time datetime="2018-05-29T01:41:54.000Z" itemprop="datePublished">2018-05-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/29/shell-func/">shell function语法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Linux shell中函数语法很重要，它能让你写出很漂亮的shell,来看个例子学习下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">cat /usr/local/bin/show </span><br><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">a=&apos;df -hT&apos;</span><br><span class="line">b=&quot;ls&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo_print() &#123;</span><br><span class="line">	echo -e &quot;\033[1;32m$1\033[0m&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exec() &#123;</span><br><span class="line">	echo_print &quot;$1&quot;</span><br><span class="line">	$1</span><br><span class="line">	echo &quot;&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">info () &#123;</span><br><span class="line">	exec $a</span><br><span class="line">	exec $b</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">info)</span><br><span class="line">	info;;</span><br><span class="line"></span><br><span class="line">*)</span><br><span class="line">	echo &quot;Usage: show info&quot;;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+<p>相当于定制了一个shell命令，运行一下看下效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#[root@wxqnode opt]# show info</span><br><span class="line">df</span><br><span class="line">Filesystem              1K-blocks    Used Available Use% Mounted on</span><br><span class="line">/dev/mapper/centos-root  22001156 1946776  20054380   9% /</span><br><span class="line">devtmpfs                  2962076       0   2962076   0% /dev</span><br><span class="line">tmpfs                     2973096       0   2973096   0% /dev/shm</span><br><span class="line">tmpfs                     2973096   33268   2939828   2% /run</span><br><span class="line">tmpfs                     2973096       0   2973096   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1                 1038336  145652    892684  15% /boot</span><br><span class="line">tmpfs                      594620       0    594620   0% /run/user/0</span><br><span class="line"></span><br><span class="line">ls</span><br><span class="line">restart_cob  study  venv</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ckki47kks004k74jxrijq9v39" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-shell-get-namespace" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/29/shell-get-namespace/" class="article-date">
+  <time datetime="2018-01-29T01:41:54.000Z" itemprop="datePublished">2018-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/29/shell-get-namespace/">get namespace</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="get-namespace-shell"><a href="#get-namespace-shell" class="headerlink" title="get namespace shell"></a>get namespace shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># read me :please mv this file to ns;use method #ns info</span><br><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line">echo_print () &#123;</span><br><span class="line">        echo -e &quot;\033[32m$1\033[0m&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">nsinfo () &#123;</span><br><span class="line">for i in $(ip netns);do echo_print $i;ip netns exec $i ifconfig | grep &quot;inet addr:10&quot; |awk &apos;$1=$1&apos;;echo &apos;&apos; ;done</span><br><span class="line">&#125;</span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">info)</span><br><span class="line">	nsinfo</span><br><span class="line">	;;</span><br><span class="line">*)</span><br><span class="line">	echo_print &quot;Usage: ns info command&quot;</span><br><span class="line">	;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="ckki47kkv004m74jxnz4s3oxe" class="article-share-link">Share</a>
       
       
     </footer>
