@@ -3,15 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>归档 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>linux dmesg时间戳换算 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:url" content="http://www.digmyth.com/archives/page/5/index.html">
+  <meta name="description" content="dmesg系统内核里的时间戳转换为人类可以看懂的时间 dmesg记录的是自系统开机那刻到出事故时的时间戳 开机时间戳=当时时间戳-机器运行时间戳dmesg_time=开机时间戳+ dmesg记录时间戳再拿着dmesg_time时间戳换算就好了 123456789dmesg_time=`echo &amp;quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux dmesg时间戳换算">
+<meta property="og:url" content="http://www.digmyth.com/2020/01/10/linux-dmesg/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="dmesg系统内核里的时间戳转换为人类可以看懂的时间 dmesg记录的是自系统开机那刻到出事故时的时间戳 开机时间戳=当时时间戳-机器运行时间戳dmesg_time=开机时间戳+ dmesg记录时间戳再拿着dmesg_time时间戳换算就好了 123456789dmesg_time=`echo &amp;quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-01-29T09:44:33.489Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta name="twitter:title" content="linux dmesg时间戳换算">
+<meta name="twitter:description" content="dmesg系统内核里的时间戳转换为人类可以看懂的时间 dmesg记录的是自系统开机那刻到出事故时的时间戳 开机时间戳=当时时间戳-机器运行时间戳dmesg_time=开机时间戳+ dmesg记录时间戳再拿着dmesg_time时间戳换算就好了 123456789dmesg_time=`echo &amp;quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -60,225 +64,72 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/05/29/shell-func/" class="archive-article-date">
-  <time datetime="2018-05-29T01:41:54.000Z" itemprop="datePublished">5月 29</time>
+        <section id="main"><article id="post-linux-dmesg" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/01/10/linux-dmesg/" class="article-date">
+  <time datetime="2020-01-10T01:42:54.000Z" itemprop="datePublished">2020-01-10</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/29/shell-func/">shell function语法</a>
+    <h1 class="article-title" itemprop="name">
+      linux dmesg时间戳换算
     </h1>
   
 
-    </header>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>dmesg系统内核里的时间戳转换为人类可以看懂的时间</p>
+<p>dmesg记录的是自系统开机那刻到出事故时的时间戳</p>
+<p>开机时间戳=当时时间戳-机器运行时间戳<br>dmesg_time=开机时间戳+ dmesg记录时间戳<br>再拿着dmesg_time时间戳换算就好了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">dmesg_time=`echo &quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d&apos; &apos;) + 84679.822059&quot; | bc`</span><br><span class="line"></span><br><span class="line">echo $dmesg_time</span><br><span class="line"></span><br><span class="line">/proc/uptime 第一列表示为系统开机时间，根据这个值和当前时间可以获取到dmesg日志中时间发生的时间</span><br><span class="line"></span><br><span class="line">时间戳的转换为时间</span><br><span class="line">[root@site1 ~]# date -d &quot;@$&#123;dmesg_time&#125;&quot; &apos;+%Y-%m-%d %H:%M:%S&apos;</span><br><span class="line">2019-01-03 11:10:54</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2020/01/10/linux-dmesg/" data-id="ckki3o4660020zhjxtfm31h10" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/01/15/linux-awk/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          linux awk
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/01/01/openvswit_vlan流表/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">openvswit_vlan流表</div>
+    </a>
+  
+</nav>
+
+  
+
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/01/29/shell-get-namespace/" class="archive-article-date">
-  <time datetime="2018-01-29T01:41:54.000Z" itemprop="datePublished">1月 29</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/29/shell-get-namespace/">get namespace</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/01/06/python-django-26-API验证/" class="archive-article-date">
-  <time datetime="2018-01-06T12:51:41.000Z" itemprop="datePublished">1月 6</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/01/01/web-Flask-基础/" class="archive-article-date">
-  <time datetime="2018-01-01T12:51:41.000Z" itemprop="datePublished">1月 1</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/01/web-Flask-基础/">web-Flask-基础</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/12/28/web-django-25-DjangoAdmin/" class="archive-article-date">
-  <time datetime="2017-12-28T12:37:00.000Z" itemprop="datePublished">12月 28</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/28/web-django-25-DjangoAdmin/">web-Django-25-DjangoAdmin</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/12/26/web-django-24-Django中间件/" class="archive-article-date">
-  <time datetime="2017-12-26T12:26:37.000Z" itemprop="datePublished">12月 26</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/26/web-django-24-Django中间件/">web-Django-24-Django中间件</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/12/20/web-django-17-ModelForm/" class="archive-article-date">
-  <time datetime="2017-12-20T12:26:37.000Z" itemprop="datePublished">12月 20</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/20/web-django-17-ModelForm/">web-django-17-ModelForm</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/12/15/web-get_post_contentype知识/" class="archive-article-date">
-  <time datetime="2017-12-15T12:51:41.000Z" itemprop="datePublished">12月 15</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/15/web-get_post_contentype知识/">03-GET/POST/ContentType知识</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/12/06/python-spider01-基础知识/" class="archive-article-date">
-  <time datetime="2017-12-06T12:51:41.000Z" itemprop="datePublished">12月 6</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/06/python-spider01-基础知识/">python-spider-基础知识</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/12/01/web-django-23-Django序列化/" class="archive-article-date">
-  <time datetime="2017-12-01T12:26:37.000Z" itemprop="datePublished">12月 1</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
 
-  <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/archives/page/4/">&laquo; __('prev')</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/3/">3</a><a class="page-number" href="/archives/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/archives/page/6/">6</a><a class="page-number" href="/archives/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/11/">11</a><a class="extend next" rel="next" href="/archives/page/6/">__('next') &raquo;</a>
-  </nav>
 </section>
         
           <aside id="sidebar">
