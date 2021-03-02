@@ -62,6 +62,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-11-模板渲染" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/20/web-django-11-模板渲染/" class="article-date">
+  <time datetime="2017-06-20T12:26:37.000Z" itemprop="datePublished">2017-06-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/20/web-django-11-模板渲染/">web-Django-11-模板渲染</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>基本方法</li>
+<li>过滤器</li>
+<li>标签</li>
+</ul>
+<p>Django对template中html的渲染有着一套语法,</p>
+<h2 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">return render(request, &quot;x.html&quot;, &#123;&apos;k&apos;:[1,2,3,4], &quot;d&quot;:&#123;&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;v2&quot;&#125;&#125;)</span><br><span class="line">   x.html</span><br><span class="line">    &#123;&#123; k.2  &#125;&#125;</span><br><span class="line"></span><br><span class="line">   &#123;% for i in d %&#125;</span><br><span class="line">     &#123;&#123; i &#125;&#125;  --key</span><br><span class="line">   &#123;% endfor %&#125;</span><br><span class="line"></span><br><span class="line">   &#123;% for k,v in d.items %&#125;</span><br><span class="line">   &#123;&#123; k &#125;&#125;   &#123;&#123; v &#125;&#125;</span><br><span class="line">   &#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h2><p>filter内置一些方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"># 1  add          ：   给变量加上相应的值</span><br><span class="line">   #</span><br><span class="line">   # 2  addslashes   :    给变量中的引号前加上斜线</span><br><span class="line">   #</span><br><span class="line">   # 3  capfirst     :    首字母大写</span><br><span class="line">   #</span><br><span class="line">   # 4  cut          ：   从字符串中移除指定的字符</span><br><span class="line">   #</span><br><span class="line">   # 5  date         ：   格式化日期字符串</span><br><span class="line">   #</span><br><span class="line">   # 6  default      ：   如果值是False,就替换成设置的默认值，否则就是用本来的值</span><br><span class="line">   #</span><br><span class="line">   # 7  default_if_none:  如果值是None，就替换成设置的默认值，否则就使用本来的值</span><br><span class="line"></span><br><span class="line">#value1=&quot;aBcDe&quot;</span><br><span class="line">&#123;&#123; value1|upper &#125;&#125;&lt;br&gt;</span><br><span class="line"></span><br><span class="line">#value2=5</span><br><span class="line">&#123;&#123; value2|add:3 &#125;&#125;&lt;br&gt;</span><br><span class="line"></span><br><span class="line">#value3=&apos;he  llo wo r ld&apos;</span><br><span class="line">&#123;&#123; value3|cut:&apos; &apos; &#125;&#125;&lt;br&gt;</span><br><span class="line"></span><br><span class="line">#import datetime</span><br><span class="line">#value4=datetime.datetime.now()</span><br><span class="line">&#123;&#123; value4|date:&apos;Y-m-d&apos; &#125;&#125;&lt;br&gt;</span><br><span class="line"></span><br><span class="line">#value5=[]</span><br><span class="line">&#123;&#123; value5|default:&apos;空的&apos; &#125;&#125;&lt;br&gt;</span><br><span class="line"></span><br><span class="line">#value6=&apos;&lt;a href=&quot;#&quot;&gt;跳转&lt;/a&gt;&apos;</span><br><span class="line"></span><br><span class="line">&#123;&#123; value6 &#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;% autoescape off %&#125;</span><br><span class="line">  &#123;&#123; value6 &#125;&#125;</span><br><span class="line">&#123;% endautoescape %&#125;</span><br><span class="line"></span><br><span class="line">&#123;&#123; value6|safe &#125;&#125;&lt;br&gt;</span><br><span class="line"></span><br><span class="line">&#123;&#123; value6|striptags &#125;&#125;</span><br><span class="line"></span><br><span class="line">#value7=&apos;1234&apos;</span><br><span class="line">&#123;&#123; value7|filesizeformat &#125;&#125;&lt;br&gt;</span><br><span class="line">&#123;&#123; value7|first &#125;&#125;&lt;br&gt;</span><br><span class="line">&#123;&#123; value7|length &#125;&#125;&lt;br&gt;</span><br><span class="line">&#123;&#123; value7|slice:&quot;:-1&quot; &#125;&#125;&lt;br&gt;</span><br><span class="line"></span><br><span class="line">#value8=&apos;http://www.baidu.com/?a=1&amp;b=2&apos;</span><br><span class="line">&#123;&#123; value8|urlencode &#125;&#125;&lt;br&gt;</span><br><span class="line">    value9=&apos;hello I am pythoner&apos;</span><br></pre></td></tr></table></figure></p>
+<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>Django 提供的函数:</p>
+<ul>
+<li>simple_tag 可以有多个参数</li>
+<li>filter     只能有2个参数，并且可以做条件语句的条件</li>
+<li>自定义过滤器、自定义标签 </li>
+</ul>
+<h3 id="形如for-if"><a href="#形如for-if" class="headerlink" title="形如for/if"></a>形如for/if</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% for item in todo_list %&#125;</span><br><span class="line">    &lt;p&gt;&#123;&#123; forloop.counter &#125;&#125;: &#123;&#123; item &#125;&#125;&lt;/p&gt;</span><br><span class="line">&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="自定义标签"><a href="#自定义标签" class="headerlink" title="自定义标签"></a>自定义标签</h3><p>当内置函数不满足需求时，可自定义filter/simple_tag</p>
+<p>1 在Django app中创建目录名心须为templatetags的目录</p>
+<p>2 在templatetags下随意定义.py 文件</p>
+<p>如my_tag.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python3</span><br><span class="line">__author__ = &quot;wxq&quot;</span><br><span class="line"></span><br><span class="line">from django import  template</span><br><span class="line">from django.utils.safestring import mark_safe</span><br><span class="line">register = template.Library()</span><br><span class="line"># register变量名是固定的，不可以改变</span><br><span class="line"></span><br><span class="line">@register.filter       # 自定义过滤器</span><br><span class="line">def multip(x,y):</span><br><span class="line">    return x*y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@register.simple_tag   # 自定义标签</span><br><span class="line">def multi_tag(x,y,z):</span><br><span class="line">    return x*y*z</span><br></pre></td></tr></table></figure></p>
+<p>3 使用自定义simple_tag和filter的html文件中导入之前创建的 my_tag.py, 注意格式百分号.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% load &quot;my_tag&quot; %&#125;</span><br></pre></td></tr></table></figure></p>
+<p>4 使用定义的simple_tag和filter<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># html首行导入&#123;% load my_tag %&#125;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123; 10 |add:6 &#125;&#125;&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123;  n | multip:6 &#125;&#125;&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;&#123;%  multi_tag 10 320 30 %&#125;&lt;/p&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="模板继承"><a href="#模板继承" class="headerlink" title="模板继承"></a>模板继承</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;% block content %&#125;</span><br><span class="line">...</span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">使用模板标签： &#123;% block %&#125; 。 所有的 &#123;% block %&#125; 标签告诉模板引擎，子模板可以重载这些部分。</span><br><span class="line">每个&#123;% block %&#125;标签所要做的是告诉模板引擎，该模板下的这一块内容将有可能被子模板覆盖。</span><br></pre></td></tr></table></figure>
+<p>总结：<br>1 后端是字典如[“key”]取值，模板里都用.key<br>2 后端是元组或列表如[0]取值，模板里都用.0<br>3 后端是函数或类方法用跨号()调用，模板里不加跨号，切记</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="cklrqla7r005d1ojxgoru6q8s" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/15/web-02-前端html/" class="article-date">
@@ -110,7 +177,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckki4aapf004w8djx828r6omt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="cklrqla7a004y1ojxr8c358df" class="article-share-link">Share</a>
       
       
     </footer>
@@ -187,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckki4aaqf00618djx8r6yz62e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="cklrqla9300631ojxcmiotuz5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -237,7 +304,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckki4aams00278djxzfdq8m46" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="cklrqla3n00271ojxnu38meye" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +365,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckki4aall00148djx4pvtrbhg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="cklrqla2m00141ojxv1kiyljz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -359,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckki4aang002z8djxx6j1q9fy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="cklrqla4p00311ojxzh4kux11" class="article-share-link">Share</a>
       
       
     </footer>
@@ -425,7 +492,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckki4aak900018djxmeahtfka" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="cklrqla0y00011ojx5owsrk77" class="article-share-link">Share</a>
       
       
     </footer>
@@ -501,7 +568,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ckki4aale000u8djxgrcu8mh6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="cklrqla2d000u1ojxlpco1z6w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -546,7 +613,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ckki4aapo00568djxgl4q8d3h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="cklrqla7l00581ojxsa7bsgkp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -597,55 +664,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ckki4aap0004i8djxsdszaux6" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
-  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ckki4aami001x8djx1cbwab5t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="cklrqla6w004k1ojxwriullp6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -686,7 +705,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -697,6 +716,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/02/13/kubernetes-calico-bug/">calico bug</a>
+          </li>
         
           <li>
             <a href="/2021/01/25/prometheus-01/">prometheus</a>
@@ -712,10 +735,6 @@
         
           <li>
             <a href="/2021/01/11/kubernetes-rbac/">kubernetes rbac</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/03/kubernetes-secret/">kubernetes secret</a>
           </li>
         
       </ul>
