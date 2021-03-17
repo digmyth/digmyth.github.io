@@ -90,19 +90,10 @@
       
         <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>官网：  <a href="https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html</a>   </p>
 <p>elasticsearch: 借住于LuceneAPI    重新封装实现的搜索组件，增加更强大的能力，将Lucene提供的索引组建成shar形式，分片后分布于各节点上从而构建成分布式时时查询组件。 是一个基Lucene实现的开源、分布式、RestFul的全文本搜索引擎，此外，它还是一个分布式实时文档存储，其中每个文档的每个field均是被索引的数据，且可被搜索，也是一个带实时分析功能的分布式搜索引擎，能够扩展至数以百计的节点实时处理PB级的数据</p>
-<p>概念</p>
-<pre><code> 文档只有被索引后才能被索引，这个文档就放在一个叫索引的文件当中。
- 在Lucene中每一项相当于MYsql表中一行数据，多个项在一起就组成了索引，但是每个索引会尽量存储同类型数据
-
- 大索引的多个片分shard散到多个物理节点上去，可成完成读写负载均衡，分片节点挂了所有数据将丢失，但是分布式不应该这样，它还要通过主从副本实现分布解决单点故障问题。
- 写操作会自动分配到主分片完成写操作，副本分片只有读权限
-
-
-索引： 文档的集合，类似于表，索引名只能是小写字母
-类型(type): 类型是索引内部的逻辑分区，其意义完全取决于用户需求，一个索引内部可以定义一个或多个类型
-            拥有相同域的文档的预定义，类似于表的表结构，文档是schema free模式自由,
-
-            建议一个索引中只存一个类型的文档数据
+<p>概念<br> 文档只有被索引后才能被索引，这个文档就放在一个叫索引的文件当中。<br> 在Lucene中每一项相当于MYsql表中一行数据，多个项在一起就组成了索引，但是每个索引会尽量存储同类型数据</p>
+<p> 大索引的多个片分shard散到多个物理节点上去，可成完成读写负载均衡，分片节点挂了所有数据将丢失，但是分布式不应该这样，它还要通过主从副本实现分布解决单点故障问题。<br> 写操作会自动分配到主分片完成写操作，副本分片只有读权限</p>
+<p>索引：  文档的集合，类似于表，索引名只能是小写字母<br>    类型(type): 类型是索引内部的逻辑分区，其意义完全取决于用户需求，一个索引内部可以定义一个或多个类型<br>                拥有相同域的文档的预定义，类似于表的表结构，文档是schema free模式自由,</p>
+<pre><code>建议一个索引中只存一个类型的文档数据
 文档： 是Lucene搜索和索引的原子单位，包含了一个或多个域，是域容器，基于json格式，每个域的组成部份：一个名字和一个或多个值，拥有多个值的域通常称为多值域
 
 
@@ -124,7 +115,7 @@ elasticsearch集群组件：
 <p>配置文件修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat /home/stack/elasticsearch-7.11.2/config/elasticsearch.yml  | grep -v ^# | grep -v ^$</span><br><span class="line">cluster.name: wxq-es</span><br><span class="line">node.name: node-es3</span><br><span class="line">bootstrap.memory_lock: false</span><br><span class="line">network.host: 192.168.1.30</span><br><span class="line">discovery.seed_hosts: [&quot;192.168.1.30&quot;,]  # 集群模式相应追加主机</span><br><span class="line">cluster.initial_master_nodes: [&quot;192.168.1.30&quot;,]</span><br><span class="line">http.cors.enabled: true   # 方便plugins head插件时跨站请求成功</span><br><span class="line">http.cors.allow-origin: &quot;*&quot;</span><br></pre></td></tr></table></figure></p>
 <p>head 插件安装<br>安装好后直接访问 <a href="http://IP:9100/" target="_blank" rel="noopener">http://IP:9100/</a>    连接地址填入<a href="http://es-server:9200/正确" target="_blank" rel="noopener">http://es-server:9200/正确</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/mobz/elasticsearch-head.git</span><br><span class="line">cd elasticsearch-head</span><br><span class="line">npm install</span><br><span class="line">npm run start</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch # 直接启动即可</span><br></pre></td></tr></table></figure>
-<p>集群状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">	green 可用状态</span><br><span class="line">	red:  不可用</span><br><span class="line">	yellow: 修复状态</span><br><span class="line"></span><br><span class="line">ES参与集群事务的端口tcp/9300</span><br><span class="line">ES接收请求的端口tcp/9200</span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">API接口使用</span><br><span class="line">```				   </span><br><span class="line">	确保集群正常； API接口9200</span><br><span class="line">	Restful接口API： 4类</span><br><span class="line">	检查集群节点索引健康与否，以及获取其相应状态</span><br><span class="line">	管理集群节点索引及元数据</span><br><span class="line">	执行CRUD操作</span><br><span class="line">	执行高级操作：例如paging 、filtering</span><br><span class="line">	</span><br><span class="line">	curl -X  xx  -d  @xx   https://ip:9200/path?query_str</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?v</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?help</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?h=ip,ram.percent</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/master</span><br><span class="line">	http://192.168.1.30:9200/_cat/master?v</span><br></pre></td></tr></table></figure></p>
+<p>集群状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">green 可用状态</span><br><span class="line">red:  不可用</span><br><span class="line">yellow: 修复状态</span><br><span class="line"></span><br><span class="line">ES参与集群事务的端口tcp/9300</span><br><span class="line">ES接收请求的端口tcp/9200</span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">API接口使用</span><br><span class="line">```				   </span><br><span class="line">	确保集群正常； API接口9200</span><br><span class="line">	Restful接口API： 4类</span><br><span class="line">	检查集群节点索引健康与否，以及获取其相应状态</span><br><span class="line">	管理集群节点索引及元数据</span><br><span class="line">	执行CRUD操作</span><br><span class="line">	执行高级操作：例如paging 、filtering</span><br><span class="line">	</span><br><span class="line">	curl -X  xx  -d  @xx   https://ip:9200/path?query_str</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?v</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?help</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?h=ip,ram.percent</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/master</span><br><span class="line">	http://192.168.1.30:9200/_cat/master?v</span><br></pre></td></tr></table></figure></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
 <li>带着概念参照官网安装还是挺简单的，练习接口可以了解学习集群及ES的概念</li>
 </ul>
@@ -132,7 +123,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/08/15/elasticsearch-基本使用/" data-id="ckmd9szot00146sjxs11d9mp2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/08/15/elasticsearch-基本使用/" data-id="ckmd9vnyk001482jxkejaafr8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -180,7 +171,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/07/25/mariadb-恢复数据/" data-id="ckmd9szqd002w6sjxnxxuuxgn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/07/25/mariadb-恢复数据/" data-id="ckmd9vo0x002y82jxuvtbbpdh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -238,7 +229,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/15/lucene-认识/" data-id="ckmd9szq3002q6sjxdtystub6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/15/lucene-认识/" data-id="ckmd9vo2u004q82jxhyj4a7pm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -286,7 +277,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckmd9sznn00036sjx4mkqkcsj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckmd9vnxm000382jxgjj7tvdn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -352,7 +343,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ckmd9szrj004k6sjxxv8cjop3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ckmd9vo2i004j82jxqgvykbwl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -405,7 +396,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ckmd9szo9000i6sjxsfegeojb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ckmd9vny6000i82jxs2e0gbmw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -464,7 +455,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="ckmd9szob000k6sjxvnxmjar7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="ckmd9vny7000k82jx10pqslxe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -511,7 +502,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="ckmd9szrs00506sjxlu00u47t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="ckmd9vo30004z82jxther1ifh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -575,7 +566,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="ckmd9szqs003h6sjxhaw1t4eq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="ckmd9vo1b003g82jxegh5ks4s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -623,7 +614,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="ckmd9szpt002c6sjxwv0ue3yj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="ckmd9vo0h002k82jxhsxizqgr" class="article-share-link">Share</a>
       
       
     </footer>
