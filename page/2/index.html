@@ -97,7 +97,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckmd9gu23003b4sjx1ijtxvox" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckmd9szqo003d6sjxh5rdhryd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -157,7 +157,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckmd9gtzz000m4sjx7pvg7u8l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckmd9szod000m6sjx2n85p7o7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -205,7 +205,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckmd9gu1i002k4sjxib3jhdnh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckmd9szq0002m6sjxnu6d7ta0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -253,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckmd9gu0k001a4sjxz7twep38" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckmd9szp3001e6sjxujkiakmd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -304,7 +304,61 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckmd9gu24003d4sjx40j44tao" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckmd9szqr003f6sjxgyrdgcfn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-disk" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/15/linux-disk/" class="article-date">
+  <time datetime="2019-12-15T01:42:54.000Z" itemprop="datePublished">2019-12-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/15/linux-disk/">linux disk</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Ubuntu系统分区信息查看：<code>fdisk /dev/vda</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x630fdccb</span><br><span class="line"></span><br><span class="line">Device     Boot   Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/vda1  *       2048   1953791   1951744  953M 83 Linux</span><br><span class="line">/dev/vda2       1953792 125829119 123875328 59.1G 83 Linux</span><br></pre></td></tr></table></figure></p>
+<p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
+<p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
+<p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
+<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位是扇区，bs=512代表一个扇区，也就是512bytes</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
+<p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
+<p>总结：</p>
+<ul>
+<li>一个扇区512bytes , 1Block=1KB=2扇区</li>
+<li>dd参数的skip针对if设备，seek针对of设备（跳过多少扇区再处理）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ckmd9szpq00286sjxyrirgdg6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -365,61 +419,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckmd9gu1h002i4sjxphq65zk2" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-disk" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/12/15/linux-disk/" class="article-date">
-  <time datetime="2019-12-15T01:42:54.000Z" itemprop="datePublished">2019-12-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/15/linux-disk/">linux disk</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Ubuntu系统分区信息查看：<code>fdisk /dev/vda</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x630fdccb</span><br><span class="line"></span><br><span class="line">Device     Boot   Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/vda1  *       2048   1953791   1951744  953M 83 Linux</span><br><span class="line">/dev/vda2       1953792 125829119 123875328 59.1G 83 Linux</span><br></pre></td></tr></table></figure></p>
-<p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
-<p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
-<p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
-<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位是扇区，bs=512代表一个扇区，也就是512bytes</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
-<p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
-<p>总结：</p>
-<ul>
-<li>一个扇区512bytes , 1Block=1KB=2扇区</li>
-<li>dd参数的skip针对if设备，seek针对of设备（跳过多少扇区再处理）</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ckmd9gu1800264sjx7hjpwqz0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckmd9szpz002k6sjxe84vfwmg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -467,7 +467,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckmd9gu0n001d4sjxnbe1wb7r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckmd9szp2001d6sjxe3a0khhh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,7 +515,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckmd9gu1k002o4sjxx7upc552" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckmd9szq4002s6sjxcfrr8ep9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -528,10 +528,10 @@
 
 
   
-    <article id="post-elasticsearch-基本使用" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-helm-efk" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/08/15/elasticsearch-基本使用/" class="article-date">
-  <time datetime="2019-08-15T02:42:36.000Z" itemprop="datePublished">2019-08-15</time>
+    <a href="/2019/10/15/helm-efk/" class="article-date">
+  <time datetime="2019-10-15T02:42:36.000Z" itemprop="datePublished">2019-10-15</time>
 </a>
     
   <div class="article-category">
@@ -546,7 +546,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/15/elasticsearch-基本使用/">elasticsearch基本使用</a>
+      <a class="article-title" href="/2019/10/15/helm-efk/">helm部署efk日志系统</a>
     </h1>
   
 
@@ -554,51 +554,22 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>官网：  <a href="https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html</a>   </p>
-<p>elasticsearch: 借住于LuceneAPI    重新封装实现的搜索组件，增加更强大的能力，将Lucene提供的索引组建成shar形式，分片后分布于各节点上从而构建成分布式时时查询组件。 是一个基Lucene实现的开源、分布式、RestFul的全文本搜索引擎，此外，它还是一个分布式实时文档存储，其中每个文档的每个field均是被索引的数据，且可被搜索，也是一个带实时分析功能的分布式搜索引擎，能够扩展至数以百计的节点实时处理PB级的数据</p>
-<p>概念</p>
-<pre><code> 文档只有被索引后才能被索引，这个文档就放在一个叫索引的文件当中。
- 在Lucene中每一项相当于MYsql表中一行数据，多个项在一起就组成了索引，但是每个索引会尽量存储同类型数据
-
- 大索引的多个片分shard散到多个物理节点上去，可成完成读写负载均衡，分片节点挂了所有数据将丢失，但是分布式不应该这样，它还要通过主从副本实现分布解决单点故障问题。
- 写操作会自动分配到主分片完成写操作，副本分片只有读权限
-
-
-索引： 文档的集合，类似于表，索引名只能是小写字母
-类型(type): 类型是索引内部的逻辑分区，其意义完全取决于用户需求，一个索引内部可以定义一个或多个类型
-            拥有相同域的文档的预定义，类似于表的表结构，文档是schema free模式自由,
-
-            建议一个索引中只存一个类型的文档数据
-文档： 是Lucene搜索和索引的原子单位，包含了一个或多个域，是域容器，基于json格式，每个域的组成部份：一个名字和一个或多个值，拥有多个值的域通常称为多值域
-
-
-映射 (maping):  定义如何切词，指明一个文档中的数据在被存储之前的分析过程该如何执行，原始内容存储为文档之前事先需要分析，映射就 是定义此分析机制该如何实现
-                 例如; 切词、过滤掉某些词、域中内容排序
-
-elasticsearch集群组件：
-     每一个物理节点必属于且只属于某ES集群   
-
-    NODE： 运行了单个ES实例的主机即为节点，用于存储数据部份分片、参与集群索引及搜索操作、节点标识靠节点名（默认会生成字串，可自定义）
-
-    shard分片: 把一个Luence大索引切分为底层物理数据，完成分割存储机制，或说将索引切割成为物理存储组件，但每一个shard都是一个独立且完整的索引，创建索引时，ES默认创建5个副本
-               shard有2种类型： primary shard/Replicas shard
-               Primary shard 如何切割定义好后不可更改，但是副本数是可以动态更改的
-</code></pre><p>ES工作过程： 通过多播(default)或单播方式工作在9300/TCP查找同一集群的其它节点，并与之建立通信                   </p>
-<p>集群中的所有节点会选举一个主节点负责管理整个集群状态，以及在集群范围内决定各shard分布方式，用户角度没有主从节点，各节点都可接收请求</p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>elasticsearch强制要求工作在普通用户模式下，不能root 直接./bin/elasticsearch启动服务，好像rpm安装没有此限制<br>同时启动也有很多限制，否则启动失败</p>
-<p>修改系统参数达到启动服务要求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 普通用户模式下安装</span><br><span class="line">2 安装jdk,要求1.8以上，有人声称1.11以上更佳</span><br><span class="line">3 打开文件数限制，包括系统级/etc/security/limits.conf 和ulimit -n 65535用户级</span><br><span class="line">4 打开内核参数级限制,临时设置如下命令</span><br><span class="line">sysctl -w  vm.max_map_count=655350</span><br><span class="line">sysctl -w  fs.file-max=65536</span><br></pre></td></tr></table></figure></p>
-<p>配置文件修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat /home/stack/elasticsearch-7.11.2/config/elasticsearch.yml  | grep -v ^# | grep -v ^$</span><br><span class="line">cluster.name: wxq-es</span><br><span class="line">node.name: node-es3</span><br><span class="line">bootstrap.memory_lock: false</span><br><span class="line">network.host: 192.168.1.30</span><br><span class="line">discovery.seed_hosts: [&quot;192.168.1.30&quot;,]  # 集群模式相应追加主机</span><br><span class="line">cluster.initial_master_nodes: [&quot;192.168.1.30&quot;,]</span><br><span class="line">http.cors.enabled: true   # 方便plugins head插件时跨站请求成功</span><br><span class="line">http.cors.allow-origin: &quot;*&quot;</span><br></pre></td></tr></table></figure></p>
-<p>head 插件安装<br>安装好后直接访问 <a href="http://IP:9100/" target="_blank" rel="noopener">http://IP:9100/</a>    连接地址填入<a href="http://es-server:9200/正确" target="_blank" rel="noopener">http://es-server:9200/正确</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/mobz/elasticsearch-head.git</span><br><span class="line">cd elasticsearch-head</span><br><span class="line">npm install</span><br><span class="line">npm run start</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch # 直接启动即可</span><br></pre></td></tr></table></figure>
-<p>集群状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">	green 可用状态</span><br><span class="line">	red:  不可用</span><br><span class="line">	yellow: 修复状态</span><br><span class="line"></span><br><span class="line">ES参与集群事务的端口tcp/9300</span><br><span class="line">ES接收请求的端口tcp/9200</span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">API接口使用</span><br><span class="line">```				   </span><br><span class="line">	确保集群正常； API接口9200</span><br><span class="line">	Restful接口API： 4类</span><br><span class="line">	检查集群节点索引健康与否，以及获取其相应状态</span><br><span class="line">	管理集群节点索引及元数据</span><br><span class="line">	执行CRUD操作</span><br><span class="line">	执行高级操作：例如paging 、filtering</span><br><span class="line">	</span><br><span class="line">	curl -X  xx  -d  @xx   https://ip:9200/path?query_str</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?v</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?help</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?h=ip,ram.percent</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/master</span><br><span class="line">	http://192.168.1.30:9200/_cat/master?v</span><br></pre></td></tr></table></figure></p>
+        <p>efk 日志系统<br>3大组件<br>elasticsearch<br>fluent-bit<br>kibana</p>
+<p>helm部署efk日志系统<br>heml.sh  官网<br><a href="https://artifacthub.io/packages/helm/bitnami/elasticsearch" target="_blank" rel="noopener">https://artifacthub.io/packages/helm/bitnami/elasticsearch</a>    搜索elasticsearch Charts</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><span class="line">&quot;bitnami&quot; has been added to your repositories</span><br><span class="line">[root@k8smaster efk]# helm repo list</span><br><span class="line">NAME   	URL                                  </span><br><span class="line">loki   	https://grafana.github.io/loki/charts</span><br><span class="line">stable 	https://charts.helm.sh/stable        </span><br><span class="line">bitnami	https://charts.bitnami.com/bitnami</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm search repo elastic</span><br><span class="line">NAME                         	CHART VERSION	APP VERSION	DESCRIPTION                                       </span><br><span class="line">bitnami/elasticsearch        	14.5.0       	7.10.2     	A highly scalable open-source full-text search ...</span><br><span class="line"></span><br><span class="line"> helm  show values  bitnami/elasticsearch &gt; es_values.yaml</span><br></pre></td></tr></table></figure>
+<p>有人说k8s 中的APP JDK 最好11以上， data.resources  +1G  = data.heapsize 这个预留一个G给进程使用，其它才给JVM使用性能更佳<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm install  myes bitnami/elasticsearch -f es_values.yaml  -n logs</span><br><span class="line">NAME: myes</span><br><span class="line">LAST DEPLOYED: Tue Mar 16 10:34:09 2021</span><br><span class="line">NAMESPACE: logs</span><br><span class="line">STATUS: deployed</span><br><span class="line">REVISION: 1</span><br><span class="line">TEST SUITE: None</span><br><span class="line">NOTES:</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line"> WARNING</span><br><span class="line"></span><br><span class="line">    Elasticsearch requires some changes in the kernel of the host machine to</span><br><span class="line">    work as expected. If those values are not set in the underlying operating</span><br><span class="line">    system, the ES containers fail to boot with ERROR messages.</span><br><span class="line"></span><br><span class="line">    More information about these requirements can be found in the links below:</span><br><span class="line"></span><br><span class="line">      https://www.elastic.co/guide/en/elasticsearch/reference/current/file-descriptors.html</span><br><span class="line">      https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html</span><br><span class="line"></span><br><span class="line">    This chart uses a privileged initContainer to change those settings in the Kernel</span><br><span class="line">    by running: sysctl -w vm.max_map_count=262144 &amp;&amp; sysctl -w fs.file-max=65536</span><br><span class="line"></span><br><span class="line">** Please be patient while the chart is being deployed **</span><br><span class="line"></span><br><span class="line">  Elasticsearch can be accessed within the cluster on port 9200 at myes-elasticsearch-coordinating-only.logs.svc.cluster.local</span><br><span class="line"></span><br><span class="line">  To access from outside the cluster execute the following commands:</span><br><span class="line"></span><br><span class="line">    kubectl port-forward --namespace logs svc/myes-elasticsearch-coordinating-only 9200:9200 &amp;</span><br><span class="line">    curl http://127.0.0.1:9200/</span><br></pre></td></tr></table></figure></p>
+<p>部署日志采集agent<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm  search  repo elas</span><br><span class="line">NAME                         	CHART VERSION	APP VERSION	DESCRIPTION                                       </span><br><span class="line">bitnami/elasticsearch        	14.5.0       	7.10.2     	A highly scalable open-source full-text search ...</span><br><span class="line">stable/elastabot             	1.2.1        	1.1.0      	DEPRECATED A Helm chart for Elastabot - a Slack...</span><br><span class="line">stable/elastalert            	1.5.1        	0.2.4      	DEPRECATED ElastAlert is a simple framework for...</span><br><span class="line">stable/elastic-stack         	2.0.6        	6          	DEPRECATED A Helm chart for ELK                   </span><br><span class="line">stable/elasticsearch         	1.32.5       	6.8.6      	DEPRECATED Flexible and powerful open source, d...</span><br><span class="line">stable/elasticsearch-curator 	2.2.3        	5.7.6      	DEPRECATED A Helm chart for Elasticsearch Curator </span><br><span class="line">stable/elasticsearch-exporter	3.7.1        	1.1.0      	DEPRECATED Elasticsearch stats exporter for Pro...</span><br><span class="line">stable/fluentd-elasticsearch 	2.0.7        	2.3.2      	DEPRECATED! - A Fluentd Helm chart for Kubernet...</span><br><span class="line">bitnami/grafana              	5.2.4        	7.4.3      	Grafana is an open source, feature rich metrics...</span><br><span class="line">bitnami/kibana               	7.2.3        	7.10.2     	Kibana is an open source, browser based analyti...</span><br><span class="line">stable/apm-server            	2.1.7        	7.0.0      	DEPRECATED The server receives data from the El...</span><br><span class="line">stable/dmarc2logstash        	1.3.1        	1.0.3      	DEPRECATED Provides a POP3-polled DMARC XML rep...</span><br><span class="line">stable/fluentd               	2.5.3        	v2.4.0     	DEPRECATED A Fluentd Elasticsearch Helm chart f...</span><br><span class="line">stable/kibana                	3.2.8        	6.7.0      	DEPRECATED - Kibana is an open source data visu...</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm show values  bitnami/kibana &gt; kibana_values.yaml</span><br><span class="line">[root@k8smaster efk]# vim kibana_values.yaml</span><br><span class="line">[root@k8smaster efk]# helm install kibanaui bitnami/kibana -f kibana_values.yaml  -n logs</span><br><span class="line">NAME: kibanaui</span><br><span class="line">LAST DEPLOYED: Tue Mar 16 15:21:01 2021</span><br><span class="line">NAMESPACE: logs</span><br><span class="line">STATUS: deployed</span><br><span class="line">REVISION: 1</span><br><span class="line">NOTES:</span><br><span class="line">1. Get the application URL by running these commands:</span><br><span class="line">  Get the Kibana URL and associate Kibana hostname to your cluster external IP:</span><br><span class="line"></span><br><span class="line">   export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters</span><br><span class="line">   echo &quot;Kibana URL: http://kibana.local/&quot;</span><br><span class="line">   echo &quot;$CLUSTER_IP  kibana.local&quot; | sudo tee -a /etc/hosts</span><br><span class="line"></span><br><span class="line">WARNING: Kibana is externally accessible from the cluster but the dashboard does not contain authentication mechanisms. Make sure you follow the authentication guidelines in your Elastic stack.</span><br><span class="line">+info https://www.elastic.co/guide/en/elastic-stack-overview/current/setting-up-authentication.html</span><br><span class="line">WARNING: Rolling tag detected (bitnami/bitnami-shell:10), please note that it is strongly recommended to avoid using rolling tags in a production environment.</span><br><span class="line">+info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">helm repo update</span><br><span class="line">helm repo list </span><br><span class="line">helm search repo fluent-bit</span><br><span class="line">helm show values fluent/fluent-bit  &gt; fluent-bit-values.yaml</span><br><span class="line">helm install  -f fluent-bit-values.yaml -n logs</span><br><span class="line">helm list -n logs</span><br></pre></td></tr></table></figure>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li>带着概念参照官网安装还是挺简单的，练习接口可以了解学习集群及ES的概念</li>
+<li>helm安装好处是一键安装，坏处是自定义容器内yml配置文件难度极大，如果helm charts提供的原始配置文件里没有(此处不是说修改values.yml值文件),需要重新制作charts部署</li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/08/15/elasticsearch-基本使用/" data-id="ckmd9gu0d00144sjx1duafc01" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/10/15/helm-efk/" data-id="ckmd9szp0001a6sjxmd8fgckq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -614,7 +585,7 @@ elasticsearch集群组件：
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/3/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -639,7 +610,7 @@ elasticsearch集群组件：
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
