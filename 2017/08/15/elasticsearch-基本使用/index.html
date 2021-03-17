@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>elasticsearch基本使用 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="介绍官网：  https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html1elasticsearch: 借住于LuceneAPI	重新封装实现的搜索组件，增加更强大的能力，将Lucene提供的索引组建成shar形式，分片后分布于各节点上从而构建成分布式时时查询组件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elasticsearch基本使用">
+<meta property="og:url" content="http://www.digmyth.com/2017/08/15/elasticsearch-基本使用/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="介绍官网：  https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html1elasticsearch: 借住于LuceneAPI	重新封装实现的搜索组件，增加更强大的能力，将Lucene提供的索引组建成shar形式，分片后分布于各节点上从而构建成分布式时时查询组件。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-03-17T09:44:50.415Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="elasticsearch基本使用">
+<meta name="twitter:description" content="介绍官网：  https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html1elasticsearch: 借住于LuceneAPI	重新封装实现的搜索组件，增加更强大的能力，将Lucene提供的索引组建成shar形式，分片后分布于各节点上从而构建成分布式时时查询组件。">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-elasticsearch-基本使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/15/elasticsearch-基本使用/" class="article-date">
+  <time datetime="2017-08-15T02:42:36.000Z" itemprop="datePublished">2017-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日志系统/">日志系统</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      elasticsearch基本使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>官网：  <a href="https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">elasticsearch: 借住于LuceneAPI	重新封装实现的搜索组件，增加更强大的能力，将Lucene提供的索引组建成shar形式，分片后分布于各节点上从而构建成分布式时时查询组件。 是一个基Lucene实现的开源、分布式、RestFul的全文本搜索引擎，此外，它还是一个分布式实时文档存储，其中每个文档的每个field均是被索引的数据，且可被搜索，也是一个带实时分析功能的分布式搜索引擎，能够扩展至数以百计的节点实时处理PB级的数据</span><br></pre></td></tr></table></figure></p>
+<p>概念<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">	 </span><br><span class="line">	 文档只有被索引后才能被索引，这个文档就放在一个叫索引的文件当中。</span><br><span class="line">	 在Lucene中每一项相当于MYsql表中一行数据，多个项在一起就组成了索引，但是每个索引会尽量存储同类型数据</span><br><span class="line">	 </span><br><span class="line">	 大索引的多个片分shard散到多个物理节点上去，可成完成读写负载均衡，分片节点挂了所有数据将丢失，但是分布式不应该这样，它还要通过主从副本实现分布解决单点故障问题。</span><br><span class="line">	 写操作会自动分配到主分片完成写操作，副本分片只有读权限</span><br><span class="line">	 </span><br><span class="line">	 </span><br><span class="line">	索引： 文档的集合，类似于表，索引名只能是小写字母</span><br><span class="line">	类型(type): 类型是索引内部的逻辑分区，其意义完全取决于用户需求，一个索引内部可以定义一个或多个类型</span><br><span class="line">	            拥有相同域的文档的预定义，类似于表的表结构，文档是schema free模式自由,</span><br><span class="line">				</span><br><span class="line">				建议一个索引中只存一个类型的文档数据</span><br><span class="line">	文档： 是Lucene搜索和索引的原子单位，包含了一个或多个域，是域容器，基于json格式，每个域的组成部份：一个名字和一个或多个值，拥有多个值的域通常称为多值域</span><br><span class="line">	 </span><br><span class="line">	 </span><br><span class="line">	映射 (maping):  定义如何切词，指明一个文档中的数据在被存储之前的分析过程该如何执行，原始内容存储为文档之前事先需要分析，映射就 是定义此分析机制该如何实现</span><br><span class="line">	                 例如; 切词、过滤掉某些词、域中内容排序</span><br><span class="line">					 </span><br><span class="line">	elasticsearch集群组件：</span><br><span class="line">	     每一个物理节点必属于且只属于某ES集群   </span><br><span class="line"></span><br><span class="line">        NODE： 运行了单个ES实例的主机即为节点，用于存储数据部份分片、参与集群索引及搜索操作、节点标识靠节点名（默认会生成字串，可自定义）</span><br><span class="line">		 </span><br><span class="line">		shard分片: 把一个Luence大索引切分为底层物理数据，完成分割存储机制，或说将索引切割成为物理存储组件，但每一个shard都是一个独立且完整的索引，创建索引时，ES默认创建5个副本</span><br><span class="line">                   shard有2种类型： primary shard/Replicas shard</span><br><span class="line">                   Primary shard 如何切割定义好后不可更改，但是副本数是可以动态更改的</span><br><span class="line"></span><br><span class="line">ES工作过程： 通过多播(default)或单播方式工作在9300/TCP查找同一集群的其它节点，并与之建立通信				   </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">集群中的所有节点会选举一个主节点负责管理整个集群状态，以及在集群范围内决定各shard分布方式，用户角度没有主从节点，各节点都可接收请求</span><br></pre></td></tr></table></figure></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>elasticsearch强制要求工作在普通用户模式下，不能root 直接./bin/elasticsearch启动服务，好像rpm安装没有此限制<br>同时启动也有很多限制，否则启动失败</p>
+<p>修改系统参数达到启动服务要求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 普通用户模式下安装</span><br><span class="line">2 安装jdk,要求1.8以上，有人声称1.11以上更佳</span><br><span class="line">3 打开文件数限制，包括系统级/etc/security/limits.conf 和ulimit -n 65535用户级</span><br><span class="line">4 打开内核参数级限制,临时设置如下命令</span><br><span class="line">sysctl -w  vm.max_map_count=655350</span><br><span class="line">sysctl -w  fs.file-max=65536</span><br></pre></td></tr></table></figure></p>
+<p>配置文件修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat /home/stack/elasticsearch-7.11.2/config/elasticsearch.yml  | grep -v ^# | grep -v ^$</span><br><span class="line">cluster.name: wxq-es</span><br><span class="line">node.name: node-es3</span><br><span class="line">bootstrap.memory_lock: false</span><br><span class="line">network.host: 192.168.1.30</span><br><span class="line">discovery.seed_hosts: [&quot;192.168.1.30&quot;,]  # 集群模式相应追加主机</span><br><span class="line">cluster.initial_master_nodes: [&quot;192.168.1.30&quot;,]</span><br><span class="line">http.cors.enabled: true   # 方便plugins head插件时跨站请求成功</span><br><span class="line">http.cors.allow-origin: &quot;*&quot;</span><br></pre></td></tr></table></figure></p>
+<p>head 插件安装<br>安装好后直接访问 <a href="http://IP:9100/" target="_blank" rel="noopener">http://IP:9100/</a>    连接地址填入<a href="http://es-server:9200/正确" target="_blank" rel="noopener">http://es-server:9200/正确</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/mobz/elasticsearch-head.git</span><br><span class="line">cd elasticsearch-head</span><br><span class="line">npm install</span><br><span class="line">npm run start</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch # 直接启动即可</span><br></pre></td></tr></table></figure>
+<p>集群状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">	green 可用状态</span><br><span class="line">	red:  不可用</span><br><span class="line">	yellow: 修复状态</span><br><span class="line"></span><br><span class="line">ES参与集群事务的端口tcp/9300</span><br><span class="line">ES接收请求的端口tcp/9200</span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">API接口使用</span><br><span class="line">```				   </span><br><span class="line">	确保集群正常； API接口9200</span><br><span class="line">	Restful接口API： 4类</span><br><span class="line">	检查集群节点索引健康与否，以及获取其相应状态</span><br><span class="line">	管理集群节点索引及元数据</span><br><span class="line">	执行CRUD操作</span><br><span class="line">	执行高级操作：例如paging 、filtering</span><br><span class="line">	</span><br><span class="line">	curl -X  xx  -d  @xx   https://ip:9200/path?query_str</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?v</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?help</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?h=ip,ram.percent</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/master</span><br><span class="line">	http://192.168.1.30:9200/_cat/master?v</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>带着概念参照官网安装还是挺简单的，练习接口可以了解学习集群及ES的概念</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/15/elasticsearch-基本使用/" data-id="ckmd9deki001437jxmu587dmp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/09/05/ceph-luminous安装/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ceph-luminous安装
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/08/08/kolla-on-redhat7.2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">kolla on redhat 7.2</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/02/13/kubernetes-calico-bug/">calico bug</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/25/prometheus-01/">prometheus</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/15/kubernetes-dashboard/">kubernetes dashboard</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/12/kubernetes-ingress/">kubernetes ingress进阶</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/11/kubernetes-rbac/">kubernetes rbac</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
