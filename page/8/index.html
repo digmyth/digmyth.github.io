@@ -119,7 +119,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="ckmd9vo3i005j82jxhiw3yslh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="ckmd9y8ei005o93jxqudvzsw7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -194,7 +194,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckmd9vo49006p82jxacjxisnc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckmd9y8f4006n93jxjk5jj2re" class="article-share-link">Share</a>
       
       
     </footer>
@@ -241,7 +241,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/21/linux-java-install/" data-id="ckmd9vo0k002m82jxwxr9e68h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/21/linux-java-install/" data-id="ckmd9y8cg002i93jx0h4ua6hl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -308,7 +308,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckmd9vo3g005h82jxotljm4hy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckmd9y8eh005m93jxs7d65yu0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -369,7 +369,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckmd9vo32005382jx8s4k0pli" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckmd9y8e8005793jxntpkx3gg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -446,57 +446,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckmd9vo3x006782jxu65ihuc9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
-  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</span><br></pre></td></tr></table></figure></p>
-<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</span><br><span class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
-<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</span><br><span class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
-<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</span><br><span class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</span><br><span class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
-<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</span><br></pre></td></tr></table></figure></p>
-<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</span><br><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</span><br></pre></td></tr></table></figure></p>
-<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</span><br><span class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckmd9vo0j002l82jxv4huysar" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckmd9y8ex006c93jxqaljsf2d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -557,7 +507,57 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckmd9vnym001582jxqt7681k8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckmd9y8bh001593jx7s2k9uhb" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</span><br></pre></td></tr></table></figure></p>
+<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</span><br><span class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</span><br><span class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</span><br><span class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</span><br><span class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</span><br></pre></td></tr></table></figure></p>
+<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</span><br><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</span><br></pre></td></tr></table></figure></p>
+<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</span><br><span class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckmd9y8ce002g93jxi7txf7a2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -618,7 +618,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckmd9vo15003782jxgq8kuftw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckmd9y8d2003a93jx4upjz61p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -684,7 +684,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckmd9vnxf000182jx9txs504m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckmd9y8aa000093jx8zbn304y" class="article-share-link">Share</a>
       
       
     </footer>
