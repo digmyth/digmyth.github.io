@@ -62,6 +62,72 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mariadb-cluster-recovery" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/07/10/mariadb-cluster-recovery/" class="article-date">
+  <time datetime="2020-07-10T01:41:54.000Z" itemprop="datePublished">2020-07-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/10/mariadb-cluster-recovery/">mariadb cluster recovery</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="mariadb-cluster-recovery"><a href="#mariadb-cluster-recovery" class="headerlink" title="mariadb cluster recovery"></a>mariadb cluster recovery</h3><p>列几个集群检查命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_incoming_addresses&apos;;</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">| wsrep_incoming_addresses | 10.0.0.51:3306,10.0.0.52:3306,10.0.0.53:3306 |</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 3 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_state_uuid&apos;;</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">| wsrep_cluster_state_uuid | 345098abd2-291a-9893-acbd3-30923abcdef9 |</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_local_state_comment&apos;;</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">| wsrep_local_state_comment | Synced |</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<p>场景一</p>
+<p>只是很简单的某节点掉线，重启让其重新加入集群即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_incoming_addresses&apos;;</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">| wsrep_incoming_addresses | 10.0.0.51:3306,10.0.0.52:3306 |</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 2 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># systemctl restart mariadb</span><br></pre></td></tr></table></figure>
+<p>场景二</p>
+<p>唯一有一个幸存节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 1 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<p>幸存节点刚好优雅关闭正确提交了数据，状态为Primary<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_status&apos;;</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| wsrep_cluster_status | Primary |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<p>哪果是<code>non-Primary</code>状态还要单独恢复<br>幸存节点上执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; set global wsrep_provider_options=&apos;pc.bootstrap=YES&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>可是 我们一般不这样做，常规做法是直接指定这个幸存节点的主节点，让其它节点加入集群<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># systemctl stop mariadb</span><br><span class="line"># galera_new_cluster</span><br><span class="line"># systemctl restart mariadb</span><br></pre></td></tr></table></figure></p>
+<p>场景三<br>集群崩溃完全不可用,这也分为2种情况，基于最高seqno值恢复<br>状态一是没有集群UUID, <code>seqno: -1</code>,数据定义语言DDL出错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 00000000-0000-0000-0000-000000000000</span><br><span class="line">seqno: -1</span><br><span class="line">safe_to_bootstrap: 0</span><br></pre></td></tr></table></figure></p>
+<p>状态2是有集群UUID，<code>seqno: -1</code>，事务处理数据时出错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 886dd8da-3d07-11e8-a109-8a3c80cebab4</span><br><span class="line">seqno: -1</span><br><span class="line">safe_to_bootstrap: 0</span><br></pre></td></tr></table></figure></p>
+<p>状态3是有集群UUID，seqno值最高正值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 886dd8da-3d07-11e8-a109-8a3c80cebab4</span><br><span class="line">seqno: 31929</span><br><span class="line">safe_to_bootstrap: 1</span><br></pre></td></tr></table></figure></p>
+<p>此时我们认为状态3是OK的，需要修改状态１、２数据库配置文件去掉IP地址配置项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsrep_cluster_address=&quot;gcomm://&quot;</span><br></pre></td></tr></table></figure></p>
+<p>这样节点就能正常启动了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart mariadb</span><br></pre></td></tr></table></figure></p>
+<p>最后再修改配置文件后把这2个节点正常加入集群就好了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsrep_cluster_address=&quot;gcomm://10.8.8.53,10.8.8.54,10.8.8.55&quot;</span><br></pre></td></tr></table></figure></p>
+<p>最后是基于Last Committed恢复<br>先修改配置文件让服务启起来，入库查看<code>wsrep_last_committed</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#systemctl stop mariadb</span><br><span class="line">  编辑配置文件去掉IP地址wsrep_cluster_address=&quot;gcomm://&quot;</span><br><span class="line">#systemctl start mariadb</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_last_committed&apos;;</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| wsrep_last_committed | 319589 |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<p>找到节点最大值认为就是主节点，然后在这个主节点上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#  galera_new_cluster</span><br></pre></td></tr></table></figure></p>
+<p>其它节点加入集群即可</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckmda1gzt002warjxz530yl7d" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-openstack-HA" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/03/14/openstack-HA/" class="article-date">
@@ -97,7 +163,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckmd9y8d6003f93jxlmk9kys2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckmda1h05003farjxa5ny0i55" class="article-share-link">Share</a>
       
       
     </footer>
@@ -157,7 +223,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckmd9y8b4000k93jx4hlvpjiz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckmda1gya000marjxr3gpuajy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -205,7 +271,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckmd9y8cj002o93jx6l6m8hsf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckmda1gzo002oarjxvgr9tt9w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -253,7 +319,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckmd9y8bm001b93jxxv43dh23" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckmda1gyq001darjx3d8mwlqp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -304,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckmd9y8d9003h93jxhsavkhl8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckmda1h06003harjxg7v96yhl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +424,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ckmd9y8ca002993jxwag86gya" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ckmda1gzc002aarjx38c1qor8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -419,7 +485,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckmd9y8ci002m93jxb1ipiffs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckmda1gzm002marjxsd4zwiqh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -467,7 +533,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckmd9y8bn001e93jx3kx14imi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckmda1gyr001earjx7u3oqtw9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,61 +581,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckmd9y8cm002s93jxs8391g6j" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-helm-efk" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/10/15/helm-efk/" class="article-date">
-  <time datetime="2019-10-15T02:42:36.000Z" itemprop="datePublished">2019-10-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/日志系统/">日志系统</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/15/helm-efk/">helm部署efk日志系统</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>efk 日志系统<br>3大组件<br>elasticsearch<br>fluent-bit<br>kibana</p>
-<p>helm部署efk日志系统<br>heml.sh  官网<br><a href="https://artifacthub.io/packages/helm/bitnami/elasticsearch" target="_blank" rel="noopener">https://artifacthub.io/packages/helm/bitnami/elasticsearch</a>    搜索elasticsearch Charts</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><span class="line">&quot;bitnami&quot; has been added to your repositories</span><br><span class="line">[root@k8smaster efk]# helm repo list</span><br><span class="line">NAME   	URL                                  </span><br><span class="line">loki   	https://grafana.github.io/loki/charts</span><br><span class="line">stable 	https://charts.helm.sh/stable        </span><br><span class="line">bitnami	https://charts.bitnami.com/bitnami</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm search repo elastic</span><br><span class="line">NAME                         	CHART VERSION	APP VERSION	DESCRIPTION                                       </span><br><span class="line">bitnami/elasticsearch        	14.5.0       	7.10.2     	A highly scalable open-source full-text search ...</span><br><span class="line"></span><br><span class="line"> helm  show values  bitnami/elasticsearch &gt; es_values.yaml</span><br></pre></td></tr></table></figure>
-<p>有人说k8s 中的APP JDK 最好11以上， data.resources  +1G  = data.heapsize 这个预留一个G给进程使用，其它才给JVM使用性能更佳<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm install  myes bitnami/elasticsearch -f es_values.yaml  -n logs</span><br><span class="line">NAME: myes</span><br><span class="line">LAST DEPLOYED: Tue Mar 16 10:34:09 2021</span><br><span class="line">NAMESPACE: logs</span><br><span class="line">STATUS: deployed</span><br><span class="line">REVISION: 1</span><br><span class="line">TEST SUITE: None</span><br><span class="line">NOTES:</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line"> WARNING</span><br><span class="line"></span><br><span class="line">    Elasticsearch requires some changes in the kernel of the host machine to</span><br><span class="line">    work as expected. If those values are not set in the underlying operating</span><br><span class="line">    system, the ES containers fail to boot with ERROR messages.</span><br><span class="line"></span><br><span class="line">    More information about these requirements can be found in the links below:</span><br><span class="line"></span><br><span class="line">      https://www.elastic.co/guide/en/elasticsearch/reference/current/file-descriptors.html</span><br><span class="line">      https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html</span><br><span class="line"></span><br><span class="line">    This chart uses a privileged initContainer to change those settings in the Kernel</span><br><span class="line">    by running: sysctl -w vm.max_map_count=262144 &amp;&amp; sysctl -w fs.file-max=65536</span><br><span class="line"></span><br><span class="line">** Please be patient while the chart is being deployed **</span><br><span class="line"></span><br><span class="line">  Elasticsearch can be accessed within the cluster on port 9200 at myes-elasticsearch-coordinating-only.logs.svc.cluster.local</span><br><span class="line"></span><br><span class="line">  To access from outside the cluster execute the following commands:</span><br><span class="line"></span><br><span class="line">    kubectl port-forward --namespace logs svc/myes-elasticsearch-coordinating-only 9200:9200 &amp;</span><br><span class="line">    curl http://127.0.0.1:9200/</span><br></pre></td></tr></table></figure></p>
-<p>部署日志采集agent<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm  search  repo elas</span><br><span class="line">NAME                         	CHART VERSION	APP VERSION	DESCRIPTION                                       </span><br><span class="line">bitnami/elasticsearch        	14.5.0       	7.10.2     	A highly scalable open-source full-text search ...</span><br><span class="line">stable/elastabot             	1.2.1        	1.1.0      	DEPRECATED A Helm chart for Elastabot - a Slack...</span><br><span class="line">stable/elastalert            	1.5.1        	0.2.4      	DEPRECATED ElastAlert is a simple framework for...</span><br><span class="line">stable/elastic-stack         	2.0.6        	6          	DEPRECATED A Helm chart for ELK                   </span><br><span class="line">stable/elasticsearch         	1.32.5       	6.8.6      	DEPRECATED Flexible and powerful open source, d...</span><br><span class="line">stable/elasticsearch-curator 	2.2.3        	5.7.6      	DEPRECATED A Helm chart for Elasticsearch Curator </span><br><span class="line">stable/elasticsearch-exporter	3.7.1        	1.1.0      	DEPRECATED Elasticsearch stats exporter for Pro...</span><br><span class="line">stable/fluentd-elasticsearch 	2.0.7        	2.3.2      	DEPRECATED! - A Fluentd Helm chart for Kubernet...</span><br><span class="line">bitnami/grafana              	5.2.4        	7.4.3      	Grafana is an open source, feature rich metrics...</span><br><span class="line">bitnami/kibana               	7.2.3        	7.10.2     	Kibana is an open source, browser based analyti...</span><br><span class="line">stable/apm-server            	2.1.7        	7.0.0      	DEPRECATED The server receives data from the El...</span><br><span class="line">stable/dmarc2logstash        	1.3.1        	1.0.3      	DEPRECATED Provides a POP3-polled DMARC XML rep...</span><br><span class="line">stable/fluentd               	2.5.3        	v2.4.0     	DEPRECATED A Fluentd Elasticsearch Helm chart f...</span><br><span class="line">stable/kibana                	3.2.8        	6.7.0      	DEPRECATED - Kibana is an open source data visu...</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster efk]# helm show values  bitnami/kibana &gt; kibana_values.yaml</span><br><span class="line">[root@k8smaster efk]# vim kibana_values.yaml</span><br><span class="line">[root@k8smaster efk]# helm install kibanaui bitnami/kibana -f kibana_values.yaml  -n logs</span><br><span class="line">NAME: kibanaui</span><br><span class="line">LAST DEPLOYED: Tue Mar 16 15:21:01 2021</span><br><span class="line">NAMESPACE: logs</span><br><span class="line">STATUS: deployed</span><br><span class="line">REVISION: 1</span><br><span class="line">NOTES:</span><br><span class="line">1. Get the application URL by running these commands:</span><br><span class="line">  Get the Kibana URL and associate Kibana hostname to your cluster external IP:</span><br><span class="line"></span><br><span class="line">   export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters</span><br><span class="line">   echo &quot;Kibana URL: http://kibana.local/&quot;</span><br><span class="line">   echo &quot;$CLUSTER_IP  kibana.local&quot; | sudo tee -a /etc/hosts</span><br><span class="line"></span><br><span class="line">WARNING: Kibana is externally accessible from the cluster but the dashboard does not contain authentication mechanisms. Make sure you follow the authentication guidelines in your Elastic stack.</span><br><span class="line">+info https://www.elastic.co/guide/en/elastic-stack-overview/current/setting-up-authentication.html</span><br><span class="line">WARNING: Rolling tag detected (bitnami/bitnami-shell:10), please note that it is strongly recommended to avoid using rolling tags in a production environment.</span><br><span class="line">+info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">helm repo update</span><br><span class="line">helm repo list </span><br><span class="line">helm search repo fluent-bit</span><br><span class="line">helm show values fluent/fluent-bit  &gt; fluent-bit-values.yaml</span><br><span class="line">helm install  -f fluent-bit-values.yaml -n logs</span><br><span class="line">helm list -n logs</span><br></pre></td></tr></table></figure>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li>helm安装好处是一键安装，坏处是自定义容器内yml配置文件难度极大，如果helm charts提供的原始配置文件里没有(此处不是说修改values.yml值文件),需要重新制作charts部署</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/helm-efk/" data-id="ckmd9y8bk001a93jx0o3o52u0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckmda1gzr002sarjx2at0uhmp" class="article-share-link">Share</a>
       
       
     </footer>

@@ -97,7 +97,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckmd9y8bt001k93jxkgj4weyn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckmda1gyw001larjxa2z67yef" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckmd9y8db003l93jxr2me6lcd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckmda1h0e003larjxz5dheot0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -207,7 +207,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckmd9y8bw001p93jxdrtsii82" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckmda1gz0001sarjxlm3fa7rv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -255,7 +255,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckmd9y8bx001s93jxf0o4t9h6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckmda1gz1001uarjxa3gz2k7b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -303,7 +303,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckmd9y8bz001u93jxq2a3ytez" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckmda1gz3001xarjxoyk2y790" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +351,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckmd9y8c1001x93jxesuz1yc8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckmda1gz5001zarjxbbbzmf1j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -402,7 +402,76 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckmd9y8bu001n93jx1hq78ui1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckmda1gyx001narjx7703n9fn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-kubernetes-csi-nfs" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/01/01/kubernetes-csi-nfs/" class="article-date">
+  <time datetime="2021-01-01T13:52:41.000Z" itemprop="datePublished">2021-01-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/01/01/kubernetes-csi-nfs/">kubernetes-csi-nfs</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>要实现kubernetes中动态创建pv必须先创建StorageClass，每一个StorageClass对应了一个provisioner，kubernetes中内置了很多provisioner，但是很难受的是没有内置的nfs provisioner，对于我们这种没有钱的玩家，nfs是实现后端存储最简单直接的方法，所以不知道为什么k8s不提供，但是没关系有方法实现，k8s允许提供外部的provisioner，而nfs可以使用nfs-client-provisioner</p>
+<h1 id="项目链接"><a href="#项目链接" class="headerlink" title="项目链接"></a>项目链接</h1><blockquote>
+<p><a href="https://github.com/kubernetes-retired/external-storage/tree/master/nfs-client" target="_blank" rel="noopener">https://github.com/kubernetes-retired/external-storage/tree/master/nfs-client</a></p>
+</blockquote>
+<p>创建nfs server<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum install nfs-utils -y</span><br><span class="line">[root@node02 deploy]# cat /etc/exports</span><br><span class="line">/csc-nfsdata/  *(rw,sync,no_root_squash)</span><br><span class="line">[root@node02 deploy]#</span><br></pre></td></tr></table></figure></p>
+<p>开放防火墙<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/nfs.conf</span><br><span class="line">[mountd]</span><br><span class="line"></span><br><span class="line">port=port-number</span><br><span class="line"><span class="meta">#</span> This adds the -p port-number option to the rpc.mount command line: rpc.mount -p port-number.</span><br><span class="line"></span><br><span class="line">firewall-cmd --permanent --add-service mountd</span><br><span class="line">firewall-cmd --permanent --add-service rpc-bind</span><br><span class="line">firewall-cmd --permanent --add-service nfs</span><br><span class="line">firewall-cmd --permanent --add-port=&lt;mountd-port&gt;/tcp</span><br><span class="line">firewall-cmd --permanent --add-port=&lt;mountd-port&gt;/udp</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure></p>
+<p>配置NFS-Client provisioner,首先clone这个项目</p>
+<blockquote>
+<p>git clone <a href="https://github.com/kubernetes-retired/external-storage.git" target="_blank" rel="noopener">https://github.com/kubernetes-retired/external-storage.git</a></p>
+</blockquote>
+<p>之后进入nfs-client/deploy/文件夹</p>
+<p>可以看到有下面几个文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cd nfs-client/deploy/</span><br><span class="line">[root@nginx1-pro deploy]# ll</span><br><span class="line">总用量 28</span><br><span class="line">-rw-r--r-- 1 root root  225 9月   3 14:26 class.yaml  ## 需要改自己的ns</span><br><span class="line">-rw-r--r-- 1 root root 1030 9月   3 13:17 deployment-arm.yaml</span><br><span class="line">-rw-r--r-- 1 root root 1040 9月   3 13:30 deployment.yaml  ## 需要改自己的ns</span><br><span class="line">drwxr-xr-x 2 root root  214 9月   3 13:32 objects</span><br><span class="line">-rw-r--r-- 1 root root 1834 9月   3 13:19 rbac.yaml   ## 需要改自己的ns</span><br><span class="line">-rw-r--r-- 1 root root  241 9月   3 13:55 test-claim.yaml</span><br><span class="line">-rw-r--r-- 1 root root  399 9月   3 13:38 test-pod.yaml</span><br></pre></td></tr></table></figure></p>
+<p>首先你要做的是创建一个独立的命名空间</p>
+<blockquote>
+<p>[root@k8smaster ~]# kubectl create ns csi-nfs<br>namespace/csi-nfs created  </p>
+</blockquote>
+<p>之后修改rbac.yaml和deployment.yaml的namespace为你创建的namespace  </p>
+<p>修改完成之后我们修改deployment.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">    env:</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">PROVISIONER_NAME</span></span><br><span class="line"><span class="attr">        value:</span> <span class="string">fuseim.pri/ifs</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">NFS_SERVER</span></span><br><span class="line"><span class="attr">        value:</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.11</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">NFS_PATH</span></span><br><span class="line"><span class="attr">        value:</span> <span class="string">/data/kubernetes</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">nfs-client-root</span></span><br><span class="line"><span class="attr">    nfs:</span></span><br><span class="line"><span class="attr">      server:</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.11</span></span><br><span class="line"><span class="attr">      path:</span> <span class="string">/data/kubernetes</span></span><br></pre></td></tr></table></figure></p>
+<p>执行rbac 和deploy yaml文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[root@node02 deploy]# kubectl  apply -f rbac.yaml</span><br><span class="line">serviceaccount/nfs-client-provisioner created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/nfs-client-provisioner-runner created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/run-nfs-client-provisioner created</span><br><span class="line">role.rbac.authorization.k8s.io/leader-locking-nfs-client-provisioner created</span><br><span class="line">rolebinding.rbac.authorization.k8s.io/leader-locking-nfs-client-provisioner created</span><br><span class="line">[root@node02 deploy]#</span><br><span class="line">[root@node02 deploy]# kubectl  apply -f  deployment.yaml</span><br><span class="line">deployment.apps/nfs-client-provisioner created</span><br><span class="line">[root@node02 deploy]# </span><br><span class="line">[root@node02 deploy]# kubectl  apply -f class.yaml </span><br><span class="line">storageclass.storage.k8s.io/managed-nfs-storage created</span><br><span class="line">[root@node02 deploy]#</span><br><span class="line">查看cs </span><br><span class="line">[root@node02 deploy]# kubectl  get sc</span><br><span class="line">NAME                  PROVISIONER      RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE</span><br><span class="line">managed-nfs-storage   fuseim.pri/ifs   Delete          Immediate           false                  20s</span><br><span class="line">[root@node02 deploy]# </span><br><span class="line">cat class.yaml</span><br><span class="line">apiVersion: storage.k8s.io/v1</span><br><span class="line">kind: StorageClass</span><br><span class="line">metadata:</span><br><span class="line">  name: managed-nfs-storage</span><br><span class="line">provisioner: fuseim.pri/ifs # or choose another name, must match deployment&apos;s env PROVISIONER_NAME&apos;</span><br><span class="line">parameters:</span><br><span class="line">  archiveOnDelete: &quot;false&quot;</span><br></pre></td></tr></table></figure></p>
+<p>provisioner就是刚才deployment中的PROVISIONER_NAME，还有一个比较关键的参数是archiveOnDelete，如果你想在删除了pvc之后还保留数据的话需要把这个参数改为true，不然你删除了pvc同时pv也会删除，然后数据也会丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply class.yaml</span><br><span class="line"></span><br><span class="line">kubectl apply -f class.yaml</span><br><span class="line"></span><br><span class="line">很简单，只要pvc有</span><br><span class="line">annotations:</span><br><span class="line">  volume.beta.kubernetes.io/storage-class: &quot;managed-nfs-storage&quot;</span><br></pre></td></tr></table></figure></p>
+<p>pvc就能动态的创建出来</p>
+<p>尝试创建<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[root@node02 deploy]# kubectl apply  -f  test-claim.yaml </span><br><span class="line"></span><br><span class="line">[root@node02 deploy]# cat test-claim.yaml </span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: test-claim</span><br><span class="line">  annotations:</span><br><span class="line">    volume.beta.kubernetes.io/storage-class: &quot;managed-nfs-storage&quot;</span><br><span class="line">spec:</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 1Mi</span><br><span class="line">[root@node02 deploy]# </span><br><span class="line">查看pv和pvc</span><br><span class="line">[root@node02 deploy]# kubectl  get pv,pvc</span><br><span class="line">NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                STORAGECLASS          REASON   AGE</span><br><span class="line">persistentvolume/pvc-a0b85043-84a6-4f8a-9016-bba084a3f014   1Mi        RWX            Delete           Bound    default/test-claim   managed-nfs-storage            29m</span><br><span class="line"></span><br><span class="line">NAME                               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          AGE</span><br><span class="line">persistentvolumeclaim/test-claim   Bound    pvc-a0b85043-84a6-4f8a-9016-bba084a3f014   1Mi        RWX            managed-nfs-storage   29m</span><br><span class="line">[root@node02 deploy]#</span><br></pre></td></tr></table></figure></p>
+<p> 尝试删除pvc，查看pv也会被删除，只不过pv中的数据不会被删除。需要注意的是删除pvc之前要把所使用的pod 删除掉</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>参考</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-csi-nfs/" data-id="ckmda1gyy001parjxn8m8qkr7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -454,7 +523,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-volumes/" data-id="ckmd9y8c2001z93jx96keq5ji" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-volumes/" data-id="ckmda1gz70022arjxe9i5qxa5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -502,73 +571,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/12/30/Kubernetes-ubuntu20.04/" data-id="ckmd9y8an000593jxwhnaqmaw" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-mariadb-cluster-recovery" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/07/10/mariadb-cluster-recovery/" class="article-date">
-  <time datetime="2020-07-10T01:41:54.000Z" itemprop="datePublished">2020-07-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/07/10/mariadb-cluster-recovery/">mariadb cluster recovery</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="mariadb-cluster-recovery"><a href="#mariadb-cluster-recovery" class="headerlink" title="mariadb cluster recovery"></a>mariadb cluster recovery</h3><p>列几个集群检查命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_incoming_addresses&apos;;</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">| wsrep_incoming_addresses | 10.0.0.51:3306,10.0.0.52:3306,10.0.0.53:3306 |</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 3 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_state_uuid&apos;;</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">| wsrep_cluster_state_uuid | 345098abd2-291a-9893-acbd3-30923abcdef9 |</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_local_state_comment&apos;;</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">| wsrep_local_state_comment | Synced |</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
-<p>场景一</p>
-<p>只是很简单的某节点掉线，重启让其重新加入集群即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_incoming_addresses&apos;;</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">| wsrep_incoming_addresses | 10.0.0.51:3306,10.0.0.52:3306 |</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 2 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># systemctl restart mariadb</span><br></pre></td></tr></table></figure>
-<p>场景二</p>
-<p>唯一有一个幸存节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 1 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
-<p>幸存节点刚好优雅关闭正确提交了数据，状态为Primary<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_status&apos;;</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| wsrep_cluster_status | Primary |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
-<p>哪果是<code>non-Primary</code>状态还要单独恢复<br>幸存节点上执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; set global wsrep_provider_options=&apos;pc.bootstrap=YES&apos;;</span><br></pre></td></tr></table></figure></p>
-<p>可是 我们一般不这样做，常规做法是直接指定这个幸存节点的主节点，让其它节点加入集群<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># systemctl stop mariadb</span><br><span class="line"># galera_new_cluster</span><br><span class="line"># systemctl restart mariadb</span><br></pre></td></tr></table></figure></p>
-<p>场景三<br>集群崩溃完全不可用,这也分为2种情况，基于最高seqno值恢复<br>状态一是没有集群UUID, <code>seqno: -1</code>,数据定义语言DDL出错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 00000000-0000-0000-0000-000000000000</span><br><span class="line">seqno: -1</span><br><span class="line">safe_to_bootstrap: 0</span><br></pre></td></tr></table></figure></p>
-<p>状态2是有集群UUID，<code>seqno: -1</code>，事务处理数据时出错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 886dd8da-3d07-11e8-a109-8a3c80cebab4</span><br><span class="line">seqno: -1</span><br><span class="line">safe_to_bootstrap: 0</span><br></pre></td></tr></table></figure></p>
-<p>状态3是有集群UUID，seqno值最高正值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 886dd8da-3d07-11e8-a109-8a3c80cebab4</span><br><span class="line">seqno: 31929</span><br><span class="line">safe_to_bootstrap: 1</span><br></pre></td></tr></table></figure></p>
-<p>此时我们认为状态3是OK的，需要修改状态１、２数据库配置文件去掉IP地址配置项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsrep_cluster_address=&quot;gcomm://&quot;</span><br></pre></td></tr></table></figure></p>
-<p>这样节点就能正常启动了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart mariadb</span><br></pre></td></tr></table></figure></p>
-<p>最后再修改配置文件后把这2个节点正常加入集群就好了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsrep_cluster_address=&quot;gcomm://10.8.8.53,10.8.8.54,10.8.8.55&quot;</span><br></pre></td></tr></table></figure></p>
-<p>最后是基于Last Committed恢复<br>先修改配置文件让服务启起来，入库查看<code>wsrep_last_committed</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#systemctl stop mariadb</span><br><span class="line">  编辑配置文件去掉IP地址wsrep_cluster_address=&quot;gcomm://&quot;</span><br><span class="line">#systemctl start mariadb</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_last_committed&apos;;</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| wsrep_last_committed | 319589 |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
-<p>找到节点最大值认为就是主节点，然后在这个主节点上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#  galera_new_cluster</span><br></pre></td></tr></table></figure></p>
-<p>其它节点加入集群即可</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckmd9y8cu002w93jxevabqp6v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/12/30/Kubernetes-ubuntu20.04/" data-id="ckmda1gxt0007arjxuzl44a9s" class="article-share-link">Share</a>
       
       
     </footer>
