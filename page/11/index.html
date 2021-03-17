@@ -62,53 +62,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
-  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Shell/">Shell</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat getopts.sh </span><br><span class="line">#!/bin/bash</span><br><span class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</span><br><span class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</span><br><span class="line"># OPTARG  表示选项给的值</span><br><span class="line"># OPTIND  表示选项指针（下一位）</span><br><span class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</span><br><span class="line"></span><br><span class="line">while getopts &quot;:a:b:c:&quot; OPT;</span><br><span class="line">do</span><br><span class="line">case $OPT in</span><br><span class="line">  a)</span><br><span class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</span><br><span class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  b)</span><br><span class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  c)</span><br><span class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</span><br><span class="line">        ;;</span><br><span class="line">  *)</span><br><span class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</span><br><span class="line">esac</span><br><span class="line">done</span><br><span class="line">shift $(($OPTIND-1))</span><br><span class="line">echo &quot;\$1 is: $1&quot;</span><br><span class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</span><br><span class="line">a is OPTARG: a1</span><br><span class="line">a is OPTIND: 3</span><br><span class="line">b is OPTARG: b1</span><br><span class="line">b is OPTIND: 5</span><br><span class="line">c is OPTARG: c1</span><br><span class="line">c is OPTIND: 7</span><br><span class="line">$1 is: test.sh</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ckmd9den1004w37jxk2967004" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
     <article id="post-mysql-基础篇" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/29/mysql-基础篇/" class="article-date">
@@ -190,7 +143,54 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="ckmd9dem3003937jxf3b24va7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-基础篇/" data-id="ckmd9gu2200394sjxv7cz86gi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-shell-getopts语法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/29/shell-getopts语法/" class="article-date">
+  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Shell/">Shell</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/29/shell-getopts语法/">shell getopts语法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Linux shell中getopts语法是一个很高级的语法，它能让你写出很漂亮的shell,来看个例子学习下</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat getopts.sh </span><br><span class="line">#!/bin/bash</span><br><span class="line"># a: b: c: 表示脚本运行时接受选项&lt;-a options_1&gt; &lt;-b options_2&gt; &lt;-c options_3&gt;</span><br><span class="line"># first: 表示友好， 给出错误选项时尽量少的打印错误信息</span><br><span class="line"># OPTARG  表示选项给的值</span><br><span class="line"># OPTIND  表示选项指针（下一位）</span><br><span class="line"># 比如：(-a 指针为2) (-a a1 -b 指针为4) (-a a1 -b b1 -c c1指针为7)</span><br><span class="line"></span><br><span class="line">while getopts &quot;:a:b:c:&quot; OPT;</span><br><span class="line">do</span><br><span class="line">case $OPT in</span><br><span class="line">  a)</span><br><span class="line">	echo &quot;a is OPTARG: $OPTARG&quot;</span><br><span class="line">	echo &quot;a is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  b)</span><br><span class="line">	echo &quot;b is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;b is OPTIND: $OPTIND&quot;</span><br><span class="line">	;;</span><br><span class="line">  c)</span><br><span class="line">	echo &quot;c is OPTARG: $OPTARG&quot;</span><br><span class="line">        echo &quot;c is OPTIND: $OPTIND&quot;</span><br><span class="line">        ;;</span><br><span class="line">  *)</span><br><span class="line">   	echo &quot;Usage: $0 [-a arg1] [-b arg2] [-c arg3]&quot;</span><br><span class="line">esac</span><br><span class="line">done</span><br><span class="line">shift $(($OPTIND-1))</span><br><span class="line">echo &quot;\$1 is: $1&quot;</span><br><span class="line">root@ubuntu:~# bash getopts.sh -a a1 -b b1 -c c1 test.sh</span><br><span class="line">a is OPTARG: a1</span><br><span class="line">a is OPTIND: 3</span><br><span class="line">b is OPTARG: b1</span><br><span class="line">b is OPTIND: 5</span><br><span class="line">c is OPTARG: c1</span><br><span class="line">c is OPTIND: 7</span><br><span class="line">$1 is: test.sh</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ckmd9gu32004w4sjxdwm7xhxa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -444,7 +444,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ckmd9demg003u37jxlsgjsxfq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ckmd9gu2g003u4sjxt6solxbh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,7 +515,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ckmd9demf003s37jxjq85d7o7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ckmd9gu2e003s4sjxy4ijj2a6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -582,7 +582,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="ckmd9deme003q37jx07sjxyaf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="ckmd9gu2c003q4sjx20nvk4m9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -653,7 +653,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="ckmd9demd003o37jx8ow4mxer" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="ckmd9gu2b003o4sjx15h0kalq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -790,7 +790,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="ckmd9demc003m37jxf50hblub" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="ckmd9gu2a003m4sjxotr5hiq4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -835,7 +835,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ckmd9dejy000d37jx12t4fhr7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ckmd9gtzr000d4sjxgrm5g2rp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -882,7 +882,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="ckmd9dekf001137jx83ur1mva" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="ckmd9gu0a00114sjx1li9bqku" class="article-share-link">Share</a>
       
       
     </footer>
@@ -934,7 +934,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ckmd9denw006h37jxyuuybs0o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ckmd9gu4g006l4sjxulsola8d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -975,7 +975,7 @@ Age_of_name = &quot;xx&quot;  #类名
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
