@@ -93,9 +93,9 @@
 <ul>
 <li>系统级： 当前系统可以打开的文件数，通过fs.file-max参数修改</li>
 <li>用户级： 指定用 户可以打开的数量，通过/etc/security/limits.conf</li>
-<li>进程级： 单个进程可以打开的数量，通过fs.nr_open参数修改<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">为每一个TCP连接Socket分配的最少字节数或说是接收缓冲区，默认4K，最大可设8MB</span><br><span class="line">net.ipv4.tcp_rmem = 4096(为TCP连接分配的最少字节数) 87380 8388608</span><br><span class="line">net.core.rmem_default = 2129922</span><br><span class="line">net.core.rmem_max = 8388608</span><br></pre></td></tr></table></figure>
-</li>
+<li>进程级： 单个进程可以打开的数量，通过fs.nr_open参数修改</li>
 </ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">为每一个TCP连接Socket分配的最少字节数或说是接收缓冲区，默认4K，最大可设8MB</span><br><span class="line">net.ipv4.tcp_rmem = 4096(为TCP连接分配的最少字节数) 87380 8388608</span><br><span class="line">net.core.rmem_default = 2129922</span><br><span class="line">net.core.rmem_max = 8388608</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_wmem= 4096(发送缓存区最小值，默认4K) 65536  8388608</span><br><span class="line">net.core.wmem_default = 212992</span><br><span class="line">net.core.wmem_max = 8388608</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss -n | grep ESTAB |wc -l TCP活动连接数统计</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@node03 ~]# slabtop 关注dentry/filp/TCP/sock_node_cache指标</span><br><span class="line"> Active / Total Objects (% used)    : 3721737 / 4145714 (89.8%)</span><br><span class="line"> Active / Total Slabs (% used)      : 125168 / 125168 (100.0%)</span><br><span class="line"> Active / Total Caches (% used)     : 95 / 131 (72.5%)</span><br><span class="line"> Active / Total Size (% used)       : 821348.16K / 878889.63K (93.5%)</span><br><span class="line"> Minimum / Average / Maximum Object : 0.01K / 0.21K / 8.00K</span><br><span class="line"></span><br><span class="line">  OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME                   </span><br><span class="line">1928862 1578283  81%    0.10K  49458	   39    197832K buffer_head</span><br><span class="line">448077 447905  99%    0.19K  21337	 21     85348K dentry  （指标1）</span><br><span class="line">298544 297412  99%    1.00K  18659	 16    298544K filp（指标2）</span><br><span class="line">288966 288966 100%    0.04K   2833	102     11332K TCP（指标3）</span><br><span class="line">233070 233070 100%    0.12K   6855	 34     27420K sock_node_cache（指标4）</span><br></pre></td></tr></table></figure>
@@ -104,7 +104,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="cknigal1e002s2jjxzr32wxrx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="cknigbmri002s3sjxajd37iyq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -152,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="cknigal0c001l2jjx75rzyxfq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="cknigbmqj001l3sjx2e13sa41" class="article-share-link">Share</a>
       
       
     </footer>
@@ -200,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="cknigal20003n2jjxwwe6hcy8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="cknigbms7003n3sjxlaped7sg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -262,7 +262,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="cknigal0h001s2jjxu4cgfbnl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="cknigbmqp001s3sjxecwyj8az" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +310,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="cknigal0j001u2jjxjqg8iac0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="cknigbmqq001u3sjx8fm3m0nz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="cknigal0k001x2jjxbyeuip4c" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="cknigbmqs001x3sjxrru50z8v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -406,7 +406,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="cknigal0m001z2jjxil30nvv0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="cknigbmqv001z3sjxksl3yvei" class="article-share-link">Share</a>
       
       
     </footer>
@@ -457,7 +457,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="cknigal0e001n2jjx1w4e6w49" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="cknigbmqk001n3sjxl8xzyzrk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -526,7 +526,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-csi-nfs/" data-id="cknigal0f001p2jjxxzpp0qqw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-csi-nfs/" data-id="cknigbmqm001p3sjxn5kek37q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -578,7 +578,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-volumes/" data-id="cknigal0p00222jjxxs658hw8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-volumes/" data-id="cknigbmqz00223sjxtqsos7ij" class="article-share-link">Share</a>
       
       
     </footer>
