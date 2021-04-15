@@ -5,17 +5,17 @@
   
   <title>sysctl TCP优化 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1234567891011echo 2048 &amp;gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度echo never &amp;gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量fs.file">
+  <meta name="description" content="内核参数优化1234567891011echo 2048 &amp;gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度echo never &amp;gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量f">
 <meta property="og:type" content="article">
 <meta property="og:title" content="sysctl TCP优化">
 <meta property="og:url" content="http://www.digmyth.com/2021/03/15/linux-sysctl/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="1234567891011echo 2048 &amp;gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度echo never &amp;gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量fs.file">
+<meta property="og:description" content="内核参数优化1234567891011echo 2048 &amp;gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度echo never &amp;gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量f">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-15T05:19:02.912Z">
+<meta property="og:updated_time" content="2021-04-15T05:37:10.336Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sysctl TCP优化">
-<meta name="twitter:description" content="1234567891011echo 2048 &amp;gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度echo never &amp;gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量fs.file">
+<meta name="twitter:description" content="内核参数优化1234567891011echo 2048 &amp;gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度echo never &amp;gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量f">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -90,7 +90,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">echo 2048 &gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度</span><br><span class="line">echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能</span><br><span class="line">vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量</span><br><span class="line">fs.file-max = 65536     </span><br><span class="line">同时修改vim /etc/security/limits.conf</span><br><span class="line">*　　soft　　nofile　　65536</span><br><span class="line">*　　hard　　nofile　　65536</span><br><span class="line">*   soft    nproc    65535</span><br><span class="line">*   hard    nproc    65535</span><br><span class="line">*   soft    memlock  unlimited</span><br><span class="line">*   hard    memlock  unlimited</span><br></pre></td></tr></table></figure>
+        <h3 id="内核参数优化"><a href="#内核参数优化" class="headerlink" title="内核参数优化"></a>内核参数优化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">echo 2048 &gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度</span><br><span class="line">echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能</span><br><span class="line">vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量</span><br><span class="line">fs.file-max = 65536     </span><br><span class="line">同时修改vim /etc/security/limits.conf</span><br><span class="line">*　　soft　　nofile　　65536</span><br><span class="line">*　　hard　　nofile　　65536</span><br><span class="line">*   soft    nproc    65535</span><br><span class="line">*   hard    nproc    65535</span><br><span class="line">*   soft    memlock  unlimited</span><br><span class="line">*   hard    memlock  unlimited</span><br></pre></td></tr></table></figure>
 <p>每保持一个TCP连接，进程就要创建一个文件对象，约占内存3.3KB，4GB内存可以维持长达100万条长连接，客户端发送数据的话，还得为TCP对象开启接收缓冲区，这就增大了内存开销, Linux系统里，系统级、用户级、进程级都有最大打开文件数限制</p>
 <ul>
 <li>系统级： 当前系统可以打开的文件数，通过fs.file-max参数修改</li>
@@ -106,7 +106,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="cknifnd19002m0yjx8vo3jr8t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="cknigal1e002s2jjxzr32wxrx" class="article-share-link">Share</a>
       
       
     </footer>
