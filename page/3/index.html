@@ -97,7 +97,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="cknii6lln002ry7jxutu04fcy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="cknijm3mg002u0cjx1u70doaw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -151,7 +151,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/helm-efk/" data-id="cknii6lju001by7jxpbbr8yhm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/10/15/helm-efk/" data-id="cknijm3l9001a0cjxmkkw24eq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -219,7 +219,12 @@ elasticsearch集群组件：
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch # 直接启动即可</span><br></pre></td></tr></table></figure>
 <p>集群状态</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">green 可用状态</span><br><span class="line">red:  不可用</span><br><span class="line">yellow: 修复状态</span><br><span class="line"></span><br><span class="line">ES参与集群事务的端口tcp/9300</span><br><span class="line">ES接收请求的端口tcp/9200</span><br></pre></td></tr></table></figure>
-<p>API接口使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">确保集群正常； API接口9200</span><br><span class="line">Restful接口API： 4类</span><br><span class="line">1 检查集群节点索引健康与否，以及获取其相应状态</span><br><span class="line">2 管理集群节点索引及元数据</span><br><span class="line">3 执行CRUD操作</span><br><span class="line">4 执行高级操作：例如paging 、filtering</span><br><span class="line">	curl -X  [method]  -d  @xx.json   https://ip:9200/path?query_str</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?v</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?help</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/nodes?h=ip,ram.percent</span><br><span class="line">	</span><br><span class="line">	http://192.168.1.30:9200/_cat/master</span><br><span class="line">	http://192.168.1.30:9200/_cat/master?v</span><br></pre></td></tr></table></figure></p>
+<p>API接口使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">确保集群正常； API接口9200</span><br><span class="line">Restful接口API： 4类</span><br><span class="line">1 检查集群节点索引健康与否，以及获取其相应状态</span><br><span class="line">2 管理集群节点索引及元数据</span><br><span class="line">3 执行CRUD操作</span><br><span class="line">4 执行高级操作：例如paging 、filtering</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">所有_cat支持的API操作</span><br><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat</span><br><span class="line">=^.^=</span><br><span class="line">/_cat/allocation</span><br><span class="line">/_cat/shards</span><br><span class="line">/_cat/shards/&#123;index&#125;</span><br><span class="line">/_cat/master</span><br><span class="line">/_cat/nodes</span><br><span class="line">/_cat/tasks</span><br><span class="line">/_cat/indices</span><br><span class="line">/_cat/indices/&#123;index&#125;</span><br><span class="line">/_cat/segments</span><br><span class="line">。。。</span><br></pre></td></tr></table></figure>
+<p>v=verbose显示详细信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.30:9200/_cat/nodes</span><br><span class="line">http://192.168.1.30:9200/_cat/nodes?v</span><br><span class="line">http://192.168.1.30:9200/_cat/master</span><br><span class="line">http://192.168.1.30:9200/_cat/master?v</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat/nodes?v</span><br><span class="line">ip         heap.percent ram.percent cpu load_1m load_5m load_15m node.role   master name</span><br><span class="line">172.21.0.5           36          98  14    0.22    0.60     1.09 cdfhilmrstw -      es02</span><br><span class="line">172.21.0.3           28          98  14    0.22    0.60     1.09 cdfhilmrstw *      es01</span><br><span class="line">172.21.0.4           61          98  14    0.22    0.60     1.09 cdfhilmrstw -      es03</span><br></pre></td></tr></table></figure></p>
+<p>help查看某接口支持查询的详细字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat/nodes?help</span><br><span class="line">id                                 | id,nodeId                                   | unique node id                                                                                                   </span><br><span class="line">pid                                | p                                           | process id                                                                                                       </span><br><span class="line">ip                                 | i                                           | ip address                                                                                                       </span><br><span class="line">port                               | po                                          | bound transport port                                                                                             </span><br><span class="line">http_address                       | http                                        | bound http address                                                                                               </span><br><span class="line">version                            | v                                           | es version  </span><br><span class="line">。。。</span><br></pre></td></tr></table></figure></p>
+<p>查询某接口指定字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># curl  http://192.168.1.40:9200/_cat/nodes?h=id,pid,ip,port,http_address,version,uptime</span><br><span class="line">t_iA 6 172.21.0.5 9300 172.21.0.5:9200 7.12.0 56.8m</span><br><span class="line">WIm1 6 172.21.0.3 9300 172.21.0.3:9200 7.12.0 56.8m</span><br><span class="line">3bzJ 6 172.21.0.4 9300 172.21.0.4:9200 7.12.0 56.8m</span><br></pre></td></tr></table></figure></p>
+<p>health的green状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># curl  http://192.168.1.40:9200/_cat/health?v</span><br><span class="line">epoch      timestamp cluster           status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent</span><br><span class="line">1618470428 07:07:08  es-docker-cluster green           3         3     14   7    0    0        0             0                  -                100.0%</span><br></pre></td></tr></table></figure></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
 <li>带着概念参照官网安装还是挺简单的，练习接口可以了解学习集群及ES的概念</li>
 </ul>
@@ -227,7 +232,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/08/15/elasticsearch-基本使用/" data-id="cknii6ljl000wy7jxm76hyrj5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/08/15/elasticsearch-基本使用/" data-id="cknijm3l300140cjxfiayzz7q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -275,7 +280,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/07/25/mariadb-恢复数据/" data-id="cknii6lly0032y7jxyq0swcgt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/07/25/mariadb-恢复数据/" data-id="cknijm3mr00300cjx30ponjsd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -333,7 +338,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/15/lucene-认识/" data-id="cknii6llp002ty7jxv9qsoby6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/15/lucene-认识/" data-id="cknijm3mo002w0cjxaavdfaf7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -381,7 +386,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="cknii6lij0000y7jxozyu33vr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="cknijm3k000030cjxxu4u9zga" class="article-share-link">Share</a>
       
       
     </footer>
@@ -447,7 +452,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="cknii6lp4004oy7jxevmth09z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="cknijm3nt004o0cjxk9m2w6m4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -500,7 +505,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="cknii6lje000my7jxfvuqndph" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="cknijm3kn000i0cjxb86os78y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -559,7 +564,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="cknii6ljg000py7jxu80m2uva" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="cknijm3kp000k0cjxyru74p80" class="article-share-link">Share</a>
       
       
     </footer>
@@ -606,7 +611,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="cknii6lpw0052y7jxu7tmc1ju" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="cknijm3o100540cjxsj5cp628" class="article-share-link">Share</a>
       
       
     </footer>
