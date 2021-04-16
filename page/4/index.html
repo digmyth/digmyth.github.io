@@ -62,6 +62,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-veth-pair+namespace" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/10/veth-pair+namespace/" class="article-date">
+  <time datetime="2019-01-10T01:41:54.000Z" itemprop="datePublished">2019-01-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/10/veth-pair+namespace/">veth-pair+namespace</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>查找对端veth pair<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink </span><br><span class="line">4</span><br><span class="line">root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1</span><br><span class="line">NIC statistics:</span><br><span class="line">     peer_ifindex: 4</span><br><span class="line">     rx_queue_0_xdp_packets: 0</span><br><span class="line">     rx_queue_0_xdp_bytes: 0</span><br><span class="line">     rx_queue_0_xdp_drops: 0</span><br></pre></td></tr></table></figure></p>
+<p>namespace场景参考如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># ip link add veth-a type veth peer name veth-b    # 生成veth pair对，相当于一根网线</span><br><span class="line"># ip netns add ns1    #  创建名称空间</span><br><span class="line"># ip link set veth-a netns ns1  #将网线A端加入名称容间</span><br><span class="line">root@k8s-m:~# ip  netns exec ns1 ethtool -S veth-a   # veth-a的对端编号16</span><br><span class="line">NIC statistics:</span><br><span class="line">     peer_ifindex: 16</span><br><span class="line">     rx_queue_0_xdp_packets: 0</span><br><span class="line">     rx_queue_0_xdp_bytes: 0</span><br><span class="line">     rx_queue_0_xdp_drops: 0</span><br><span class="line">root@k8s-m:~# ip  netns exec ns1 cat /sys/class/net/veth-a/iflink    # veth-a的对端编号16</span><br><span class="line">16</span><br><span class="line"># ip a     #  查看编号16的设备</span><br><span class="line">16: veth-b@if17: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN group default qlen 1000</span><br><span class="line">    link/ether be:ec:d2:fc:64:3f brd ff:ff:ff:ff:ff:ff link-netns ns1</span><br></pre></td></tr></table></figure></p>
+<p>利用ovs实现跨主机通信的简单应用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ovs-vsctl add-br ovs0</span><br><span class="line">ovs-vsctl add-port ovs0 eth0</span><br><span class="line">物理网卡加进ovs可能会断网，解决办法：</span><br><span class="line"># ifconfig ovs0 172.16.10.10/24</span><br><span class="line"># ifconfig eth0  0.0.0.0.0</span><br><span class="line"># route del default</span><br><span class="line"># route add default gw 172.16.10.254 dev ovs0</span><br><span class="line"># ifconfig ovs0 hw ether $eth0_mac</span><br></pre></td></tr></table></figure></p>
+<p>注意： 完事后放在开机启动项，不然开机失效连不上机</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="cknjvf5ff00560pjxm25l22n2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-openvswitch" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/01/08/openvswitch/" class="article-date">
@@ -113,7 +160,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="cknijqf0k003l15jx4yklmyxz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="cknjvf5dz003n0pjxkoessa9y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -161,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="cknijqezi002e15jxgops07ao" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="cknjvf5cn00290pjxn6x87md4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -222,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="cknijqf2p006k15jx3lfazvvk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="cknjvf5h4006u0pjx73vlq3d4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +357,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cknijqf2o006i15jxlgwboy73" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cknjvf5gz006o0pjxlehplose" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +405,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="cknijqexb000415jx28j7hnq2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="cknjvf5b800040pjxbe9payx4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -405,7 +452,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="cknijqezg002c15jx6skh2tcz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="cknjvf5ck00250pjx7gyl30co" class="article-share-link">Share</a>
       
       
     </footer>
@@ -450,7 +497,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="cknijqey8000z15jxw29siccn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="cknjvf5bt000y0pjxmqyc9oyk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -498,7 +545,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="cknijqewy000015jxfjfl6bor" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="cknjvf5b300010pjxet6aiyax" class="article-share-link">Share</a>
       
       
     </footer>
@@ -541,57 +588,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cknijqexl000b15jx62czk90l" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Kubernetes" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="k8s-的世界"><a href="#k8s-的世界" class="headerlink" title="k8s 的世界"></a>k8s 的世界</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- charts , k8s 的包， 类似 *.rpm 的东西</span><br><span class="line">- helm , k8s 的包管理机制，类似 yum 的东西</span><br><span class="line"></span><br><span class="line">openstack 容器化 ( docker 版本）</span><br><span class="line">- kolla-ansible</span><br><span class="line">- tripleo</span><br><span class="line"></span><br><span class="line">openstack 容器化( k8s  版本）</span><br><span class="line">- openstack-helm</span><br><span class="line">- kolla-kubernetes</span><br></pre></td></tr></table></figure>
-<p>openshift中有几种网络端口模式(暴露服务)</p>
-<h3 id="hostnetwork"><a href="#hostnetwork" class="headerlink" title="hostnetwork"></a>hostnetwork</h3><p>hostnetwork 就是Docker的host网络，pod直接占用宿主机IP及端口，没什么可说的</p>
-<h3 id="hostport"><a href="#hostport" class="headerlink" title="hostport"></a>hostport</h3><p>hostport 是在单宿主机通过IP+端口来映射容器或pod(-p 参数), 实现外部能访问容器服务或pod服务</p>
-<h3 id="nodeport"><a href="#nodeport" class="headerlink" title="nodeport"></a>nodeport</h3><p>nodeport也是在宿主机通过IP+端口来映射，与hostport不同之处是映射ServiceIP+端口，再转到pod服务</p>
-<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>router是以hostnetwork网络模式跑在宿主机上的容器化haproxy pod, pod IP和端口就是节点的IP和端，对外暴露80、443、1936端口，haproxy中有service query 信息来自于etcd, 再通过service访问到pod服务。</p>
-<p>注： router是hostnetwork网络模式就意味着一个节点只能运行一个router</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cknijqexi000815jxiysxinb8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cknjvf5bh000d0pjx76zosrzc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -632,7 +629,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
