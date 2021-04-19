@@ -97,7 +97,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckno7969e00181ijxmyd9nv8x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckno7cryc001a3ojxcvz0dx68" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckno796b2002w1ijxvfgyzog5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckno7crzd002p3ojxuv0n7mzr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -199,7 +199,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/log_helm-efk/" data-id="ckno796b5002z1ijxrc5opuyb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/10/15/log_helm-efk/" data-id="ckno7crzp002y3ojxvyepgazb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -265,12 +265,15 @@
 <p>不指定域查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[root@node01 ~]# curl &apos;http://192.168.1.40:9200/students/_search?q=&quot;jing&quot;&amp;pretty&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;took&quot; : 4,</span><br><span class="line">  &quot;timed_out&quot; : false,</span><br><span class="line">  &quot;_shards&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : 1,</span><br><span class="line">    &quot;successful&quot; : 1,</span><br><span class="line">    &quot;skipped&quot; : 0,</span><br><span class="line">    &quot;failed&quot; : 0</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;hits&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : &#123;</span><br><span class="line">      &quot;value&quot; : 1,</span><br><span class="line">      &quot;relation&quot; : &quot;eq&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;max_score&quot; : 0.6931471,</span><br><span class="line">    &quot;hits&quot; : [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;_index&quot; : &quot;students&quot;,</span><br><span class="line">        &quot;_type&quot; : &quot;class1&quot;,</span><br><span class="line">        &quot;_id&quot; : &quot;1&quot;,</span><br><span class="line">        &quot;_score&quot; : 0.6931471,</span><br><span class="line">        &quot;_source&quot; : &#123;</span><br><span class="line">          &quot;first_name&quot; : &quot;jing&quot;,</span><br><span class="line">          &quot;last_name&quot; : &quot;Huang&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>指定域精确查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[root@node01 ~]# curl &apos;http://192.168.1.40:9200/students/_search?q=first_name:&quot;jing&quot;&amp;pretty&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;took&quot; : 4,</span><br><span class="line">  &quot;timed_out&quot; : false,</span><br><span class="line">  &quot;_shards&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : 1,</span><br><span class="line">    &quot;successful&quot; : 1,</span><br><span class="line">    &quot;skipped&quot; : 0,</span><br><span class="line">    &quot;failed&quot; : 0</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;hits&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : &#123;</span><br><span class="line">      &quot;value&quot; : 1,</span><br><span class="line">      &quot;relation&quot; : &quot;eq&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;max_score&quot; : 0.6931471,</span><br><span class="line">    &quot;hits&quot; : [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;_index&quot; : &quot;students&quot;,</span><br><span class="line">        &quot;_type&quot; : &quot;class1&quot;,</span><br><span class="line">        &quot;_id&quot; : &quot;1&quot;,</span><br><span class="line">        &quot;_score&quot; : 0.6931471,</span><br><span class="line">        &quot;_source&quot; : &#123;</span><br><span class="line">          &quot;first_name&quot; : &quot;jing&quot;,</span><br><span class="line">          &quot;last_name&quot; : &quot;Huang&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>查看指定类型的mapping<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[root@node01 ~]# curl http://192.168.1.40:9200/students/_mapping?pretty</span><br><span class="line">&#123;</span><br><span class="line">  &quot;students&quot; : &#123;</span><br><span class="line">    &quot;mappings&quot; : &#123;</span><br><span class="line">      &quot;properties&quot; : &#123;</span><br><span class="line">        &quot;first_name&quot; : &#123;    # 字段</span><br><span class="line">          &quot;type&quot; : &quot;text&quot;,   # 类型为文本</span><br><span class="line">          &quot;fields&quot; : &#123;</span><br><span class="line">            &quot;keyword&quot; : &#123;</span><br><span class="line">              &quot;type&quot; : &quot;keyword&quot;,</span><br><span class="line">              &quot;ignore_above&quot; : 256</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;last_name&quot; : &#123;    # 字段</span><br><span class="line">          &quot;type&quot; : &quot;text&quot;,  # 类型为文本</span><br><span class="line">          &quot;fields&quot; : &#123;</span><br><span class="line">            &quot;keyword&quot; : &#123;</span><br><span class="line">              &quot;type&quot; : &quot;keyword&quot;,</span><br><span class="line">              &quot;ignore_above&quot; : 256</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>request Body 请求查询</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[root@node01 ~]# curl -X GET   -H &quot;Content-Type: application/json&quot; http://192.168.1.40:9200/students/_search?pretty -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">   &quot;term&quot;: &#123;&quot;first_name&quot;:&quot;jing&quot;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;took&quot; : 3,</span><br><span class="line">  &quot;timed_out&quot; : false,</span><br><span class="line">  &quot;_shards&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : 1,</span><br><span class="line">    &quot;successful&quot; : 1,</span><br><span class="line">    &quot;skipped&quot; : 0,</span><br><span class="line">    &quot;failed&quot; : 0</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;hits&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : &#123;</span><br><span class="line">      &quot;value&quot; : 1,</span><br><span class="line">      &quot;relation&quot; : &quot;eq&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;max_score&quot; : 0.6931471,</span><br><span class="line">    &quot;hits&quot; : [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;_index&quot; : &quot;students&quot;,</span><br><span class="line">        &quot;_type&quot; : &quot;class1&quot;,</span><br><span class="line">        &quot;_id&quot; : &quot;1&quot;,</span><br><span class="line">        &quot;_score&quot; : 0.6931471,</span><br><span class="line">        &quot;_source&quot; : &#123;</span><br><span class="line">          &quot;first_name&quot; : &quot;jing&quot;,</span><br><span class="line">          &quot;last_name&quot; : &quot;Huang&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[root@node01 ~]# curl -X GET   -H &quot;Content-Type: application/json&quot; http://192.168.1.40:9200/students/_search?pretty -d &apos;</span><br><span class="line">&#123;</span><br><span class="line">&quot;query&quot;: &#123;</span><br><span class="line">   &quot;terms&quot;: &#123;&quot;first_name&quot;:[&quot;jing&quot;,&quot;xx&quot;,&quot;oo&quot;]&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;&apos;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;took&quot; : 3,</span><br><span class="line">  &quot;timed_out&quot; : false,</span><br><span class="line">  &quot;_shards&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : 1,</span><br><span class="line">    &quot;successful&quot; : 1,</span><br><span class="line">    &quot;skipped&quot; : 0,</span><br><span class="line">    &quot;failed&quot; : 0</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;hits&quot; : &#123;</span><br><span class="line">    &quot;total&quot; : &#123;</span><br><span class="line">      &quot;value&quot; : 1,</span><br><span class="line">      &quot;relation&quot; : &quot;eq&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;max_score&quot; : 1.0,</span><br><span class="line">    &quot;hits&quot; : [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;_index&quot; : &quot;students&quot;,</span><br><span class="line">        &quot;_type&quot; : &quot;class1&quot;,</span><br><span class="line">        &quot;_id&quot; : &quot;1&quot;,</span><br><span class="line">        &quot;_score&quot; : 1.0,</span><br><span class="line">        &quot;_source&quot; : &#123;</span><br><span class="line">          &quot;first_name&quot; : &quot;jing&quot;,</span><br><span class="line">          &quot;last_name&quot; : &quot;Huang&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>慢慢实践。。。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/09/15/log_elasticsearch_api/" data-id="ckno796au002n1ijxlfw6mo9h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/09/15/log_elasticsearch_api/" data-id="ckno7crzm002t3ojxp3sm336w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +354,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/08/15/log_elasticsearch-基本使用/" data-id="ckno796b0002u1ijxzsgqwvaf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/08/15/log_elasticsearch-基本使用/" data-id="ckno7crze002r3ojxrs1b66hv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -399,7 +402,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/07/25/mariadb-恢复数据/" data-id="ckno796ba00331ijxcfeizblu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/07/25/mariadb-恢复数据/" data-id="ckno7crzt00353ojxuevs4jzq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -457,7 +460,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="ckno796b800311ijxt4c0veau" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="ckno7crzq00303ojx7dctd903" class="article-share-link">Share</a>
       
       
     </footer>
@@ -505,7 +508,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckno7968l00041ijxh4uuspkn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckno7crx600033ojxz1ol84pj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -571,7 +574,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ckno796dj004r1ijx4iizgjnr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ckno7cs0v004v3ojxmt4najj7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -624,7 +627,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ckno7968y000i1ijxo2ji9m0q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ckno7crxr000i3ojxjrt7rwjn" class="article-share-link">Share</a>
       
       
     </footer>
