@@ -62,14 +62,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-mysql-pyton操作mysql" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+    <a href="/2017/04/29/mysql-pyton操作mysql/" class="article-date">
+  <time datetime="2017-04-29T01:41:54.000Z" itemprop="datePublished">2017-04-29</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
   </div>
 
   </div>
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
+      <a class="article-title" href="/2017/04/29/mysql-pyton操作mysql/">Python 操作mysql</a>
     </h1>
   
 
@@ -88,26 +88,30 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
+        <p>这里记录下python操作mysql的知识点，详细参见<a href="http://www.cnblogs.com/wupeiqi/articles/5713330.html" target="_blank" rel="noopener">链接</a></p>
+<h2 id="模块安装"><a href="#模块安装" class="headerlink" title="模块安装"></a>模块安装</h2><p>在<code>python2</code>中使用模块<code>MySQLdb</code><br>在<code>python3</code>中使用模块<code>pymysql</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install pymysql</span><br></pre></td></tr></table></figure></p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>基本操作过程就是</p>
+<ul>
+<li>创建连接</li>
+<li>创建游标</li>
+<li>发送语句</li>
+<li>获取数据</li>
+<li>事务提交</li>
+<li>关闭游标</li>
+<li>关闭连接<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import pymysql</span><br><span class="line"># 创建连接</span><br><span class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;db1&apos;)</span><br><span class="line"></span><br><span class="line"># 创建游标</span><br><span class="line">cursor = conn.cursor()</span><br><span class="line"></span><br><span class="line"># 发送语句</span><br><span class="line">cursor.execute(sqlstatement)</span><br><span class="line">cursor.executemany(sqlstatement)</span><br><span class="line"></span><br><span class="line"># 获取数据</span><br><span class="line">cursor.fetchone()</span><br><span class="line">cursor.fetchmany(3)</span><br><span class="line">cursor.fetchall()  </span><br><span class="line"></span><br><span class="line"># 事务提交，不然无法保存新建或者修改的数据</span><br><span class="line">conn.commit()</span><br><span class="line">  </span><br><span class="line"># 关闭游标</span><br><span class="line">cursor.close()</span><br><span class="line"># 关闭连接</span><br><span class="line">conn.close()</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
+<h2 id="基本知识点"><a href="#基本知识点" class="headerlink" title="基本知识点"></a>基本知识点</h2><h3 id="获取新创建数据自增ID"><a href="#获取新创建数据自增ID" class="headerlink" title="获取新创建数据自增ID"></a>获取新创建数据自增ID</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import pymysql</span><br><span class="line">  </span><br><span class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;t1&apos;)</span><br><span class="line">cursor = conn.cursor()</span><br><span class="line">cursor.executemany(&quot;insert into hosts(host,color_id)values(%s,%s)&quot;, [(&quot;1.1.1.11&quot;,1),(&quot;1.1.1.11&quot;,2)])</span><br><span class="line">conn.commit()</span><br><span class="line">cursor.close()</span><br><span class="line">conn.close()</span><br><span class="line">  </span><br><span class="line"># 获取最新自增ID</span><br><span class="line">new_id = cursor.lastrowid</span><br></pre></td></tr></table></figure>
+<h3 id="游标操作"><a href="#游标操作" class="headerlink" title="游标操作"></a>游标操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">在fetch数据时按照顺序进行，可以使用cursor.scroll(num,mode)来移动游标位置，如：</span><br><span class="line"></span><br><span class="line">cursor.scroll(1,mode=&apos;relative&apos;)  # 相对当前位置移动</span><br><span class="line">cursor.scroll(2,mode=&apos;absolute&apos;) # 相对绝对位置移动</span><br></pre></td></tr></table></figure>
+<h3 id="fetch-数据类型"><a href="#fetch-数据类型" class="headerlink" title="fetch 数据类型"></a>fetch 数据类型</h3><p>关于默认获取的数据是元组类型，如果想要获取字典类型的数据，如下<code>pymysql.cursors.DictCursor</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import pymysql</span><br><span class="line">conn = pymysql.connect(host=&apos;127.0.0.1&apos;, port=3306, user=&apos;root&apos;, passwd=&apos;123&apos;, db=&apos;t1&apos;)</span><br><span class="line"># 游标设置为字典类型</span><br><span class="line">cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)</span><br><span class="line">r = cursor.execute(&quot;call p1()&quot;)</span><br><span class="line">  </span><br><span class="line">result = cursor.fetchone()</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 执行SQL，并返回受影响行数</span><br><span class="line">effect_row = cursor.execute(&quot;update hosts set host = &apos;172.16.0.1&apos;&quot;)</span><br><span class="line"># 执行SQL，并返回受影响行数</span><br><span class="line">#effect_row = cursor.execute(&quot;update hosts set host = &apos;172.16.0.1&apos; where nid &gt; %s&quot;, (1,))</span><br><span class="line">  </span><br><span class="line">这里值得注意的是不能把上面语句替换成下面语句，否则会被sql注入</span><br><span class="line">statement=&quot;update hosts set host = &apos;172.16.0.1&apos; where nid &gt; %s&quot; % 1</span><br><span class="line">effect_row = cursor.execute(statement)</span><br><span class="line"></span><br><span class="line"># 执行SQL，并返回受影响行数</span><br><span class="line">#effect_row = cursor.executemany(&quot;insert into hosts(host,color_id)values(%s,%s)&quot;, [(&quot;172.16.0.1&quot;,1),(&quot;1.1.1.11&quot;,2)])</span><br></pre></td></tr></table></figure>
+<h3 id="SQLAlchemy"><a href="#SQLAlchemy" class="headerlink" title="SQLAlchemy"></a>SQLAlchemy</h3><p>SQLAlchemy是Python编程语言下的一款ORM框架，该框架建立在数据库API之上，使用关系对象映射进行数据库操作，简言之便是：将对象转换成SQL，然后使用数据API执行SQL并获取执行结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install SQLAlchemy</span><br></pre></td></tr></table></figure></p>
+<p>SQLAlchemy本身无法操作数据库，其必须以来pymsql等第三方插件，Dialect用于和数据API进行交流，根据配置文件的不同调用不同的数据库API，从而实现对数据库的操作，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">MySQL-Python</span><br><span class="line">    mysql+mysqldb://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;[:&lt;port&gt;]/&lt;dbname&gt;</span><br><span class="line">   </span><br><span class="line">pymysql</span><br><span class="line">    mysql+pymysql://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;/&lt;dbname&gt;[?&lt;options&gt;]</span><br><span class="line">   </span><br><span class="line">MySQL-Connector</span><br><span class="line">    mysql+mysqlconnector://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;[:&lt;port&gt;]/&lt;dbname&gt;</span><br><span class="line">   </span><br><span class="line">cx_Oracle</span><br><span class="line">    oracle+cx_oracle://user:pass@host:port/dbname[?key=value&amp;key=value...]</span><br><span class="line">   </span><br><span class="line">更多详见：http://docs.sqlalchemy.org/en/latest/dialects/index.html</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckno7f9hy005t55jx6u8f8poa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckntqr3o2003fyzjxq3dx3i8k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -165,7 +169,65 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckno7f9hw005o55jxkdwzlqx4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckntqr3r6005syzjxghtqpwyw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>别名设置</li>
+<li>namespace设置</li>
+<li>reverse</li>
+<li>include本质</li>
+</ul>
+<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
+<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
+<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckntqr3r9005xyzjxeeu6bov6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -220,7 +282,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckno7f9ic006h55jx9meblwcb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckntqr3s0006lyzjx40e0r55f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -300,7 +362,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckno7f9hg004t55jxwglf39q1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckntqr3qk004xyzjxgs19m7gp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -360,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckno7f9ha004j55jxyvmgmpld" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckntqr3qb004ryzjx4e1i1knk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -410,7 +472,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckno7f9hd004n55jx4mz94vfh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckntqr3qa004pyzjxg4p5vwqu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -514,7 +576,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckno7f9hf004r55jx3u2zfqnk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckntqr3qj004vyzjxmtnxtyfa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -599,7 +661,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckno7f9hu005l55jx9czjw1wy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckntqr3r4005pyzjxcfxd6fi6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -685,79 +747,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="ckno7f9hb004l55jxiqq6tis4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python-06-01-正则表达式" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/01/python-06-01-正则表达式/" class="article-date">
-  <time datetime="2017-03-01T09:03:01.000Z" itemprop="datePublished">2017-03-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/01/python-06-01-正则表达式/">python-06-01-正则表达式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>基础</li>
-<li>进阶</li>
-<li>re模块</li>
-<li>分组</li>
-<li>切分字符串</li>
-<li>编译compile</li>
-<li>贪婪模式匹配</li>
-</ul>
-<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>元字符：(Meta-Characters)是正则表达式中具有特殊意义的专用字符<br>比如：\d表示数字 \s表示空格 \w表示[a-zA-Z0-9_]大小写字母数字下划线<br>元字符表 <a href="http://www.runoob.com/regexp/regexp-metachar.html" target="_blank" rel="noopener">链接</a><br>字符类：又字符集，一组可以匹配[ ]中字符串的字符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">.                     # 任意单个字符</span><br><span class="line">[]                    # 集合内</span><br><span class="line">[^]                   # 集合内取反</span><br><span class="line">?                     # 表示前一个字符长度为0或1</span><br><span class="line">+                     # 表示前一个字符长度为1或1以上</span><br><span class="line">*                     # 表示前一个字符长度为任意，等同于?+的并集</span><br><span class="line">&#123;m&#125;</span><br><span class="line">&#123;m,n&#125;</span><br><span class="line">&#123;0,n&#125;</span><br><span class="line">&#123;m,&#125;</span><br><span class="line">^</span><br><span class="line">$</span><br><span class="line">pat1|pat2</span><br><span class="line">()         	      # 分组</span><br><span class="line">\b                    # 嘛意思</span><br><span class="line">[0-9]  \d</span><br><span class="line">[0-9a-zA-Z_]  \w</span><br><span class="line">\s         	      # 任意空白字符</span><br><span class="line">\nn</span><br><span class="line">a*?                   # 这里？使用非贪婪模式（正则表达式默认工作在贪婪模式，尽可能多的去匹配）</span><br><span class="line">(*|+|?|&#123;&#125;)?`          # 使用非贪婪模式</span><br><span class="line">match 		      # 只匹配首项以开头的，与shell中^相同</span><br></pre></td></tr></table></figure></p>
-<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><h2 id="re模块"><a href="#re模块" class="headerlink" title="re模块"></a>re模块</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; res = re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</span><br><span class="line">&gt;&gt;&gt; print(res)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;              # 没有匹配到打印为None</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; res.group()                                                 # 匹配到时用.group()取出匹配结果 </span><br><span class="line">&apos;wxq&apos;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; &quot;I love wxq &quot;.find(&apos;wxq&apos;)</span><br><span class="line">7</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;.&apos;, &apos;I love digmyth.com&apos;)                       # 匹配任意单个字符，所以匹配到&quot;I&quot;</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;\.&apos;, &apos;I love digmyth.com&apos;)                      # 只匹配.需要转义</span><br><span class="line">&lt;_sre.SRE_Match object; span=(14, 15), match=&apos;.&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;wx.&apos;, &apos;I love wxq.com&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;wxq&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;\d&apos;, &apos;I love 123 wxq&apos;)                          # 匹配单个数字</span><br><span class="line">&lt;_sre.SRE_Match object; span=(7, 8), match=&apos;1&apos;&gt;</span><br><span class="line"> </span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d&apos;, &apos;I love 123 wxq&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(7, 10), match=&apos;123&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d.\d\d\d.\d\d\d.\d\d\d&apos;, &apos;192.168.100.10&apos;)   # 少一位匹配不到</span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;\d\d\d.\d\d\d.\d\d\d.\d\d\d&apos;, &apos;192.168.100.100&apos;)  # 匹配到</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 15), match=&apos;192.168.100.100&apos;&gt;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; re.search(r&apos;[aeiou]&apos;, &apos;I love wxq&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(3, 4), match=&apos;o&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;[aeiouAEIOU]&apos;, &apos;I love wxq&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;[a-z]&apos;, &apos;I love wxq&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(2, 3), match=&apos;l&apos;&gt;</span><br><span class="line"> </span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;[2-9]&apos;, &apos;I love 123  wxq&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(8, 9), match=&apos;2&apos;&gt;</span><br><span class="line"> </span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;[0-9]&apos;, &apos;I love 123  wxq&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(7, 8), match=&apos;1&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;ab&#123;3&#125;c&apos;, &apos;abbbc&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 5), match=&apos;abbbc&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;ab&#123;3,10&#125;c&apos;, &apos;abbbbbc&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 7), match=&apos;abbbbbc&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;[0-255]&apos;, &apos;188&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;1&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;[0-2][0-5][0-5]&apos;, &apos;188&apos;)                  # 没有匹配到</span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;[01]\d\d|2[0-2]\d|25[0-5]&apos;, &apos;188&apos;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 3), match=&apos;188&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5]\.&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5]))&apos;, &apos;192.168.1.1&apos;)   # 只匹配到192</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 3), match=&apos;192&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5])\.&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;)   # 匹配不到</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;([01]\d\d|2[0-4]\d|25[0-5]\.)&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;)   # 匹配不到</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;(([01]\d\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]\d\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;) # 匹配不到</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]?\d?\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.1.1&apos;) # 匹配有误细看</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 11), match=&apos;192.168.1.1&apos;&gt;</span><br></pre></td></tr></table></figure>
-<p>ip地址匹配最终完美写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;([01]?\d?\d|2[0-4]\d|25[0-5])&apos;, &apos;192.168.240.240&apos;)  # 匹配有误细看</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 14), match=&apos;192.168.240.24&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;(([01]?\d?\d|2[0-4]\d|25[0-5])\.)&#123;3&#125;(2[0-4]\d|25[0-5]|[0-1]?\d?\d)&apos;, &apos;192.168.240.240&apos;) # 这个写法完美</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 15), match=&apos;192.168.240.240&apos;&gt;</span><br></pre></td></tr></table></figure></p>
-<p>[0-255]表示的是0，1，2后跟上55<br>[0-2][0-5][0-5]只是三个占位上的数字，没有个位，百位这样的区分，当然不能匹配188了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;3&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)       # 重复</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 24), match=&apos;daemon_Ddaemon_Ddaemon_D&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;1, 5&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)    # 注意没有空格</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;(daemon_D)&#123;1,5&#125;&apos;, &apos;daemon_Ddaemon_Ddaemon_D&apos;)     # 匹配到了</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 24), match=&apos;daemon_Ddaemon_Ddaemon_D&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; s = &quot;&lt;html&gt;&lt;title&gt;I love www.digmyth.com&lt;/title&gt;&lt;/html&gt;&quot;</span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;&lt;.+?&gt;&apos;, s)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 6), match=&apos;&lt;html&gt;&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; re.search(r&apos;&lt;.+&gt;&apos;, s)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 50), match=&apos;&lt;html&gt;&lt;title&gt;I love www.digmyth.com&lt;/title&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; re.findall(r&apos;\bFishC\b&apos;, &quot;FishC.com!FishC_com!(FishC)&quot;)       # 待续。#^#</span><br><span class="line">[&apos;FishC&apos;, &apos;FishC&apos;]</span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">&gt;&gt;&gt; re.findall(r&apos;\w&apos;, &quot;牛X工作室Love_FishC_com!)&quot;)</span><br><span class="line">[&apos;牛&apos;, &apos;X&apos;, &apos;工&apos;, &apos;作&apos;, &apos;室&apos;, &apos;L&apos;, &apos;o&apos;, &apos;v&apos;, &apos;e&apos;, &apos;_&apos;, &apos;F&apos;, &apos;i&apos;, &apos;s&apos;, &apos;h&apos;, &apos;C&apos;, &apos;_&apos;, &apos;c&apos;, &apos;o&apos;, &apos;m&apos;]</span><br></pre></td></tr></table></figure>
-<p><code>re-replace/sub</code>的例子如下<br>字符串的strip方法只能去前后空格、字符串的replace方法是字符替换、re.sub方法也是替换功能。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; name = &apos; w   x   q&apos;</span><br><span class="line">&gt;&gt;&gt; name.strip()</span><br><span class="line">&apos;w   x   q&apos;</span><br><span class="line">&gt;&gt;&gt; name.replace(&apos; &apos;, &apos;&apos;)</span><br><span class="line">&apos;wxq&apos;</span><br><span class="line">&gt;&gt;&gt; re.sub(&apos; &apos;, &apos;&apos;, name)</span><br><span class="line">&apos;wxq&apos;</span><br><span class="line">&gt;&gt;&gt; re.sub(&apos;wxq&apos;, &apos;love&apos;, &apos;I wxq wxq wxq&apos;, count=2)</span><br><span class="line">&apos;I love love wxq&apos;</span><br></pre></td></tr></table></figure></p>
-<h2 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h2><p>eg1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; name = re.search(r&apos;wxq&apos;, &apos;I love wxq&apos;)</span><br><span class="line">&gt;&gt;&gt; name.group()                       # .group()打印匹配对象</span><br><span class="line">&apos;wxq&apos;</span><br></pre></td></tr></table></figure></p>
-<p>eg2:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; s = &apos;aa bb cc dd  &apos;</span><br><span class="line">&gt;&gt;&gt; p = re.compile(r&apos;\w+\s+\w+&apos;)       #  匹配单词空格单词这样的分组</span><br><span class="line">&gt;&gt;&gt; p.findall(s)                       #  匹配分为了2组</span><br><span class="line">[&apos;aa bb&apos;, &apos;cc dd&apos;]</span><br><span class="line">&gt;&gt;&gt; p = re.compile(r&apos;(\w+)\s+\w+&apos;)     #  只匹配单词空格单词中括号那个单词</span><br><span class="line">&gt;&gt;&gt; p.findall(s)</span><br><span class="line">[&apos;aa&apos;, &apos;cc&apos;]</span><br><span class="line">&gt;&gt;&gt; p = re.compile(r&apos;((\w+)\s+\w+)&apos;)   #  先打印外括号，后打印内括号，先后内容组成元组，最后列表呈现</span><br><span class="line">&gt;&gt;&gt; p.findall(s)</span><br><span class="line">[(&apos;aa bb&apos;, &apos;aa&apos;), (&apos;cc dd&apos;, &apos;cc&apos;)]</span><br></pre></td></tr></table></figure></p>
-<p>eg3:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; re.search(&quot;(?P&lt;province&gt;[0-9]&#123;4&#125;)(?P&lt;city&gt;[0-9]&#123;2&#125;(?P&lt;birthday&gt;[0-9]&#123;4&#125;))&quot;, &quot;371481199306143242&quot;).groupdict()</span><br><span class="line">&#123;&apos;province&apos;: &apos;3714&apos;, &apos;birthday&apos;: &apos;1993&apos;, &apos;city&apos;: &apos;811993&apos;&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="切分字符串"><a href="#切分字符串" class="headerlink" title="切分字符串"></a>切分字符串</h2><p><code>re.split用法</code><br>split 以至少2个空格为分隔,  两种写法:<br>re.split(r’\s{2,}’,  str)<br>re.split(r’\s\s+’，str)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import re</span><br><span class="line">&gt;&gt;&gt; re.split(r&apos;\s&#123;2,&#125;&apos;, &apos;17:19:28 up  2:00,  3 users,  load average: 0.01, 0.03, 0.05&apos;) # 以2个空隔分割字符串返回列表</span><br><span class="line">[&apos;17:19:28 up&apos;, &apos;2:00,&apos;, &apos;3 users,&apos;, &apos;load average: 0.01, 0.03, 0.05&apos;]</span><br><span class="line">&gt;&gt;&gt; re.split(r&apos;\s\s+&apos;, &apos;17:19:28 up  2:00,  3 users,  load average: 0.01, 0.03, 0.05&apos;)</span><br><span class="line">[&apos;17:19:28 up&apos;, &apos;2:00,&apos;, &apos;3 users,&apos;, &apos;load average: 0.01, 0.03, 0.05&apos;]</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># cat whodata.txt</span><br><span class="line"> 17:24:49 up  2:05,  3 users,  load average: 0.00, 0.02, 0.05</span><br><span class="line">USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT</span><br><span class="line">root     pts/1    192.168.109.1    15:33    9.00s  0.17s  0.04s python3</span><br><span class="line">&gt;&gt;&gt; import re</span><br><span class="line">&gt;&gt;&gt; with open(&apos;whodata.txt&apos;, &apos;r&apos;) as f:</span><br><span class="line">...     for line in f:</span><br><span class="line">...         res = re.split(&apos;\s\s+&apos;, line)</span><br><span class="line">...         print(res)</span><br><span class="line">... </span><br><span class="line">[&apos; 17:24:49 up&apos;, &apos;2:05,&apos;, &apos;3 users,&apos;, &apos;load average: 0.00, 0.02, 0.05\n&apos;]</span><br><span class="line">[&apos;USER&apos;, &apos;TTY&apos;, &apos;FROM&apos;, &apos;LOGIN@&apos;, &apos;IDLE&apos;, &apos;JCPU&apos;, &apos;PCPU WHAT\n&apos;]</span><br><span class="line">[&apos;root&apos;, &apos;pts/1&apos;, &apos;192.168.109.1&apos;, &apos;15:33&apos;, &apos;9.00s&apos;, &apos;0.17s&apos;, &apos;0.04s python3\n&apos;]</span><br></pre></td></tr></table></figure>
-<p>eg1:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; re.sub(&apos; &apos;, &apos;&apos;, name)</span><br><span class="line">&apos;wxq&apos;</span><br><span class="line">&gt;&gt;&gt; p = re.compile(&apos;\.&apos;)</span><br><span class="line">&gt;&gt;&gt; p.split(&apos;www.digmyth.com&apos;)</span><br><span class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</span><br><span class="line">&gt;&gt;&gt; url = &apos;www.digmyth.com&apos;</span><br><span class="line">&gt;&gt;&gt; re.compile(&apos;\.&apos;).split(url)</span><br><span class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</span><br><span class="line">&gt;&gt;&gt; re.sub(&apos;www&apos;, &apos;mail&apos;, url)</span><br><span class="line">&apos;mail.digmyth.com&apos;</span><br><span class="line">&gt;&gt;&gt; url.split(&apos;.&apos;)</span><br><span class="line">[&apos;www&apos;, &apos;digmyth&apos;, &apos;com&apos;]</span><br></pre></td></tr></table></figure></p>
-<p>eg2:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import re</span><br><span class="line">&gt;&gt;&gt; name = &apos;hello    world&apos;</span><br><span class="line">&gt;&gt;&gt; str_a, str_b = re.split(r&apos;\s+&apos;, name)</span><br><span class="line">&gt;&gt;&gt; str_a, str_b</span><br><span class="line">(&apos;hello&apos;, &apos;world&apos;)</span><br><span class="line">&gt;&gt;&gt; str_a</span><br><span class="line">&apos;hello&apos;</span><br><span class="line">&gt;&gt;&gt; str_b</span><br><span class="line">&apos;world&apos;</span><br></pre></td></tr></table></figure></p>
-<p>eg3:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat put_split.py </span><br><span class="line">#!/usr/bin/env python3</span><br><span class="line">import os</span><br><span class="line">import re</span><br><span class="line">input = input(&quot;enter you str: &quot;).strip()</span><br><span class="line">cmd, path = re.split(r&apos;\s+&apos;, input)</span><br><span class="line">print(cmd.strip())</span><br><span class="line">print(path.strip())</span><br><span class="line">root@ubuntu:~# python3 put_split.py </span><br><span class="line">enter you str:    put /root/demo.txt</span><br><span class="line">put</span><br><span class="line">/root/demo.txt</span><br></pre></td></tr></table></figure></p>
-<h2 id="编译compile"><a href="#编译compile" class="headerlink" title="编译compile"></a>编译compile</h2><p>正则表达式工作流程： 检测语法–&gt; 编译–&gt; 匹配<br>当一个正则表达式多次调用时，建议预先编译好，后续直接用于匹配以提高效率</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; p = re.compile(r&apos;[A-Z]&apos;)</span><br><span class="line">&gt;&gt;&gt; type(p)</span><br><span class="line">&lt;class &apos;_sre.SRE_Pattern&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; p.search(&quot;I Love www.DigMyth.Com&quot;)</span><br><span class="line">&lt;_sre.SRE_Match object; span=(0, 1), match=&apos;I&apos;&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; p.findall(&quot;I LLove www.DigMyth.Com&quot;)</span><br><span class="line">[&apos;I&apos;, &apos;L&apos;, &apos;L&apos;, &apos;D&apos;, &apos;M&apos;, &apos;C&apos;]</span><br></pre></td></tr></table></figure>
-<h2 id="贪婪模式匹配"><a href="#贪婪模式匹配" class="headerlink" title="贪婪模式匹配"></a>贪婪模式匹配</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="ckno7f9h6004f55jxk9dw9pbl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="ckntqr3qh004tyzjxg8uaktu2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -815,6 +805,10 @@
           </li>
         
           <li>
+            <a href="/2021/02/21/kubernetes-gitlab-jenkins-CI/">k8s基于GitlabJenkinsCICD实现</a>
+          </li>
+        
+          <li>
             <a href="/2021/02/13/kubernetes-calico-bug/">calico bug</a>
           </li>
         
@@ -824,10 +818,6 @@
         
           <li>
             <a href="/2021/01/15/kubernetes-dashboard/">kubernetes dashboard</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/12/kubernetes-ingress/">kubernetes ingress进阶</a>
           </li>
         
       </ul>
