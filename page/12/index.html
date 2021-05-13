@@ -62,6 +62,77 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-03-01-IO" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/20/python-03-01-IO/" class="article-date">
+  <time datetime="2017-01-19T18:12:36.000Z" itemprop="datePublished">2017-01-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/20/python-03-01-IO/">python-03-01-IO</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>文件对象</li>
+<li>OS 对象</li>
+</ul>
+<h2 id="IO-编程"><a href="#IO-编程" class="headerlink" title="IO 编程"></a>IO 编程</h2><h3 id="文件对象"><a href="#文件对象" class="headerlink" title="文件对象"></a>文件对象</h3><p>文件对象用于访问系统文件的接口，文件系统是计算机存储数据，组织数据的方式。<br>计算机文件是存储在设备中的一段数据流，归属于文件系统管理之下。是计算机中由<code>OS</code>管理的具有名字的存储区域，对Linux而言，文件可以被看作字节序列。</p>
+<p>序列化的对象才能存储的文件系统中，非字节序列化的数据不能存储在文件系统中的。</p>
+<p>文件对象接口不仅用于访问普通文件，还可以访问套接字文件，管道文件。<br>在Python中，文件读写是通过open()函数打开的文件对象完成的。使用with语句操作文件IO是个好习惯。</p>
+<p>open(name[,mode[,bufsize]]) 返回的是一个文件对象。这里三个参数分别表示文件名，文件打开模式和缓冲区大小</p>
+<p>bufsize:定义输出缓存<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0 表示无输出缓存,禁用缓冲</span><br><span class="line">1 表示使用缓冲，只缓冲一行数据</span><br><span class="line">负数表示使用系统默认设置</span><br><span class="line">2+之后的正数表示使用指定大小缓冲</span><br></pre></td></tr></table></figure></p>
+<p>open(‘/var/log/message’, ‘r’)<br>简单模式，首次打开的文件指针于文件首部<br>r:  只读<br>w:  新建文件或文件首部覆盖写入。<br>a: 尾部追加，即打开时指针处于文件尾部</p>
+<p>在模式后使用<code>+</code>表示同时支输入输出操作<br><code>r+</code>  <code>w+</code> <code>a+</code></p>
+<p>在模式后附加    <code>b</code> 表示二进制方式打开<br><code>rb</code> <code>wb+</code></p>
+<p>创建一个文件对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; f = open(&apos;/etc/fstab&apos;, &apos;r&apos;)</span><br><span class="line">In [3]: type(f)</span><br><span class="line">Out[3]: _io.TextIOWrapper</span><br></pre></td></tr></table></figure></p>
+<p>只读模式打开一个不存在文件是不可以的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">In [1]: f = open(&apos;/tmp/abc&apos;, &apos;r&apos;)</span><br><span class="line">---------------------------------------------------------------------------</span><br><span class="line">FileNotFoundError                         Traceback (most recent call last)</span><br><span class="line">&lt;ipython-input-1-07bb2dbd474f&gt; in &lt;module&gt;()</span><br><span class="line">----&gt; 1 f = open(&apos;/tmp/abc&apos;, &apos;r&apos;)</span><br><span class="line"></span><br><span class="line">FileNotFoundError: [Errno 2] No such file or directory: &apos;/tmp/abc&apos;</span><br></pre></td></tr></table></figure></p>
+<p>以写模式打开一个不存在文件，这个文件会自动被创建<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">In [3]: import os</span><br><span class="line">In [7]: os.path.isfile(&apos;/tmp/f1&apos;)</span><br><span class="line">Out[7]: False</span><br><span class="line"></span><br><span class="line">In [8]: f = open(&apos;/tmp/f1&apos;, &apos;w+&apos;)</span><br><span class="line"></span><br><span class="line">In [9]: os.path.isfile(&apos;/tmp/f1&apos;)</span><br><span class="line">Out[9]: True</span><br></pre></td></tr></table></figure></p>
+<p>查看一个文件的描述符，描述符是一个很小的数字表示，0表示标准输入，1表示标准输出，2表示标准错误输出它们所使用的描述符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In [20]: f.fileno()</span><br><span class="line">Out[20]: 8</span><br></pre></td></tr></table></figure></p>
+<p>f.readline()   读文件一行数据<br>f.readlines()  读文件指针处至尾部所有数据包括行结束符\n，一行为一个对象，然后多行多个对象组成一个列表</p>
+<p>返回指针在当前文件中的位置，表示在多少个字节的位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In [23]: f.tell()</span><br><span class="line">Out[23]: 597</span><br></pre></td></tr></table></figure></p>
+<p> f.seek(offset, whence)  offset:表示偏移多少个字节，whence表示从 多少节字数开始偏移。下面表示回到文件首部：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In [37]: f.seek(0)</span><br><span class="line">Out[37]: 0</span><br></pre></td></tr></table></figure></p>
+<p>f.read()   读取给定字节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">In [44]: f.seek(0)</span><br><span class="line">Out[44]: 0</span><br><span class="line">In [45]: f.read(10)</span><br><span class="line">Out[45]: &apos;# /etc/fst&apos;</span><br><span class="line">In [46]: f.tell()</span><br><span class="line">Out[46]: 10</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">In [57]: f = open(&apos;/etc/fstab&apos;, &apos;r&apos;)</span><br><span class="line">In [58]: f.name                   #返回文件名</span><br><span class="line">Out[58]: &apos;/etc/fstab&apos;</span><br><span class="line"></span><br><span class="line">In [59]: f.closed       #返回是否关闭文件</span><br><span class="line">Out[59]: False</span><br><span class="line"></span><br><span class="line">In [60]: f.close()      #关闭文件</span><br><span class="line">In [61]: f.closed</span><br><span class="line">Out[61]: True</span><br></pre></td></tr></table></figure>
+<p>操作完毕会自动关闭文件对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">with  open(&apos;/root/wxq.txt&apos;,&apos;w+&apos;) as  f:</span><br><span class="line">      f.write(&apos;hello world!\n&apos;)</span><br></pre></td></tr></table></figure></p>
+<h3 id="OS-对象"><a href="#OS-对象" class="headerlink" title="OS 对象"></a>OS 对象</h3><p>一些方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">os.path   跟文件路径相关</span><br><span class="line">	basename()      路径基名</span><br><span class="line">	dirname()       路径目录名</span><br><span class="line"> 	join()</span><br><span class="line">	split()		返回dirname(), basename()元组</span><br><span class="line">	splitext()	返回(filename, extension_name)元组</span><br><span class="line">	</span><br><span class="line">信息：</span><br><span class="line">	getatime()</span><br><span class="line">	getctime()</span><br><span class="line">	getmtime()</span><br><span class="line">	getsize()	获取文件大小</span><br><span class="line"></span><br><span class="line">查询：</span><br><span class="line"> 	exists()	指定文件是否存在</span><br><span class="line">	isabs()		指定路径是否为绝对路径</span><br><span class="line">	isdir()		是否为目录</span><br><span class="line">	isfile()	是否为文件</span><br><span class="line">	islink()	是否为符号链接</span><br><span class="line">	ismount()	是否为挂载点</span><br><span class="line">	samefile()	两个路径是否指向了同一个文件</span><br></pre></td></tr></table></figure></p>
+<p><code>__file__</code>属性</p>
+<p>在上面的glabals()中有一个<strong>file</strong>属性，其中保存的是程序运行的相对路径，<br>如python3 ../py3_training/test/yy.py，则路径为../py3_training/test/yy.py<br>在pycharm中为什么又变成了绝对路径了呢，不要认为是pycharm做了封装，是因为pycharm运行路径永远从c:\开始，这样看不出效果</p>
+<p>要获取程序绝对路径os.path.abspath(<strong>file</strong>)<br>应用举例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">import sys</span><br><span class="line">base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))</span><br><span class="line">print(base_dir)</span><br><span class="line">sys.path.append(base_dir)</span><br><span class="line"></span><br><span class="line">from core import main</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main.run()</span><br></pre></td></tr></table></figure></p>
+<p>来几个小练习，似乎参悟了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import os</span><br><span class="line">&gt;&gt;&gt; os.path.split(&apos;/root/wxq.txt&apos;)</span><br><span class="line">(&apos;/root&apos;, &apos;wxq.txt&apos;)</span><br><span class="line">&gt;&gt;&gt; os.path.splitext(&apos;/root/wxq.txt&apos;)</span><br><span class="line">(&apos;/root/wxq&apos;, &apos;.txt&apos;)</span><br><span class="line">&gt;&gt;&gt; os.path.dirname(&apos;/root/wxq.txt&apos;)</span><br><span class="line">&apos;/root&apos;</span><br><span class="line">&gt;&gt;&gt; os.path.basename(&apos;/root/wxq.txt&apos;)</span><br><span class="line">&apos;wxq.txt&apos;</span><br><span class="line">&gt;&gt;&gt; dir, file_name = os.path.split(&apos;/root/wxq.txt&apos;)</span><br><span class="line">&gt;&gt;&gt; dir</span><br><span class="line">&apos;/root&apos;</span><br><span class="line">&gt;&gt;&gt; file_name</span><br><span class="line">&apos;wxq.txt&apos;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ckomge14200491xjxlwwi972y" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-python-02-流程控制_枚举" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/01/15/python-02-流程控制_枚举/" class="article-date">
@@ -116,7 +187,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="ckocd4yjk00451vjxnsttscuc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="ckomge13z00471xjxy93tqogy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -187,7 +258,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="ckocd4yjj00431vjxodyu71hf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="ckomge13v00451xjx3u61zuaa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -324,7 +395,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="ckocd4yjg00411vjxwszi38jy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="ckomge13t00431xjxsh29b2p2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -369,7 +440,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ckocd4ygm000d1vjxdpviuyl8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ckomge0zs000d1xjxofc5owhv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -416,7 +487,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="ckocd4yh600111vjx914qvi8q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="ckomge10f00111xjxhrq35vro" class="article-share-link">Share</a>
       
       
     </footer>
@@ -468,7 +539,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ckocd4yl8006w1vjxeny9vm5e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/为什么写博客/" data-id="ckomge16v00741xjxicbnx67e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -509,7 +580,7 @@ Age_of_name = &quot;xx&quot;  #类名
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -520,6 +591,10 @@ Age_of_name = &quot;xx&quot;  #类名
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/12/31/kubernetes-ubuntu-docker/">Ubuntu20.04 TLS install k8s for docker runc</a>
+          </li>
         
           <li>
             <a href="/2021/03/15/linux-sysctl/">sysctl TCP优化</a>
@@ -535,10 +610,6 @@ Age_of_name = &quot;xx&quot;  #类名
         
           <li>
             <a href="/2021/01/25/prometheus-01/">prometheus</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/15/kubernetes-dashboard/">kubernetes dashboard</a>
           </li>
         
       </ul>
