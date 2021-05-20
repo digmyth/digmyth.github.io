@@ -62,6 +62,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-dmesg" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/16/linux-dmesg/" class="article-date">
+  <time datetime="2018-08-16T01:42:54.000Z" itemprop="datePublished">2018-08-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/16/linux-dmesg/">linux dmesg时间戳换算</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>dmesg系统内核里的时间戳转换为人类可以看懂的时间</p>
+<p>dmesg记录的是自系统开机那刻到出事故时的时间戳</p>
+<p>开机时间戳=当时时间戳-机器运行时间戳<br>dmesg_time=开机时间戳+ dmesg记录时间戳<br>再拿着dmesg_time时间戳换算就好了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">dmesg_time=`echo &quot;$(date +%s) - $(cat /proc/uptime | cut -f 1 -d&apos; &apos;) + 84679.822059&quot; | bc`</span><br><span class="line"></span><br><span class="line">echo $dmesg_time</span><br><span class="line"></span><br><span class="line">/proc/uptime 第一列表示为系统开机时间，根据这个值和当前时间可以获取到dmesg日志中时间发生的时间</span><br><span class="line"></span><br><span class="line">时间戳的转换为时间</span><br><span class="line">[root@site1 ~]# date -d &quot;@$&#123;dmesg_time&#125;&quot; &apos;+%Y-%m-%d %H:%M:%S&apos;</span><br><span class="line">2019-01-03 11:10:54</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="ckowhwl9g002dyhjxqyg0m03w" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-cinder-vol-多后端" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/08/08/cinder-vol-多后端/" class="article-date">
@@ -94,7 +141,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckoo2mrkt000zzyjxtmrncsod" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckowhwl7p000qyhjxduergup8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -142,7 +189,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckoo2mrk30005zyjxk19fs3zw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckowhwl7e000dyhjxyvx0ginz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -192,50 +239,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckoo2mrk70008zyjxhvexhv90" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Openshift/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckoo2mrka000bzyjxu6co4l92" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckowhwl6x0001yhjxnx52uatk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -283,7 +287,50 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckoo2mrjp0000zyjx7rr9ye2e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckowhwl710003yhjxg3uo21jm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Openshift/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckowhwl750005yhjxhwwigel8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -331,7 +378,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckoo2mrmj003hzyjxyevx1rnu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckowhwlbl003iyhjxcliw1lr3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -380,7 +427,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckoo2mrnd004tzyjxp511kukz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckowhwlcw004qyhjxicm2mik5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -428,7 +475,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckoo2mrkg000fzyjxh1c85o56" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckowhwl7a0008yhjx2l5jb7b1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -474,51 +521,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ckoo2mrnk0058zyjxized6m9d" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-shell-get-namespace" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/01/29/shell-get-namespace/" class="article-date">
-  <time datetime="2018-01-29T01:41:54.000Z" itemprop="datePublished">2018-01-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Shell/">Shell</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/29/shell-get-namespace/">get namespace</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="get-namespace-shell"><a href="#get-namespace-shell" class="headerlink" title="get namespace shell"></a>get namespace shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># read me :please mv this file to ns;use method #ns info</span><br><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line">echo_print () &#123;</span><br><span class="line">        echo -e &quot;\033[32m$1\033[0m&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">nsinfo () &#123;</span><br><span class="line">for i in $(ip netns);do echo_print $i;ip netns exec $i ifconfig | grep &quot;inet addr:10&quot; |awk &apos;$1=$1&apos;;echo &apos;&apos; ;done</span><br><span class="line">&#125;</span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">info)</span><br><span class="line">	nsinfo</span><br><span class="line">	;;</span><br><span class="line">*)</span><br><span class="line">	echo_print &quot;Usage: ns info command&quot;</span><br><span class="line">	;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="ckoo2mrnl005azyjxrfd1j05l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ckowhwld30053yhjxi6q5aqv6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -576,6 +579,10 @@
           </li>
         
           <li>
+            <a href="/2021/03/25/consul-01/">prometheus</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/15/linux-sysctl/">sysctl TCP优化</a>
           </li>
         
@@ -585,10 +592,6 @@
         
           <li>
             <a href="/2021/02/13/kubernetes-calico-bug/">calico bug</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/25/prometheus-01/">prometheus</a>
           </li>
         
       </ul>

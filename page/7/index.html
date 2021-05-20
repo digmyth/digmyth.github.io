@@ -62,6 +62,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-21-图片上传" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/21/web-django-21-图片上传/" class="article-date">
+  <time datetime="2017-11-21T12:26:37.000Z" itemprop="datePublished">2017-11-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/21/web-django-21-图片上传/">web-Django-21-图片上传</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>上传文件版本一</li>
+<li>上传文件版本二</li>
+<li>上传文件版本三</li>
+</ul>
+<h2 id="上传文件版本一"><a href="#上传文件版本一" class="headerlink" title="上传文件版本一"></a>上传文件版本一</h2><p>定义views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">def upload(request):</span><br><span class="line">    if request.method==&quot;GET&quot;:</span><br><span class="line">        return render(request,&quot;upload.html&quot;)</span><br><span class="line">    else:</span><br><span class="line">        obj=request.FILES.get(&quot;fff&quot;)</span><br><span class="line">        # obj.name 文件名</span><br><span class="line">        # obj.chunks 文件块</span><br><span class="line">        f = open(obj.name,&apos;wb&apos;)</span><br><span class="line">        for chunk in obj.chunks():</span><br><span class="line">            f.write(chunk)</span><br><span class="line">        f.close()</span><br><span class="line">        return render(request,&quot;upload.html&quot;)</span><br></pre></td></tr></table></figure></p>
+<p>upload.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action=&quot;/upload/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;</span><br><span class="line">    &#123;%  csrf_token %&#125;</span><br><span class="line">    &lt;p&gt;&lt;input type=&quot;file&quot; name=&quot;fff&quot;/&gt;&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot;提交&quot;/&gt;&lt;/p&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="上传文件版本二"><a href="#上传文件版本二" class="headerlink" title="上传文件版本二"></a>上传文件版本二</h2><p>版本一中form表单上传文件或图片无法做预览，并无法做失败验证及上传文件大小限制，那么就要用到ajax 方式发送。下面学习下ajax方式上传文件。<br>定义views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">def upload(request):</span><br><span class="line">    if request.method==&quot;GET&quot;:</span><br><span class="line">        return render(request,&quot;upload.html&quot;)</span><br><span class="line">    elif request.is_ajax():</span><br><span class="line">        file_obj= request.FILES.get(&apos;obj&apos;)</span><br><span class="line">        print(obj)</span><br><span class="line">        f = open(file_obj.name, &apos;wb&apos;)</span><br><span class="line">        for chunk in file_obj.chunks():</span><br><span class="line">            f.write(chunk)</span><br><span class="line">        f.close()</span><br><span class="line">        return HttpResponse(&quot;ok&quot;)</span><br><span class="line">    else:</span><br><span class="line">		pass</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1&gt;ajax形式上传文件&lt;/h1&gt;</span><br><span class="line">&lt;input type=&quot;file&quot; id=&quot;f4&quot;/&gt;</span><br><span class="line">&lt;input type=&quot;button&quot; value=&quot;提交&quot; id=&quot;btn&quot;&gt; #input的button默认不会有任何事件，除非绑定事件</span><br><span class="line">&#123;% csrf_token %&#125;</span><br><span class="line">&lt;script src=&quot;/static/jquery-1.12.4.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">    $(function () &#123;</span><br><span class="line">        $(&quot;#btn&quot;).click(function () &#123;</span><br><span class="line">            var fm=new FormData();</span><br><span class="line">            fm.append(&apos;obj&apos;,$(&quot;#f4&quot;)[0].files[0]);</span><br><span class="line">            fm.append(&apos;csrfmiddlewaretoken&apos;,$.cookie(&apos;csrftoken&apos;));     //自行组数据$(&quot;input[name=&apos;csrfmiddlewaretoken&apos;]&quot;).val());</span><br><span class="line">           // fm.append(&apos;file_obj&apos;,document.getElementById(&quot;f4&quot;).files[0]);</span><br><span class="line">            //document.getElementById(&quot;f4&quot;)  # dom对象</span><br><span class="line">            // $(&quot;#f4&quot;)                     # jquery对象</span><br><span class="line">            // $(&quot;#f4&quot;)[0]                  #jquery对象转dom对象</span><br><span class="line">            $.ajax(&#123;</span><br><span class="line">                url:&apos;/upload/&apos;,</span><br><span class="line">                type:&apos;POST&apos;,</span><br><span class="line">                data:fm,</span><br><span class="line">                processData: false,</span><br><span class="line">                contentType: false,</span><br><span class="line">                success:function (data) &#123;</span><br><span class="line">                    console.log(data);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="上传文件版本三"><a href="#上传文件版本三" class="headerlink" title="上传文件版本三"></a>上传文件版本三</h2><p>版本二中对各种浏览器兼容不好，可以再次改进. 利用form+iframe特性做的，业内都是这么做的，很重要，兼容性非常好。形式上与ajax很像但不是ajax,称伪ajax,后端不能用request.is_ajax()判断请求方式。<br>不得不先来学习下iframe标签<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;iframe id=&quot;ifm&quot; src=&quot;http://www.chouti.com&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">$(&quot;#ifm&quot;).attr(&apos;src&apos;, &apos;http://www.qq.com&apos;)  # 修改iframe src属性但页面不刷新，返回的数据不在整个页面，而在iframe body里，基于这样的特性我们可以上传文件。</span><br></pre></td></tr></table></figure></p>
+<p>当form表单以iframe形式发送数据到后端，后端返回的数据会在iframe body里<br>form 的target属性值要与iframe的name属性值保持一致。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form  id=&quot;ff1&quot; action=&quot;/upload/&quot; method=&quot;POST&quot; enctype=&quot;multipart/form-data&quot; target=&quot;ifr&quot;&gt;</span><br><span class="line">    &lt;p&gt;&lt;input   onchange=&quot;changeImg();&quot; type=&quot;file&quot; name=&quot;fff&quot;/&gt;&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;&lt;input id=&quot;sb&quot; type=&quot;submit&quot; value=&quot;提交&quot;/&gt;&lt;/p&gt; </span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;iframe id=&quot;ifm&quot;  name=&quot;ifr&quot; onload=&quot;sucessBack();&quot; &gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure></p>
+<p>那么如何取出iframe body里的值呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(&quot;#ifm&quot;).html();  # iframe会重新生成一个子document,有html/head/body,这种方法无法取出。</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(&quot;#ifm&quot;).find(&apos;body&apos;).html(); # 有这种想法是好的，这种找只会在当前document里找，但是这样的document嵌套递归查找需要一个额外方法处理.contents()后再查找</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(&quot;#ifm&quot;).contents().find(&apos;body&apos;).html();   # iframe最终正确的方法</span><br></pre></td></tr></table></figure>
+<p>文件上传完整版<br>utils.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class BaseResponse():</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.status=False</span><br><span class="line">        self.data=None</span><br><span class="line">        self.error=None</span><br></pre></td></tr></table></figure></p>
+<p>views.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">from django.shortcuts import render,HttpResponse,redirect</span><br><span class="line">import os,json</span><br><span class="line">from utils import BaseResponse</span><br><span class="line">ret=BaseResponse()</span><br><span class="line">def upload(request):</span><br><span class="line">    if request.method == &quot;GET&quot;:</span><br><span class="line">        return render(request, &quot;upload.html&quot;)</span><br><span class="line">    else:</span><br><span class="line">        try:</span><br><span class="line">            file_obj=request.FILES.get(&apos;fff&apos;)</span><br><span class="line">            # file_obj.name  # file name</span><br><span class="line">            # file_obj.chunks() #file block</span><br><span class="line">            file_path = os.path.join(&apos;static&apos;, file_obj.name)</span><br><span class="line">            with open(file_path,&apos;wb&apos;) as f:</span><br><span class="line">                for chunk in file_obj.chunks():</span><br><span class="line">                    f.write(chunk)</span><br><span class="line">            ret.status=True</span><br><span class="line">            ret.data=file_path</span><br><span class="line">        except Exception as e:</span><br><span class="line">            ret.error=&quot;上传失败&quot;</span><br><span class="line">        return  HttpResponse(json.dumps(ret.__dict__,ensure_ascii=False))</span><br></pre></td></tr></table></figure></p>
+<p>upload.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;form id=&quot;sb&quot; action=&quot;/upload/&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; target=&quot;ifr&quot;&gt;</span><br><span class="line">    &#123;% csrf_token %&#125;</span><br><span class="line">   &lt;input type=&quot;file&quot;  name=&quot;fff&quot; onchange=&quot;changeImg();&quot;/&gt;</span><br><span class="line">   &lt;!-- 元素更新时触发onchange事件  --&gt;</span><br><span class="line">&#123;#    &lt;input type=&quot;submit&quot;&gt;#&#125;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"></span><br><span class="line">&lt;iframe  id=&quot;ifr&quot; name=&quot;ifr&quot;  onload=&quot;successBack();&quot; style=&quot;display: none&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;div id=&quot;prevImg&quot;&gt;&lt;/div&gt;</span><br><span class="line">&lt;!-- 我们这里不是真正的ajax,是没有success回调函数的,上传成功后会返回数据到前端，文本载入会触发onload事件。 --&gt;</span><br><span class="line"></span><br><span class="line">&lt;script src=&quot;/static/jquery-1.12.4.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script src=&quot;/static/jquery.cookie.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    function successBack() &#123;</span><br><span class="line">        var v=$(&quot;#ifr&quot;).contents().find(&quot;body&quot;).html();</span><br><span class="line">        var v=JSON.parse(v);</span><br><span class="line">        if(v.status)&#123;</span><br><span class="line">             var tag=document.createElement(&apos;img&apos;);</span><br><span class="line">            tag.src=&quot;/&quot;+v.data;</span><br><span class="line">            $(&quot;#prevImg&quot;).append(tag);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            console.log(v.error)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    function changeImg() &#123;</span><br><span class="line">       $(&quot;#sb&quot;)[0].submit();</span><br><span class="line">      //  document.getElementById(&apos;sb&apos;).submit();</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="ckowhwldn0063yhjxhdv9jjes" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-20-ajax" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/20/web-django-20-ajax/" class="article-date">
@@ -116,7 +177,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="ckoo2mro20069zyjxm9eedsno" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="ckowhwldp0067yhjx7emhokur" class="article-share-link">Share</a>
       
       
     </footer>
@@ -175,7 +236,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="ckoo2mrlu002jzyjxedto2xwk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="ckowhwl9h002fyhjxvo9gwiv2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -231,7 +292,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="ckoo2mrkx0015zyjx5b6g6aju" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="ckowhwl7x0015yhjx525s3z78" class="article-share-link">Share</a>
       
       
     </footer>
@@ -303,7 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="ckoo2mrl2001dzyjx5m2yoagw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="ckowhwl82001ayhjxp8knqvfd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -398,7 +459,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="ckoo2mrmh003ezyjxscrotf7v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="ckowhwlbt003oyhjxvuzpru1c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -451,7 +512,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="ckoo2mro4006dzyjxdua97l9n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="ckowhwldr0069yhjx62scz59o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -521,7 +582,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="ckoo2mrmg003czyjxpk9xq9d3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="ckowhwlbd003cyhjxxwjhh2zi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -575,7 +636,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="ckoo2mrko000pzyjx4wef5hvb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="ckowhwl7o000nyhjxczdf0mh0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -623,56 +684,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="ckoo2mrmx0040zyjx59f3yxtg" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-shellinabox" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/31/linux-shellinabox/" class="article-date">
-  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/31/linux-shellinabox/">webssh-shellinabox</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>利用http/https协议网页连接linux服务器，Webssh中最简单最方便的一种,还有GateOne/原生webssh</p>
-<p>yum安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install shellinabox -y</span><br></pre></td></tr></table></figure></p>
-<p>查看安装文件，主要是主题相关，可以根据其位置自定义主题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">rpm  -ql  shellinabox</span><br><span class="line">/etc/sysconfig/shellinaboxd</span><br><span class="line">/usr/lib/systemd/system/shellinaboxd.service</span><br><span class="line">/usr/sbin/shellinaboxd</span><br><span class="line">/usr/share/doc/shellinabox-2.20</span><br><span class="line">/usr/share/doc/shellinabox-2.20/AUTHORS</span><br><span class="line">/usr/share/doc/shellinabox-2.20/NEWS</span><br><span class="line">/usr/share/doc/shellinabox-2.20/README</span><br><span class="line">/usr/share/doc/shellinabox-2.20/README.Fedora</span><br><span class="line">/usr/share/doc/shellinabox-2.20/print-styles.css</span><br><span class="line">/usr/share/doc/shellinabox-2.20/shell_in_a_box.js</span><br><span class="line">/usr/share/doc/shellinabox-2.20/styles.css</span><br><span class="line">/usr/share/man/man1/shellinaboxd.1.gz</span><br><span class="line">/usr/share/shellinabox</span><br><span class="line">/usr/share/shellinabox/color.css</span><br><span class="line">/usr/share/shellinabox/monochrome.css</span><br><span class="line">/usr/share/shellinabox/white-on-black.css</span><br><span class="line">/var/lib/shellinabox</span><br></pre></td></tr></table></figure></p>
-<p>编辑配置文件/etc/sysconfig/shellinaboxd<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">OPTS=&quot;--css=/usr/share/shellinabox/white-on-black.css --disable-ssl-menu -s /:SSH:192.168.1.244&quot;</span><br></pre></td></tr></table></figure></p>
-<p>启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable shellinaboxd.service</span><br><span class="line">systemctl start shellinaboxd.service</span><br></pre></td></tr></table></figure></p>
-<p>网页登录服务器 <a href="https://192.168.1.244:4200" target="_blank" rel="noopener">https://192.168.1.244:4200</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="ckoo2mrly002pzyjx89ybjlm0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="ckowhwlc4003yyhjxarfjfhtg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -730,6 +742,10 @@
           </li>
         
           <li>
+            <a href="/2021/03/25/consul-01/">prometheus</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/15/linux-sysctl/">sysctl TCP优化</a>
           </li>
         
@@ -739,10 +755,6 @@
         
           <li>
             <a href="/2021/02/13/kubernetes-calico-bug/">calico bug</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/25/prometheus-01/">prometheus</a>
           </li>
         
       </ul>
