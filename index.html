@@ -102,7 +102,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckqacwgh6003kyrjxb5c1kz3o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckqaqsgbo003jyxjx8qpx7032" class="article-share-link">Share</a>
       
       
     </footer>
@@ -157,7 +157,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckqacwgh2003hyrjxsoka5s1y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckqaqsgbl003gyxjxraas7d2m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -205,7 +205,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckqacwgfh0020yrjxn1nd285p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckqaqsga50022yxjx15oyu0hn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -253,7 +253,54 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckqacwgeh000uyrjxfjktzhq0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckqaqsg8w0011yxjxt5s5q4y1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-kafak-cluster" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/03/15/linux-kafak-cluster/" class="article-date">
+  <time datetime="2021-03-15T02:48:54.000Z" itemprop="datePublished">2021-03-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/15/linux-kafak-cluster/">zookeeper kafka集群</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>kafka集群依赖zookeeper运行，新版本不依赖zookeeper，但不具备生产环境使用条件</p>
+<p>zookeeper集群部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">https://zookeeper.apache.org/releases.html</span><br><span class="line"></span><br><span class="line">https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">edit conf/zoo.cfg</span><br><span class="line">tickTime=2000</span><br><span class="line">dataDir=/var/lib/zookeeper</span><br><span class="line">clientPort=2181</span><br><span class="line">initLimit=5</span><br><span class="line">syncLimit=2</span><br><span class="line">server.1=zoo1:2888:3888</span><br><span class="line">server.2=zoo2:2888:3888</span><br><span class="line">server.3=zoo3:2888:3888</span><br><span class="line"></span><br><span class="line">./bin/zkServer.sh start conf/zoo.cfg</span><br></pre></td></tr></table></figure></p>
+<p>kafka集群部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">https://kafka.apache.org/documentation</span><br><span class="line"></span><br><span class="line">https://www.apache.org/dyn/closer.cgi?path=/kafka/2.8.0/kafka_2.13-2.8.0.tgz</span><br><span class="line"></span><br><span class="line">tar -xf  kafka_2.13-2.8.0.tgz</span><br><span class="line">cd kafka_2.13-2.8.0</span><br><span class="line">cat config/server.properties</span><br><span class="line">broker.id=0 # 每节点不同</span><br><span class="line">zookeeper.connect=10.17.100.10:2181,10.17.100.20:2181,10.17.100.30:2181 # 相同配置</span><br><span class="line">./bin/kafka-server-start.sh  config/server.properties</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>先写下</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckqaqsgan002iyxjxznb08c4w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -304,7 +351,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckqacwgfl0024yrjx3fddkqtz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckqaqsgag002cyxjxxtn9z3wh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -359,7 +406,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckqacwggd002uyrjxfs6tm2yi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckqaqsgb1002wyxjxe7q823s0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -407,7 +454,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckqacwgfa001uyrjxkxj06vcb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckqaqsg9n001syxjxvo2bpvsm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -455,7 +502,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckqacwgey001iyrjxou715dhp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckqaqsg9b001fyxjxl1gmdl10" class="article-share-link">Share</a>
       
       
     </footer>
@@ -503,69 +550,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckqacwghv0047yrjxr4e3meqv" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-kubernetes-dashboard" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/01/15/kubernetes-dashboard/" class="article-date">
-  <time datetime="2021-01-15T12:51:41.000Z" itemprop="datePublished">2021-01-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/01/15/kubernetes-dashboard/">kubernetes dashboard</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>重新疏理k8s dashboard安装<br>github地址：<a href="https://github.com/kubernetes/dashboard" target="_blank" rel="noopener">https://github.com/kubernetes/dashboard</a></p>
-<p>在线dashboard2.1 deployment清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.1.0/aio/deploy/recommended.yaml</span><br></pre></td></tr></table></figure></p>
-<p>默认type为<code>ClusterIp</code>即只能看到Service地址，需要穿透集群边界让外部进行访问<br>方式有ingress、NodePort、外部LoadBalance、pod HostPort端口转发、pod HostNetwork 等方式，这里采用最简单的NodePort</p>
-<p>修改recommended.yaml清单文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">kind: Service</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    k8s-app: kubernetes-dashboard</span><br><span class="line">  name: kubernetes-dashboard</span><br><span class="line">  namespace: kubernetes-dashboard</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">    - nodePort: 30443</span><br><span class="line">      port: 443</span><br><span class="line">      targetPort: 8443</span><br><span class="line">  selector:</span><br><span class="line">    k8s-app: kubernetes-dashboard</span><br><span class="line">  type: NodePort</span><br></pre></td></tr></table></figure></p>
-<p>或者跑起来后再直接修改svc/kubernetes-dashboard<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl edit svc/kubernetes-dashboard  -n kubernetes-dashboard  # type: NodePort</span><br></pre></td></tr></table></figure></p>
-<p>按你的需要添加单独的NameSpace<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# kubectl    create namespace admin-ns --dry-run=client -o yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Namespace</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: null</span><br><span class="line">  name: admin-ns</span><br><span class="line">spec: &#123;&#125;</span><br><span class="line">status: &#123;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>按你的需要添加<code>kubernetes-dashboard</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# kubectl    create sa  superadmin -n admin-ns</span><br><span class="line">serviceaccount/superadmin created</span><br><span class="line">root@k8s-m:/data/dashboard# kubectl    create sa  superadmin -n admin-ns --dry-run=client -o yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ServiceAccount</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: null</span><br><span class="line">  name: superadmin</span><br><span class="line">  namespace: admin-ns</span><br></pre></td></tr></table></figure></p>
-<p>创建一个<code>clusterrolebinding</code>,让内置的集群管理员角色<code>--clusterrole=cluster-admin</code>与刚创建的<code>serviceaccount</code>绑定<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# kubectl  create clusterrolebinding  superadmin  --clusterrole=cluster-admin  --serviceaccount=admin-ns:superadmin --dry-run=client -o yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: null</span><br><span class="line">  name: superadmin</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: cluster-admin</span><br><span class="line">subjects:</span><br><span class="line">- kind: ServiceAccount</span><br><span class="line">  name: superadmin</span><br><span class="line">  namespace: admin-ns</span><br></pre></td></tr></table></figure></p>
-<p>获取Token登录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# kubectl  describe   sa/superadmin -n admin-ns</span><br><span class="line">Name:                superadmin</span><br><span class="line">Namespace:           admin-ns</span><br><span class="line">Labels:              &lt;none&gt;</span><br><span class="line">Annotations:         &lt;none&gt;</span><br><span class="line">Image pull secrets:  &lt;none&gt;</span><br><span class="line">Mountable secrets:   superadmin-token-gtrj5</span><br><span class="line">Tokens:              superadmin-token-gtrj5</span><br><span class="line">Events:              &lt;none&gt;</span><br><span class="line">root@k8s-m:/data/dashboard# kubectl  describe secret/superadmin-token-gtrj5 -n admin-ns</span><br><span class="line">Name:         superadmin-token-gtrj5</span><br><span class="line">Namespace:    admin-ns</span><br><span class="line">Labels:       &lt;none&gt;</span><br><span class="line">Annotations:  kubernetes.io/service-account.name: superadmin</span><br><span class="line">              kubernetes.io/service-account.uid: 339d914d-3ae8-440a-a590-4a304400ef17</span><br><span class="line"></span><br><span class="line">Type:  kubernetes.io/service-account-token</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">token:      eyJhbGciOiJSUzI1NiIsImtpZCI6InZk--xxx #  Token字段</span><br><span class="line">ca.crt:     1066 bytes</span><br><span class="line">namespace:  8 bytes</span><br></pre></td></tr></table></figure></p>
-<p>界面自带CPU、内存监控图，只是数据是来源于Metrics Server, 需要部署MetricsServer才能展示，如果后期要部署kube-prometheus 就不需要单独部署Metrics Server，因为它己经集成了</p>
-<p>metrics-server github 地址： <a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/metrics-server</a></p>
-<p>在线清单文件部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</span><br></pre></td></tr></table></figure></p>
-<p>发现老是无限重启，说是就绪性探测和存活性探测有问题，我这里换换镜像以及添加2个参数好了<br>其实根源https TLS问题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">spec:</span><br><span class="line">  hostNetwork: true</span><br><span class="line">  serviceAccountName: metrics-server</span><br><span class="line">  containers:</span><br><span class="line">  - name: metrics-server</span><br><span class="line">    image: bitnami/metrics-server:0.4.1    # 可以尝试更换官方镜像</span><br><span class="line">    #image: k8s.gcr.io/metrics-server/metrics-server:v0.4.1</span><br><span class="line">    imagePullPolicy: IfNotPresent</span><br><span class="line">    args:</span><br><span class="line">      - --cert-dir=/tmp</span><br><span class="line">      - --secure-port=4443</span><br><span class="line">      - --kubelet-insecure-tls     # 禁用https</span><br><span class="line">      - --kubelet-use-node-status-port</span><br><span class="line">      - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname   # 添加地址解析类型</span><br><span class="line">    livenessProbe:</span><br><span class="line">      failureThreshold: 3</span><br><span class="line">      httpGet:</span><br><span class="line">        path: /livez</span><br><span class="line">        port: https</span><br><span class="line">        scheme: HTTPS</span><br><span class="line">      periodSeconds: 10</span><br><span class="line">    readinessProbe:</span><br><span class="line">      failureThreshold: 3</span><br><span class="line">      httpGet:</span><br><span class="line">        path: /readyz</span><br><span class="line">        port: https</span><br><span class="line">        scheme: HTTPS</span><br><span class="line">      periodSeconds: 10</span><br><span class="line">    ports:</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li>dashboard只是提供web GUI服务，本身并做认证授权，只是代为拿着账号向kubernetes API进行认证</li>
-<li>dashboard 运行于pod,  pod代为向kubernetes API进行认证的账号也必须是ServiceAccount账号，不可以是User自然人的属性账号</li>
-<li>clusterrolebinding只能绑定clusterrole, rolebinding  即可以绑role,也可以绑clusterrole,口决是： 小绑大降权</li>
-<li>Metrics-server用于收集pod内部CPU、内存使用量资源，kube-prometheus项目内部集成此功能，所以部署与否看你需要</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckqacwgf8001ryrjx9q78q03a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckqaqsgci0049yxjxx8mmvfld" class="article-share-link">Share</a>
       
       
     </footer>
@@ -635,7 +620,7 @@
           </li>
         
           <li>
-            <a href="/2021/03/15/linux-ansible-awx/">ansible awx</a>
+            <a href="/2021/03/15/linux-kafak-cluster/">zookeeper kafka集群</a>
           </li>
         
       </ul>
