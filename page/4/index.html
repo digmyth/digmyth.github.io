@@ -62,6 +62,87 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-log_elasticsearch-基本使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/15/log_elasticsearch-基本使用/" class="article-date">
+  <time datetime="2019-08-15T02:42:36.000Z" itemprop="datePublished">2019-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日志系统/">日志系统</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/15/log_elasticsearch-基本使用/">elasticsearch基本使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>官网：  <a href="https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html</a>   </p>
+<p>elasticsearch: 借住于LuceneAPI    重新封装实现的搜索组件，增加更强大的能力，将Lucene提供的索引组建成shar形式，分片后分布于各节点上从而构建成分布式时时查询组件。 是一个基Lucene实现的开源、分布式、RestFul的全文本搜索引擎，此外，它还是一个分布式实时文档存储，其中每个文档的每个field均是被索引的数据，且可被搜索，也是一个带实时分析功能的分布式搜索引擎，能够扩展至数以百计的节点实时处理PB级的数据</p>
+<p>概念<br> 文档只有被索引后才能被索引，这个文档就放在一个叫索引的文件当中。<br> 在Lucene中每一项相当于MYsql表中一行数据，多个项在一起就组成了索引，但是每个索引会尽量存储同类型数据</p>
+<p> 大索引的多个片分shard散到多个物理节点上去，可成完成读写负载均衡，分片节点挂了所有数据将丢失，但是分布式不应该这样，它还要通过主从副本实现分布解决单点故障问题。<br> 写操作会自动分配到主分片完成写操作，副本分片只有读权限</p>
+<p>索引：  文档的集合，类似于表，索引名只能是小写字母<br>    类型(type): 类型是索引内部的逻辑分区，其意义完全取决于用户需求，一个索引内部可以定义一个或多个类型<br>                拥有相同域的文档的预定义，类似于表的表结构，文档是schema free模式自由,</p>
+<pre><code>建议一个索引中只存一个类型的文档数据
+文档： 是Lucene搜索和索引的原子单位，包含了一个或多个域，是域容器，基于json格式，每个域的组成部份：一个名字和一个或多个值，拥有多个值的域通常称为多值域
+
+
+映射 (maping):  定义如何切词，指明一个文档中的数据在被存储之前的分析过程该如何执行，原始内容存储为文档之前事先需要分析，映射就 是定义此分析机制该如何实现
+                 例如; 切词、过滤掉某些词、域中内容排序
+
+elasticsearch集群组件：
+     每一个物理节点必属于且只属于某ES集群   
+
+    NODE： 运行了单个ES实例的主机即为节点，用于存储数据部份分片、参与集群索引及搜索操作、节点标识靠节点名（默认会生成字串，可自定义）
+
+    shard分片: 把一个Luence大索引切分为底层物理数据，完成分割存储机制，或说将索引切割成为物理存储组件，但每一个shard都是一个独立且完整的索引，创建索引时，ES默认创建5个副本
+               shard有2种类型： primary shard/Replicas shard
+               Primary shard 如何切割定义好后不可更改，但是副本数是可以动态更改的
+</code></pre><p>ES工作过程： 通过多播(default)或单播方式工作在9300/TCP查找同一集群的其它节点，并与之建立通信                   </p>
+<p>集群中的所有节点会选举一个主节点负责管理整个集群状态，以及在集群范围内决定各shard分布方式，用户角度没有主从节点，各节点都可接收请求</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>elasticsearch强制要求工作在普通用户模式下，不能root 直接./bin/elasticsearch启动服务，好像rpm安装没有此限制<br>同时启动也有很多限制，否则启动失败</p>
+<p>修改系统参数达到启动服务要求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 普通用户模式下安装</span><br><span class="line">2 安装jdk,要求1.8以上，有人声称1.11以上更佳</span><br><span class="line">3 打开文件数限制，包括系统级/etc/security/limits.conf 和ulimit -n 65535用户级</span><br><span class="line">4 打开内核参数级限制,临时设置如下命令</span><br><span class="line">sysctl -w  vm.max_map_count=655350</span><br><span class="line">sysctl -w  fs.file-max=65536</span><br></pre></td></tr></table></figure></p>
+<p>配置文件修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat /home/stack/elasticsearch-7.11.2/config/elasticsearch.yml  | grep -v ^# | grep -v ^$</span><br><span class="line">cluster.name: wxq-es</span><br><span class="line">node.name: node-es3</span><br><span class="line">bootstrap.memory_lock: false</span><br><span class="line">network.host: 192.168.1.30</span><br><span class="line">discovery.seed_hosts: [&quot;192.168.1.30&quot;,]  # 集群模式相应追加主机</span><br><span class="line">cluster.initial_master_nodes: [&quot;192.168.1.30&quot;,]</span><br><span class="line">http.cors.enabled: true   # 方便plugins head插件时跨站请求成功</span><br><span class="line">http.cors.allow-origin: &quot;*&quot;</span><br></pre></td></tr></table></figure></p>
+<p>head 插件安装<br>安装好后直接访问 <a href="http://IP:9100/" target="_blank" rel="noopener">http://IP:9100/</a>    连接地址填入<a href="http://es-server:9200/正确" target="_blank" rel="noopener">http://es-server:9200/正确</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/mobz/elasticsearch-head.git</span><br><span class="line">cd elasticsearch-head</span><br><span class="line">npm install</span><br><span class="line">npm run start</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch # 直接启动即可</span><br></pre></td></tr></table></figure>
+<p>集群状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">green 可用状态</span><br><span class="line">red:  不可用</span><br><span class="line">yellow: 修复状态</span><br><span class="line"></span><br><span class="line">ES参与集群事务的端口tcp/9300</span><br><span class="line">ES接收请求的端口tcp/9200</span><br></pre></td></tr></table></figure>
+<p>API接口使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">确保集群正常； API接口9200</span><br><span class="line">Restful接口API： 4类</span><br><span class="line">1 检查集群节点索引健康与否，以及获取其相应状态</span><br><span class="line">2 管理集群节点索引及元数据</span><br><span class="line">3 执行CRUD操作</span><br><span class="line">4 执行高级操作：例如paging 、filtering</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">所有_cat支持的API操作</span><br><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat</span><br><span class="line">=^.^=</span><br><span class="line">/_cat/allocation</span><br><span class="line">/_cat/shards</span><br><span class="line">/_cat/shards/&#123;index&#125;</span><br><span class="line">/_cat/master</span><br><span class="line">/_cat/nodes</span><br><span class="line">/_cat/tasks</span><br><span class="line">/_cat/indices</span><br><span class="line">/_cat/indices/&#123;index&#125;</span><br><span class="line">/_cat/segments</span><br><span class="line">。。。</span><br></pre></td></tr></table></figure>
+<p>v=verbose显示详细信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.30:9200/_cat/nodes</span><br><span class="line">http://192.168.1.30:9200/_cat/nodes?v</span><br><span class="line">http://192.168.1.30:9200/_cat/master</span><br><span class="line">http://192.168.1.30:9200/_cat/master?v</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat/nodes?v</span><br><span class="line">ip         heap.percent ram.percent cpu load_1m load_5m load_15m node.role   master name</span><br><span class="line">172.21.0.5           36          98  14    0.22    0.60     1.09 cdfhilmrstw -      es02</span><br><span class="line">172.21.0.3           28          98  14    0.22    0.60     1.09 cdfhilmrstw *      es01</span><br><span class="line">172.21.0.4           61          98  14    0.22    0.60     1.09 cdfhilmrstw -      es03</span><br></pre></td></tr></table></figure></p>
+<p>help查看某接口支持查询的详细字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat/nodes?help</span><br><span class="line">id                             | id,nodeId                 | unique node id</span><br><span class="line">pid                            | p                         | process id</span><br><span class="line">ip                             | i                         | ip address</span><br><span class="line">port                           | po                        | bound transport port</span><br><span class="line">http_address                   | http                      | bound http address</span><br><span class="line">version                        | v                         | es version</span><br><span class="line">。。。</span><br></pre></td></tr></table></figure></p>
+<p>查询某接口指定字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># curl  http://192.168.1.40:9200/_cat/nodes?h=id,pid,ip,port,http_address,version,uptime</span><br><span class="line">t_iA 6 172.21.0.5 9300 172.21.0.5:9200 7.12.0 56.8m</span><br><span class="line">WIm1 6 172.21.0.3 9300 172.21.0.3:9200 7.12.0 56.8m</span><br><span class="line">3bzJ 6 172.21.0.4 9300 172.21.0.4:9200 7.12.0 56.8m</span><br></pre></td></tr></table></figure></p>
+<p>health的green状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># curl  http://192.168.1.40:9200/_cat/health?v</span><br><span class="line">epoch      timestamp cluster           status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent</span><br><span class="line">1618470428 07:07:08  es-docker-cluster green           3         3     14   7    0    0        0             0                  -                100.0%</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>带着概念参照官网安装还是挺简单的，练习接口可以了解学习集群及ES的概念</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/08/15/log_elasticsearch-基本使用/" data-id="ckqacwggh002yyrjx4luag0j7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-mariadb-恢复数据" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/07/25/mariadb-恢复数据/" class="article-date">
@@ -97,7 +178,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/07/25/mariadb-恢复数据/" data-id="ckpyvxbx0003ayqjx86tpisuv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/07/25/mariadb-恢复数据/" data-id="ckqacwggw003cyrjx76nee4nr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -155,7 +236,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="ckpyvxbx2003cyqjxfcq7n3v7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="ckqacwggo0035yrjxz4fg6f2l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -203,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckpyvxbsz0001yqjxumad32hz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckqacwgdp0001yrjxpymcyfhq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -269,7 +350,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ckpyvxbyu0058yqjxkad5fjwl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ckqacwgji0059yrjxu7xsxr65" class="article-share-link">Share</a>
       
       
     </footer>
@@ -322,7 +403,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ckpyvxbtr000nyqjxg3njojzg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ckqacwge8000iyrjxrkkmevfq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -381,7 +462,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="ckpyvxbtm000iyqjxa5p0goc6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="ckqacwge9000kyrjx230qjrhw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -428,7 +509,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="ckpyvxbz2005nyqjxxxagedac" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="ckqacwgjr005nyrjx5qori9bp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -492,7 +573,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="ckpyvxby10044yqjxj7dmwxgx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="ckqacwght0045yrjxdqukd2nw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -540,68 +621,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="ckpyvxbvz002gyqjxcyzycwjt" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-socket-02" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/11/25/web-socket-02/" class="article-date">
-  <time datetime="2018-11-25T12:51:41.000Z" itemprop="datePublished">2018-11-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebSocket/">WebSocket</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/25/web-socket-02/">web-socket-高级篇</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面我们学习了WebSocket，我们知道客户端要与服务端进行WebSoccket通信，客户端要和服务端握手，握手成功后才能通信。</p>
-<p>握手： 客户端发出握手请求，服务端在握手请求中取出“Sec-WebSocket-Key”，把“Sec-WebSocket-Key”加上一个特殊字符串<br>“258EAFA5-E914-47DA-95CA-C5AB0DC85B11”，然后计算SHA-1摘要，之后进行BASE-64编码，将结果做为“Sec-WebSocket-Accept”头的值，返回给客户端。如此操作，可以尽量避免普通HTTP请求被误认为Websocket协议。</p>
-<p>如果给定了“Sec-WebSocket-Key”，那么摘要算法代码如下，服务器会把摘要后值返回给客户端完成握手操作。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python3</span><br><span class="line">import hashlib</span><br><span class="line">import base64</span><br><span class="line"></span><br><span class="line">SecKey = &apos;sN9cRrP/n9NdMgdcy2VJFQ==&apos;   # browser 自动携带的随机字符串</span><br><span class="line">Magic_string = &apos;258EAFA5-E914-47DA-95CA-C5AB0DC85B11&apos;</span><br><span class="line"></span><br><span class="line">def server_algorithm(SecKey):</span><br><span class="line">    str = SecKey + Magic_string</span><br><span class="line">    sec_str = base64.b64encode(hashlib.sha1(str.encode(&apos;utf-8&apos;)).digest())</span><br><span class="line">    return sec_str</span><br><span class="line"></span><br><span class="line">print(server_algorithm(SecKey))</span><br></pre></td></tr></table></figure></p>
-<p>如果我们己经有一个socket server，真的能收到握手信息吗？<br>socker_server.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python3</span><br><span class="line"></span><br><span class="line">import socket</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">conn.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)</span><br><span class="line">conn.bind((&apos;127.0.0.1&apos;,8000))</span><br><span class="line">conn.listen(5)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">client,addr = conn.accept()</span><br><span class="line">print(client.recv(8192))</span><br><span class="line">print(addr)</span><br></pre></td></tr></table></figure></p>
-<h3 id="如何发送握手请求？"><a href="#如何发送握手请求？" class="headerlink" title="如何发送握手请求？"></a>如何发送握手请求？</h3><p>方式一：<br>可直接在浏览器console终端下手动发送socket请求，请求中包含握手信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;var sock = new WebSocket(&apos;ws://127.0.0.1:8000/xxoo&apos;)</span><br><span class="line">undefined</span><br></pre></td></tr></table></figure></p>
-<p>此时浏览器会报<code>VM44:1 WebSocket connection to &#39;ws://127.0.0.1:8000/xxoo&#39; failed: Connection closed before receiving a handshake response</code>的错，是因为服务器端没有返回摘要后的值，<br>表示没有握手成功。</p>
-<p>方式二：<br>直接编写client.html用浏览器运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;WebSocket test&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h1&gt;WebSocket study....&lt;/h1&gt;</span><br><span class="line">    &lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">       var sock = new WebSocket(&apos;ws://127.0.0.1:8000/xxoo&apos;)</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
-<p>此时服务器会收到类似<code>b&#39;GET /xxoo HTTP/1.1\r\nHost: 127.0.0.1:8000\r\nConnection: Upgrade...client_max_window_bits\r\n\r\n&#39;</code>信息，里面包含“<code>Sec-WebSocket-Key</code>”</p>
-<p>如果我们用一个函数手动取出“Sec-WebSocket-Key”，然后手动摘要后把值再手动返回给客户端，这样就握手成功不会报错了。</p>
-<p>处理握手信息的函数(get_headers)如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def get_headers(data):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    将请求头格式化成字典</span><br><span class="line">    :param data:</span><br><span class="line">    :return:</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    header_dict = &#123;&#125;</span><br><span class="line">    data = str(data, encoding=&apos;utf-8&apos;)</span><br><span class="line"> </span><br><span class="line">    for i in data.split(&apos;\r\n&apos;):</span><br><span class="line">        print(i)</span><br><span class="line">    header, body = data.split(&apos;\r\n\r\n&apos;, 1)</span><br><span class="line">    header_list = header.split(&apos;\r\n&apos;)</span><br><span class="line">    for i in range(0, len(header_list)):</span><br><span class="line">        if i == 0:</span><br><span class="line">            if len(header_list[i].split(&apos; &apos;)) == 3:</span><br><span class="line">                header_dict[&apos;method&apos;], header_dict[&apos;url&apos;], header_dict[&apos;protocol&apos;] = header_list[i].split(&apos; &apos;)</span><br><span class="line">        else:</span><br><span class="line">            k, v = header_list[i].split(&apos;:&apos;, 1)</span><br><span class="line">            header_dict[k] = v.strip()</span><br><span class="line">    return header_dict</span><br></pre></td></tr></table></figure></p>
-<p>把摘要后的值返回给客户端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">conn, address = sock.accept()</span><br><span class="line">data = conn.recv(1024)</span><br><span class="line">headers = get_headers(data) # 提取请求头信息</span><br><span class="line"># 对请求头中的sec-websocket-key进行加密</span><br><span class="line">response_tpl = &quot;HTTP/1.1 101 Switching Protocols\r\n&quot; \</span><br><span class="line">      &quot;Upgrade:websocket\r\n&quot; \</span><br><span class="line">      &quot;Connection: Upgrade\r\n&quot; \</span><br><span class="line">      &quot;Sec-WebSocket-Accept: %s\r\n&quot; \</span><br><span class="line">      &quot;WebSocket-Location: ws://%s%s\r\n\r\n&quot;</span><br><span class="line">magic_string = &apos;258EAFA5-E914-47DA-95CA-C5AB0DC85B11&apos;</span><br><span class="line">value = headers[&apos;Sec-WebSocket-Key&apos;] + magic_string</span><br><span class="line">ac = base64.b64encode(hashlib.sha1(value.encode(&apos;utf-8&apos;)).digest())</span><br><span class="line">response_str = response_tpl % (ac.decode(&apos;utf-8&apos;), headers[&apos;Host&apos;], headers[&apos;url&apos;])</span><br><span class="line">conn.send(bytes(response_str, encoding=&apos;utf-8&apos;))</span><br></pre></td></tr></table></figure></p>
-<p>摘要后的值返回给客户端后就完成了握手过程，客户端就不会再报连接错误了。</p>
-<h3 id="接收客户端发来的数据"><a href="#接收客户端发来的数据" class="headerlink" title="接收客户端发来的数据"></a>接收客户端发来的数据</h3><p>完成握手操作后就客户端就可以向服务器发送数据了，只需console终端<code>sock.send(&#39;dimyth&#39;)</code></p>
-<p>服务端接收<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">info = conn.recv(1024)</span><br><span class="line">print(info)  # 这里是字节</span><br></pre></td></tr></table></figure></p>
-<p>服务器端收到客户端发来的数据，这个数据需要服务器解包，解包过程如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">payload_len = info[1] &amp; 127</span><br><span class="line">if payload_len == 126:</span><br><span class="line">    extend_payload_len = info[2:4]</span><br><span class="line">    mask = info[4:8]</span><br><span class="line">    decoded = info[8:]</span><br><span class="line">elif payload_len == 127:</span><br><span class="line">    extend_payload_len = info[2:10]</span><br><span class="line">    mask = info[10:14]</span><br><span class="line">    decoded = info[14:]</span><br><span class="line">else:</span><br><span class="line">    extend_payload_len = None</span><br><span class="line">    mask = info[2:6]</span><br><span class="line">    decoded = info[6:]</span><br><span class="line"></span><br><span class="line">bytes_list = bytearray()</span><br><span class="line">for i in range(len(decoded)):</span><br><span class="line">    chunk = decoded[i] ^ mask[i % 4]</span><br><span class="line">    bytes_list.append(chunk)</span><br><span class="line">body = str(bytes_list, encoding=&apos;utf-8&apos;)</span><br><span class="line">print(body)    # 解出真正数据</span><br></pre></td></tr></table></figure></p>
-<p>那么服务器给客户端发送数据要就封包。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def send_msg(conn, msg_bytes):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    WebSocket服务端向客户端发送消息</span><br><span class="line">    :param conn: 客户端连接到服务器端的socket对象,即： conn,address = socket.accept()</span><br><span class="line">    :param msg_bytes: 向客户端发送的字节</span><br><span class="line">    :return: </span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    import struct</span><br><span class="line"></span><br><span class="line">    token = b&quot;\x81&quot;</span><br><span class="line">    length = len(msg_bytes)</span><br><span class="line">    if length &lt; 126:</span><br><span class="line">        token += struct.pack(&quot;B&quot;, length)</span><br><span class="line">    elif length &lt;= 0xFFFF:   # 65535</span><br><span class="line">        token += struct.pack(&quot;!BH&quot;, 126, length)</span><br><span class="line">    else:</span><br><span class="line">        token += struct.pack(&quot;!BQ&quot;, 127, length)</span><br><span class="line"></span><br><span class="line">    msg = token + msg_bytes</span><br><span class="line">    conn.send(msg)</span><br><span class="line">    return True</span><br></pre></td></tr></table></figure></p>
-<p>对上面BHQ说明一下，B代表1个字节，H代表2个字节，Q代表8个字节</p>
-<p>客户端如何收消息呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=&quot;content&quot;&gt;&lt;/div&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">   var sock = new WebSocket(&apos;ws://127.0.0.1:8000/xxoo&apos;);</span><br><span class="line">     sock.onmessage = function (event) &#123;</span><br><span class="line">        /* 服务器端向客户端发送数据时，自动执行 */</span><br><span class="line">        var response = event.data;</span><br><span class="line">        var newTag = document.createElement(&apos;div&apos;);</span><br><span class="line">        newTag.innerHTML = response;</span><br><span class="line">        document.getElementById(&apos;content&apos;).appendChild(newTag);</span><br><span class="line">    &#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="ckpyvxc0r007ayqjx3x9gzynh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="ckqacwgfy002gyrjxowuhxn6l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -617,7 +637,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/5/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/5/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -671,7 +691,7 @@
           </li>
         
           <li>
-            <a href="/2021/03/15/linux-sysctl/">sysctl TCP优化</a>
+            <a href="/2021/03/15/linux-ansible-awx/">ansible awx</a>
           </li>
         
       </ul>

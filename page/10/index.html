@@ -62,6 +62,82 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-cephfs-Ganesha" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/05/cephfs-Ganesha/" class="article-date">
+  <time datetime="2017-06-05T01:41:54.000Z" itemprop="datePublished">2017-06-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/05/cephfs-Ganesha/">cephfs-Ganesha</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="nfs-ganesha简介"><a href="#nfs-ganesha简介" class="headerlink" title="nfs-ganesha简介"></a>nfs-ganesha简介</h2><p>因工作需要调研了cephfs 导为nfs,目前有两种方法：</p>
+<ul>
+<li>方法一：内核mount挂载或 ceph-fuse 挂载至NFS server，如/data再正常搭建NFS-server即可。</li>
+<li>方法二 :   借用nfs-ganesha协议转换间接存储在cephfs集群中。</li>
+</ul>
+<p>nfs-ganesha不仅可以导 cephfs,也可以导RGW.<br>ceph RGW理解:   相当于协议转换层，把符合S3和swift协议的 restFul API 请求转换为rados存储在ceph对象存储中.</p>
+<p>换一种说法： Ceph 导出为 NFS，一种通过 RGW，一种通过 CephFS，通过 FSAL 模块 连接到 RGW 或者 CephFS</p>
+<ul>
+<li>FSAL_RGW 调用 librgw2 将 NFS 协议转义为 S3 协议再通过 RGW 存入到 Ceph 中.</li>
+<li>FSAL_CEPH 调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</li>
+</ul>
+<p>FSAL： File System Abstraction Layer  文件系统抽像层</p>
+<p>题外话，openstack项目manila后端存储驱动，其中一种就是Ganesha Driver<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">## manila 4驱动</span><br><span class="line">Default Driver: 使用 RBD 作为 Manila Service VM 的后端，在 VM 上启动 NFS 实例提供服务</span><br><span class="line">Ganesha Driver: 使用 Ganesha 将 CephFS 重新 Reexport 出去</span><br><span class="line">Native CephFS Driver: 在 Guest VM 上直接使用原生 CephFS Module 访问</span><br><span class="line">VirtFS Driver: 将 CephFS 挂载在 Host 端，VM 通过 VirtFS 访问</span><br></pre></td></tr></table></figure></p>
+<h2 id="nfs-ganesha安装"><a href="#nfs-ganesha安装" class="headerlink" title="nfs-ganesha安装"></a>nfs-ganesha安装</h2><p>在CentOS7系统中有nfs-ganesha rpm软件包，但没有ceph相关模块，所以我这里是编译安装，把FSAL_RGW 模块/FSAL_CEPH 模块编译进去。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone -b V2.4-stable https://github.com/nfs-ganesha/nfs-ganesha.git --recursive</span><br></pre></td></tr></table></figure>
+<p>由于ceph-jewel版本才有libcephfs1-devel软件包，所以这里ganesha客户端 ceph用 jewel版本，服务器ceph版本Luminous<br>ceph-jewel源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@ ganesha]# cat  /etc/yum.repos.d/ceph.repo </span><br><span class="line">[ceph]</span><br><span class="line">name=ceph</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/x86_64/</span><br><span class="line">gpgcheck=0</span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=cephnoarch</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/noarch/</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure></p>
+<p>软件安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</span><br><span class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</span><br><span class="line">yum install librgw2-devel -y </span><br><span class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</span><br><span class="line">yum install libcephfs1-devel -y</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>如果需要生成 FSAL_RGW 模块，则在编译选项中添加： -DUSE_FSAL_RGW=ON</li>
+<li>如果需要生成 FSAL_CEPH 模块，则在编译选项中添加： -DUSE_FSAL_CEPH=ON</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir /opt/build/</span><br><span class="line">cd /opt/build/</span><br><span class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>在cmake输出中确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- USE_FSAL_CEPH = ON</span><br><span class="line">-- USE_FSAL_CEPH_MKNOD = OFF</span><br><span class="line">-- USE_FSAL_CEPH_SETLK = OFF</span><br><span class="line">-- USE_FSAL_CEPH_LL_LOOKUP_ROOT = ON</span><br><span class="line">-- USE_FSAL_RGW = ON</span><br></pre></td></tr></table></figure></p>
+<p>确保： – USE_FSAL_CEPH 为 ON,以及 – USE_FSAL_RGW 为 ON。</p>
+<p>如果过程中出错，请删除/tmp/build/* 及/tmp/build/CMakeCache.txt重新编译</p>
+<p>make install成功输出中有:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/rgw.conf</span><br><span class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/ceph.conf</span><br></pre></td></tr></table></figure></p>
+<p>这两个文件就是配置将 RGW 和 CephFS 配置为 nfs-ganesha的配置模板。</p>
+<h2 id="nfs-ganesha-配置"><a href="#nfs-ganesha-配置" class="headerlink" title="nfs-ganesha 配置"></a>nfs-ganesha 配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/ganesha/ganesha.conf</span><br><span class="line">EXPORT</span><br><span class="line">&#123;</span><br><span class="line">        Export_ID=1;</span><br><span class="line">        Path = /;</span><br><span class="line">        Pseudo = /cephfs;</span><br><span class="line">        Access_Type = RW;</span><br><span class="line">        NFS_Protocols = 4;</span><br><span class="line">        Transport_Protocols = TCP;</span><br><span class="line">        Squash = No_Root_Squash;</span><br><span class="line">        FSAL &#123;</span><br><span class="line">                Name = CEPH;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">EXPORT</span><br><span class="line">&#123;</span><br><span class="line">        Export_ID=2;</span><br><span class="line">        Path = /;</span><br><span class="line">        Pseudo = /rgw;</span><br><span class="line">        Access_Type = RW;</span><br><span class="line">        Squash = No_root_squash;</span><br><span class="line">        NFS_Protocols = 4;</span><br><span class="line">        Transport_Protocols = TCP;</span><br><span class="line">        FSAL &#123;</span><br><span class="line">                Name = RGW;</span><br><span class="line">                User_Id = &quot;admin&quot;;</span><br><span class="line">                Access_Key_Id =&quot;RDS4VW60OA48ZW1HSU61&quot;;</span><br><span class="line">                Secret_Access_Key = &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">RGW &#123;</span><br><span class="line">    ceph_conf = &quot;/etc/ceph/ceph.conf&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  其中<code>Access_Key_Id</code> <code>Secret_Access_Key</code>部份在ceph-rgw中读取<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">  (ceph-mon)[root@pike-vm /]# radosgw-admin user info --uid=admin</span><br><span class="line">&#123;</span><br><span class="line">    &quot;user_id&quot;: &quot;admin&quot;,</span><br><span class="line">    &quot;display_name&quot;: &quot;admin&quot;,</span><br><span class="line">    &quot;email&quot;: &quot;&quot;,</span><br><span class="line">    &quot;suspended&quot;: 0,</span><br><span class="line">    &quot;max_buckets&quot;: 1000,</span><br><span class="line">    &quot;auid&quot;: 0,</span><br><span class="line">    &quot;subusers&quot;: [],</span><br><span class="line">    &quot;keys&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;user&quot;: &quot;admin&quot;,</span><br><span class="line">            &quot;access_key&quot;: &quot;RDS4VW60OA48ZW1HSU61&quot;,</span><br><span class="line">            &quot;secret_key&quot;: &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<h2 id="启动nfs-ganesha"><a href="#启动nfs-ganesha" class="headerlink" title="启动nfs-ganesha"></a>启动nfs-ganesha</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ganesha.nfsd -L /var/log/ganesha.log</span><br></pre></td></tr></table></figure>
+<h2 id="挂载使用"><a href="#挂载使用" class="headerlink" title="挂载使用"></a>挂载使用</h2><p>在客户端进行挂载使用：<br>1  安装<code>ceph-common</code> <code>ceph-fuse</code> <code>libcephfs1-devel</code> <code>librgw2-devel</code><br>2 拷贝ceph.conf配置文件及keyring文件至/etc/ceph<br>3 挂载：<code>mount -t nfs4 {$ganesha-server-ip}:/  /mnt</code><br>如果出现I/O error,请ceph-fuse  -m 172.18.23.17:6789 /mnt 挂载一遍，就是这么神奇，不要问我为什么。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 mnt]# ls</span><br><span class="line">ls: reading directory .: Remote I/O error</span><br></pre></td></tr></table></figure></p>
+<p>成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 cephfs]# ll /mnt/</span><br><span class="line">total 1</span><br><span class="line">drwxrwxrwx 1 root root 33 Nov 14 08:31 cephfs</span><br><span class="line">[root@-3 cephfs]# echo &quot;99cloud new data...&quot; &gt; cephfs.txt </span><br><span class="line">[root@-3 cephfs]# cat cephfs.txt </span><br><span class="line">cephfs data...</span><br></pre></td></tr></table></figure></p>
+<p>在cephfs集群中我们可以看到客户端写入的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 ~]# ceph-fuse  -m 172.18.23.17:6789 /data/</span><br><span class="line">ceph-fuse[4579]: starting ceph client</span><br><span class="line">ceph-fuse[4579]: starting fuse</span><br><span class="line">[root@-3 ~]# cd /data/</span><br><span class="line">[root@-3 data]# ls</span><br><span class="line">cephfs.txt</span><br><span class="line">[root@3 data]# cat cephfs.txt </span><br><span class="line">cephfs data...</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ckqacwgej000zyrjx0tlaprt2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
@@ -94,7 +170,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ckpyvxbza0062yqjxa6kqojyu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ckqacwgk50061yrjxo3zptged" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +221,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ckpyvxbyx005dyqjx5tkeg7h8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ckqacwgjm005gyrjxg1havmaf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
+  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ckqacwgfr002ayrjxmy3wa5tu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -196,55 +320,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ckpyvxbvo0028yqjxnjhijvyv" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
-  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ckpyvxbvl0026yqjxn9qdenjc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ckqacwgfp0028yrjxckpq1a76" class="article-share-link">Share</a>
       
       
     </footer>
@@ -306,65 +382,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckpyvxbxl003wyqjxso6a2874" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
-</ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckpyvxbzb0064yqjxdd57cuhg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckqacwghe003ryrjx78l9pbep" class="article-share-link">Share</a>
       
       
     </footer>
@@ -422,7 +440,65 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckpyvxbz9005zyqjxmk01gc17" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckqacwgk2005zyrjxb8oqv3lo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>别名设置</li>
+<li>namespace设置</li>
+<li>reverse</li>
+<li>include本质</li>
+</ul>
+<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
+<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
+<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckqacwgk80064yrjxkv2a6as7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -477,7 +553,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckpyvxbzu006syqjxw33ihupf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckqacwgkv006syrjxjox7yb4s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -557,67 +633,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckpyvxbyr0052yqjx6mg9dmaf" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python-08-02-面象对象编程中级" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/26/python-08-02-面象对象编程中级/" class="article-date">
-  <time datetime="2017-03-26T13:28:41.000Z" itemprop="datePublished">2017-03-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/26/python-08-02-面象对象编程中级/">python-08-02-面象对象编程中级</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>staticmethod</li>
-<li>classmethod</li>
-</ul>
-<h2 id="staticmethod"><a href="#staticmethod" class="headerlink" title="staticmethod"></a>staticmethod</h2><p>几个魔法方法说明：</p>
-<p><code>@classmethod</code>   <code>@staticmethod</code><br>不依赖任何具体的对象来执行类当中是方法，这个方法要么是静态方法， 要么是类方法，要么是属性</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@classmethod</span><br><span class="line">def test_func(cls):   # 类方法传入cls参数（类本身）</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">@staticmethod</span><br><span class="line">def test_func():    # 静态方法时没有任何变量</span><br><span class="line">    pass</span><br><span class="line"></span><br><span class="line">def test_func(self):  # 普通实例方法时传入self参数（实例本身）</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
-<p><code>staticmethod</code>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">In [4]: class Foo(object):</span><br><span class="line">   ...:     @staticmethod</span><br><span class="line">   ...:     def spam(x,y,z):   # 静态方法时方法定义不写self</span><br><span class="line">   ...:         print(x,y,z)</span><br><span class="line">       </span><br><span class="line">In [5]: </span><br><span class="line">In [5]: Foo.spam(1,2,3)      # 静态方法属于类的，用类名调用。虽然实例能调用，但不要那样混用,不规范</span><br><span class="line">1 2 3</span><br></pre></td></tr></table></figure></p>
-<p><code>staticmethod</code>用法场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">In [7]: import time</span><br><span class="line">In [6]: class Date(object):</span><br><span class="line">   ...:     def __init__(self,year,mon, day):</span><br><span class="line">   ...:         self.year = year</span><br><span class="line">   ...:         self.mon = mon</span><br><span class="line">   ...:         self.day = day</span><br><span class="line">   ...:     @staticmethod</span><br><span class="line">   ...:     def now():</span><br><span class="line">   ...:         t = time.localtime()</span><br><span class="line">   ...:         return Date(t.tm_year, t.tm_mon, t.tm_mday)</span><br><span class="line">   ...:     </span><br><span class="line"></span><br><span class="line">In [8]: d1 = Date(1989, 8,20)    # 获得一个对象</span><br><span class="line"></span><br><span class="line">In [9]: d2 = Date.now()   # 这里也能获得一个对象</span><br><span class="line"></span><br><span class="line">In [10]: d1.day</span><br><span class="line">Out[10]: 20</span><br><span class="line"></span><br><span class="line">In [11]: d2.day</span><br><span class="line">Out[11]: 12</span><br></pre></td></tr></table></figure></p>
-<h2 id="classmethod"><a href="#classmethod" class="headerlink" title="classmethod"></a>classmethod</h2><p><code>@classmethod</code>语法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">In [12]: class C1(object):</span><br><span class="line">   ....:     name = &apos;wxq&apos;</span><br><span class="line">   ....:     @classmethod</span><br><span class="line">   ....:     def test(cls):    # 这里需要传入cls, 谁调用谁就是cls</span><br><span class="line">   ....:         print(cls, cls.name)</span><br><span class="line">   ....:         </span><br><span class="line"></span><br><span class="line">In [14]: C1.test()     # 这里cls就是C1</span><br><span class="line">&lt;class &apos;__main__.C1&apos;&gt; wxq</span><br><span class="line"></span><br><span class="line">In [13]: c = C1()   # 正常实例化对象</span><br></pre></td></tr></table></figure></p>
-<p><code>@classmethod</code>用法场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">In [2]: import time</span><br><span class="line"></span><br><span class="line">In [3]: class Date(object):</span><br><span class="line">   ...:     def __init__(self, year, mon,day):</span><br><span class="line">   ...:         self.year = year</span><br><span class="line">   ...:         self.mon = mon</span><br><span class="line">   ...:         self.day = day</span><br><span class="line">   ...:     @classmethod</span><br><span class="line">   ...:     def now(cls):</span><br><span class="line">   ...:         t = time.localtime()</span><br><span class="line">   ...:         return cls(t.tm_year, t.tm_mon, t.tm_mday)</span><br><span class="line">   ...:     </span><br><span class="line"></span><br><span class="line">In [4]: d = Date.now()</span><br><span class="line"></span><br><span class="line">In [5]: print(d.year,d.mon, d.day)</span><br><span class="line">2017 3 12</span><br></pre></td></tr></table></figure></p>
-<p><code>staticmethod</code>与<code>classmethod</code>区别的牛逼之处<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat method.py </span><br><span class="line">#!/usr/bin/env python3</span><br><span class="line">import time</span><br><span class="line">class Date(object):</span><br><span class="line">    def __init__(self, year,mon,day):</span><br><span class="line">        self.year = year</span><br><span class="line">        self.mon = mon</span><br><span class="line">        self.day = day</span><br><span class="line">    @staticmethod</span><br><span class="line">    def now():</span><br><span class="line">        t = time.localtime()</span><br><span class="line">        return Date(t.tm_year, t.tm_mon, t.tm_mday)</span><br><span class="line"></span><br><span class="line">class EuroDate(Date):</span><br><span class="line">     def __str__(self):</span><br><span class="line">       return &apos;year: %s mon:%s day:%s&apos; % (self.year, self.mon,self.day)</span><br><span class="line"></span><br><span class="line">e = EuroDate.now()</span><br><span class="line">print(e)</span><br><span class="line">root@ubuntu:~# python3 method.py </span><br><span class="line">&lt;__main__.Date object at 0x7f5514658940&gt;</span><br></pre></td></tr></table></figure></p>
-<p>上面并没有我们想要的结果<br>分析：<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。<br>也就是<code>return Date(t.tm_year, t.tm_mon, t.tm_mday)</code>, 实例print时调Date类的<code>__str__</code>方法，故打印<code>return Date(t.tm_year, t.tm_mon, t.tm_mday)</code>后的内存地址，不会打印<code>EuroDate</code>类中定义的<code>__str__</code>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat goodmethod.py </span><br><span class="line">#!/usr/bin/env python3</span><br><span class="line">import time</span><br><span class="line">class Date(object):</span><br><span class="line">    def __init__(self, year,mon,day):</span><br><span class="line">        self.year = year</span><br><span class="line">        self.mon = mon</span><br><span class="line">        self.day = day</span><br><span class="line">    @classmethod</span><br><span class="line">    def now(cls):</span><br><span class="line">        t = time.localtime()</span><br><span class="line">        return cls(t.tm_year, t.tm_mon, t.tm_mday)</span><br><span class="line"></span><br><span class="line">class EuroDate(Date):</span><br><span class="line">     def __str__(self):</span><br><span class="line">       return &apos;year: %s mon:%s day:%s&apos; % (self.year, self.mon,self.day)</span><br><span class="line"></span><br><span class="line">e = EuroDate.now()</span><br><span class="line">print(e)</span><br><span class="line">root@ubuntu:~# python3 goodmethod.py </span><br><span class="line">year: 2017 mon:3 day:12</span><br></pre></td></tr></table></figure>
-<p>这样才是我们想要的结果，好象参悟了点什么<br>分析:<br><code>e = EuroDate.now()</code>实例化时，EuroDate类并没有now()方法，但继承自Date类，它会去调父类Date.now()方法实例化。这一点和上面是一致的。但此时<code>return cls(t.tm_year, t.tm_mon, t.tm_mday)</code>中的cls不是Date,而是EuroDate,符合谁调谁就是cls的原则。这样实例化<code>e = EuroDate.now()</code>时print(e)就会去调EuroDate中的<code>__str__</code>方法，得到我们想要的结果</p>
-<p>小结：<br><code>staticmethod</code>与<code>classmethod</code>在一定场景中是有区别的。细节参照上面的例子练习</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckpyvxbyk004syqjxee1h1hv8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckqacwgjh0057yrjxkvoniws7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -633,7 +649,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/9/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/11/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/9/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/11/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -687,7 +703,7 @@
           </li>
         
           <li>
-            <a href="/2021/03/15/linux-sysctl/">sysctl TCP优化</a>
+            <a href="/2021/03/15/linux-ansible-awx/">ansible awx</a>
           </li>
         
       </ul>
