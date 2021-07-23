@@ -121,7 +121,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="ckremzony001e0cjxfm0wrwzc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="ckrg2n7rz001eyyjx239uea6j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -189,7 +189,10 @@
 <li>参考链接 :<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">https://dev.mysql.com/doc/refman/5.7/en/replace-third-party-yum.html  # 禁用第三方源或安装包</span><br><span class="line">https://dev.mysql.com/doc/refman/5.7/en/linux-installation.html   # 根据您的系统安装相应版本</span><br><span class="line">https://dev.mysql.com/doc/refman/5.7/en/linux-installation-yum-repo.html #CentOS7.3安装mysql 5.7</span><br><span class="line">https://dev.mysql.com/doc/refman/5.7/en/group-replication.html   # mysql Group Replication安装</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># rpm -ivh /opt/mysql57-community-release-el7-11.noarch.rpm</span><br><span class="line"># yum install mysql-community-server</span><br><span class="line"># systemctl  start mysqld</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">如何找官方软件</span><br><span class="line"></span><br><span class="line">repo.mysql.com</span><br></pre></td></tr></table></figure>
+<p><a href="http://repo.mysql.com/yum/" target="_blank" rel="noopener">http://repo.mysql.com/yum/</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">找到需要的版本</span><br></pre></td></tr></table></figure></p>
+<h1 id="CentOS7-mysql-yum源"><a href="#CentOS7-mysql-yum源" class="headerlink" title="CentOS7 mysql yum源"></a>CentOS7 mysql yum源</h1><p><a href="http://repo.mysql.com/yum/mysql-cluster-7.5-community/el/7/x86_64/" target="_blank" rel="noopener">http://repo.mysql.com/yum/mysql-cluster-7.5-community/el/7/x86_64/</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h1 id="download-mysql57-community-release-el7-10-noarch-rpm"><a href="#download-mysql57-community-release-el7-10-noarch-rpm" class="headerlink" title="download  mysql57-community-release-el7-10.noarch.rpm"></a>download  mysql57-community-release-el7-10.noarch.rpm</h1><p>wget  <a href="http://repo.mysql.com/yum/mysql-cluster-7.5-community/el/7/x86_64/mysql57-community-release-el7-10.noarch.rpm" target="_blank" rel="noopener">http://repo.mysql.com/yum/mysql-cluster-7.5-community/el/7/x86_64/mysql57-community-release-el7-10.noarch.rpm</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># rpm -ivh /opt/mysql57-community-release-el7-10.noarch.rpm</span><br><span class="line"># yum install mysql-community-server</span><br><span class="line"># systemctl  start mysqld</span><br></pre></td></tr></table></figure></p>
 <h3 id="3-2-内置策略说明"><a href="#3-2-内置策略说明" class="headerlink" title="3.2 内置策略说明"></a>3.2 内置策略说明</h3><p>mysql5.7启动服务后会生成一个随机密码用于临时登录，内置策略强制让你进入数据库后马上更改登录密码，并且有一套密码复杂度管理的策略。我们可以在数据库my.cnf中过滤掉复杂度策略或临时修改全局变量来忽略复杂度。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select @@validate_password_length;</span><br><span class="line">+----------------------------+</span><br><span class="line">| @@validate_password_length |</span><br><span class="line">+----------------------------+</span><br><span class="line">|                          8 |</span><br><span class="line">+----------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; SHOW VARIABLES LIKE &apos;validate_password%&apos;;</span><br><span class="line">+--------------------------------------+--------+</span><br><span class="line">| Variable_name                        | Value  |</span><br><span class="line">+--------------------------------------+--------+</span><br><span class="line">| validate_password_check_user_name    | OFF    |</span><br><span class="line">| validate_password_dictionary_file    |        |</span><br><span class="line">| validate_password_length             | 8      |</span><br><span class="line">| validate_password_mixed_case_count   | 1      |</span><br><span class="line">| validate_password_number_count       | 1      |</span><br><span class="line">| validate_password_policy             | MEDIUM |</span><br><span class="line">| validate_password_special_char_count | 1      |</span><br><span class="line">+--------------------------------------+--------+</span><br><span class="line">7 rows in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
 <p>或者/etc/my.cnf添加5行策略来忽略掉。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">validate_password_length = 0</span><br><span class="line">validate_password_mixed_case_count = 0</span><br><span class="line">validate_password_number_count = 0</span><br><span class="line">validate_password_policy =0</span><br><span class="line">validate_password_special_char_count =0</span><br></pre></td></tr></table></figure></p>
 <p>当然也可以类似以下命令临时全局修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set global validate_password_special_char_count =0; # 全部设置为0</span><br></pre></td></tr></table></figure></p>
@@ -216,7 +219,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="ckremzopv003s0cjxcxufuete" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="ckrg2n7uk003kyyjxzercc2ax" class="article-share-link">Share</a>
       
       
     </footer>
@@ -269,7 +272,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="ckremzors006r0cjx5ql5tewl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="ckrg2n7yf006qyyjxpcadxy20" class="article-share-link">Share</a>
       
       
     </footer>
@@ -339,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="ckremzopu003q0cjxhe7nulmf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="ckrg2n7un003myyjxt0xm5b6v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -393,7 +396,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="ckremzonf000p0cjxevsyluye" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="ckrg2n7ri000pyyjxv4hkr8a3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-proxy-01-代理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/31/proxy-01-代理/" class="article-date">
+  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/31/proxy-01-代理/">proxy-01-代理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/10/31/proxy-01-代理/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="ckrg2n7wg004jyyjx7k3ky6qx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -442,55 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="ckremzopb002y0cjxkevglby2" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-proxy-01-代理" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/31/proxy-01-代理/" class="article-date">
-  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/31/proxy-01-代理/">proxy-01-代理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/10/31/proxy-01-代理/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="ckremzoqb004f0cjxfg61endy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="ckrg2n7tp002wyyjx3sce2sto" class="article-share-link">Share</a>
       
       
     </footer>
@@ -550,7 +553,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="ckremzoro006l0cjxszmtr87h" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="ckrg2n7yd006myyjxgi70v4il" class="article-share-link">Share</a>
       
       
     </footer>
@@ -611,7 +614,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="ckremzorn006j0cjxf1t5b5ig" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="ckrg2n7ya006iyyjxgq4wqdoy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -673,7 +676,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="ckremzos000710cjxdz60qkqk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="ckrg2n7ym0070yyjxyeqmu6zr" class="article-share-link">Share</a>
       
       
     </footer>
