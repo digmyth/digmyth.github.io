@@ -62,9 +62,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Dockerfile-详解" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/01/Dockerfile-详解/" class="article-date">
+    <a href="/2018/08/01/Kubernetes/" class="article-date">
   <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
 </a>
     
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Dockerfile-详解/">Dockerfile-详解</a>
+      <a class="article-title" href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
     </h1>
   
 
@@ -88,16 +88,61 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/01/Dockerfile-详解/#more">Read More</a>
-          </p>
-        
+        <h2 id="k8s-的世界"><a href="#k8s-的世界" class="headerlink" title="k8s 的世界"></a>k8s 的世界</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- charts , k8s 的包， 类似 *.rpm 的东西</span><br><span class="line">- helm , k8s 的包管理机制，类似 yum 的东西</span><br><span class="line"></span><br><span class="line">openstack 容器化 ( docker 版本）</span><br><span class="line">- kolla-ansible</span><br><span class="line">- tripleo</span><br><span class="line"></span><br><span class="line">openstack 容器化( k8s  版本）</span><br><span class="line">- openstack-helm</span><br><span class="line">- kolla-kubernetes</span><br></pre></td></tr></table></figure>
+<p>openshift中有几种网络端口模式(暴露服务)</p>
+<h3 id="hostnetwork"><a href="#hostnetwork" class="headerlink" title="hostnetwork"></a>hostnetwork</h3><p>hostnetwork 就是Docker的host网络，pod直接占用宿主机IP及端口，没什么可说的</p>
+<h3 id="hostport"><a href="#hostport" class="headerlink" title="hostport"></a>hostport</h3><p>hostport 是在单宿主机通过IP+端口来映射容器或pod(-p 参数), 实现外部能访问容器服务或pod服务</p>
+<h3 id="nodeport"><a href="#nodeport" class="headerlink" title="nodeport"></a>nodeport</h3><p>nodeport也是在宿主机通过IP+端口来映射，与hostport不同之处是映射ServiceIP+端口，再转到pod服务</p>
+<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>router是以hostnetwork网络模式跑在宿主机上的容器化haproxy pod, pod IP和端口就是节点的IP和端，对外暴露80、443、1936端口，haproxy中有service query 信息来自于etcd, 再通过service访问到pod服务。</p>
+<p>注： router是hostnetwork网络模式就意味着一个节点只能运行一个router</p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckrhvoq550000yhjxvv3q869o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckrhvwgj900080ajxdhx8n6fs" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Openshift/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckrhvwgjc000b0ajxh0chkn5j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,50 +190,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckrhvoq5g0005yhjxx1rsg4fv" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Openshift/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckrhvoq5o000dyhjx1hehhdgb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckrhvwgj500050ajxg06kvqfk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -236,7 +238,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckrhvoq95003vyhjx592rvq2z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="ckrhvwgmd003x0ajxlx84y53c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -285,7 +287,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckrhvoqb0005byhjxnkv11sru" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="ckrhvwgne00590ajx2y3uka3h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -333,7 +335,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckrhvoq5w000iyhjxuhwk7l8o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq/" data-id="ckrhvwgjk000i0ajx7s1ng4zn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -379,7 +381,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ckrhvoqb9005syhjxk11d26fk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="ckrhvwgnm005o0ajxuh77w4vd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -423,7 +425,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="ckrhvoqba005tyhjxxy7qszd2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="ckrhvwgnn005q0ajxo2ia9dj6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -477,7 +479,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/15/linux-awk/" data-id="ckrhvoq7u002jyhjxx90xwl9z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/15/linux-awk/" data-id="ckrhvwgl8002g0ajxv5imwdy4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -544,7 +546,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="ckrhvoqb7005nyhjx4vdpq9t3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="ckrhvwgnj005h0ajxnnv73gwi" class="article-share-link">Share</a>
       
       
     </footer>
