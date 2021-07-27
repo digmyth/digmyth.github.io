@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
 <meta property="og:description" content="Ubuntu系统分区信息查看：fdisk /dev/vda1234567891011Command (m for help): pDisk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectorsUnits: sectors of 1 * 512 = 512 bytesSector size (logical/physical): 512 byt">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-03-24T13:52:16.618Z">
+<meta property="og:updated_time" content="2021-07-27T03:38:32.069Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux disk">
 <meta name="twitter:description" content="Ubuntu系统分区信息查看：fdisk /dev/vda1234567891011Command (m for help): pDisk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectorsUnits: sectors of 1 * 512 = 512 bytesSector size (logical/physical): 512 byt">
@@ -94,7 +94,7 @@
 <p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
 <p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
 <p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
-<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位是扇区，bs=512代表一个扇区，也就是512bytes</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
+<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位字节bytes，bs=512 也就是512bytes,这个512刚好等于</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,单位就是扇区，skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,单位就是扇区，seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
 <p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
 <p>总结：</p>
 <ul>
@@ -105,7 +105,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ckrhvwgla002i0ajx1r56wh8q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-disk/" data-id="ckrliesre002ez0jxv9wuqlts" class="article-share-link">Share</a>
       
       
     </footer>
@@ -114,19 +114,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2019/12/15/linux-nmap详解/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2020/01/01/openvswit_vlan流表/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          nmap工具详解
+          openvswit_vlan流表
         
       </div>
     </a>
   
   
-    <a href="/2019/12/01/k8s_pod1/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2019/12/15/linux-nmap详解/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">k8s_pod资源清单学习1</div>
+      <div class="article-nav-title">nmap工具详解</div>
     </a>
   
 </nav>
