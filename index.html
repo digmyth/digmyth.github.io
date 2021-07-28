@@ -89,17 +89,18 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>dd 顺序读写测试工具<br>sync:  内存数据写入硬盘<br>direct:  直接IO交互绕过缓存区<br>oflag=dsync:  每读取一次bs定义的块都写入磁盘<br>conv=fdatasync:  所有读取完bs*count后才统一从缓存区写入硬盘</p>
-<p>最接过真实数据值的方法：<br>顺序读<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd if=myapp of=/dev/null bs=1M count=1024 iflag=direct</span><br></pre></td></tr></table></figure></p>
+<p>最接近真实数据值的方法：<br>顺序读<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd if=myapp of=/dev/null bs=1M count=1024 iflag=direct</span><br></pre></td></tr></table></figure></p>
 <p>顺序写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sync; echo 3 &gt; /proc/sys/vm/drop_caches; \</span><br><span class="line">dd if=/dev/zero of=test  bs=1M count=128  conv=fdatasync</span><br></pre></td></tr></table></figure></p>
 <h3 id="fio工具"><a href="#fio工具" class="headerlink" title="fio工具"></a>fio工具</h3><p>随机读<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randread -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
 <p>随机写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randwrite -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
 <p>混合读写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randrw -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
 <p>混合读写7:3  # 读占70%<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth 1 -thread -rw=randrw -rwmixread=70 -ioengine=psync -bs=16k -size=2G -numjobs=30 -runtime=100 -group_reporting -name=mytest1</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要关注IOPS参数和BW吞吐，这里BW吞吐是读写时的磁盘吞吐,测试数据与bs块大小有关，其次才是网络带宽限制<br>网络带宽速度需要iperf工具测试.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/15/linux-dd-fio/" data-id="ckrnbh1rn002c10jxd3ag0rey" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/15/linux-dd-fio/" data-id="ckrnbomwh002i2cjxsg6oaqfu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -147,7 +148,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckrnbh1pl000i10jxcaysslfe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckrnbomui000d2cjxsfr1mrrx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -195,7 +196,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="ckrnbh1r9002210jxw9zv8v0y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="ckrnbomw0001z2cjxnd0kvtuq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -248,7 +249,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckrnbh1tq003z10jx8yxmgyje" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckrnbomxi003r2cjxxmgwqqga" class="article-share-link">Share</a>
       
       
     </footer>
@@ -303,7 +304,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckrnbh1t4003n10jxqgzsm914" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckrnbomxg003p2cjx2k2cybjx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +352,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckrnbh1rc002410jx8rhpjuci" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckrnbomw800262cjxhsh1uq1b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -399,7 +400,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckrnbh1q9001510jxx5a6uzrm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckrnbomv900142cjx16srwcgq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -446,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckrnbh1s8002u10jxt0lknig4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckrnbomwu002u2cjxbnhqca1r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -497,7 +498,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckrnbh1rt002i10jxi3mpmz9o" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckrnbomwe002e2cjx81d5g9km" class="article-share-link">Share</a>
       
       
     </footer>
@@ -553,7 +554,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckrnbh1se003010jxpp10u11d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckrnbomx000342cjx8p1ihmjg" class="article-share-link">Share</a>
       
       
     </footer>
