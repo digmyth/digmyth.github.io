@@ -62,6 +62,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-django-26-API验证" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/06/python-django-26-API验证/" class="article-date">
+  <time datetime="2018-01-06T12:51:41.000Z" itemprop="datePublished">2018-01-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/06/python-django-26-API验证/">python-django-26-API验证</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>前言</li>
+<li>验证原理</li>
+<li>代码实现</li>
+</ul>
+<p>讲解<code>Django api</code>验证，基于<code>Tornado</code>签名<code>Cookie</code>源码</p>
+<h2 id="验证原理"><a href="#验证原理" class="headerlink" title="验证原理"></a>验证原理</h2><p>客户端</p>
+<p>服务端和客户端共同存一个<code>字符串</code>，客户端用这个<code>字符串</code>和<code>时间戳</code>算一个<code>md5</code>值，把这个<code>md5</code>和<code>时间戳</code>组成一个字符串在请求头里发送给服务端。</p>
+<p>服务端</p>
+<p>服务端收到这个字符串，分别取出<code>md5</code>和<code>时间戳</code>，用这个<code>时间戳</code>与自己存的<code>key&#39;也算一个</code>md5`值，这个md5值与客户端发来的md5值作比较。</p>
+<p>当然这里还是不够的，比如黑客拿到<code>md5</code>和<code>时间戳</code>呢？</p>
+<p>我们还需要作进一步策略</p>
+<p>策略一：<br>发来的时间戳+5秒小于服务器时间戳，认为是非法请求</p>
+<p>策略二：<br>基于<code>字符串</code>和<code>时间戳</code>算的<code>md5</code>不等于客户端发来的<code>md5</code>值，认为是非法请求</p>
+<p>策略三：<br>5秒钟内的请求作进一步验证，维护一个5秒钟内的合法请求<code>md5</code>值,再来这个<code>md5</code>值的，认为是非法请求。5秒钟失效需要借住<code>memcache</code> <code>redis</code>，它们都自带过期时间。</p>
+<p>策略四：<br>如果基于网络原因，黑客的非法请求比客户端的请求先到达服务器，这样只能数据<code>AES</code>加密了。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>客户端发送请求头</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import time</span><br><span class="line">import hashlib</span><br><span class="line">def md5(arg):</span><br><span class="line">	hs = hashlib.md5()</span><br><span class="line">	hs.update(arg.encode(&quot;utf-8&quot;))</span><br><span class="line">	return hs.hexdigest()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ctime=time.time()</span><br><span class="line">key=&apos;sdgasgsdgsdffsdf&apos;</span><br><span class="line">new_key=&quot;%s|%s&quot; %(key,ctime)</span><br><span class="line">md5_str = md5(new_key)</span><br><span class="line">auth_md5_str=&quot;%s|%s&quot; %(mdr_str,ctime)</span><br></pre></td></tr></table></figure>
+<p>发送请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requests.get(url=&quot;http://127.0.0.1:8000/test_api/&quot;,headers = &#123;&apos;auth-api&apos;:auth_md5_str&#125;)</span><br></pre></td></tr></table></figure>
+<p>服务端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server_float_time = time.time()</span><br><span class="line">auth_header_val = requests.META.get(&apos;HTTP_AUTH_API&apos;)</span><br><span class="line">client_md5_str,client_ctime=auth_header_val.rsplit(&apos;|&apos;,maxsplit=1)</span><br><span class="line">if (client_float_time + 5) &lt; server_float_time :</span><br><span class="line">    return HttpResponse(&quot;已过期&quot;)</span><br><span class="line">server_md5_str != client_md5_str:</span><br><span class="line">    return HttpResponse(&quot;非法请求&quot;)</span><br><span class="line">if visited_keys.get(client_md5_str):</span><br><span class="line">    return HttpResponse(&quot;来晚了，你是非法的&quot;)</span><br></pre></td></tr></table></figure>
+<p>&lt;数据加密待续&gt;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/01/06/python-django-26-API验证/" data-id="ckrnbh1v0005r10jxg9i2dsro" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-Flask-基础" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/01/web-Flask-基础/" class="article-date">
@@ -92,7 +159,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="ckrliesux0065z0jxnrqthut3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/01/web-Flask-基础/" data-id="ckrnbh1v9006610jxuw1lk2wt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -168,7 +235,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="ckrliesw20074z0jx66hyibe9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/28/web-django-25-DjangoAdmin/" data-id="ckrnbh1vu007110jx6y19i8zv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -231,7 +298,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="ckrliesw00072z0jx009y46wi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="ckrnbh1vq006z10jxy972imer" class="article-share-link">Share</a>
       
       
     </footer>
@@ -300,7 +367,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="ckrliesvl006qz0jxdo50pgb5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/20/web-django-17-ModelForm/" data-id="ckrnbh1vg006j10jx8a6cuiz5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -408,7 +475,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="ckrlieswc007cz0jx554rdv6e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/15/web-get_post_contentype知识/" data-id="ckrnbh1w7007910jxexn5p8uz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -475,7 +542,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="ckrliesuh005hz0jx6r4ncko8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/06/python-spider01-基础知识/" data-id="ckrnbh1uw005i10jxhxwexmmy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -527,7 +594,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="ckrliesvw006yz0jxg6hjf6h4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="ckrnbh1vp006x10jxptdl9s0h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -588,7 +655,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="ckrliesvv006wz0jx0da9phag" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="ckrnbh1vn006v10jxdkj7rjnb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -655,63 +722,7 @@ print(v1.site.name)
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="ckrliesvy0070z0jxlalccm7i" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-haproxy-基础" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/12/haproxy-基础/" class="article-date">
-  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>haproxy基本介绍</li>
-<li>haproxy基础语法</li>
-<li>haproxy应用</li>
-</ul>
-<h2 id="haproxy基本介绍"><a href="#haproxy基本介绍" class="headerlink" title="haproxy基本介绍"></a>haproxy基本介绍</h2><h2 id="haproxy基础语法"><a href="#haproxy基础语法" class="headerlink" title="haproxy基础语法"></a>haproxy基础语法</h2><p>当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。</p>
-<p>取模法：<br>key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器</p>
-<p>当有服务器添加或移走这种缓存就失效了</p>
-<p>如何解决，是有办法的，那就是改进上面那种方法，称一致性hash算法：consitent hash</p>
-<p>有一个环，用32位二进制从0开始计数，环上分布有离散的2^32 点。<br>key hash 后的值除以2^32时取余数，这个余数一定在0到2^32-1范围内，也就是在这个环上<br>那么数据就是存储在余数的下一台服务器上，服务器是离散分布在这样的环上的。<br>缺点：服务器分布可能存在偏斜，也就是可能所有服务器集中在环三分之一处。<br>当存储数据找下一台服务器，那台服务器存储量太大了。</p>
-<p>解决办法：<br>使用虚拟节点离散分布在环上来代替物理节点。<br>hadoop前身开源搜索引擎，任何搜索引擎首先是大数据搜索平台，其次才是高性能分析平台。</p>
-<p>流式数据存储处理平台：storm  spark大数据处理平台。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">nginx:</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">	proxy_pass: </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="haproxy应用"><a href="#haproxy应用" class="headerlink" title="haproxy应用"></a>haproxy应用</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="ckrliespw0018z0jxdaxe40jo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="ckrnbh1vj006p10jxq2l8fe4e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -752,7 +763,7 @@ print(v1.site.name)
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -763,6 +774,10 @@ print(v1.site.name)
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/10/15/linux-dd-fio/">磁盘性能测试</a>
+          </li>
         
           <li>
             <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
@@ -778,10 +793,6 @@ print(v1.site.name)
         
           <li>
             <a href="/2021/05/10/mongodb-01集群/">mongodb-01集群</a>
-          </li>
-        
-          <li>
-            <a href="/2021/04/28/kubernetes-ubuntu-docker/">Ubuntu k8s for  docker</a>
           </li>
         
       </ul>
