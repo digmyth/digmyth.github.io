@@ -62,6 +62,64 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-log_lucene-认识" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/15/log_lucene-认识/" class="article-date">
+  <time datetime="2019-06-15T02:42:36.000Z" itemprop="datePublished">2019-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日志系统/">日志系统</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/15/log_lucene-认识/">搜索引擎与Lucene基础</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> 简单常识：<br>1千万条日志记录存储大小为2G<br>1亿条日志记录  5G<br>8亿条日志记录  40G</p>
+<p>程序： 算法+数据结构<br>存储+前端访问接口</p>
+<p>开发全文搜索程序： 算法+支持这种场景的特定存储结构<br>海量日志分析： 搜索引擎<br>搜索引擎： 存储时需要有索引链–&gt; 搜索组件（有请求接口有请求返回或展示UI）</p>
+<p>收集日志 –&gt; 对收集过来日志检索原始内容–&gt; 构建文档 –&gt;文档分析或切词  –&gt; 建立索引链（创建倒排索引）<br>而SQL的索引： 正排索引</p>
+<p>文档数据库： Mongodb、elasticsearch(每一行中每字段文档数据格式各不一样)</p>
+<p>著名开源搜索开发库或底层搜索引擎: Lucene<br>添加收集文档，搜索引擎，提供上层搜索接口：  Elasticsearch </p>
+<p>包含一个或多个域的容器，文档就是由Field、Value组成<br>Lucene没有全局模式：no schema,没有预先定义字段及类型<br>域有很多选项： 索引选项、存储选项、每个域向量使用选项<br>索引选项用于通过倒排索来控制文本是否可被搜索，成为索引中的项才能被搜索：<br>      index:  ANALYZIED 需要分析或分词并单独构建索引项<br>      index:  not_ANALYZIED  不分析或不分词，把整个内容当一个索引项<br>      index:  analyzied norms 类似index:  ANALYZIED，不会在存储中存储加权信息(Norms:加权基准)<br>      index.Not_analyzied_norms 类似not_ANALYZIED，不会在存储中存储加权信息(Norms:加权基准)<br>      index.NO : 不对此域的值进行索引，因此不能被搜索<br>存储选项: 是否需要存储域的真实值<br> title:  This is a Notebook.  –&gt; this notebook 有效信息即可<br>   store.YES: 存储真实值<br>   store.NO:   不存储真实值 </p>
+<p>(每个项或每个域)向量选项用于在搜索期间控制该文档所有的唯一项都能完全从文档域中检索时使用</p>
+<p>文档和域的加权操作： 通过改变某一个文档相对于某一个词的加权因子，对值改大改小可以决定它对用户的重要程序，如竟价排名<br>    加权计算标准：方案很多</p>
+<p>搜索：查询Lucene索引时，返回一个有序的scoreDoc对象：<br>查询时Lucene会为每个文档计算出score,<br>API: IndexSearcher: 搜索索引入口<br>      Query及其子类：构建搜索查询语句<br>      QueryParser: 搜索分析后返回结果<br>      TopDocs 某查询分值top10</p>
+<p>Lucene的多样化查询：<br>    IndexSearcher中的search方法，完成搜索时传入Query实例参数进行，就是告之到底要搜索什么，你键入的搜索关键词分析以后作为Query对象，传递给IndexSearch方法</p>
+<p>常用几种查询方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">TermQuery： 对索引中特定项进行搜索，Term是索引中的最小索引片段，每个Term包含一个域名和文本值</span><br><span class="line"></span><br><span class="line">title: This is a Desk</span><br><span class="line">title: Tis is a table</span><br><span class="line">索引构建方式：     This： （1） (2)</span><br><span class="line">                   Desk：  (1)</span><br><span class="line">				   table:  (2)</span><br><span class="line">				   </span><br><span class="line"> TermRangeQuery:索引中每个Term对象上的值都会按照字典编排顺序进行排序，并允许在Lucene TermRangeQuery 提供的范围内进行搜索</span><br><span class="line">                大白话就是TermQuery指定一个域中搜索，TermRangeQuery可以指定多个域内搜索</span><br><span class="line">			  </span><br><span class="line"> NumericRangeQuery： 只是数值范围内搜索</span><br><span class="line"> PrefixQuery： 用于搜索以指定字符串开头的域</span><br><span class="line"> BooleanQuery：用于实现组合查询，与或非  and 、or、 not</span><br><span class="line"> PhraseQuery： 能够跟据位置信息定义文档</span><br><span class="line">    WildcardQuery：通配符</span><br><span class="line">    FuzzyQuery：  模糊查询	</span><br><span class="line">    levenshtein处理</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>Lucene是底层搜索引擎或搜索开发库，基于Lucene库开发有了Elasticsearch存储、搜索引擎系统</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="cksfe2t00003j11jxu205nqok" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-Kubernetes-dashboard-TLS坑" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/" class="article-date">
@@ -97,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="cks8fxsn60003izjx3iz3xd5b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="cksfe2svy000011jxyfrwb9b1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -163,7 +221,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="cks8fxsrs005jizjxiuf7sm3m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="cksfe2t2q005n11jxow78g48w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -216,7 +274,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="cks8fxsnt000kizjx68x3tiee" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="cksfe2swr000l11jx0bcni3jm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -275,7 +333,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="cks8fxsnu000mizjxxqlgt3r8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="cksfe2swt000n11jxyxcjdkhu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -322,7 +380,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="cks8fxss30062izjxp0dv1r1m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="cksfe2t3l007411jxr9gupta3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -386,7 +444,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="cks8fxsr5004hizjxwrva6hm8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="cksfe2t1p004j11jxxyxfkmhr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -434,7 +492,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="cks8fxspt002oizjxe11hnwfu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="cksfe2sz6002t11jxwp7evuws" class="article-share-link">Share</a>
       
       
     </footer>
@@ -495,7 +553,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="cks8fxst5007iizjxd4vlb154" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="cksfe2t40007l11jxjc8mwzjz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -583,55 +641,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cks8fxst4007gizjxr8dcdq62" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Kubernetes-dashboard" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/01/Kubernetes-dashboard/" class="article-date">
-  <time datetime="2018-10-01T12:51:41.000Z" itemprop="datePublished">2018-10-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/01/Kubernetes-dashboard/">kubernetes-dashboard</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/10/01/Kubernetes-dashboard/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="cks8fxsn80004izjxaraek971" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="cksfe2t3w007g11jx3cw2c5s7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -689,6 +699,10 @@
           </li>
         
           <li>
+            <a href="/2021/07/25/prometheus-relabel/">prometheus relabel</a>
+          </li>
+        
+          <li>
             <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
           </li>
         
@@ -698,10 +712,6 @@
         
           <li>
             <a href="/2021/07/02/kubernetes-kubeadmHA/">kubeadm HA</a>
-          </li>
-        
-          <li>
-            <a href="/2021/06/10/mongodb-02-权限控制/">mongodb-访问控制</a>
           </li>
         
       </ul>

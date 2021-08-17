@@ -62,6 +62,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-kafak-cluster" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/03/15/linux-kafak-cluster/" class="article-date">
+  <time datetime="2021-03-15T02:48:54.000Z" itemprop="datePublished">2021-03-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/15/linux-kafak-cluster/">zookeeper kafka集群</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>kafka集群依赖zookeeper运行，新版本不依赖zookeeper，但不具备生产环境使用条件</p>
+<p>zookeeper集群部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">https://zookeeper.apache.org/releases.html</span><br><span class="line"></span><br><span class="line">https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">edit conf/zoo.cfg</span><br><span class="line">tickTime=2000</span><br><span class="line">dataDir=/var/lib/zookeeper</span><br><span class="line">clientPort=2181</span><br><span class="line">initLimit=5</span><br><span class="line">syncLimit=2</span><br><span class="line">server.1=zoo1:2888:3888</span><br><span class="line">server.2=zoo2:2888:3888</span><br><span class="line">server.3=zoo3:2888:3888</span><br><span class="line"></span><br><span class="line">./bin/zkServer.sh start conf/zoo.cfg</span><br></pre></td></tr></table></figure></p>
+<p>kafka集群部署<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">https://kafka.apache.org/documentation</span><br><span class="line"></span><br><span class="line">https://www.apache.org/dyn/closer.cgi?path=/kafka/2.8.0/kafka_2.13-2.8.0.tgz</span><br><span class="line"></span><br><span class="line">tar -xf  kafka_2.13-2.8.0.tgz</span><br><span class="line">cd kafka_2.13-2.8.0</span><br><span class="line">cat config/server.properties</span><br><span class="line">broker.id=0 # 每节点不同</span><br><span class="line">zookeeper.connect=10.17.100.10:2181,10.17.100.20:2181,10.17.100.30:2181 # 相同配置</span><br><span class="line">./bin/kafka-server-start.sh  config/server.properties</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>先写下</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="cksfe2szv003e11jxosmsbr5j" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-ansible-awx" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/03/15/linux-ansible-awx/" class="article-date">
@@ -100,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="cks8fxspg002eizjxvbvkjlj7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="cksfe2syt002h11jxmc3vjd4m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -158,7 +205,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="cks8fxsq30034izjxljhezgar" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="cksfe2szh003311jx7exyqlfd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="cks8fxsr2004dizjxv7dfjtrx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="cksfe2t12004911jxzyued558" class="article-share-link">Share</a>
       
       
     </footer>
@@ -254,7 +301,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="cks8fxsov001uizjxrs0fz5js" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="cksfe2sy4001v11jxsy0m4rfy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -302,7 +349,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="cks8fxsom001lizjxrbdglxc2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="cksfe2sxq001j11jxo0qeast0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -350,7 +397,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="cks8fxsr6004jizjx9pa73eyw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="cksfe2t1b004d11jxudpik589" class="article-share-link">Share</a>
       
       
     </footer>
@@ -412,7 +459,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="cks8fxsos001sizjxijcut09k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="cksfe2sy2001t11jxafg2ne8y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -460,7 +507,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="cks8fxsox001xizjxylobpkv4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="cksfe2sy6001y11jxplsl0klq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -508,55 +555,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="cks8fxsp20022izjxj355i4i4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-kubernetes-secret" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/01/03/kubernetes-secret/" class="article-date">
-  <time datetime="2021-01-03T12:51:41.000Z" itemprop="datePublished">2021-01-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/01/03/kubernetes-secret/">kubernetes secret</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2021/01/03/kubernetes-secret/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="cks8fxsp40024izjxvdthli7g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="cksfe2syj002911jxkohn4440" class="article-share-link">Share</a>
       
       
     </footer>
@@ -614,6 +613,10 @@
           </li>
         
           <li>
+            <a href="/2021/07/25/prometheus-relabel/">prometheus relabel</a>
+          </li>
+        
+          <li>
             <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
           </li>
         
@@ -623,10 +626,6 @@
         
           <li>
             <a href="/2021/07/02/kubernetes-kubeadmHA/">kubeadm HA</a>
-          </li>
-        
-          <li>
-            <a href="/2021/06/10/mongodb-02-权限控制/">mongodb-访问控制</a>
           </li>
         
       </ul>
