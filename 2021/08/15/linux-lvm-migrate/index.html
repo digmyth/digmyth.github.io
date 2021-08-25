@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
 <meta property="og:description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失 扫盘1for  i in $(find /sys -iname &amp;apos;scan&amp;apos;); do echo &amp;quot;- - -&amp;q">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-08-25T05:55:38.817Z">
+<meta property="og:updated_time" content="2021-08-25T05:58:40.077Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LVM 换盘">
 <meta name="twitter:description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失 扫盘1for  i in $(find /sys -iname &amp;apos;scan&amp;apos;); do echo &amp;quot;- - -&amp;q">
@@ -93,23 +93,22 @@
         <p>背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换</p>
 <p>模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失</p>
 <p>扫盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for  i in $(find /sys -iname &apos;scan&apos;); do echo &quot;- - -&quot; &gt; $i; done</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">裸盘分区</span><br></pre></td></tr></table></figure>
-<p>parted /dev/sdb  -s – mklabel gpt mkpart primary 1 100%<br>parted /dev/sdc  -s – mklabel gpt mkpart primary 1 100%<br>parted /dev/sdd  -s – mklabel gpt mkpart primary 1 100%<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">制作PV</span><br></pre></td></tr></table></figure></p>
-<p>pvcreate  /dev/sdb  /dev/sdc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">制作VG</span><br></pre></td></tr></table></figure></p>
-<p>vgcreate vg001 /dev/sdb  /dev/sdc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">划分LV, 有意划分3G大小卷跨物理PV</span><br></pre></td></tr></table></figure></p>
-<p>lvcreate -L 3G -n lv001 vg001<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">查看物理PE信息</span><br></pre></td></tr></table></figure></p>
-<p>pvdisplay<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">查看VG信息</span><br></pre></td></tr></table></figure></p>
-<p>vgdisplay<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">卷写入数据</span><br></pre></td></tr></table></figure></p>
-<h1 id="mkfs-ext4-dev-mapper-vg001-lv001"><a href="#mkfs-ext4-dev-mapper-vg001-lv001" class="headerlink" title="mkfs.ext4 /dev/mapper/vg001-lv001"></a>mkfs.ext4 /dev/mapper/vg001-lv001</h1><h1 id="mount-dev-mapper-vg001-lv001-data"><a href="#mount-dev-mapper-vg001-lv001-data" class="headerlink" title="mount /dev/mapper/vg001-lv001  /data"></a>mount /dev/mapper/vg001-lv001  /data</h1><h1 id="echo-“test-lvm-data”-gt-data-test-txt"><a href="#echo-“test-lvm-data”-gt-data-test-txt" class="headerlink" title="echo “test lvm data” &gt; /data/test.txt"></a>echo “test lvm data” &gt; /data/test.txt</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">添加第三块到VG</span><br></pre></td></tr></table></figure>
-<p>vgextend  vg001 /dev/sdd<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">移除第一块盘中的PE</span><br></pre></td></tr></table></figure></p>
-<p>pvmove /dev/sdb<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">从VG中移除第一块盘</span><br></pre></td></tr></table></figure></p>
-<p>vgreduce  vg001 /dev/sdb<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">最后移除PV</span><br></pre></td></tr></table></figure></p>
-<p>pvremove /dev/sdb<br><code>`</code></p>
+<p>裸盘分区<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">parted /dev/sdb  -s -- mklabel gpt mkpart primary 1 100%</span><br><span class="line">parted /dev/sdc  -s -- mklabel gpt mkpart primary 1 100%</span><br><span class="line">parted /dev/sdd  -s -- mklabel gpt mkpart primary 1 100%</span><br></pre></td></tr></table></figure></p>
+<p>制作PV<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvcreate  /dev/sdb  /dev/sdc</span><br></pre></td></tr></table></figure></p>
+<p>制作VG<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgcreate vg001 /dev/sdb  /dev/sdc</span><br></pre></td></tr></table></figure></p>
+<p>划分LV, 有意划分3G大小卷跨物理PV<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lvcreate -L 3G -n lv001 vg001</span><br></pre></td></tr></table></figure></p>
+<p>查看物理PE信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvdisplay</span><br></pre></td></tr></table></figure></p>
+<p>查看VG信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgdisplay</span><br></pre></td></tr></table></figure></p>
+<p>卷写入数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># mkfs.ext4 /dev/mapper/vg001-lv001</span><br><span class="line"># mount /dev/mapper/vg001-lv001  /data</span><br><span class="line"># echo &quot;test lvm data&quot; &gt; /data/test.txt</span><br></pre></td></tr></table></figure></p>
+<p>添加第三块到VG<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgextend  vg001 /dev/sdd</span><br></pre></td></tr></table></figure></p>
+<p>移除第一块盘中的PE<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvmove /dev/sdb</span><br></pre></td></tr></table></figure></p>
+<p>从VG中移除第一块盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgreduce  vg001 /dev/sdb</span><br></pre></td></tr></table></figure></p>
+<p>最后移除PV<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvremove /dev/sdb</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="cksr32rv2002zcyjxc9stg17s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="cksr36o54002zdrjxp4bmvwr8" class="article-share-link">Share</a>
       
       
     </footer>
