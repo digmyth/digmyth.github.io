@@ -62,6 +62,86 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-10-02-网络编程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/31/python-10-02-网络编程/" class="article-date">
+  <time datetime="2017-03-31T14:26:46.000Z" itemprop="datePublished">2017-03-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/31/python-10-02-网络编程/">python-09-02-网络编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>socket概念</li>
+<li>socket基本使用</li>
+<li>socket简单示例</li>
+<li>总结 </li>
+</ul>
+<h2 id="一、socket概念"><a href="#一、socket概念" class="headerlink" title="一、socket概念"></a>一、socket概念</h2><p>什么是socket ?</p>
+<p>socket常称为’套接字’，用于描述IP地址和端口，是一个通信链的句柄，应用程序通常通过”套接字”向网络发出请求或应答网络请求。</p>
+<p><code>Unix</code>中一切皆文件，socket是一种特殊的套接字文件，对网络的编程就是对服务器，客户端socket对象<code>打开</code> <code>读写</code> <code>关闭</code>  的过程。</p>
+<p>所不同的是对于服务器而言，连接进来了，socket套接字为可读状态，发送数据为可写状态。</p>
+<p>对于客户端而言，创建连接后socket套接字为可写状态，发送数据为可读状态。</p>
+<h2 id="二、socket基本使用"><a href="#二、socket基本使用" class="headerlink" title="二、socket基本使用"></a>二、socket基本使用</h2><p>服务器端<br>第一步： 创建 套接字对够用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import socket</span><br><span class="line">socket.socket(family, type)</span><br><span class="line">family  </span><br><span class="line">	AF_INET</span><br><span class="line">	AF_UNIX</span><br><span class="line">type</span><br><span class="line">	SOCK_STREAM   -------&gt; TCP</span><br><span class="line">	SOCK_DGRAM    -------&gt; UDP</span><br><span class="line">conns = socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br></pre></td></tr></table></figure></p>
+<p>第二步：  绑定地址<br>使用套接字对象的 bind方法绑定于地址和端口组成的元组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conns.bind((&apos;ip&apos;,port))</span><br></pre></td></tr></table></figure></p>
+<p>第三步： 使用套接字的<code>Listen()</code>方法进行监听<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conns.listen(10)   #等待队列长度</span><br></pre></td></tr></table></figure></p>
+<p>第四步： 进入循环监听状态</p>
+<p>使用套接字的<code>accept()</code>方法接收用户连接请求<br><code>help(tcpconn.accept)</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client_sock,client_addr = conns.accept()</span><br></pre></td></tr></table></figure></p>
+<p>编写客户端程序<br>第一步： 创建套接字对象以连接服务器端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client_conn =  socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br></pre></td></tr></table></figure></p>
+<p>第二步： 请求连接服务器<br>client_conn.conncet((‘server_ip’, port))</p>
+<p>第三步： 发送数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client_conn.send(b&apos;hello world&apos;)</span><br></pre></td></tr></table></figure>
+<p>示例<br>server.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import socket</span><br><span class="line"></span><br><span class="line">sock = socket.socket()</span><br><span class="line">sock.bind((&apos;127.0.0.1&apos;,8000))</span><br><span class="line">sock.listen(5)</span><br><span class="line"></span><br><span class="line">while True:</span><br><span class="line">    conn,addr = sock.accept()</span><br><span class="line"></span><br><span class="line">    client_data = conn.recv(1024)</span><br><span class="line">    print(client_data)</span><br><span class="line">    conn.sendall(&apos;response info from server&apos;)</span><br><span class="line"></span><br><span class="line">    conn.close()</span><br></pre></td></tr></table></figure></p>
+<p>client.py<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import socket</span><br><span class="line"></span><br><span class="line">sk = socket.socket()</span><br><span class="line">sk.connect((&apos;127.0.0.1&apos;,8000))</span><br><span class="line"></span><br><span class="line">sk.sendall(&apos;请求数据&apos;)</span><br><span class="line"></span><br><span class="line">server_reply = sk.recv(1024)</span><br><span class="line">print(server_reply)</span><br><span class="line"></span><br><span class="line">sk.close()</span><br></pre></td></tr></table></figure></p>
+<h2 id="三、socket简单示例"><a href="#三、socket简单示例" class="headerlink" title="三、socket简单示例"></a>三、socket简单示例</h2><p>python中网络编程主要有socket/socketserver和异步相关的Twisted/tornado/</p>
+<p>socket这里包括自己用select实现的伪异步IO多路复用</p>
+<p>2.1 示例一<br>web浏览器和socket_server交互,浏览器将收到服务端返回的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># socket_server.py</span><br><span class="line">import socket</span><br><span class="line"></span><br><span class="line">def handle_process(client):</span><br><span class="line">    data = client.recv(1024)</span><br><span class="line">    print(data.decode(&quot;utf-8&quot;))</span><br><span class="line">    client.send(b&quot;HTTP/1.1 200 OK\r\n\r\n&quot;)#一定要先发送合规请求头</span><br><span class="line">    client.send(b&apos;hello worldfdds&apos;)</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">    sock.bind((&apos;127.0.0.1&apos;,8003))</span><br><span class="line">    sock.listen(5)</span><br><span class="line"></span><br><span class="line">    while True:</span><br><span class="line">        conn,addr = sock.accept()</span><br><span class="line">        handle_process(conn)</span><br><span class="line">        conn.close()</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure></p>
+<p>2.2 示例二<br>socket + select 实现IO多路复用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># socket_server.py</span><br><span class="line">import select</span><br><span class="line">import socket</span><br><span class="line"># 单线程里同时监听多个socket对象，实现了&quot;伪&quot;并发IO操作： IO多路复用</span><br><span class="line">sk1 = socket.socket()</span><br><span class="line">sk1.bind((&apos;127.0.0.1&apos;,8001))</span><br><span class="line">sk1.listen(5)</span><br><span class="line"></span><br><span class="line">sk2 = socket.socket()</span><br><span class="line">sk2.bind((&apos;127.0.0.1&apos;,8002))</span><br><span class="line">sk2.listen(5)</span><br><span class="line"></span><br><span class="line">inputs = [sk1,sk2]</span><br><span class="line">w_inputs = []</span><br><span class="line">while True:</span><br><span class="line">    # IO多路复用：</span><br><span class="line">    # select: 内部循环，主动查看</span><br><span class="line">    # poll:   内部循环，主动查看</span><br><span class="line">    # epoll:  非循环，  异步回调或被动通知</span><br><span class="line">    r,w,e = select.select(inputs,w_inputs,[],0.05)</span><br><span class="line">    for obj in r:</span><br><span class="line">        if obj in [sk1,sk2]:</span><br><span class="line">            print(&quot;新的连接来了。。&quot;)</span><br><span class="line">            conn,addr = obj.accept()</span><br><span class="line">            inputs.append(conn)</span><br><span class="line">        else:</span><br><span class="line">            print(&quot;新的数据来了&quot;)</span><br><span class="line">            try:</span><br><span class="line">                data=obj.recv(1024)</span><br><span class="line">            except Exception as e:</span><br><span class="line">                data = &quot;&quot;</span><br><span class="line">            if data:</span><br><span class="line">                # obj.sendall(data)</span><br><span class="line">                w_inputs.append(obj)</span><br><span class="line">            else:</span><br><span class="line">                inputs.remove(obj)</span><br><span class="line">                w_inputs.remove(obj)</span><br><span class="line">                obj.close()</span><br><span class="line">    for obj in w:</span><br><span class="line">        obj.sendall(b&apos;ok&apos;)</span><br><span class="line">        w_inputs.remove(obj)</span><br></pre></td></tr></table></figure></p>
+<p>定义2个socket_client</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># socket_client01.py</span><br><span class="line">import socket</span><br><span class="line"></span><br><span class="line">client = socket.socket()</span><br><span class="line">client.connect((&apos;127.0.0.1&apos;,8001))</span><br><span class="line">while True:</span><br><span class="line"></span><br><span class="line">    v = input(&quot;&gt;&gt;&gt;&quot;)</span><br><span class="line">    client.sendall(v.encode())</span><br><span class="line">    ret = client.recv(1024)</span><br><span class="line">    print(&quot;server response:&quot;,ret)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># socket_client02.py</span><br><span class="line">import socket</span><br><span class="line"></span><br><span class="line">client = socket.socket()</span><br><span class="line">client.connect((&apos;127.0.0.1&apos;,8002))</span><br><span class="line">while True:</span><br><span class="line">    v = input(&quot;&gt;&gt;&gt;&quot;)</span><br><span class="line">    client.sendall(v.encode())</span><br><span class="line">    ret = client.recv(1024)</span><br><span class="line">    print(&quot;server response:&quot;,ret)</span><br></pre></td></tr></table></figure>
+<p>测试服务端并发： 先启动socket_server.py,后启动socket_clientx.py</p>
+<p>小结：<br>服务端单线程同时监听了多个socket对象，表明实现了并发连接或IO多路复用，但真正实现了并发吗？当并发边连接有IO请求时还是占住了资源,那么在下一个例子中用线程处理IO请求实现真正的IO并发</p>
+<p>4.2 示例三<br>select + 线程实现真正的多并发<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import select</span><br><span class="line">import socket</span><br><span class="line">import threading</span><br><span class="line"></span><br><span class="line">def process_request(conn):</span><br><span class="line"></span><br><span class="line">    while True:</span><br><span class="line">        v = conn.recv(1024)</span><br><span class="line">        conn.sendall(b&apos;HTTP/1.1 200 OK\r\n\r\ndownload page ...&apos;)</span><br><span class="line">        conn.close()</span><br><span class="line">        break  # 任务处理完成后终止这个线程</span><br><span class="line"></span><br><span class="line">sk1 = socket.socket()</span><br><span class="line">sk1.bind((&apos;127.0.0.1&apos;,8009))</span><br><span class="line">sk1.listen(5)</span><br><span class="line"></span><br><span class="line">inputs = [sk1,]</span><br><span class="line">while True:</span><br><span class="line">    r,w,e = select.select(inputs,[],[],0.05)</span><br><span class="line">    for obj in r:</span><br><span class="line">        if obj in [sk1,]:</span><br><span class="line">            conn,addr = obj.accept()</span><br><span class="line">            t=threading.Thread(target=process_request,args=(conn,))</span><br><span class="line">            t.start()</span><br></pre></td></tr></table></figure></p>
+<p>设计思路可参考 socketserver源代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import socketserver</span><br><span class="line">class MyHandler(socketserver.BaseRequestHandler):</span><br><span class="line">    def handle(self):</span><br><span class="line">        pass</span><br><span class="line">    </span><br><span class="line">server = socketserver.ThreadingTCPServer((&apos;127.0.0.1&apos;,8001),MyHandler)</span><br><span class="line">server.serve_forever()</span><br></pre></td></tr></table></figure></p>
+<p>4.2 示例四<br>浏览器会自动向服务端请求头的一些数据，process_data()函数对请求头做了结构化处理，同时浏览器请求什么URL，服务端就会返回什么URL, 在此基础上可以用类封装为一个web框架邹形,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">import select</span><br><span class="line">import socket</span><br><span class="line"></span><br><span class="line">def process_data(client):</span><br><span class="line">    data = bytes()</span><br><span class="line">    while True:</span><br><span class="line">        try:</span><br><span class="line">            chunk = client.recv(1024)</span><br><span class="line">        except Exception as e:</span><br><span class="line">            chunk = None</span><br><span class="line">        if not chunk:</span><br><span class="line">            break</span><br><span class="line">        data += chunk</span><br><span class="line">    data_str = str(data, encoding=&quot;utf-8&quot;)</span><br><span class="line">    header,body = data_str.split(&apos;\r\n\r\n&apos;,1)</span><br><span class="line">    header_list = header.split(&apos;\r\n&apos;,1)</span><br><span class="line">    header_dict = &#123;&#125;</span><br><span class="line">    for line in header_list:</span><br><span class="line">        value = line.split(&apos;:&apos;, 1)</span><br><span class="line">        if len(value) == 2:</span><br><span class="line">            k, v = value</span><br><span class="line">            header_dict[k] = v</span><br><span class="line">        else:</span><br><span class="line">            header_method, header_url, header_protocal = line.split(&quot; &quot;)</span><br><span class="line">            header_dict[&quot;header_method&quot;] = header_method</span><br><span class="line">            header_dict[&quot;header_url&quot;] = header_url</span><br><span class="line">            header_dict[&quot;header_protocal&quot;] = header_protocal</span><br><span class="line"></span><br><span class="line">    return header_dict,body</span><br><span class="line"></span><br><span class="line">sock = socket.socket()</span><br><span class="line">sock.setblocking(False)                     # setblocking表示是否设置为阻塞模式,这里是对accept生效</span><br><span class="line">sock.bind((&apos;127.0.0.1&apos;,8008))</span><br><span class="line">sock.listen(5)</span><br><span class="line"></span><br><span class="line"># while True:</span><br><span class="line">#     conn,addr = sock.accept() #setblocking(False)后不阻塞了，有连接就拿连接，没有连接就直接报错</span><br><span class="line">#     conn.setblocking(False)</span><br><span class="line">#     conn.recv(1024)                       # 有数据拿数据，没有数据就直接报错</span><br><span class="line">inputs = [sock,]</span><br><span class="line">while True:</span><br><span class="line">    rList,wList,eList = select.select(inputs,[],[],0.05)</span><br><span class="line">    for client in rList:</span><br><span class="line">        if client == sock:  # 建立新的连接</span><br><span class="line">            conn,addr = client.accept()</span><br><span class="line">            conn.setblocking(False)         # 有数据拿数据，没有数据就直接报错</span><br><span class="line">            inputs.append(conn)</span><br><span class="line">        else:</span><br><span class="line">            header_dict,body=process_data(client)</span><br><span class="line">            request_url=header_dict[&apos;header_url&apos;]</span><br><span class="line">            client.send(b&apos;HTTP/1.1 200 OK\r\n\r\n&apos;)</span><br><span class="line">            client.send(request_url.encode(&quot;utf-8&quot;))</span><br><span class="line">            inputs.remove(client)</span><br><span class="line">            client.close()</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>对网络的编程就是对服务器，客户端socket对象<code>打开</code> <code>读写</code> <code>关闭</code>  的过程。<br>所不同的是对于服务器而言，连接进来了，socket套接字为可读状态，发送数据为可写状态。<br>对于客户端而言，创建连接后socket套接字为可写状态，发送数据为可读状态。<br>掌握socket可读可写状态</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="cksqyaocg005i0njxk6hzlr2n" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-python-08-02-面象对象编程中级" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/03/26/python-08-02-面象对象编程中级/" class="article-date">
@@ -109,7 +189,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cksk0khfs005szxjx14y18zvo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="cksqyaoc800580njxe7et14qd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -159,7 +239,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cksk0khfj005gzxjxaj4r3c0w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="cksqyaoc9005a0njxhxihaj2e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -263,7 +343,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cksk0khfl005kzxjx49eqo4mi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="cksqyaocq005y0njx8qxtw5qc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -348,7 +428,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cksk0khgb006jzxjxy00k5sac" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="cksqyaocu00660njxjaolzu8x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -434,7 +514,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cksk0khfh005ezxjx77niv262" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="cksqyaoc600560njxpk8pz3rv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -506,7 +586,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cksk0khff005azxjxnayu74eo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="cksqyaoc500540njxvwbhwiuo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -583,7 +663,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cksk0khfg005czxjx4rn98kbt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="cksqyaoc400520njxf4q17mo2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -797,7 +877,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cksk0khfe0058zxjxh8o22mek" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="cksqyaoc2004y0njxwk6qltcn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -883,82 +963,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cksk0khfb0056zxjx0c8ljo21" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-01-开发入门" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/15/web-01-开发入门/" class="article-date">
-  <time datetime="2017-02-15T12:51:41.000Z" itemprop="datePublished">2017-02-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/15/web-01-开发入门/">web-01-开发入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从现在开始，此时此刻写点<code>web开发</code>和<code>Django</code> 的知识，便于以后查阅学习。<br>廖雪峰老师的博客写得特别好，我也是摘抄参考其内容。<br><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000" target="_blank" rel="noopener">廖雪峰老师博客原文</a></p>
-<h2 id="一-HTTP协议简介"><a href="#一-HTTP协议简介" class="headerlink" title="一.   HTTP协议简介"></a>一.   HTTP协议简介</h2><h3 id="web历程"><a href="#web历程" class="headerlink" title="web历程"></a>web历程</h3><p>web开发经历几个阶段<br>1  静态页面: 直接由编辑器生成静态html<br>2  CGI:  交互与动态数据处理出现了CGI（common gateway interface）,由C/C++编写<br>3  脚本语言（ASP/JSP/PHP）: 脚本语言开发效率高，与html结合紧密<br>4  框架：mvc mtv mvvm</p>
-<h3 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h3><p>服务器把网页传给浏览器，实际上就是把网页的html代码发送给浏览器，让浏览器显示出来。而浏览器和服务器之间的传输协议就是HTTP</p>
-<p>HTML是一种用来定义网页的文本，会HTML就会编写网页<br>http是在网络上传输html的协议，用于浏览器和服务器的通信</p>
-<p>Elements显示网页的结构，Network显示浏览器和服务器的通信。我们点Network，确保第一个小红灯亮着，Chrome就会记录所有浏览器和服务器之间的通信。</p>
-<p>GET / HTTP/1.1： 注：1.1版本允许多个HTTP请求复用一个TCP连接，以加快传输速度<br>浏览器就是依靠Content-Type来判断响应的内容是网页还是图片，是视频还是音乐</p>
-<p>当浏览器读取到新浪首页的HTML源码后，它会解析HTML，显示页面，然后，根据HTML里面的各种链接，再发送HTTP请求给新浪服务器，拿到相应的图片、视频、Flash、JavaScript脚本、CSS等各种资源，最终显示出一个完整的页面。所以我们在Network下面能看到很多额外的HTTP请求。</p>
-<h3 id="HTTP请求流程"><a href="#HTTP请求流程" class="headerlink" title="HTTP请求流程"></a>HTTP请求流程</h3><p>步骤1：<br>浏览器向服务器发送http请求<br>    方法：GET仅请求资源 POST    会附带用户数据body部份<br>    路径; /full/url/path<br>    域名：</p>
-<p>步骤2：<br>服务器向浏览器返回HTTP响应<br>    响应代码：<code>200</code>表示成功 <code>3**</code> 表示重定向  <code>4**</code> 表示客户端发送的请求有错误 <code>5**</code> 表示服务器处理错误<br>    响应类型： 由Content-Type指定<br>    通常服务器的HTTP响应会携带内容，也就是有一个Body，包含响应的内容，网页的HTML源码就在Body中</p>
-<p>步骤3：如果浏览器还需要继续向服务器请求其他资源，比如图片，就再次发出HTTP请求，重复步骤1、2</p>
-<p>Web采用的HTTP协议采用了非常简单的请求-响应模式，从而大大简化了开发。当我们编写一个页面时，我们只需要在HTTP请求中把HTML发送出去，不需要考虑如何附带图片、视频等，浏览器如果需要请求图片和视频，它会发送另一个HTTP请求，因此，一个HTTP请求只处理一个资源</p>
-<p>HTTP协议同时具备极强的扩展性，虽然浏览器请求的是<code>http://www.sina.com.cn/</code>的首页，但是新浪在HTML中可以链入其他服务器的资源，比如<code>&lt;img src=&quot;#url&quot;/&gt;</code>，从而将请求压力分散到各个服务器上，并且一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web，简称WWW。</p>
-<h2 id="二-HTML简介"><a href="#二-HTML简介" class="headerlink" title="二. HTML简介"></a>二. HTML简介</h2><p>HTML是一种用来定义网页的文本，会HTML就会编写网页 。<br>其它前端知识不在这里展开。略。。。</p>
-<h2 id="三-WSGI接口"><a href="#三-WSGI接口" class="headerlink" title="三 . WSGI接口"></a>三 . WSGI接口</h2><p>了解了HTTP协议和HTML文档，我们其实就明白了一个Web应用的本质就是：<br>浏览器发送一个HTTP请求；<br>服务器收到请求，生成一个HTML文档；<br>服务器把HTML文档作为HTTP响应的Body发送给浏览器；<br>浏览器收到HTTP响应，从HTTP Body取出HTML文档并显示。</p>
-<p>所以，最简单的Web应用就是先把HTML用文件保存好，用一个现成的HTTP服务器软件，接收用户请求，从文件中读取HTML，返回。Apache、Nginx、Lighttpd等这些常见的静态服务器就是干这件事情的。</p>
-<p>如果要动态生成HTML，就需要把上述步骤自己来实现。不过，接受HTTP请求、解析HTTP请求、发送HTTP响应都是苦力活，如果我们自己来写这些底层代码，还没开始写动态HTML呢，就得花个把月去读HTTP规范。</p>
-<p>正确的做法是底层代码由专门的服务器软件实现，我们用Python专注于生成HTML文档。因为我们不希望接触到TCP连接、HTTP原始请求和响应格式，所以，需要一个统一的接口，让我们专心用Python编写Web业务。</p>
-<p>这个接口就是WSGI：Web Server Gateway Interface。</p>
-<p>WSGI接口定义非常简单，它只要求Web开发者实现一个函数，就可以响应HTTP请求。我们来看一个最简单的Web版本的“Hello, web!”：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def application(environ, start_response):</span><br><span class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</span><br><span class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</span><br></pre></td></tr></table></figure></p>
-<p>上面的application()函数就是符合WSGI标准的一个HTTP处理函数，它接收两个参数：</p>
-<p>environ：一个包含所有HTTP请求信息的dict对象；<br>start_response：一个发送HTTP响应的函数。</p>
-<p>在application()函数中，调用：<br><code>start_response(&#39;200 OK&#39;, [(&#39;Content-Type&#39;, &#39;text/html&#39;)])</code><br>就发送了HTTP响应的Header，注意Header只能发送一次，也就是只能调用一次start_response()函数。start_response()函数接收两个参数，一个是HTTP响应码，一个是一组list表示的HTTP Header，每个Header用一个包含两个str的tuple表示。</p>
-<p>通常情况下，都应该把Content-Type头发送给浏览器。其他很多常用的HTTP Header也应该发送。<br>然后，函数的返回值<code>b&#39;&lt;h1&gt;Hello, web!&lt;/h1&gt;&#39;</code>将作为HTTP响应的Body发送给浏览器。</p>
-<p>有了WSGI，我们关心的就是如何从environ这个dict对象拿到HTTP请求信息，然后构造HTML，通过start_response()发送Header，最后返回Body。</p>
-<p>整个application()函数本身没有涉及到任何解析HTTP的部分，也就是说，底层代码不需要我们自己编写，我们只负责在更高层次上考虑如何响应请求就可以了。</p>
-<p>不过，等等，这个application()函数怎么调用？如果我们自己调用，两个参数environ和start_response我们没法提供，返回的bytes也没法发给浏览器。</p>
-<p>所以application()函数必须由WSGI服务器来调用。有很多符合WSGI规范的服务器，我们可以挑选一个来用。但是现在，我们只想尽快测试一下我们编写的application()函数真的可以把HTML输出到浏览器，所以，要赶紧找一个最简单的WSGI服务器，把我们的Web应用程序跑起来。</p>
-<p>好消息是Python内置了一个WSGI服务器，这个模块叫wsgiref，它是用纯Python编写的WSGI服务器的参考实现。所谓“参考实现”是指该实现完全符合WSGI标准，但是不考虑任何运行效率，仅供开发和测试使用。</p>
-<p>运行WSGI服务<br>我们先编写hello.py，实现Web应用程序的WSGI处理函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># hello.py</span><br><span class="line"></span><br><span class="line">def application(environ, start_response):</span><br><span class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</span><br><span class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</span><br></pre></td></tr></table></figure></p>
-<p>然后，再编写一个server.py，负责启动WSGI服务器，加载application()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># server.py</span><br><span class="line"># 从wsgiref模块导入:</span><br><span class="line">from wsgiref.simple_server import make_server</span><br><span class="line"># 导入我们自己编写的application函数:</span><br><span class="line">from hello import application</span><br><span class="line"></span><br><span class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application:</span><br><span class="line">httpd = make_server(&apos;&apos;, 8000, application)</span><br><span class="line">print(&apos;Serving HTTP on port 8000...&apos;)</span><br><span class="line"># 开始监听HTTP请求:</span><br><span class="line">httpd.serve_forever()</span><br><span class="line">确保以上两个文件在同一个目录下，然后在命令行输入python server.py来启动WSGI服务器：</span><br><span class="line">python server.py 执行程序启动</span><br></pre></td></tr></table></figure></p>
-<h2 id="四-web-框架"><a href="#四-web-框架" class="headerlink" title="四　web 框架"></a>四　web 框架</h2><p>了解了WSGI框架，我们发现：其实一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。</p>
-<p>但是如何处理HTTP请求不是问题，问题是如何处理100个不同的URL。方法是一个函数处理一个URL, 我们专注于写业务处理函数，URL和函数对应关系交给web框架完成，这就是 web框架其中一个价值。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="cksk0khg4006bzxjxuqj8d3aw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="cksqyaoc300500njx0u00l8iy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -999,7 +1004,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -1020,15 +1025,15 @@
           </li>
         
           <li>
+            <a href="/2021/08/09/mysql-HA/">Mysql高可用集群</a>
+          </li>
+        
+          <li>
             <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
           </li>
         
           <li>
             <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/15/linux-vCenter-certs/">vCenter update certs</a>
           </li>
         
       </ul>
