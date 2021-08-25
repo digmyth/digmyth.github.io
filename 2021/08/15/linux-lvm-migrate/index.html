@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>web-Django-24-Django中间件 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>LVM 换盘 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目录 官方解释 Django默认 定义中间件 示例 总结  Django中间件学习 官方解释1234This document explains all middleware components that come with Django.For information on how to use them and how to write your own middleware, see t">
+  <meta name="description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失扫盘1for  i in `find /sys -iname &amp;apos;scan&amp;apos;`; do echo &amp;quot;- - -&amp;quo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="web-Django-24-Django中间件">
-<meta property="og:url" content="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/index.html">
+<meta property="og:title" content="LVM 换盘">
+<meta property="og:url" content="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="目录 官方解释 Django默认 定义中间件 示例 总结  Django中间件学习 官方解释1234This document explains all middleware components that come with Django.For information on how to use them and how to write your own middleware, see t">
+<meta property="og:description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失扫盘1for  i in `find /sys -iname &amp;apos;scan&amp;apos;`; do echo &amp;quot;- - -&amp;quo">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-01-18T03:43:22.000Z">
+<meta property="og:updated_time" content="2021-08-25T05:47:00.353Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="web-Django-24-Django中间件">
-<meta name="twitter:description" content="目录 官方解释 Django默认 定义中间件 示例 总结  Django中间件学习 官方解释1234This document explains all middleware components that come with Django.For information on how to use them and how to write your own middleware, see t">
+<meta name="twitter:title" content="LVM 换盘">
+<meta name="twitter:description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失扫盘1for  i in `find /sys -iname &amp;apos;scan&amp;apos;`; do echo &amp;quot;- - -&amp;quo">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -64,14 +64,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-web-django-24-Django中间件" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-linux-lvm-migrate" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/12/26/web-django-24-Django中间件/" class="article-date">
-  <time datetime="2017-12-26T12:26:37.000Z" itemprop="datePublished">2017-12-26</time>
+    <a href="/2021/08/15/linux-lvm-migrate/" class="article-date">
+  <time datetime="2021-08-15T13:12:30.000Z" itemprop="datePublished">2021-08-15</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
   </div>
 
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      web-Django-24-Django中间件
+      LVM 换盘
     </h1>
   
 
@@ -90,31 +90,25 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>目录</li>
-<li>官方解释</li>
-<li>Django默认</li>
-<li>定义中间件</li>
-<li>示例</li>
-<li>总结</li>
-</ul>
-<p>Django中间件学习</p>
-<h2 id="官方解释"><a href="#官方解释" class="headerlink" title="官方解释"></a>官方解释</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">This document explains all middleware components that come with Django.</span><br><span class="line">For information on how to use them and how to write your own middleware, see the middleware usage guide.</span><br><span class="line">Middleware is a framework of hooks into Django’s request/response processing.</span><br><span class="line">It’s a light, low-level “plugin” system for globally altering Django’s input or output.</span><br></pre></td></tr></table></figure>
-<p> Django 中间件是一个钩进request/response处理过程的框架，轻量且较为底层的插件系统，全局改变Django输入输出。</p>
-<h2 id="Django默认"><a href="#Django默认" class="headerlink" title="Django默认"></a>Django默认</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Django默认中间件</span><br><span class="line">MIDDLEWARE = [</span><br><span class="line">    &apos;django.middleware.security.SecurityMiddleware&apos;,</span><br><span class="line">    &apos;django.contrib.sessions.middleware.SessionMiddleware&apos;,</span><br><span class="line">    &apos;django.middleware.common.CommonMiddleware&apos;,</span><br><span class="line">    &apos;django.middleware.csrf.CsrfViewMiddleware&apos;,</span><br><span class="line">    &apos;django.contrib.auth.middleware.AuthenticationMiddleware&apos;,</span><br><span class="line">    &apos;django.contrib.messages.middleware.MessageMiddleware&apos;,</span><br><span class="line">    &apos;django.middleware.clickjacking.XFrameOptionsMiddleware&apos;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<h2 id="定义中间件"><a href="#定义中间件" class="headerlink" title="定义中间件"></a>定义中间件</h2><p>在Django中就表现为一个类.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">m1.process_exception(self, request, exception):</span><br><span class="line">    print(&quot;m1.process_exception1&quot;)</span><br><span class="line"></span><br><span class="line">m1.process_request</span><br><span class="line">m2.process_request</span><br><span class="line">m1.process_view</span><br><span class="line">m2.process_view</span><br><span class="line">views.py</span><br><span class="line">m2.process_exception</span><br><span class="line">m1.process_exception</span><br><span class="line">m2.process_response</span><br><span class="line">m1.process_response</span><br></pre></td></tr></table></figure></p>
-<p>中间件流<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">process_request  process_view process_exception process_response</span><br><span class="line">process_request  process_view process_exception process_response</span><br><span class="line">process_request  process_view process_exception process_response</span><br><span class="line">process_request  process_view process_exception process_response</span><br></pre></td></tr></table></figure></p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>总结：<br>基于Django中间件我们能实现一些功能，这些处理是在请求到来之前或views视图函数处理过后。</p>
-<ul>
-<li>process_request可以有返回值，也可以没有返回值。</li>
-<li>process_response必须有返回值。</li>
-</ul>
+        <p>背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换</p>
+<p>模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失<br>扫盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for  i in `find /sys -iname &apos;scan&apos;`; do echo &quot;- - -&quot; &gt; $i; done</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">裸盘分区</span><br></pre></td></tr></table></figure>
+<p>parted /dev/sdb  -s – mklabel gpt mkpart primary 1 100%<br>parted /dev/sdc  -s – mklabel gpt mkpart primary 1 100%<br>parted /dev/sdd  -s – mklabel gpt mkpart primary 1 100%<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">制作PV</span><br></pre></td></tr></table></figure></p>
+<p>pvcreate  /dev/sdb  /dev/sdc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">制作VG</span><br></pre></td></tr></table></figure></p>
+<p>vgcreate vg001 /dev/sdb  /dev/sdc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">划分LV, 有意划分3G大小卷跨物理PV</span><br></pre></td></tr></table></figure></p>
+<p>lvcreate -L 3G -n lv001 vg001<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">查看物理PE信息</span><br></pre></td></tr></table></figure></p>
+<p>pvdisplay<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">查看VG信息</span><br></pre></td></tr></table></figure></p>
+<p>vgdisplay<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">卷写入数据</span><br></pre></td></tr></table></figure></p>
+<h1 id="mkfs-ext4-dev-mapper-vg001-lv001"><a href="#mkfs-ext4-dev-mapper-vg001-lv001" class="headerlink" title="mkfs.ext4 /dev/mapper/vg001-lv001"></a>mkfs.ext4 /dev/mapper/vg001-lv001</h1><h1 id="mount-dev-mapper-vg001-lv001-data"><a href="#mount-dev-mapper-vg001-lv001-data" class="headerlink" title="mount /dev/mapper/vg001-lv001  /data"></a>mount /dev/mapper/vg001-lv001  /data</h1><h1 id="echo-“test-lvm-data”-gt-data-test-txt"><a href="#echo-“test-lvm-data”-gt-data-test-txt" class="headerlink" title="echo “test lvm data” &gt; /data/test.txt"></a>echo “test lvm data” &gt; /data/test.txt</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">添加第三块到VG</span><br></pre></td></tr></table></figure>
+<p>vgextend  vg001 /dev/sdd<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">移除第一块盘中的PE</span><br></pre></td></tr></table></figure></p>
+<p>pvmove /dev/sdb<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">从VG中移除第一块盘</span><br></pre></td></tr></table></figure></p>
+<p>vgreduce  vg001 /dev/sdb<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">最后移除PV</span><br></pre></td></tr></table></figure></p>
+<p>pvremove /dev/sdb<br><code>`</code></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/12/26/web-django-24-Django中间件/" data-id="cksr2rqun007e8ajx6ik8gea3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="cksr2rqri002z8ajx58n6qorz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -123,50 +117,24 @@
     
 <nav id="article-nav">
   
-    <a href="/2017/12/28/web-django-25-DjangoAdmin/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2021/10/15/linux-dd-fio/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          web-Django-25-DjangoAdmin
+          磁盘性能测试
         
       </div>
     </a>
   
   
-    <a href="/2017/12/20/web-django-17-ModelForm/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2021/08/09/mysql-HA/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">web-django-17-ModelForm</div>
+      <div class="article-nav-title">Mysql高可用集群</div>
     </a>
   
 </nav>
 
   
-
-  
-    <! -- 添加捐赠图标 -->
-<div class ="post-donate">
-    <div id="donate_board" class="donate_bar center">
-        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
-        <span class="donate_txt">
-           &uarr;<br>
-		   能帮到您是我的荣幸！
-        </span>
-        <br>
-      </div>  
-	<div id="donate_guide" class="donate_bar center hidden" >
-		<!-- 支付宝打赏图案 -->
-		<!--img src="/img/zhifubao.jpg" alt="支付宝打赏"--> 
-		<!-- 微信打赏图案 -->
-		<img src="/images/wecharpay.png" alt="微信打赏">  
-    </div>
-	<script type="text/javascript">
-		document.getElementById('btn_donate').onclick = function(){
-			$('#donate_board').addClass('hidden');
-			$('#donate_guide').removeClass('hidden');
-		}
-	</script>
-</div>
-<! -- 添加捐赠图标 -->
 
   
 </article>

@@ -96,7 +96,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/12/15/linux-openssl-update/" data-id="cksqym0xz003336jx7h3vpqt9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/12/15/linux-openssl-update/" data-id="cksr2rqrm00358ajxcladhhhy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -147,7 +147,64 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/15/linux-dd-fio/" data-id="cksqym0xp002l36jx7gzgn7m6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/15/linux-dd-fio/" data-id="cksr2rqr0002l8ajxtmhx27fu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-lvm-migrate" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/08/15/linux-lvm-migrate/" class="article-date">
+  <time datetime="2021-08-15T13:12:30.000Z" itemprop="datePublished">2021-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换</p>
+<p>模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失<br>扫盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for  i in `find /sys -iname &apos;scan&apos;`; do echo &quot;- - -&quot; &gt; $i; done</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">裸盘分区</span><br></pre></td></tr></table></figure>
+<p>parted /dev/sdb  -s – mklabel gpt mkpart primary 1 100%<br>parted /dev/sdc  -s – mklabel gpt mkpart primary 1 100%<br>parted /dev/sdd  -s – mklabel gpt mkpart primary 1 100%<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">制作PV</span><br></pre></td></tr></table></figure></p>
+<p>pvcreate  /dev/sdb  /dev/sdc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">制作VG</span><br></pre></td></tr></table></figure></p>
+<p>vgcreate vg001 /dev/sdb  /dev/sdc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">划分LV, 有意划分3G大小卷跨物理PV</span><br></pre></td></tr></table></figure></p>
+<p>lvcreate -L 3G -n lv001 vg001<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">查看物理PE信息</span><br></pre></td></tr></table></figure></p>
+<p>pvdisplay<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">查看VG信息</span><br></pre></td></tr></table></figure></p>
+<p>vgdisplay<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">卷写入数据</span><br></pre></td></tr></table></figure></p>
+<h1 id="mkfs-ext4-dev-mapper-vg001-lv001"><a href="#mkfs-ext4-dev-mapper-vg001-lv001" class="headerlink" title="mkfs.ext4 /dev/mapper/vg001-lv001"></a>mkfs.ext4 /dev/mapper/vg001-lv001</h1><h1 id="mount-dev-mapper-vg001-lv001-data"><a href="#mount-dev-mapper-vg001-lv001-data" class="headerlink" title="mount /dev/mapper/vg001-lv001  /data"></a>mount /dev/mapper/vg001-lv001  /data</h1><h1 id="echo-“test-lvm-data”-gt-data-test-txt"><a href="#echo-“test-lvm-data”-gt-data-test-txt" class="headerlink" title="echo “test lvm data” &gt; /data/test.txt"></a>echo “test lvm data” &gt; /data/test.txt</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">添加第三块到VG</span><br></pre></td></tr></table></figure>
+<p>vgextend  vg001 /dev/sdd<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">移除第一块盘中的PE</span><br></pre></td></tr></table></figure></p>
+<p>pvmove /dev/sdb<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">从VG中移除第一块盘</span><br></pre></td></tr></table></figure></p>
+<p>vgreduce  vg001 /dev/sdb<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">最后移除PV</span><br></pre></td></tr></table></figure></p>
+<p>pvremove /dev/sdb<br><code>`</code></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="cksr2rqri002z8ajx58n6qorz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -195,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="cksqym0yq004336jxv83h2b1z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="cksr2rqs900458ajxnn5dkcpv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -243,7 +300,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="cksqym0z4004s36jxwnn2raqw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="cksr2rqsp004s8ajxdlwruaa5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -291,7 +348,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="cksqym0vn000b36jx15071v3z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="cksr2rqog000d8ajxzpcti2fe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -340,7 +397,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="cksqym0y7003d36jxxjeqpznc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="cksr2rqrt003f8ajxortlmrr0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -388,7 +445,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="cksqym0wj001936jx56kht2ft" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="cksr2rqpi001a8ajxjzmo0mhy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -436,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="cksqym0x5002136jxk7cctrg4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="cksr2rqqd00228ajxl7ji3okd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -490,56 +547,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="cksqym0yl003w36jxzxmr9sfl" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-redis-install" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/05/29/redis-install/" class="article-date">
-  <time datetime="2021-05-29T01:41:54.000Z" itemprop="datePublished">2021-05-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/05/29/redis-install/">redis install</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/redis-stable.tar.gz # 最新稳定版</span><br><span class="line">wget https://download.redis.io/releases/redis-6.2.5.tar.gz</span><br><span class="line">tar xzf redis-6.2.5.tar.gz</span><br><span class="line">cd redis-6.2.5</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
-<p>如果重新make不下去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make distclean  &amp;&amp; make</span><br></pre></td></tr></table></figure></p>
-<p>自动拷贝程序文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br><span class="line"># ls /usr/local/bin</span><br><span class="line">redis-benchmark  redis-check-aof  redis-check-rdb  redis-cli  redis-sentinel  redis-server</span><br></pre></td></tr></table></figure></p>
-<p>拷贝配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cp  redis.conf /etc/</span><br><span class="line"># edit  parameter</span><br><span class="line">requirepass passwd</span><br><span class="line"># save &quot;&quot;   # 完全禁用本地持久化</span><br><span class="line"># 跟据策略持久化的配置 </span><br><span class="line">save 3600 1</span><br><span class="line">save 300 100</span><br><span class="line">save 60 10000</span><br><span class="line">dir /data/redis-data   # 存储路径</span><br><span class="line">daemonize yes   # 确保redis-server启动时能在后台启动</span><br></pre></td></tr></table></figure></p>
-<p>手写启动文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# vi /usr/lib/systemd/system/redis.service </span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Redis persistent key-value database</span><br><span class="line">After=network.target</span><br><span class="line">After=network-online.target</span><br><span class="line">Wants=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/local/bin/redis-server /etc/redis.conf</span><br><span class="line">ExecStop=/usr/local/bin/redis-cli shutdown</span><br><span class="line">#Type=notify</span><br><span class="line">Type=forking</span><br><span class="line">User=root</span><br><span class="line">Group=root</span><br><span class="line">RuntimeDirectory=redis</span><br><span class="line">RuntimeDirectoryMode=0755</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>官网<br><a href="https://redis.io/download#from-source-code" target="_blank" rel="noopener">https://redis.io/download#from-source-code</a><br><a href="https://redis.io/topics/quickstart" target="_blank" rel="noopener">https://redis.io/topics/quickstart</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="cksqym0zv006136jx4bw6wajg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="cksr2rqs4003y8ajx04o421co" class="article-share-link">Share</a>
       
       
     </footer>
@@ -601,15 +609,15 @@
           </li>
         
           <li>
+            <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
+          </li>
+        
+          <li>
             <a href="/2021/08/09/mysql-HA/">Mysql高可用集群</a>
           </li>
         
           <li>
             <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
           </li>
         
       </ul>
