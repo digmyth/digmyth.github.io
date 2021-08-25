@@ -5,17 +5,17 @@
   
   <title>LVM 换盘 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失 扫盘1for  i in `find /sys -iname &amp;apos;scan&amp;apos;`; do echo &amp;quot;- - -&amp;qu">
+  <meta name="description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失 扫盘1for  i in $(find /sys -iname &amp;apos;scan&amp;apos;); do echo &amp;quot;- - -&amp;q">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LVM 换盘">
 <meta property="og:url" content="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失 扫盘1for  i in `find /sys -iname &amp;apos;scan&amp;apos;`; do echo &amp;quot;- - -&amp;qu">
+<meta property="og:description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失 扫盘1for  i in $(find /sys -iname &amp;apos;scan&amp;apos;); do echo &amp;quot;- - -&amp;q">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-08-25T05:53:29.449Z">
+<meta property="og:updated_time" content="2021-08-25T05:55:38.817Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LVM 换盘">
-<meta name="twitter:description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失 扫盘1for  i in `find /sys -iname &amp;apos;scan&amp;apos;`; do echo &amp;quot;- - -&amp;qu">
+<meta name="twitter:description" content="背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换 模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失 扫盘1for  i in $(find /sys -iname &amp;apos;scan&amp;apos;); do echo &amp;quot;- - -&amp;q">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -92,7 +92,7 @@
       
         <p>背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换</p>
 <p>模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失</p>
-<p>扫盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for  i in `find /sys -iname &apos;scan&apos;`; do echo &quot;- - -&quot; &gt; $i; done</span><br></pre></td></tr></table></figure></p>
+<p>扫盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for  i in $(find /sys -iname &apos;scan&apos;); do echo &quot;- - -&quot; &gt; $i; done</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">裸盘分区</span><br></pre></td></tr></table></figure>
 <p>parted /dev/sdb  -s – mklabel gpt mkpart primary 1 100%<br>parted /dev/sdc  -s – mklabel gpt mkpart primary 1 100%<br>parted /dev/sdd  -s – mklabel gpt mkpart primary 1 100%<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">制作PV</span><br></pre></td></tr></table></figure></p>
 <p>pvcreate  /dev/sdb  /dev/sdc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">制作VG</span><br></pre></td></tr></table></figure></p>
@@ -109,7 +109,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="cksr304bv002zbpjxnzdv84h5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="cksr32rv2002zcyjxc9stg17s" class="article-share-link">Share</a>
       
       
     </footer>
