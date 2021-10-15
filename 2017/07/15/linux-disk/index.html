@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>linux磁盘知识 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Ubuntu系统分区信息查看：fdisk /dev/vda1234567891011Command (m for help): pDisk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectorsUnits: sectors of 1 * 512 = 512 bytesSector size (logical/physical): 512 byt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux磁盘知识">
+<meta property="og:url" content="http://www.digmyth.com/2017/07/15/linux-disk/index.html">
+<meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="Ubuntu系统分区信息查看：fdisk /dev/vda1234567891011Command (m for help): pDisk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectorsUnits: sectors of 1 * 512 = 512 bytesSector size (logical/physical): 512 byt">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-10-15T10:02:21.819Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux磁盘知识">
+<meta name="twitter:description" content="Ubuntu系统分区信息查看：fdisk /dev/vda1234567891011Command (m for help): pDisk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectorsUnits: sectors of 1 * 512 = 512 bytesSector size (logical/physical): 512 byt">
+  
+    <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Welcome to wxq&#39;s Blog created in 2017-01-01</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.digmyth.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-linux-disk" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/15/linux-disk/" class="article-date">
+  <time datetime="2017-07-15T01:42:54.000Z" itemprop="datePublished">2017-07-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      linux磁盘知识
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Ubuntu系统分区信息查看：<code>fdisk /dev/vda</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x630fdccb</span><br><span class="line"></span><br><span class="line">Device     Boot   Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/vda1  *       2048   1953791   1951744  953M 83 Linux</span><br><span class="line">/dev/vda2       1953792 125829119 123875328 59.1G 83 Linux</span><br></pre></td></tr></table></figure></p>
+<p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
+<p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
+<p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
+<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位字节bytes，bs=512 也就是512bytes,这个512刚好等于</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,单位就是扇区，skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,单位就是扇区，seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
+<p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
+<p>总结：</p>
+<ul>
+<li>一个扇区512bytes , 1Block=1KB=2扇区</li>
+<li>dd参数的skip针对if设备，seek针对of设备（跳过多少扇区再处理）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/15/linux-disk/" data-id="ckus7kuo5002h21jxznb9u66l" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/07/20/web-django-16-Form/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          web-Django-16-Form验证
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/01/基于CentOS7的PXE装机/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">基于CentOS 7的PXE装机</div>
+    </a>
+  
+</nav>
+
+  
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/15/linux-openssl-update/">升级openssl</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/09/mysql-HA/">Mysql高可用集群</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 wxq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+-->
+
+<script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

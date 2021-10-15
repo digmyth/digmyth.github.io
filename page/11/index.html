@@ -62,6 +62,56 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-iptables应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/06/15/linux-iptables应用/" class="article-date">
+  <time datetime="2017-06-15T01:42:54.000Z" itemprop="datePublished">2017-06-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/15/linux-iptables应用/">linux_iptables应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="iptables-规则应用总结"><a href="#iptables-规则应用总结" class="headerlink" title="iptables 规则应用总结"></a>iptables 规则应用总结</h2><p>防火墙端口重定向规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth1  -p tcp --dport 80 -j REDIRECT --to 8080</span><br></pre></td></tr></table></figure></p>
+<p>反向代理防火墙规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT  -d 123.125.168.130 -i eth0 -p tcp  --dport 80 -j ACCEPT</span><br><span class="line">iptables -I INPUT -s 10.10.10.0/24 -i eth1 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>此包为input状态检测可省略<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -I OUTPUT -p tcp -o eth1 -s 10.10.10.1  -d 10.10.10.10 --dport 9999  -j ACCEPT</span><br><span class="line">iptables -I OUTPUT -p tcp -o eth0 -s 123.125.168.130  --sport 80 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>目标地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I PREROUTING -i eth0 -d 123.125.168.130  -p tcp --dport 80 -j DNAT  --to 10.10.10.10:9999</span><br><span class="line">iptables -A FORWARD -d 10.10.10.10 -p tcp  --dport 9999 -j ACCEPT</span><br><span class="line">iptables -A FORWARD -s 10.10.10.10 -p tcp  --sport 9999 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>如果10.10.10.10机器默认网关不是10.10.10.1或没有指网关,则网关防火墙需如下:有点奇怪的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -d 10.10.10.10 -p tcp --dport 9999 -j SNAT --to 10.10.10.1</span><br></pre></td></tr></table></figure></p>
+<p>源地址转换：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j SNAT --to 123.125.168.130</span><br><span class="line">iptables -t nat -I POSTROUTING -s  10.10.10.0/24 -o eth0 -j MASQUERADE</span><br></pre></td></tr></table></figure></p>
+<p>此条开销较大，与上条可二选一<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables  -I FORWARD -s 10.10.10.0/24 -j ACCEPT  注：forward不指网卡，要指也是内网卡</span><br><span class="line">iptables  -I FORWARD -d 10.10.10.0/24 -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckus7kuok002r21jxz89ckl1z" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-mysql-sysbench" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/06/10/mysql-sysbench/" class="article-date">
@@ -110,7 +160,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckui6v09f004i1tjxxm29piqe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckus7kuqu004j21jx0yqs1qsy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -176,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckui6v05000011tjxjfhaa020" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckus7kujz000021jx4lkznfrr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -252,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ckui6v065000w1tjxkb898l4r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ckus7kum2000w21jxf6hsba5x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -297,7 +347,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ckui6v0au006s1tjxeqrspthq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ckus7kusb006x21jxx4gyij0m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -348,55 +398,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ckui6v0a900611tjxdmqcpm24" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
-  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ckui6v07m002f1tjxz5igu6ut" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ckus7kurs006221jxqaai3yob" class="article-share-link">Share</a>
       
       
     </footer>
@@ -447,7 +449,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ckui6v07k002d1tjxw6cybn9g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ckus7kuo8002j21jxytivqvw4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
+  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ckus7kuo0002d21jxgkebbrkl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -509,65 +559,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckui6v09d004f1tjxr1yweohv" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
-</ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckui6v0ax006u1tjx9zroft56" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckus7kuqp004e21jxs2wlwzl5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -625,7 +617,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckui6v0as006p1tjxnz8wnu3f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckus7kus6006s21jx6rjcy5wo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -666,7 +658,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -683,10 +675,6 @@
           </li>
         
           <li>
-            <a href="/2021/10/15/linux-dd-fio/">磁盘性能测试</a>
-          </li>
-        
-          <li>
             <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
           </li>
         
@@ -696,6 +684,10 @@
         
           <li>
             <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
           </li>
         
       </ul>

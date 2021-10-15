@@ -62,55 +62,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-redis-install" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/05/29/redis-install/" class="article-date">
-  <time datetime="2021-05-29T01:41:54.000Z" itemprop="datePublished">2021-05-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/05/29/redis-install/">redis install</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/redis-stable.tar.gz # 最新稳定版</span><br><span class="line">wget https://download.redis.io/releases/redis-6.2.5.tar.gz</span><br><span class="line">tar xzf redis-6.2.5.tar.gz</span><br><span class="line">cd redis-6.2.5</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
-<p>如果重新make不下去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make distclean  &amp;&amp; make</span><br></pre></td></tr></table></figure></p>
-<p>自动拷贝程序文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br><span class="line"># ls /usr/local/bin</span><br><span class="line">redis-benchmark  redis-check-aof  redis-check-rdb  redis-cli  redis-sentinel  redis-server</span><br></pre></td></tr></table></figure></p>
-<p>拷贝配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cp  redis.conf /etc/</span><br><span class="line"># edit  parameter</span><br><span class="line">requirepass passwd</span><br><span class="line"># save &quot;&quot;   # 完全禁用本地持久化</span><br><span class="line"># 跟据策略持久化的配置 </span><br><span class="line">save 3600 1</span><br><span class="line">save 300 100</span><br><span class="line">save 60 10000</span><br><span class="line">dir /data/redis-data   # 存储路径</span><br><span class="line">daemonize yes   # 确保redis-server启动时能在后台启动</span><br></pre></td></tr></table></figure></p>
-<p>手写启动文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# vi /usr/lib/systemd/system/redis.service </span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Redis persistent key-value database</span><br><span class="line">After=network.target</span><br><span class="line">After=network-online.target</span><br><span class="line">Wants=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/local/bin/redis-server /etc/redis.conf</span><br><span class="line">ExecStop=/usr/local/bin/redis-cli shutdown</span><br><span class="line">#Type=notify</span><br><span class="line">Type=forking</span><br><span class="line">User=root</span><br><span class="line">Group=root</span><br><span class="line">RuntimeDirectory=redis</span><br><span class="line">RuntimeDirectoryMode=0755</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>官网<br><a href="https://redis.io/download#from-source-code" target="_blank" rel="noopener">https://redis.io/download#from-source-code</a><br><a href="https://redis.io/topics/quickstart" target="_blank" rel="noopener">https://redis.io/topics/quickstart</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckui6v0aa00631tjxqdgzsnxv" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
     <article id="post-mongodb-01集群" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/05/10/mongodb-01集群/" class="article-date">
@@ -153,7 +104,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckui6v092003v1tjxenadwf01" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckus7kuqb003v21jxlf7e2di4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -201,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckui6v07i00291tjxj4azns07" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckus7kunv002821jx3lajpnxk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -249,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckui6v06e00141tjxuaczy401" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckus7kum6001121jx5d26hmhn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -299,7 +250,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckui6v085002x1tjxmxo3ns3m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckus7kuot002x21jxmldu278j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -350,7 +301,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckui6v07s002h1tjx58t1if7u" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckus7kuoe002n21jx4r24vhwv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -408,7 +359,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckui6v08l003b1tjxz6t1xuvu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckus7kuph003d21jxlt1y6j28" class="article-share-link">Share</a>
       
       
     </footer>
@@ -456,7 +407,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckui6v09h004m1tjx7r5sqaaq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckus7kuqx004m21jx7pgnoh78" class="article-share-link">Share</a>
       
       
     </footer>
@@ -504,7 +455,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckui6v073001x1tjxl6k15099" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckus7kunn002321jxkvru2qzt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -552,7 +503,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckui6v06u001n1tjxx1mr3atl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckus7kumv001j21jx23i0jhq2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-prometheus-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/01/25/prometheus-01/" class="article-date">
+  <time datetime="2021-01-25T00:48:08.000Z" itemprop="datePublished">2021-01-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Prometheus/">Prometheus</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/01/25/prometheus-01/">prometheus</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2021/01/25/prometheus-01/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckus7kur3004w21jxro6ezea1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -593,7 +592,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -610,10 +609,6 @@
           </li>
         
           <li>
-            <a href="/2021/10/15/linux-dd-fio/">磁盘性能测试</a>
-          </li>
-        
-          <li>
             <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
           </li>
         
@@ -623,6 +618,10 @@
         
           <li>
             <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
           </li>
         
       </ul>
