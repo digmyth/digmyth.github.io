@@ -62,6 +62,72 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mariadb-cluster-recovery" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/07/10/mariadb-cluster-recovery/" class="article-date">
+  <time datetime="2020-07-10T01:41:54.000Z" itemprop="datePublished">2020-07-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/10/mariadb-cluster-recovery/">mariadb cluster recovery</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="mariadb-cluster-recovery"><a href="#mariadb-cluster-recovery" class="headerlink" title="mariadb cluster recovery"></a>mariadb cluster recovery</h3><p>列几个集群检查命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_incoming_addresses&apos;;</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">| wsrep_incoming_addresses | 10.0.0.51:3306,10.0.0.52:3306,10.0.0.53:3306 |</span><br><span class="line">+--------------------------+----------------------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 3 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_state_uuid&apos;;</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">| wsrep_cluster_state_uuid | 345098abd2-291a-9893-acbd3-30923abcdef9 |</span><br><span class="line">+--------------------------+-----------------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_local_state_comment&apos;;</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">| wsrep_local_state_comment | Synced |</span><br><span class="line">+---------------------------+--------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<p>场景一</p>
+<p>只是很简单的某节点掉线，重启让其重新加入集群即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_incoming_addresses&apos;;</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">| wsrep_incoming_addresses | 10.0.0.51:3306,10.0.0.52:3306 |</span><br><span class="line">+--------------------------+-------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 2 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># systemctl restart mariadb</span><br></pre></td></tr></table></figure>
+<p>场景二</p>
+<p>唯一有一个幸存节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_size&apos;;</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">| wsrep_cluster_size | 1 |</span><br><span class="line">+--------------------+-------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<p>幸存节点刚好优雅关闭正确提交了数据，状态为Primary<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_cluster_status&apos;;</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| wsrep_cluster_status | Primary |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure></p>
+<p>哪果是<code>non-Primary</code>状态还要单独恢复<br>幸存节点上执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; set global wsrep_provider_options=&apos;pc.bootstrap=YES&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>可是 我们一般不这样做，常规做法是直接指定这个幸存节点的主节点，让其它节点加入集群<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># systemctl stop mariadb</span><br><span class="line"># galera_new_cluster</span><br><span class="line"># systemctl restart mariadb</span><br></pre></td></tr></table></figure></p>
+<p>场景三<br>集群崩溃完全不可用,这也分为2种情况，基于最高seqno值恢复<br>状态一是没有集群UUID, <code>seqno: -1</code>,数据定义语言DDL出错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 00000000-0000-0000-0000-000000000000</span><br><span class="line">seqno: -1</span><br><span class="line">safe_to_bootstrap: 0</span><br></pre></td></tr></table></figure></p>
+<p>状态2是有集群UUID，<code>seqno: -1</code>，事务处理数据时出错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 886dd8da-3d07-11e8-a109-8a3c80cebab4</span><br><span class="line">seqno: -1</span><br><span class="line">safe_to_bootstrap: 0</span><br></pre></td></tr></table></figure></p>
+<p>状态3是有集群UUID，seqno值最高正值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># cat /var/lib/mysql/grastate.dat</span><br><span class="line"># GALERA saved state</span><br><span class="line">version: 2.1</span><br><span class="line">uuid: 886dd8da-3d07-11e8-a109-8a3c80cebab4</span><br><span class="line">seqno: 31929</span><br><span class="line">safe_to_bootstrap: 1</span><br></pre></td></tr></table></figure></p>
+<p>此时我们认为状态3是OK的，需要修改状态１、２数据库配置文件去掉IP地址配置项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsrep_cluster_address=&quot;gcomm://&quot;</span><br></pre></td></tr></table></figure></p>
+<p>这样节点就能正常启动了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart mariadb</span><br></pre></td></tr></table></figure></p>
+<p>最后再修改配置文件后把这2个节点正常加入集群就好了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsrep_cluster_address=&quot;gcomm://10.8.8.53,10.8.8.54,10.8.8.55&quot;</span><br></pre></td></tr></table></figure></p>
+<p>最后是基于Last Committed恢复<br>先修改配置文件让服务启起来，入库查看<code>wsrep_last_committed</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#systemctl stop mariadb</span><br><span class="line">  编辑配置文件去掉IP地址wsrep_cluster_address=&quot;gcomm://&quot;</span><br><span class="line">#systemctl start mariadb</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show status like &apos;wsrep_last_committed&apos;;</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">| wsrep_last_committed | 319589 |</span><br><span class="line">+----------------------+---------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<p>找到节点最大值认为就是主节点，然后在这个主节点上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#  galera_new_cluster</span><br></pre></td></tr></table></figure></p>
+<p>其它节点加入集群即可</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2020/07/10/mariadb-cluster-recovery/" data-id="ckuz60en5003v45jx6j15143c" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-openstack-HA" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/03/14/openstack-HA/" class="article-date">
@@ -97,7 +163,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckuz5zd1h004i02jxs6wisssw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/14/openstack-HA/" data-id="ckuz60eni004f45jx9jbhskm7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -157,7 +223,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckuz5zcut000p02jxjl4zf8ct" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckuz60ekx000p45jxiur1m9w0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -205,7 +271,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckuz5zcz1003702jxsgva7zpg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckuz60emr003945jxzuatxmyh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -253,7 +319,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckuz5zcvw001e02jxf8b8tshv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckuz60ele001e45jxzuai17tq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -304,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckuz5zd1p004m02jxt1juo7ef" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckuz60enr004q45jxh1n19jzn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -365,7 +431,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckuz5zcyx003302jxucjm745n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckuz60emn003345jxhrukcpym" class="article-share-link">Share</a>
       
       
     </footer>
@@ -413,7 +479,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckuz5zcvz001f02jx090deswx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckuz60elg001h45jxlbms2dcg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -461,7 +527,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckuz5zcz7003902jxtpnonr60" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckuz60emv003f45jxlqchtabm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -515,58 +581,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/log_helm-efk/" data-id="ckuz5zd00003m02jx2ytz2p26" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-dd-fio" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/10/15/linux-dd-fio/" class="article-date">
-  <time datetime="2019-10-15T01:22:54.000Z" itemprop="datePublished">2019-10-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/15/linux-dd-fio/">磁盘性能测试</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>dd 顺序读写测试工具<br>sync:  内存数据写入硬盘<br>direct:  直接IO交互绕过缓存区<br>oflag=dsync:  每读取一次bs定义的块都写入磁盘<br>conv=fdatasync:  所有读取完bs*count后才统一从缓存区写入硬盘</p>
-<p>最接近真实数据值的方法：<br>顺序读<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd if=myapp of=/dev/null bs=1M count=1024 iflag=direct</span><br></pre></td></tr></table></figure></p>
-<p>顺序写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sync; echo 3 &gt; /proc/sys/vm/drop_caches; \</span><br><span class="line">dd if=/dev/zero of=test  bs=1M count=128  conv=fdatasync</span><br></pre></td></tr></table></figure></p>
-<h3 id="fio工具"><a href="#fio工具" class="headerlink" title="fio工具"></a>fio工具</h3><p>随机读<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randread -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
-<p>随机写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randwrite -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
-<p>混合读写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randrw -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
-<p>混合读写7:3  # 读占70%<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth 1 -thread -rw=randrw -rwmixread=70 -ioengine=psync -bs=16k -size=2G -numjobs=30 -runtime=100 -group_reporting -name=mytest1</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要关注IOPS参数和BW吞吐，这里BW吞吐是读写时的磁盘吞吐,测试数据与bs块大小有关，其次才是网络带宽限制<br>网络带宽速度需要iperf工具测试.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/linux-dd-fio/" data-id="ckuz5zcxu002j02jxjny8sh4j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/10/15/log_helm-efk/" data-id="ckuz60en3003q45jxkk103ksh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -607,7 +622,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -618,6 +633,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/10/15/linux-note个人小记/">linux个人小记</a>
+          </li>
         
           <li>
             <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
@@ -633,10 +652,6 @@
         
           <li>
             <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/15/linux-vCenter-certs/">vCenter update certs</a>
           </li>
         
       </ul>

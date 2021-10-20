@@ -62,6 +62,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-dd-fio" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/10/15/linux-dd-fio/" class="article-date">
+  <time datetime="2019-10-15T01:22:54.000Z" itemprop="datePublished">2019-10-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/15/linux-dd-fio/">磁盘性能测试</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>dd 顺序读写测试工具<br>sync:  内存数据写入硬盘<br>direct:  直接IO交互绕过缓存区<br>oflag=dsync:  每读取一次bs定义的块都写入磁盘<br>conv=fdatasync:  所有读取完bs*count后才统一从缓存区写入硬盘</p>
+<p>最接近真实数据值的方法：<br>顺序读<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd if=myapp of=/dev/null bs=1M count=1024 iflag=direct</span><br></pre></td></tr></table></figure></p>
+<p>顺序写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sync; echo 3 &gt; /proc/sys/vm/drop_caches; \</span><br><span class="line">dd if=/dev/zero of=test  bs=1M count=128  conv=fdatasync</span><br></pre></td></tr></table></figure></p>
+<h3 id="fio工具"><a href="#fio工具" class="headerlink" title="fio工具"></a>fio工具</h3><p>随机读<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randread -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
+<p>随机写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randwrite -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
+<p>混合读写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth=4 -thread -rw=randrw -ioengine=libaio -bs=4k  -size=2G -numjobs=100 -name=&quot;4K randwrite test&quot; -group_reporting -runtime=10</span><br></pre></td></tr></table></figure></p>
+<p>混合读写7:3  # 读占70%<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sda -direct=1 -iodepth 1 -thread -rw=randrw -rwmixread=70 -ioengine=psync -bs=16k -size=2G -numjobs=30 -runtime=100 -group_reporting -name=mytest1</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要关注IOPS参数和BW吞吐，这里BW吞吐是读写时的磁盘吞吐,测试数据与bs块大小有关，其次才是网络带宽限制<br>网络带宽速度需要iperf工具测试.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/10/15/linux-dd-fio/" data-id="ckuz60em7002l45jxn6eudq35" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-log_elasticsearch_api" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/09/15/log_elasticsearch_api/" class="article-date">
@@ -123,7 +174,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/09/15/log_elasticsearch_api/" data-id="ckuz5zczk003h02jxzjzj82uf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/09/15/log_elasticsearch_api/" data-id="ckuz60en0003l45jxd790qr8u" class="article-share-link">Share</a>
       
       
     </footer>
@@ -204,7 +255,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/08/15/log_elasticsearch-基本使用/" data-id="ckuz5zd1u004w02jxmwu7fofw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/08/15/log_elasticsearch-基本使用/" data-id="ckuz60emy003j45jxcok97iwe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -252,7 +303,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/07/25/mysql-data-recovery/" data-id="ckuz5zd14004a02jxrkr9swtw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/07/25/mysql-data-recovery/" data-id="ckuz60eno004m45jxipn9e5j1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +361,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="ckuz5zd02003o02jxt7luo9vu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="ckuz60en4003s45jxazwyw2fe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +409,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckuz5zcu0000302jxoh9czgr0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckuz60ekb000345jxp4iw83qp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -424,55 +475,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ckuz5zd2j005s02jxg8eb2v89" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-note个人小记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/01/15/linux-note个人小记/" class="article-date">
-  <time datetime="2019-01-15T01:32:54.000Z" itemprop="datePublished">2019-01-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/15/linux-note个人小记/">linux个人小记</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bridge fdb  add  $mac dev $ethx</span><br></pre></td></tr></table></figure>
-<p>执行命令 cat /proc/buddyinfo 查看 slab，系统不存在大块内存时返回0数量较多<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/buddyinfo</span><br></pre></td></tr></table></figure></p>
-<p>周期性地或者在发现大块内存不足时，先进行 drop_cache 操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 3 &gt; /proc/sys/vm/drop_caches</span><br></pre></td></tr></table></figure></p>
-<p>必要时执行以下操作进行内存整理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/vm/compact_memory</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">执行命令 atop ，查看当前磁盘 IO 状态</span><br><span class="line">磁盘 sda 显示 busy 100% ，表示已达到严重性能瓶颈，继续在该界面按 d，可查看哪些进程正在使用磁盘 IO</span><br><span class="line">iotop -oPa查看哪些进程占用磁盘 IO</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/15/linux-note个人小记/" data-id="ckuz5zcyy003502jxrucs2or7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/02/10/python-Celery-Flask/" data-id="ckuz60eog005w45jxmtgzwkvx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -525,7 +528,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ckuz5zcuq000k02jxfc3qwiq2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/12/ansible-Callback-02/" data-id="ckuz60eku000k45jx3syxviai" class="article-share-link">Share</a>
       
       
     </footer>
@@ -584,7 +587,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="ckuz5zcur000m02jx879g8mzn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/ansible-api-01/" data-id="ckuz60ekw000m45jxiztr6lue" class="article-share-link">Share</a>
       
       
     </footer>
@@ -631,7 +634,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="ckuz5zd2v006d02jxpfxh25pl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="ckuz60eoo006f45jxzop3sv95" class="article-share-link">Share</a>
       
       
     </footer>
@@ -672,7 +675,7 @@ elasticsearch集群组件：
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -683,6 +686,10 @@ elasticsearch集群组件：
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/10/15/linux-note个人小记/">linux个人小记</a>
+          </li>
         
           <li>
             <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
@@ -698,10 +705,6 @@ elasticsearch集群组件：
         
           <li>
             <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/15/linux-vCenter-certs/">vCenter update certs</a>
           </li>
         
       </ul>
