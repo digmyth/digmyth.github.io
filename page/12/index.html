@@ -62,64 +62,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
-</ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckv8yg3uv006y2pjxxn12fn2y" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
     <article id="post-web-django-02-基本配置示例" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/04/20/web-django-02-基本配置示例/" class="article-date">
@@ -165,7 +107,65 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckv8yg3us006t2pjx8zimm67u" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckv9a2piz006pyyjxv08f9jma" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>别名设置</li>
+<li>namespace设置</li>
+<li>reverse</li>
+<li>include本质</li>
+</ul>
+<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
+<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
+<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckv9a2pj3006uyyjxae0cqioe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -220,7 +220,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckv8yg3va007m2pjxgxggyt4b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckv9a2pjn007gyyjxk7wihee0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -300,7 +300,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckv8yg3u3005w2pjx8md307wp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckv9a2pk70082yyjxchja7dq0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -360,7 +360,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckv8yg3tt005m2pjx0zz6to43" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckv9a2phj005hyyjxiyec1h0g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -410,7 +410,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckv8yg3tv005q2pjxy40rwlzo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckv9a2phw005pyyjxo6wljnma" class="article-share-link">Share</a>
       
       
     </footer>
@@ -514,7 +514,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckv8yg3u1005u2pjxt7t0wre1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckv9a2pic005vyyjxvwo5zsa5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -599,7 +599,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckv8yg3ur006r2pjxpnytukbx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckv9a2pix006myyjxnbo76m67" class="article-share-link">Share</a>
       
       
     </footer>
@@ -685,7 +685,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="ckv8yg3tu005o2pjxqg1dm4ze" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/15/python-08-03-面象对象编程高级/" data-id="ckv9a2phm005jyyjxqrun4wsw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -757,7 +757,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="ckv8yg3tr005i2pjxms4r36xn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/01/python-06-01-正则表达式/" data-id="ckv9a2phg005fyyjxh0moccbn" class="article-share-link">Share</a>
       
       
     </footer>

@@ -93,12 +93,20 @@
 <p>自动拷贝程序文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br><span class="line"># ls /usr/local/bin</span><br><span class="line">redis-benchmark  redis-check-aof  redis-check-rdb  redis-cli  redis-sentinel  redis-server</span><br></pre></td></tr></table></figure></p>
 <p>拷贝配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cp  redis.conf /etc/</span><br><span class="line"># edit  parameter</span><br><span class="line">requirepass passwd</span><br><span class="line"># save &quot;&quot;   # 完全禁用本地持久化</span><br><span class="line"># 跟据策略持久化的配置 </span><br><span class="line">save 3600 1</span><br><span class="line">save 300 100</span><br><span class="line">save 60 10000</span><br><span class="line">dir /data/redis-data   # 存储路径</span><br><span class="line">daemonize yes   # 确保redis-server启动时能在后台启动</span><br></pre></td></tr></table></figure></p>
 <p>手写启动文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# vi /usr/lib/systemd/system/redis.service </span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Redis persistent key-value database</span><br><span class="line">After=network.target</span><br><span class="line">After=network-online.target</span><br><span class="line">Wants=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/local/bin/redis-server /etc/redis.conf</span><br><span class="line">ExecStop=/usr/local/bin/redis-cli shutdown</span><br><span class="line">#Type=notify</span><br><span class="line">Type=forking</span><br><span class="line">User=root</span><br><span class="line">Group=root</span><br><span class="line">RuntimeDirectory=redis</span><br><span class="line">RuntimeDirectoryMode=0755</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></p>
+<p>主从集群</p>
+<p>如果想做纯主从复制集群，非哨兵模式监听集群状态并自动切换主从角色(当时只有2台主机)，那么通过简单配置就可以.</p>
+<p>主节点可读可写，从节点只读.</p>
+<p>redis持久化方式：RBD、AOF<br>RBD为默认持久化方式：通过另起子进程生成内存快照临时文件，之后重命名临时文件为dump.rdb,达到通过数据改变频率方式将内存数据刷写进磁盘完成持久化.<br>RBD持久化好处是重启时dump.rbd恢复数据很快.<br>RBD持久化坏处是死机时没有来得及写入磁盘造成少量数据丢失.</p>
+<p>AOF持久化：类似mysql binlog日志方式，将写操作实时记录进日志，当redis重启时加载AOF日志文件恢复数据.<br>AOF持久化好处是不会造成数据丢失，同时有RDB、AOF持久化时,redis会优先使用AOF恢复.<br>AOF持久化坏处是数据量大时记录日志文件会持续增大影响性能，并且恢复时速度慢.</p>
+<p>配置主从,edit /etc/redis.conf,分别写入对方信息，方便发生故障时不因配置影响角色切换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">masterauth &lt;master-password&gt;</span><br><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br></pre></td></tr></table></figure></p>
+<p>查看主从状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">info             # 查看所有信息</span><br><span class="line">info replication # 查看主从信息</span><br></pre></td></tr></table></figure></p>
+<p>主从切换<br>当主节点挂了的情况下，到从节点上执行.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slaveof no one</span><br></pre></td></tr></table></figure></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>官网<br><a href="https://redis.io/download#from-source-code" target="_blank" rel="noopener">https://redis.io/download#from-source-code</a><br><a href="https://redis.io/topics/quickstart" target="_blank" rel="noopener">https://redis.io/topics/quickstart</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckv8yg3ub00672pjxacn31a5w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckv9a2pid005xyyjxd1mhm5j4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -153,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckv8yg3sp003x2pjx27u7mcrp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckv9a2pf50041yyjxsmepbao3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -201,7 +209,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckv8yg3ro00282pjxcqklk6z2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckv9a2pdb0021yyjxl6fkv0xd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -248,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/15/linux-openssl-update/" data-id="ckv8yg3s800372pjx9203ffti" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/15/linux-openssl-update/" data-id="ckv9a2pe70032yyjx0tkgt4ol" class="article-share-link">Share</a>
       
       
     </footer>
@@ -296,7 +304,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckv8yg3qw00132pjxyl5p8kja" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckv9a2pcp0015yyjxmpcfycg6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -346,7 +354,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckv8yg3s2002x2pjxayxxvbmy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckv9a2peu003qyyjxss7t4o5z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -397,7 +405,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckv8yg3rt002h2pjxalaxb2ml" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckv9a2pdo002kyyjxmfbxytaa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -455,7 +463,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckv8yg3sd003d2pjx94qtu8n3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckv9a2pel003gyyjxz68j2hri" class="article-share-link">Share</a>
       
       
     </footer>
@@ -503,7 +511,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckv8yg3t8004q2pjxlxc6u4p1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckv9a2pfp004iyyjx4vcag2to" class="article-share-link">Share</a>
       
       
     </footer>
@@ -551,7 +559,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckv8yg3rh001w2pjxc08ak0xl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckv9a2pd5001ryyjxn8643ku9" class="article-share-link">Share</a>
       
       
     </footer>
