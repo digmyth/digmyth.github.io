@@ -62,6 +62,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-redis-install" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/05/29/redis-install/" class="article-date">
+  <time datetime="2021-05-29T01:41:54.000Z" itemprop="datePublished">2021-05-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/05/29/redis-install/">redis install</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/redis-stable.tar.gz # 最新稳定版</span><br><span class="line">wget https://download.redis.io/releases/redis-6.2.5.tar.gz</span><br><span class="line">tar xzf redis-6.2.5.tar.gz</span><br><span class="line">cd redis-6.2.5</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>如果重新make不下去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make distclean  &amp;&amp; make</span><br></pre></td></tr></table></figure></p>
+<p>自动拷贝程序文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br><span class="line"># ls /usr/local/bin</span><br><span class="line">redis-benchmark  redis-check-aof  redis-check-rdb  redis-cli  redis-sentinel  redis-server</span><br></pre></td></tr></table></figure></p>
+<p>拷贝配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cp  redis.conf /etc/</span><br><span class="line"># edit  parameter</span><br><span class="line">requirepass passwd</span><br><span class="line"># save &quot;&quot;   # 完全禁用本地持久化</span><br><span class="line"># 跟据策略持久化的配置 </span><br><span class="line">save 3600 1</span><br><span class="line">save 300 100</span><br><span class="line">save 60 10000</span><br><span class="line">dir /data/redis-data   # 存储路径</span><br><span class="line">daemonize yes   # 确保redis-server启动时能在后台启动</span><br></pre></td></tr></table></figure></p>
+<p>手写启动文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# vi /usr/lib/systemd/system/redis.service </span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Redis persistent key-value database</span><br><span class="line">After=network.target</span><br><span class="line">After=network-online.target</span><br><span class="line">Wants=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/local/bin/redis-server /etc/redis.conf</span><br><span class="line">ExecStop=/usr/local/bin/redis-cli shutdown</span><br><span class="line">#Type=notify</span><br><span class="line">Type=forking</span><br><span class="line">User=root</span><br><span class="line">Group=root</span><br><span class="line">RuntimeDirectory=redis</span><br><span class="line">RuntimeDirectoryMode=0755</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>官网<br><a href="https://redis.io/download#from-source-code" target="_blank" rel="noopener">https://redis.io/download#from-source-code</a><br><a href="https://redis.io/topics/quickstart" target="_blank" rel="noopener">https://redis.io/topics/quickstart</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckv8y1vxm00670wjxg05e2l0e" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-mongodb-01集群" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/05/10/mongodb-01集群/" class="article-date">
@@ -104,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckv8wszhe003vydjxim0mz12x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckv8y1vw1003x0wjxt5iqdkz8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -152,7 +201,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckv8wszfi0029ydjxzdxg4nzg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckv8y1vun00290wjxq8qy2218" class="article-share-link">Share</a>
       
       
     </footer>
@@ -199,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/15/linux-openssl-update/" data-id="ckv8wszgo0035ydjxxz4asihp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/15/linux-openssl-update/" data-id="ckv8y1vve00370wjx24hi8jvm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -247,7 +296,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckv8wszdg0015ydjxpa0yzt0i" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckv8y1vts00140wjxh3dm77by" class="article-share-link">Share</a>
       
       
     </footer>
@@ -297,7 +346,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckv8wszg5002vydjxo67kqslt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckv8y1vv7002x0wjxp0m6lkbj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -348,7 +397,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckv8wszfu002lydjxk56zwhzd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckv8y1vuy002h0wjx1qwxl9mx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -406,7 +455,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckv8wszgv003bydjxgaw7zl0l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckv8y1vvj003d0wjx8sw2plcs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -454,7 +503,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckv8wszie004rydjxitjp4wxm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckv8y1vwg004q0wjx20431lht" class="article-share-link">Share</a>
       
       
     </footer>
@@ -502,55 +551,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckv8wsze9001yydjxgsvp3lwa" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-kubernetes-calico-bug" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/02/13/kubernetes-calico-bug/" class="article-date">
-  <time datetime="2021-02-13T07:51:41.000Z" itemprop="datePublished">2021-02-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/02/13/kubernetes-calico-bug/">calico bug</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2021/02/13/kubernetes-calico-bug/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckv8wszdw001lydjxnrhmvhki" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckv8y1vuf001x0wjximlipwot" class="article-share-link">Share</a>
       
       
     </footer>
@@ -616,11 +617,11 @@
           </li>
         
           <li>
-            <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
+            <a href="/2021/08/09/mysql-MGR-02模式切换/">MySQL MGR单主多主模式切换</a>
           </li>
         
           <li>
-            <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
+            <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
           </li>
         
       </ul>

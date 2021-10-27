@@ -62,6 +62,83 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-07-01-面象对象编程初级" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/01/python-07-01-面象对象编程初级/" class="article-date">
+  <time datetime="2017-03-01T00:28:28.000Z" itemprop="datePublished">2017-03-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/01/python-07-01-面象对象编程初级/">python-07-01-面象对象编程初级</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录 </li>
+<li>相关概念</li>
+<li>创建类和对象</li>
+<li>面向对象内置变量</li>
+<li>继承、封装、多态</li>
+<li>抽象方法</li>
+</ul>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><p>定义： 面向对象编程(<code>oop</code>=object-oriented programming):  相对于面对过程编程，它只是一种编程范示。</p>
+<p>状态和转换这种状态的操作: 状态其实就是数据，转换这种状态的操作其实就是方法</p>
+<p>类：将同一种具体的共同特性抽象出来<br>数据：如变量<br>方法：函数：操作变量引用的数据的代码<br>方法是类的组成部份，属性也是在类中定义的, 但数据是在类实例化时赋值的.</p>
+<p>对象是类的实例，对象的某个方法的调用理解为对其发消息，或接口调用<br>同一个类的所有对象都能接收相同的消息，也就是同种方法<br>依赖  一个类中的方法操作另一个类的对象<br>聚合 类A的对象包含类B的对象<br>继承：描述特殊或具体与一般性的关系<br>面向对象的模型机制有3原则：封装，继承，多态</p>
+<p>类或类成员有数据和方法<br>一个类的行为和接口是通过类的方法来定义的<br>对象是类的实例<br>自定义类—实例化—–对象–对象间的操作—消息传递<br>这里消息就是调用请求</p>
+<h2 id="创建类和对象"><a href="#创建类和对象" class="headerlink" title="创建类和对象"></a>创建类和对象</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Foo():</span><br><span class="line">    data=&apos;hello world&apos;    #类数据变量作用于所有实例</span><br><span class="line"></span><br><span class="line">    def __init__(self,name=&apos;default&apos;): # 构造器</span><br><span class="line">        self.name = name               # 实例变量作用于调用对象或调用实例</span><br><span class="line"></span><br><span class="line">    def set_score(self,value):         # 类方法属性</span><br><span class="line">        self.score = value</span><br><span class="line">    def get_score(self):</span><br><span class="line">        return self.score</span><br><span class="line"></span><br><span class="line">obj = Foo(&apos;wxq&apos;)   </span><br><span class="line">obj.set_score(100)</span><br><span class="line">print(obj.get_score())</span><br></pre></td></tr></table></figure>
+<p>可以给一个对象添加属性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Foo():</span><br><span class="line">    data = &apos;default data&apos;</span><br><span class="line"></span><br><span class="line">obj = Foo()</span><br><span class="line">obj.name = &apos;wxq&apos;</span><br><span class="line">print(obj.name)</span><br></pre></td></tr></table></figure></p>
+<p>可以把某个方法绑定给一个实例或 一个类，当绑定给类时，这个方法对此类的所有实例都生效<br>方法绑定给一个实例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def set_age(self,age):</span><br><span class="line">    self.age = age</span><br><span class="line">    </span><br><span class="line">class Foo():</span><br><span class="line">    data = &apos;default data&apos;</span><br><span class="line">    </span><br><span class="line">from types import MethodType</span><br><span class="line">obj.set_age = MethodType(set_age, obj)</span><br><span class="line"></span><br><span class="line">obj.set_age(20)</span><br></pre></td></tr></table></figure></p>
+<p>方法绑定给一个类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from types import MethodType</span><br><span class="line"></span><br><span class="line">class Foo():</span><br><span class="line">    data = &apos;default data&apos;</span><br><span class="line"></span><br><span class="line">def set_age(self,age):</span><br><span class="line">    self.age = age</span><br><span class="line"></span><br><span class="line">Foo.set_age = MethodType(set_age, Foo)</span><br><span class="line"></span><br><span class="line">obj = Foo()</span><br><span class="line">obj.set_age(23)</span><br><span class="line">print(obj.age)</span><br></pre></td></tr></table></figure></p>
+<h2 id="面向对象内置变量"><a href="#面向对象内置变量" class="headerlink" title="面向对象内置变量"></a>面向对象内置变量</h2><p>1 类变量作用于所有对象或实例<br>2 实例变量作用于调用对象或调用实例<br>3 <code>__init__()</code>  构造器 <code>__del__()</code> 析构器<br>4 <code>Foo.__name__</code> 字符串形式的类名<br>5 <code>Foo.__doc__</code> Foo的文档字符串<br>6 <code>Foo.__bases__ Foo的所有父类构成的元组
+7</code>Foo.<strong>module</strong><code>Foo类所在模块
+8</code>obj.<strong>class</strong><code>obj对象所在的类
+9</code>dir(Foo)`   Foo类所有属性名组成的列表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&apos;__class__&apos;, &apos;__delattr__&apos;, &apos;__dict__&apos;, &apos;__dir__&apos;, &apos;__doc__&apos;, &apos;__eq__&apos;, &apos;__format__&apos;, &apos;__ge__&apos;, &apos;__getattribute__&apos;, &apos;__gt__&apos;, &apos;__hash__&apos;, &apos;__init__&apos;, &apos;__le__&apos;, &apos;__lt__&apos;, &apos;__module__&apos;, &apos;__ne__&apos;, &apos;__new__&apos;, &apos;__reduce__&apos;, &apos;__reduce_ex__&apos;, &apos;__repr__&apos;, &apos;__setattr__&apos;, &apos;__sizeof__&apos;, &apos;__str__&apos;, &apos;__subclasshook__&apos;, &apos;__weakref__&apos;, &apos;data&apos;]</span><br></pre></td></tr></table></figure></p>
+<p>10 <code>Foo.__dict__</code>Foo类的所有属性组成的字典<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&apos;data&apos;: &apos;hello&apos;, &apos;__weakref__&apos;: &lt;attribute &apos;__weakref__&apos; of &apos;Foo&apos; objects&gt;, &apos;__dict__&apos;: &lt;attribute &apos;__dict__&apos; of &apos;Foo&apos; objects&gt;, &apos;__init__&apos;: &lt;function Foo.__init__ at 0x0000000000ABC9D8&gt;, &apos;__module__&apos;: &apos;__main__&apos;, &apos;__doc__&apos;: None&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="类的继承，封装，多态3特性"><a href="#类的继承，封装，多态3特性" class="headerlink" title="类的继承，封装，多态3特性"></a>类的继承，封装，多态3特性</h2><h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Foo():</span><br><span class="line">    def f1(self):</span><br><span class="line">        return self.f2()</span><br><span class="line"></span><br><span class="line">    def f2(self):</span><br><span class="line">        return &quot;Foo.f2&quot;</span><br><span class="line"></span><br><span class="line">class Bar(Foo):</span><br><span class="line">    def f2(self):</span><br><span class="line">        return &quot;Bar.f2&quot;</span><br><span class="line"></span><br><span class="line">obj = Bar()</span><br><span class="line">obj.f1()   # 打印Bar.f2</span><br><span class="line"># 描述运行过程:self=obj,没有f1就先调用父类的f1,再找当前类的f2, 不是直接找父类的f2,如果非要找父类的f2,参考下面引藏示例</span><br></pre></td></tr></table></figure>
+<p> 有时子类直接继承父类，在继承基础上重构子类属性，那么就要用到super()方法<br>用法：  <code>super(当前类，self.).__init__()</code>或py3 <code>supuer().__init__()</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Foo():</span><br><span class="line">    def __init__(self,*args,**kwargs):</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">class Bar():</span><br><span class="line">    def __int__(self,name,*args,**kwargs):</span><br><span class="line">        super(Bar,self).__init__()</span><br><span class="line">        self.name = name</span><br></pre></td></tr></table></figure>
+<p>Boolean型判断<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">判断一个类是不是另一个类的子类</span><br><span class="line">issubclass(CC,PP)</span><br><span class="line">issubclass(PP,object)</span><br><span class="line"></span><br><span class="line">判断一个实例是不是那个类生成的</span><br><span class="line">isinstance(ins1,CC)</span><br><span class="line"></span><br><span class="line">判断一个实例有没有那个属性值</span><br><span class="line">hasattr(ins1,&apos;name&apos;)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from types import FunctionType</span><br><span class="line">class Foo():</span><br><span class="line">    def f1(self,name):</span><br><span class="line">        return name</span><br><span class="line"></span><br><span class="line">obj = Foo()</span><br><span class="line">print(isinstance(Foo.f1,FunctionType))  # True</span><br><span class="line">print(isinstance(obj.f1,FunctionType))  # False</span><br></pre></td></tr></table></figure>
+<h3 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h3><p>python数据封装只要写代码就会有，对数据结构化存储;  如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Base():</span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.status = False</span><br><span class="line">        self.data = None</span><br><span class="line">        self.errors = None</span><br><span class="line">obj=Base()</span><br><span class="line">obj.status/obj.data/obj.errors  #  这就是一种数据封装</span><br></pre></td></tr></table></figure></p>
+<p>封装可以__开头隐藏属性，但在类内部不受限制，外部是无法访问的，当然只是语法变形的隐藏，在名称空间还是能找到的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Foo():</span><br><span class="line">    __N = &apos;NN&apos;</span><br><span class="line"></span><br><span class="line">    def __init__(self,name):</span><br><span class="line">        self.__name = name</span><br><span class="line"></span><br><span class="line">    def __f1(self):           # 外部无法直接访问</span><br><span class="line">        return self.__name</span><br><span class="line"></span><br><span class="line">    def f2(self):</span><br><span class="line">        return self.__f1()   # 在内部调用不受限制</span><br><span class="line"></span><br><span class="line">obj = Foo(&apos;wxq&apos;)</span><br><span class="line">print(obj.__f1())           # 无法直接调用,直正调用还是可以的obj._Foo__f1()</span><br><span class="line">print(obj.f2())</span><br><span class="line">obj.__dict__   #   &#123;&apos;_Foo__name&apos;: &apos;wxq&apos;&#125;</span><br><span class="line">obj.__x = &quot;xx&quot;  # 语法隐藏变形是在定义类时，实例化后再__不会变形</span><br><span class="line">obj.__xx        # 实例化后不会隐藏</span><br></pre></td></tr></table></figure></p>
+<p> 继承类时，我们就想调用Foo的f2(),方法很多，这里用一下隐藏实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> class Foo():</span><br><span class="line">    def f1(self):</span><br><span class="line">        return self.__f2()     #变形为 self._Foo__f2</span><br><span class="line"></span><br><span class="line">    def __f2(self):        </span><br><span class="line">        return &quot;Foo.f2&quot;</span><br><span class="line"></span><br><span class="line">class Bar(Foo):</span><br><span class="line">    def __f2(self):            # self._Bar__f2</span><br><span class="line">        return &quot;Bar.f2&quot;</span><br><span class="line"></span><br><span class="line">obj = Bar()</span><br><span class="line">x=obj.f1()   # 打印Foo.f2</span><br><span class="line">print(x)</span><br></pre></td></tr></table></figure></p>
+<h3 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h3><p>python原生就是多态，没什么可说的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">class Animal():</span><br><span class="line">    def __init__(self,name):</span><br><span class="line">        self.name = name</span><br><span class="line"></span><br><span class="line">    def talk(self):</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    @staticmethod</span><br><span class="line">    def animal_talk(obj):</span><br><span class="line">        obj.talk()</span><br><span class="line"></span><br><span class="line">class Dog(Animal):</span><br><span class="line">    def talk(self):</span><br><span class="line">        print(&quot;wang...&quot;)</span><br><span class="line"></span><br><span class="line">class Cat(Animal):</span><br><span class="line">    def talk(self):</span><br><span class="line">        print(&quot;miao miao...&quot;)</span><br><span class="line"></span><br><span class="line">d=Dog(&apos;dog&apos;)</span><br><span class="line"># d.talk()</span><br><span class="line"></span><br><span class="line">c = Cat(&apos;cat&apos;)</span><br><span class="line"># c.talk()</span><br><span class="line"></span><br><span class="line">Animal.animal_talk(d)</span><br><span class="line">Animal.animal_talk(c)</span><br></pre></td></tr></table></figure>
+<h2 id="抽象方法"><a href="#抽象方法" class="headerlink" title="抽象方法"></a>抽象方法</h2><p>抽象方法作用：定义子类必须实现的父类的某些方法<br>使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import  abc</span><br><span class="line"></span><br><span class="line">class Base(metaclass=abc.ABCMeta):</span><br><span class="line">    @abc.abstractmethod</span><br><span class="line">    def read(self):</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    @abc.abstractmethod</span><br><span class="line">    def write(self):</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">class dev(Base):</span><br><span class="line">    def read(self):</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    def write(self):</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">obj = dev()</span><br></pre></td></tr></table></figure></p>
+<p>如果子类没有实现父类规定的@abc.abstractmethod装饰的方法就会报错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TypeError: Can&apos;t instantiate abstract class dev with abstract methods read, write</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/03/01/python-07-01-面象对象编程初级/" data-id="ckv8y1vx4005k0wjx9u6tgepa" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-python-05-02-模块" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/02/20/python-05-02-模块/" class="article-date">
@@ -263,7 +340,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="ckv8wsziq005fydjx8ze54pj3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/20/python-05-02-模块/" data-id="ckv8y1vwy005g0wjxdh11ndyw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -349,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="ckv8wszir005hydjxhgcm2z1c" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/18/python-05-01-列表解析-生成器-迭代器/" data-id="ckv8y1vwx005e0wjx5a3uwisx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -424,7 +501,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="ckv8wszjg006lydjxiz27tles" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="ckv8y1vxx006j0wjxduhtcd9k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -510,7 +587,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="ckv8wszio005bydjxawu8yz2t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="ckv8y1vwv005c0wjxgbq08c6x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -557,7 +634,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ckv8wszja006dydjx96n3w2ps" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ckv8y1vxu006e0wjxmqwnhhw7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -652,7 +729,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-01基础篇/" data-id="ckv8wszhl0042ydjx4bjkav8n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/mysql-01基础篇/" data-id="ckv8y1vw400420wjxq83jfr8q" class="article-share-link">Share</a>
       
       
     </footer>
@@ -906,7 +983,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ckv8wszim0057ydjxtykvk4cj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ckv8y1vwu005a0wjxojep8hel" class="article-share-link">Share</a>
       
       
     </footer>
@@ -977,7 +1054,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ckv8wszil0055ydjx57oojnlv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ckv8y1vwt00580wjxm3l5f7jq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1044,78 +1121,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="ckv8wszin0059ydjxd0yrlsd8" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python-01-基础篇下" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/09/python-01-基础篇下/" class="article-date">
-  <time datetime="2017-01-09T02:37:13.000Z" itemprop="datePublished">2017-01-09</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/09/python-01-基础篇下/">python_01_基础篇下</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>位运算</li>
-<li>程序编码</li>
-<li>用户交互</li>
-</ul>
-<h1 id="第四节-位运算"><a href="#第四节-位运算" class="headerlink" title="第四节 位运算"></a>第四节 位运算</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">位运算：</span><br><span class="line">&amp;与  ： 同位都为1则为1</span><br><span class="line">|或  ： 同位有1则为1</span><br><span class="line">^异或:  同位相异为1，相同为0</span><br><span class="line">&lt;&lt;n左移位： 左移n位(保留左位),右边补n个0</span><br><span class="line">&gt;&gt;n右移位： 右移n位(去掉右位),左边补n个0</span><br></pre></td></tr></table></figure>
-<p>&amp;运算:都为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">00110001</span><br><span class="line">01111111</span><br><span class="line">00110001</span><br><span class="line">`</span><br></pre></td></tr></table></figure></p>
-<p>|运算：或为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00110001</span><br><span class="line">01111111</span><br><span class="line">01111111</span><br></pre></td></tr></table></figure></p>
-<p>^运算：相异为1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">11001101</span><br><span class="line">01111111</span><br><span class="line">10110010</span><br></pre></td></tr></table></figure></p>
-<p><code>&lt;&lt;3左移位：</code>左边110保留<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">11010001</span><br><span class="line">11010001000</span><br></pre></td></tr></table></figure></p>
-<p><code>&gt;&gt;3右移位：</code>右边001不保留<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">11010001</span><br><span class="line">00011010</span><br></pre></td></tr></table></figure></p>
-<h1 id="第五节-程序编码"><a href="#第五节-程序编码" class="headerlink" title="第五节 程序编码"></a>第五节 程序编码</h1><h3 id="bytes、str-区别"><a href="#bytes、str-区别" class="headerlink" title="bytes、str 区别"></a>bytes、str 区别</h3><p>python3 中bytes、str是有区别的</p>
-<ul>
-<li>bytes/str的区别：bytes 是byte的序列，而str是unicode 序列</li>
-<li>bytes并不能存储中文，需要先定义成str类型后encode()编码</li>
-<li>之间的转换是编码，解码完成。 方式： b1 = str1.encode()/ b1.decode()</li>
-<li>网络传输中都是用的bytes类型二进制进行传输（socket编程发送必须bytes类型）</li>
-<li>b（bytes）只能接收ASCII 的值</li>
-<li>python3与大多数软件运行在内存中都是unicode编码</li>
-</ul>
-<p>b表示方法(bytes)只能接收ASCII的值, 直接传的中文为字符串 unicode编码，一个unicode两个字节，一个汉字两个字节。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b1 = b&apos;hello world&apos;   # bytes只能接收ASCII样的值</span><br><span class="line">&gt;&gt;&gt; b2 = b&apos;你好&apos;</span><br><span class="line">  File &quot;&lt;stdin&gt;&quot;, line 1</span><br><span class="line">SyntaxError: bytes can only contain ASCII literal characters.</span><br></pre></td></tr></table></figure>
-<p>将中文转换为bytes  (转为ASCII里面能支持的格式，默认为utf-8)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b2 = &apos;你好&apos;.encode(&apos;utf-8&apos;)</span><br><span class="line">&gt;&gt;&gt; b3 = bytes(&apos;你好&apos;, encoding=&apos;utf-8&apos;)</span><br><span class="line">&gt;&gt;&gt; type(b2)</span><br><span class="line">&lt;class &apos;bytes&apos;&gt;</span><br><span class="line">&gt;&gt;&gt; b2</span><br><span class="line">b&apos;\xe4\xbd\xa0\xe5\xa5\xbd&apos;</span><br></pre></td></tr></table></figure></p>
-<p>看看下面的转换是否能领悟点什么<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; test_str = &apos;你是最好的！&apos;</span><br><span class="line">&gt;&gt;&gt; test_b = test_str.encode()  # 不指定时默认encode()成utf-8</span><br><span class="line">&gt;&gt;&gt; test_b</span><br><span class="line">b&apos;\xe4\xbd\xa0\xe6\x98\xaf\xe6\x9c\x80\xe5\xa5\xbd\xe7\x9a\x84\xef\xbc\x81&apos;</span><br><span class="line">&gt;&gt;&gt; for i in test_b:</span><br><span class="line">...     print(i, end=&apos; &apos;)</span><br><span class="line">228 189 160 230 152 175 230 156 128 229 165 189 231 154 132 239 188 129</span><br><span class="line">&gt;&gt;&gt; for i in test_str:</span><br><span class="line">...     print(i, end=&apos; &apos;)</span><br><span class="line">你 是 最 好 的 ！</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# cat utf-8.txt </span><br><span class="line">我是最好的！</span><br><span class="line">root@ubuntu:~# iconv -f utf-8 -t gbk utf-8.txt </span><br><span class="line">ϒˇخºõģ¡</span><br><span class="line">root@ubuntu:~# iconv -f utf-8 -t gbk utf-8.txt  &gt; gbk.txt</span><br><span class="line">root@ubuntu:~# cat gbk.txt</span><br><span class="line">ϒˇخºõģ¡</span><br><span class="line">&gt;&gt;&gt; f = open(&apos;gbk.txt&apos;, &apos;rb&apos;)</span><br><span class="line">&gt;&gt;&gt; test = f.read()</span><br><span class="line">&gt;&gt;&gt; test</span><br><span class="line">b&apos;\xce\xd2\xca\xc7\xd7\xee\xba\xc3\xb5\xc4\xa3\xa1\n&apos;</span><br><span class="line">&gt;&gt;&gt; test.decode(&apos;gbk&apos;)</span><br><span class="line">&apos;我是最好的！\n&apos;</span><br><span class="line">&gt;&gt;&gt; f.close()</span><br></pre></td></tr></table></figure>
-<h3 id="编码总结"><a href="#编码总结" class="headerlink" title="编码总结"></a>编码总结</h3><p>编码过程： 任意unicode到bytes的过程<br>解码过程： bytes到unicode的过程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pycharm默认以UTF-8存数据到硬盘(unicode to UTF-8)   一个编码过程</span><br><span class="line">python3默认以UTF-8读数据到内存（UTF-8 to unicode）  一个解码过程</span><br><span class="line">#coding:utf-8 也是指明了用什么编码读数据到内存,一个解码过程</span><br><span class="line"></span><br><span class="line">#这里open虽然文件是UTF8存的，此时要以utf8读, utf8 to unicode， 是一个解码过程</span><br><span class="line">with open(&quot;test.txt&quot;,&apos;r&apos;,encoding=&apos;utf8&apos;) as f: </span><br><span class="line">    f.read() </span><br><span class="line"></span><br><span class="line">python3字符串就是unicode, 任意unicode只要编码后就是bytes</span><br><span class="line">&apos;你好&apos;.encode(&apos;utf8&apos;)</span><br></pre></td></tr></table></figure></p>
-<h1 id="第六节-用户交互"><a href="#第六节-用户交互" class="headerlink" title="第六节 用户交互"></a>第六节 用户交互</h1><p>for python2.x<br>name = raw_input(“What is your name:”)<br>for python3.x<br>name = input(“What is your name:”)<br>eg: 想要输入密码时不可见，可以利用getpass模块的getpass()方法<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@apt:/mnt<span class="comment"># cat getp.py </span></span><br><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line">import getpass</span><br><span class="line"><span class="built_in">pwd</span> = getpass.getpass(<span class="string">"请输入密码："</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">pwd</span>)</span><br><span class="line">root@apt:/mnt<span class="comment"># python3 getp.py </span></span><br><span class="line">请输入密码：</span><br><span class="line">123</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="ckv8wszij0051ydjxpcjpabqm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="ckv8y1vws00560wjx64sothbk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1181,11 +1187,11 @@
           </li>
         
           <li>
-            <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
+            <a href="/2021/08/09/mysql-MGR-02模式切换/">MySQL MGR单主多主模式切换</a>
           </li>
         
           <li>
-            <a href="/2021/07/20/PostgreSQL-快速入门/">PostgreSQL快速入门</a>
+            <a href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
           </li>
         
       </ul>

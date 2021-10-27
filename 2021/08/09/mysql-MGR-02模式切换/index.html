@@ -3,15 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>归档: 2018/6 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>MySQL MGR单主多主模式切换 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:url" content="http://www.digmyth.com/archives/2018/06/index.html">
+  <meta name="description" content="目录  模式查看group_replication_single_primary_mode=1表示当前为单主模式，强一致检查group_replication_enforce_update_everywhere_checks属于关闭状态1234567mysql&amp;gt; select @@group_replication_single_primary_mode,@@group_replicati">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL MGR单主多主模式切换">
+<meta property="og:url" content="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta property="og:description" content="目录  模式查看group_replication_single_primary_mode=1表示当前为单主模式，强一致检查group_replication_enforce_update_everywhere_checks属于关闭状态1234567mysql&amp;gt; select @@group_replication_single_primary_mode,@@group_replicati">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-10-27T03:14:14.145Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
+<meta name="twitter:title" content="MySQL MGR单主多主模式切换">
+<meta name="twitter:description" content="目录  模式查看group_replication_single_primary_mode=1表示当前为单主模式，强一致检查group_replication_enforce_update_everywhere_checks属于关闭状态1234567mysql&amp;gt; select @@group_replication_single_primary_mode,@@group_replicati">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -60,58 +64,101 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/06/15/python-08-07-抽象类抽象方法/" class="archive-article-date">
-  <time datetime="2018-06-15T12:39:12.000Z" itemprop="datePublished">6月 15</time>
+        <section id="main"><article id="post-mysql-MGR-02模式切换" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/08/09/mysql-MGR-02模式切换/" class="article-date">
+  <time datetime="2021-08-08T21:45:54.000Z" itemprop="datePublished">2021-08-09</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/15/python-08-07-抽象类抽象方法/">python-08-07-抽象类抽象方法.md</a>
+    <h1 class="article-title" itemprop="name">
+      MySQL MGR单主多主模式切换
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/06/08/Rabbitmq/" class="archive-article-date">
-  <time datetime="2018-06-08T01:41:54.000Z" itemprop="datePublished">6月 8</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
+        <ul>
+<li>目录</li>
+</ul>
+<p>模式查看<br>group_replication_single_primary_mode=1表示当前为单主模式，强一致检查group_replication_enforce_update_everywhere_checks属于关闭状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select @@group_replication_single_primary_mode,@@group_replication_enforce_update_everywhere_checks;</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">| @@group_replication_single_primary_mode | @@group_replication_enforce_update_everywhere_checks |</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">|                                       1 |                                                    0 |</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>节点角色查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM performance_schema.replication_group_members;</span><br><span class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+-------------+----------------+----------------------------+</span><br><span class="line">| CHANNEL_NAME              | MEMBER_ID                            | MEMBER_HOST | MEMBER_PORT | MEMBER_STATE | MEMBER_ROLE | MEMBER_VERSION | MEMBER_COMMUNICATION_STACK |</span><br><span class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+-------------+----------------+----------------------------+</span><br><span class="line">| group_replication_applier | 2cc80a03-363f-11ec-9bdd-000c295cfe4c | sql02       |        3306 | ONLINE       | PRIMARY     | 8.0.27         | XCom                       |</span><br><span class="line">| group_replication_applier | 78563b4c-21b6-11ec-a7f5-7bc466af3c1e | sql01       |        3306 | ONLINE       | SECONDARY   | 8.0.27         | XCom                       |</span><br><span class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+-------------+----------------+----------------------------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>切换为多主<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select group_replication_switch_to_multi_primary_mode();</span><br><span class="line">+--------------------------------------------------+</span><br><span class="line">| group_replication_switch_to_multi_primary_mode() |</span><br><span class="line">+--------------------------------------------------+</span><br><span class="line">| Mode switched to multi-primary successfully.     |</span><br><span class="line">+--------------------------------------------------+</span><br><span class="line">1 row in set (1.07 sec)</span><br></pre></td></tr></table></figure></p>
+<p>多主模式下要求强一致性，所以group_replication_enforce_update_everywhere_checks=1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select @@group_replication_single_primary_mode,@@group_replication_enforce_update_everywhere_checks;</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">| @@group_replication_single_primary_mode | @@group_replication_enforce_update_everywhere_checks |</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">|                                       0 |                                                    1 |</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>切换为单主，同时指定主节点UUID<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select group_replication_switch_to_single_primary_mode(&apos;78563b4c-21b6-11ec-a7f5-7bc466af3c1e&apos;);</span><br><span class="line">+---------------------------------------------------+</span><br><span class="line">| group_replication_switch_to_single_primary_mode() |</span><br><span class="line">+---------------------------------------------------+</span><br><span class="line">| Mode switched to single-primary successfully.     |</span><br><span class="line">+---------------------------------------------------+</span><br><span class="line">1 row in set (0.05 sec)</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="ckv8y1vw7004a0wjx2p6zgp9s" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/08/Rabbitmq/">Rabbitmq集群</a>
-    </h1>
+    
+<nav id="article-nav">
+  
+    <a href="/2021/08/09/mysql-HA/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Mysql高可用集群
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/07/25/prometheus-relabel/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">prometheus 重新打标</div>
+    </a>
+  
+</nav>
+
   
 
-    </header>
-  </div>
+  
+    <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+		   能帮到您是我的荣幸！
+        </span>
+        <br>
+      </div>  
+	<div id="donate_guide" class="donate_bar center hidden" >
+		<!-- 支付宝打赏图案 -->
+		<!--img src="/img/zhifubao.jpg" alt="支付宝打赏"--> 
+		<!-- 微信打赏图案 -->
+		<img src="/images/wecharpay.png" alt="微信打赏">  
+    </div>
+	<script type="text/javascript">
+		document.getElementById('btn_donate').onclick = function(){
+			$('#donate_board').addClass('hidden');
+			$('#donate_guide').removeClass('hidden');
+		}
+	</script>
+</div>
+<! -- 添加捐赠图标 -->
+
+  
 </article>
-  
-  
-    </div></section>
-  
+
 
 </section>
         
