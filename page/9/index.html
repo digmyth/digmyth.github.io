@@ -62,9 +62,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-linux-nginx" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-haproxy-基础" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/11/12/linux-nginx/" class="article-date">
+    <a href="/2017/11/12/haproxy-基础/" class="article-date">
   <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
 </a>
     
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/12/linux-nginx/">linux nginx基础</a>
+      <a class="article-title" href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
     </h1>
   
 
@@ -90,25 +90,22 @@
       
         <ul>
 <li>目录</li>
-<li>nginx基本介绍</li>
-<li>nginx URI优先级</li>
+<li>haproxy基本介绍</li>
+<li>haproxy基础语法</li>
+<li>haproxy应用</li>
 </ul>
-<h2 id="nginx-URI优先级"><a href="#nginx-URI优先级" class="headerlink" title="nginx URI优先级"></a>nginx URI优先级</h2><p>第一优先级<br>精确匹配此路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location = URI &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>第二优先级<br>不使用正则表达式的模糊匹配<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location ^~ URI &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>第三优先级<br>可使用正则表达式的模糊匹配<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location ~ URI &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>第四优先级<br>匹配当前路径及其子路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location URI &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>补充</p>
-<ul>
-<li>~    区分字符大小写匹配</li>
-<li>~* 不区分字符大小写匹配</li>
-<li>!     表过不匹配</li>
-<li>!~*   不区分字符大小写非匹配</li>
-</ul>
-
+<h2 id="haproxy基本介绍"><a href="#haproxy基本介绍" class="headerlink" title="haproxy基本介绍"></a>haproxy基本介绍</h2><h2 id="haproxy基础语法"><a href="#haproxy基础语法" class="headerlink" title="haproxy基础语法"></a>haproxy基础语法</h2><p>当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。</p>
+<p>取模法：<br>key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器</p>
+<p>当有服务器添加或移走这种缓存就失效了</p>
+<p>如何解决，是有办法的，那就是改进上面那种方法，称一致性hash算法：consitent hash</p>
+<p>有一个环，用32位二进制从0开始计数，环上分布有离散的2^32 点。<br>key hash 后的值除以2^32时取余数，这个余数一定在0到2^32-1范围内，也就是在这个环上<br>那么数据就是存储在余数的下一台服务器上，服务器是离散分布在这样的环上的。<br>缺点：服务器分布可能存在偏斜，也就是可能所有服务器集中在环三分之一处。<br>当存储数据找下一台服务器，那台服务器存储量太大了。</p>
+<p>解决办法：<br>使用虚拟节点离散分布在环上来代替物理节点。<br>hadoop前身开源搜索引擎，任何搜索引擎首先是大数据搜索平台，其次才是高性能分析平台。</p>
+<p>流式数据存储处理平台：storm  spark大数据处理平台。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">nginx:</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">	proxy_pass: </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="haproxy应用"><a href="#haproxy应用" class="headerlink" title="haproxy应用"></a>haproxy应用</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="ckw4so7c00034yojxjznrwsmp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="ckw5p89bj001gxxjxcuv9k6dz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -180,7 +177,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="ckw4so79f001jyojxn5yiv1ro" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="ckw5p89bo001lxxjxsq2m6c3t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -286,7 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="ckw4so7ec004dyojx6yxvojqk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="ckw5p89hc004fxxjxsktwpgoq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -339,7 +336,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="ckw4so7j6007myojx9mzfdisx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="ckw5p89jr007ixxjxydsirepb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -409,7 +406,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="ckw4so7e50048yojxdopjopqn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="ckw5p89h50043xxjxartw3anf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -463,55 +460,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="ckw4so78p000qyojxozvh7y2x" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-proxy-01-代理" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/31/proxy-01-代理/" class="article-date">
-  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/31/proxy-01-代理/">proxy-01-代理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/10/31/proxy-01-代理/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="ckw4so7fw0053yojxtmqlmrkn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="ckw5p89av000kxxjx0jc6jyw8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -560,7 +509,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="ckw4so7ci003cyojxwo367hcd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="ckw5p89g7003jxxjxhfab22rm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-proxy-01-代理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/31/proxy-01-代理/" class="article-date">
+  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/31/proxy-01-代理/">proxy-01-代理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/10/31/proxy-01-代理/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="ckw5p89hn0050xxjxphpz3sbz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -620,7 +617,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="ckw4so7iq007ayojxbxjnx6dj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="ckw5p89jh007axxjxguv2zbm4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -681,7 +678,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="ckw4so7im0078yojxtcsvkr6q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="ckw5p89je0078xxjxxpeil6wx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -707,7 +704,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
     </div>
   </div>
 
@@ -735,7 +732,7 @@
       <ul>
         
           <li>
-            <a href="/2021/10/25/jenkins_mvn/">prometheus</a>
+            <a href="/2021/10/25/jenkins_mvn/">jenkins maven</a>
           </li>
         
           <li>
