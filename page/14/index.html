@@ -62,6 +62,81 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-01-开发入门" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/15/web-01-开发入门/" class="article-date">
+  <time datetime="2017-02-15T12:51:41.000Z" itemprop="datePublished">2017-02-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/15/web-01-开发入门/">web-01-开发入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从现在开始，此时此刻写点<code>web开发</code>和<code>Django</code> 的知识，便于以后查阅学习。<br>廖雪峰老师的博客写得特别好，我也是摘抄参考其内容。<br><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000" target="_blank" rel="noopener">廖雪峰老师博客原文</a></p>
+<h2 id="一-HTTP协议简介"><a href="#一-HTTP协议简介" class="headerlink" title="一.   HTTP协议简介"></a>一.   HTTP协议简介</h2><h3 id="web历程"><a href="#web历程" class="headerlink" title="web历程"></a>web历程</h3><p>web开发经历几个阶段<br>1  静态页面: 直接由编辑器生成静态html<br>2  CGI:  交互与动态数据处理出现了CGI（common gateway interface）,由C/C++编写<br>3  脚本语言（ASP/JSP/PHP）: 脚本语言开发效率高，与html结合紧密<br>4  框架：mvc mtv mvvm</p>
+<h3 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h3><p>服务器把网页传给浏览器，实际上就是把网页的html代码发送给浏览器，让浏览器显示出来。而浏览器和服务器之间的传输协议就是HTTP</p>
+<p>HTML是一种用来定义网页的文本，会HTML就会编写网页<br>http是在网络上传输html的协议，用于浏览器和服务器的通信</p>
+<p>Elements显示网页的结构，Network显示浏览器和服务器的通信。我们点Network，确保第一个小红灯亮着，Chrome就会记录所有浏览器和服务器之间的通信。</p>
+<p>GET / HTTP/1.1： 注：1.1版本允许多个HTTP请求复用一个TCP连接，以加快传输速度<br>浏览器就是依靠Content-Type来判断响应的内容是网页还是图片，是视频还是音乐</p>
+<p>当浏览器读取到新浪首页的HTML源码后，它会解析HTML，显示页面，然后，根据HTML里面的各种链接，再发送HTTP请求给新浪服务器，拿到相应的图片、视频、Flash、JavaScript脚本、CSS等各种资源，最终显示出一个完整的页面。所以我们在Network下面能看到很多额外的HTTP请求。</p>
+<h3 id="HTTP请求流程"><a href="#HTTP请求流程" class="headerlink" title="HTTP请求流程"></a>HTTP请求流程</h3><p>步骤1：<br>浏览器向服务器发送http请求<br>    方法：GET仅请求资源 POST    会附带用户数据body部份<br>    路径; /full/url/path<br>    域名：</p>
+<p>步骤2：<br>服务器向浏览器返回HTTP响应<br>    响应代码：<code>200</code>表示成功 <code>3**</code> 表示重定向  <code>4**</code> 表示客户端发送的请求有错误 <code>5**</code> 表示服务器处理错误<br>    响应类型： 由Content-Type指定<br>    通常服务器的HTTP响应会携带内容，也就是有一个Body，包含响应的内容，网页的HTML源码就在Body中</p>
+<p>步骤3：如果浏览器还需要继续向服务器请求其他资源，比如图片，就再次发出HTTP请求，重复步骤1、2</p>
+<p>Web采用的HTTP协议采用了非常简单的请求-响应模式，从而大大简化了开发。当我们编写一个页面时，我们只需要在HTTP请求中把HTML发送出去，不需要考虑如何附带图片、视频等，浏览器如果需要请求图片和视频，它会发送另一个HTTP请求，因此，一个HTTP请求只处理一个资源</p>
+<p>HTTP协议同时具备极强的扩展性，虽然浏览器请求的是<code>http://www.sina.com.cn/</code>的首页，但是新浪在HTML中可以链入其他服务器的资源，比如<code>&lt;img src=&quot;#url&quot;/&gt;</code>，从而将请求压力分散到各个服务器上，并且一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了World Wide Web，简称WWW。</p>
+<h2 id="二-HTML简介"><a href="#二-HTML简介" class="headerlink" title="二. HTML简介"></a>二. HTML简介</h2><p>HTML是一种用来定义网页的文本，会HTML就会编写网页 。<br>其它前端知识不在这里展开。略。。。</p>
+<h2 id="三-WSGI接口"><a href="#三-WSGI接口" class="headerlink" title="三 . WSGI接口"></a>三 . WSGI接口</h2><p>了解了HTTP协议和HTML文档，我们其实就明白了一个Web应用的本质就是：<br>浏览器发送一个HTTP请求；<br>服务器收到请求，生成一个HTML文档；<br>服务器把HTML文档作为HTTP响应的Body发送给浏览器；<br>浏览器收到HTTP响应，从HTTP Body取出HTML文档并显示。</p>
+<p>所以，最简单的Web应用就是先把HTML用文件保存好，用一个现成的HTTP服务器软件，接收用户请求，从文件中读取HTML，返回。Apache、Nginx、Lighttpd等这些常见的静态服务器就是干这件事情的。</p>
+<p>如果要动态生成HTML，就需要把上述步骤自己来实现。不过，接受HTTP请求、解析HTTP请求、发送HTTP响应都是苦力活，如果我们自己来写这些底层代码，还没开始写动态HTML呢，就得花个把月去读HTTP规范。</p>
+<p>正确的做法是底层代码由专门的服务器软件实现，我们用Python专注于生成HTML文档。因为我们不希望接触到TCP连接、HTTP原始请求和响应格式，所以，需要一个统一的接口，让我们专心用Python编写Web业务。</p>
+<p>这个接口就是WSGI：Web Server Gateway Interface。</p>
+<p>WSGI接口定义非常简单，它只要求Web开发者实现一个函数，就可以响应HTTP请求。我们来看一个最简单的Web版本的“Hello, web!”：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def application(environ, start_response):</span><br><span class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</span><br><span class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</span><br></pre></td></tr></table></figure></p>
+<p>上面的application()函数就是符合WSGI标准的一个HTTP处理函数，它接收两个参数：</p>
+<p>environ：一个包含所有HTTP请求信息的dict对象；<br>start_response：一个发送HTTP响应的函数。</p>
+<p>在application()函数中，调用：<br><code>start_response(&#39;200 OK&#39;, [(&#39;Content-Type&#39;, &#39;text/html&#39;)])</code><br>就发送了HTTP响应的Header，注意Header只能发送一次，也就是只能调用一次start_response()函数。start_response()函数接收两个参数，一个是HTTP响应码，一个是一组list表示的HTTP Header，每个Header用一个包含两个str的tuple表示。</p>
+<p>通常情况下，都应该把Content-Type头发送给浏览器。其他很多常用的HTTP Header也应该发送。<br>然后，函数的返回值<code>b&#39;&lt;h1&gt;Hello, web!&lt;/h1&gt;&#39;</code>将作为HTTP响应的Body发送给浏览器。</p>
+<p>有了WSGI，我们关心的就是如何从environ这个dict对象拿到HTTP请求信息，然后构造HTML，通过start_response()发送Header，最后返回Body。</p>
+<p>整个application()函数本身没有涉及到任何解析HTTP的部分，也就是说，底层代码不需要我们自己编写，我们只负责在更高层次上考虑如何响应请求就可以了。</p>
+<p>不过，等等，这个application()函数怎么调用？如果我们自己调用，两个参数environ和start_response我们没法提供，返回的bytes也没法发给浏览器。</p>
+<p>所以application()函数必须由WSGI服务器来调用。有很多符合WSGI规范的服务器，我们可以挑选一个来用。但是现在，我们只想尽快测试一下我们编写的application()函数真的可以把HTML输出到浏览器，所以，要赶紧找一个最简单的WSGI服务器，把我们的Web应用程序跑起来。</p>
+<p>好消息是Python内置了一个WSGI服务器，这个模块叫wsgiref，它是用纯Python编写的WSGI服务器的参考实现。所谓“参考实现”是指该实现完全符合WSGI标准，但是不考虑任何运行效率，仅供开发和测试使用。</p>
+<p>运行WSGI服务<br>我们先编写hello.py，实现Web应用程序的WSGI处理函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># hello.py</span><br><span class="line"></span><br><span class="line">def application(environ, start_response):</span><br><span class="line">    start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])</span><br><span class="line">    return [b&apos;&lt;h1&gt;Hello, web!&lt;/h1&gt;&apos;]</span><br></pre></td></tr></table></figure></p>
+<p>然后，再编写一个server.py，负责启动WSGI服务器，加载application()函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># server.py</span><br><span class="line"># 从wsgiref模块导入:</span><br><span class="line">from wsgiref.simple_server import make_server</span><br><span class="line"># 导入我们自己编写的application函数:</span><br><span class="line">from hello import application</span><br><span class="line"></span><br><span class="line"># 创建一个服务器，IP地址为空，端口是8000，处理函数是application:</span><br><span class="line">httpd = make_server(&apos;&apos;, 8000, application)</span><br><span class="line">print(&apos;Serving HTTP on port 8000...&apos;)</span><br><span class="line"># 开始监听HTTP请求:</span><br><span class="line">httpd.serve_forever()</span><br><span class="line">确保以上两个文件在同一个目录下，然后在命令行输入python server.py来启动WSGI服务器：</span><br><span class="line">python server.py 执行程序启动</span><br></pre></td></tr></table></figure></p>
+<h2 id="四-web-框架"><a href="#四-web-框架" class="headerlink" title="四　web 框架"></a>四　web 框架</h2><p>了解了WSGI框架，我们发现：其实一个Web App，就是写一个WSGI的处理函数，针对每个HTTP请求进行响应。</p>
+<p>但是如何处理HTTP请求不是问题，问题是如何处理100个不同的URL。方法是一个函数处理一个URL, 我们专注于写业务处理函数，URL和函数对应关系交给web框架完成，这就是 web框架其中一个价值。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/02/15/web-01-开发入门/" data-id="ckwczm8o7006x0vjx70ujmggs" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-python-04-01-装饰器" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/02/04/python-04-01-装饰器/" class="article-date">
@@ -135,7 +210,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="ckwczj2hb005q00jxgnpkr1g8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/02/04/python-04-01-装饰器/" data-id="ckwczm8nh005q0vjx2z16qnqu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -182,105 +257,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ckwczj2i1006s00jxitszcmtp" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-mysql-01基础篇" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/29/mysql-01基础篇/" class="article-date">
-  <time datetime="2017-01-29T01:41:54.000Z" itemprop="datePublished">2017-01-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/29/mysql-01基础篇/">Mysql 基础篇</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>知识扫盲</li>
-<li>基础语句</li>
-<li>主键、外键</li>
-<li>修改表</li>
-<li>分组与聚合</li>
-<li>连表查询</li>
-<li>其它查询</li>
-<li>shell终端获取数据</li>
-</ul>
-<p>数据库操作无非就是<code>insert`</code>delete<code></code>update<code></code>selete<code>,这篇博客对</code>mysql`数据库语句做个总结记录便于学习</p>
-<ul>
-<li>知识扫盲 </li>
-</ul>
-<p>什么是事务： 原子性操作(不可拆分)就是要么全成功，要么全失败。</p>
-<p>mysql语句的注释符是  <code>--</code>，在SQL注入或别的场景中语句形如：username=”root” and  1 =1 –  and password=’123’<br>很明显 <code>username=&quot;root&quot; and  1 =1</code>将永远成立，  and password=’123’ 部份将被注释，这点需要注意。</p>
-<h2 id="基础语句"><a href="#基础语句" class="headerlink" title="基础语句"></a>基础语句</h2><p>基础语句过于简单，这里就简单逻列下。</p>
-<p>创建数据库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE db1 DEFAULT CHARSET utf8 COLLATE utf8_general_ci;</span><br></pre></td></tr></table></figure></p>
-<p>创建一张表<br>注意：<code>auto_increment</code>表示自增，<code>primary key</code> 表示id 这列为主键<br><code>default charset utf8</code>指定默认字符集<br><code>engine=innodb</code>指定因默认引警</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">create table tb1(</span><br><span class="line">id int not null auto_increment primary key,</span><br><span class="line">name char(20) not null,</span><br><span class="line">age int) engine=innodb default charset utf8;</span><br></pre></td></tr></table></figure>
-<p>插入数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into tb1(name,age) values(&apos;wxq&apos;,20),(&apos;pp&apos;,18);</span><br></pre></td></tr></table></figure></p>
-<p>更改数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update tb1 set age=25  where name=&apos;wxq&apos;;</span><br></pre></td></tr></table></figure></p>
-<p>删除某条数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete from tb1 where id&gt;1;</span><br></pre></td></tr></table></figure></p>
-<p>删除表内所有数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">delete from 表名      # 不会删除自增序列</span><br><span class="line">truncate table 表名   # 会删除自增序列，再次插入数据将从0开始，删除更辙底</span><br></pre></td></tr></table></figure></p>
-<p>删除表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop table tb1</span><br></pre></td></tr></table></figure></p>
-<h2 id="主键"><a href="#主键" class="headerlink" title="主键"></a>主键</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">主键</span><br><span class="line">create table tb1(</span><br><span class="line">id int not null auto_increment primary key,</span><br><span class="line">name char(20) not null,</span><br><span class="line">age int) engine=innodb default charset utf8;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">组合主键</span><br><span class="line">create table tb1(</span><br><span class="line">                nid int not null,</span><br><span class="line">                num int not null,</span><br><span class="line">                primary key(nid,num)</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
-<h2 id="外键"><a href="#外键" class="headerlink" title="外键"></a>外键</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">constraint fk_任意字符 foreign key (department_id自己字段) references  department外面的表(nid外面表的字段)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">外键(约束):一对多</span><br><span class="line"> create table tb1(</span><br><span class="line">                id int not null primary key,</span><br><span class="line">                name char(32) null ,</span><br><span class="line">                age int not null,</span><br><span class="line">                department_id int not null</span><br><span class="line">                constraint fk_department_nid foreign key (department_id) references  department(nid)</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
-<p>双向外键（约束）：多对对<br>创建主机与部门之间的多对多关系<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">create table host (</span><br><span class="line">id int not null auto_increatement primary key,</span><br><span class="line">host char(20) not null );</span><br><span class="line"></span><br><span class="line">create table department(</span><br><span class="line">id int not null auto_increatement primary key,</span><br><span class="line">title char(20) not null</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">create table de_2_host (</span><br><span class="line">id int not null auto_increatement primary key,</span><br><span class="line">hid int not null,</span><br><span class="line">did int not null,</span><br><span class="line">constraint fk_hid_host foreign key (hid) references  host(id)，</span><br><span class="line">constraint fk_did_department foreign key (did) references  department(id)</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
-<h2 id="修改表"><a href="#修改表" class="headerlink" title="修改表"></a>修改表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">添加列：alter table 表名 add 列名 类型</span><br><span class="line">删除列：alter table 表名 drop column 列名</span><br><span class="line">修改列：</span><br><span class="line">        alter table 表名 modify column 列名 类型;  -- 类型</span><br><span class="line">        alter table 表名 change 原列名 新列名 类型; -- 列名，类型</span><br><span class="line">  </span><br><span class="line">添加主键：</span><br><span class="line">        alter table 表名 add primary key(列名);</span><br><span class="line">删除主键：</span><br><span class="line">        alter table 表名 drop primary key;</span><br><span class="line">        alter table 表名  modify  列名 int, drop primary key;</span><br><span class="line">  </span><br><span class="line">添加外键：alter table 从表 add constraint 外键名称（形如：FK_从表_主表） foreign key 从表(外键字段) references 主表(主键字段);</span><br><span class="line">删除外键：alter table 表名 drop foreign key 外键名称</span><br><span class="line">  </span><br><span class="line">修改默认值：ALTER TABLE testalter_tbl ALTER i SET DEFAULT 1000;</span><br><span class="line">删除默认值：ALTER TABLE testalter_tbl ALTER i DROP DEFAULT;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">show variables like &apos;%char%&apos;;       查看整个mysql字符集</span><br><span class="line">show create table migrate_version;  查看表字符集</span><br><span class="line">alter table migrate_version character set utf8;  设置表字符集或者如下条：</span><br><span class="line">alter table migrate_version default character set utf8 collate utf8_general_ci;</span><br></pre></td></tr></table></figure>
-<h2 id="分组与聚合"><a href="#分组与聚合" class="headerlink" title="分组与聚合"></a>分组与聚合</h2><p>group by </p>
-<pre><code>- 对列进行聚合 sum(sid),max(sid),min(sid),count(sid)
-- 聚合条件过滤,having count(sid) &gt; 7
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">分组</span><br><span class="line">    select num from 表 group by num</span><br><span class="line">    select num,nid from 表 group by num,nid</span><br><span class="line">    select num,nid from 表  where nid &gt; 10 group by num,nid order nid desc</span><br><span class="line">    select num,nid,count(*),sum(score),max(score),min(score) from 表 group by num,nid</span><br><span class="line"> </span><br><span class="line">    select num from 表 group by num having max(id) &gt; 10</span><br><span class="line"> </span><br><span class="line">    特别的：group by 必须在where之后，order by之前</span><br></pre></td></tr></table></figure>
-<h2 id="连表查询"><a href="#连表查询" class="headerlink" title="连表查询"></a>连表查询</h2><p>示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select  A.sid,A.sname,B.caption</span><br><span class="line">from  student as A </span><br><span class="line">left join   class as B </span><br><span class="line">on  A.class_id = class.cid;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>left  join 表名 on  多出的数据将会出现NULL数据</li>
-<li>rigth join 表名 on  相对left 只是表位置变化，其它没有区别</li>
-<li>inner join 表名 on  不会出现NULL数据，没有关联的数据将不会显示</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">连表</span><br><span class="line">    无对应关系则不显示</span><br><span class="line">    select A.num, A.name, B.name</span><br><span class="line">    from A,B</span><br><span class="line">    Where A.nid = B.nid</span><br><span class="line"> </span><br><span class="line">    无对应关系则不显示</span><br><span class="line">    select A.num, A.name, B.name</span><br><span class="line">    from A inner join B</span><br><span class="line">    on A.nid = B.nid</span><br><span class="line"> </span><br><span class="line">    A表所有显示，如果B中无对应关系，则值为null</span><br><span class="line">    select A.num, A.name, B.name</span><br><span class="line">    from A left join B</span><br><span class="line">    on A.nid = B.nid</span><br><span class="line"> </span><br><span class="line">    B表所有显示，如果B中无对应关系，则值为null</span><br><span class="line">    select A.num, A.name, B.name</span><br><span class="line">    from A right join B</span><br><span class="line">    on A.nid = B.nid</span><br></pre></td></tr></table></figure>
-<h2 id="其它查询"><a href="#其它查询" class="headerlink" title="其它查询"></a>其它查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">a、条件</span><br><span class="line">    select * from 表 where id &gt; 1 and name != &apos;wxq&apos; and num = 12;</span><br><span class="line"> </span><br><span class="line">    select * from 表 where id between 5 and 16;</span><br><span class="line"> </span><br><span class="line">    select * from 表 where id in (11,22,33)</span><br><span class="line">    select * from 表 where id not in (11,22,33)</span><br><span class="line">    select distinct name from 表 where id in (select nid from 表)  # distinct重复数所将只显示一条</span><br><span class="line"> </span><br><span class="line">b、通配符</span><br><span class="line">    select * from 表 where name like &apos;wxq%&apos;  - wxq开头的所有（多个字符串）</span><br><span class="line">    select * from 表 where name like &apos;wx_&apos;  - wx开头的所有（一个字符）</span><br><span class="line"> </span><br><span class="line">c、限制</span><br><span class="line">    select * from 表 limit 5;            - 前5行</span><br><span class="line">    select * from 表 limit 4,5;          - 从第4行开始的5行</span><br><span class="line">    select * from 表 limit 5 offset 4    - 从第4行开始的5行</span><br><span class="line"> </span><br><span class="line">d、排序</span><br><span class="line">    select * from 表 order by 列 asc              - 根据 “列” 从小到大排列</span><br><span class="line">    select * from 表 order by 列 desc             - 根据 “列” 从大到小排列</span><br><span class="line">    select * from 表 order by 列1 desc,列2 asc    - 根据 “列1” 从大到小排列，如果相同则按列2从小到大排序</span><br><span class="line"> </span><br><span class="line">e、组合</span><br><span class="line">    组合，自动处理重合</span><br><span class="line">    select nickname</span><br><span class="line">    from A</span><br><span class="line">    union</span><br><span class="line">    select name</span><br><span class="line">    from B</span><br><span class="line"> </span><br><span class="line">    组合，不处理重合</span><br><span class="line">    select nickname</span><br><span class="line">    from A</span><br><span class="line">    union all</span><br><span class="line">    select name</span><br><span class="line">    from B</span><br></pre></td></tr></table></figure>
-<h2 id="shell终端获取数据"><a href="#shell终端获取数据" class="headerlink" title="shell终端获取数据"></a>shell终端获取数据</h2><p>下面介绍在<code>shell</code>终端获取<code>mysql</code>的几种方法</p>
-<p>用法一：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql ~]# mysql -p123 -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</span><br><span class="line">+---------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------+-------+</span><br><span class="line">| Uptime        | 8025  |</span><br><span class="line">+---------------+-------+</span><br></pre></td></tr></table></figure></p>
-<p>用法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql ~]# mysql -p123 -N -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</span><br><span class="line">+--------+------+</span><br><span class="line">| Uptime | 8029 |</span><br><span class="line">+--------+------+</span><br></pre></td></tr></table></figure></p>
-<p>用法三：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql ~]# mysql -p123 -s -N -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</span><br><span class="line">Uptime	8037</span><br></pre></td></tr></table></figure></p>
-<p>用法四：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql ~]# echo &quot;show global status where variable_name=&apos;uptime&apos;;&quot; | mysql -N -p123</span><br><span class="line">Uptime	8072</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># echo  &quot;show databases;&quot; | mysql -h 127.0.0.1 -uroot -A -p123 | tail -n +2  | head -n 2</span><br><span class="line">	-A  表示不自动rehash</span><br><span class="line">	tail -n +2 表示从第二行开始打印</span><br><span class="line">	head -n 2表示打印前2行</span><br><span class="line"></span><br><span class="line"># echo &quot;use nova01 ; show tables;&quot; | mysql -uroot -padmin</span><br><span class="line"># mysql -uroot -padmin -S /var/run/mysqld/mysqld.sock  -e &quot;use nova01;show tables;&quot;</span><br><span class="line"># mysql -uroot -padmin -S /var/run/mysqld/mysqld.sock \</span><br><span class="line">    -e &quot;grant all on *.* to user1@&apos;localhost&apos; identified by \&quot;user1\&quot;;&quot;</span><br></pre></td></tr></table></figure>
-<p>该操作会在用户家目录下生成一个隐藏文件”.mylogin.cnf”，里面记录了MYSQL的密文的密码，只要配置了以后，我们也是直接使用命令登录，再也无需输入账号密码了，如果你想取消，删除此文件即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_config_editor set --user=root --host=localhost --port=3306 --password</span><br></pre></td></tr></table></figure></p>
-<p>密码破解<br>配置文件添加参数，然后重启数据库，不用密码直接登录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]      #在mysqld这行下写入下面内容</span><br><span class="line">skip-grant-tables</span><br></pre></td></tr></table></figure></p>
-<p>清空原有密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Reading table information for completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; update user set authentication_string=&apos;&apos; where user = &apos;root&apos;;</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line">Rows matched: 1 Changed: 1 Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; exit;</span><br></pre></td></tr></table></figure></p>
-<p>开启密码认证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#开启密码验证并重新登录数据库</span><br><span class="line">[root@mysql01 ~]# vim /etc/my.cnf         #编辑主配置文件</span><br><span class="line">[mysqld] </span><br><span class="line">skip-grant-tables            #删除此行</span><br><span class="line">[root@mysql01 ~]# systemctl restart mysqld</span><br><span class="line">[root@mysql01 ~]# mysql -u root  -p          #直接登录数据库</span><br><span class="line">mysql&gt; alter user root@localhost identified by &apos;123&apos;;</span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">mysql&gt; exit</span><br><span class="line">#使用新密码进行登录测试</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/29/mysql-01基础篇/" data-id="ckwczj2ge004e00jxtzq45hbv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/29/shell-getopts语法/" data-id="ckwczm8o5006s0vjxd9dmx4md" class="article-share-link">Share</a>
       
       
     </footer>
@@ -534,7 +511,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ckwczj2ha005o00jxa7azpirj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/23/python-03-02-函数/" data-id="ckwczm8ng005o0vjx1cox51df" class="article-share-link">Share</a>
       
       
     </footer>
@@ -605,7 +582,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ckwczj2h9005m00jxmlnwoqi2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/20/python-03-01-IO/" data-id="ckwczm8nf005m0vjx0b247daw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -672,7 +649,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="ckwczj2h8005k00jxlexyqeeu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/15/python-02-流程控制_枚举/" data-id="ckwczm8ne005k0vjxuth1l9fs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -743,7 +720,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="ckwczj2h6005i00jx59tgwbfv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/09/python-01-基础篇下/" data-id="ckwczm8nc005i0vjxqcgaue96" class="article-share-link">Share</a>
       
       
     </footer>
@@ -880,7 +857,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="ckwczj2h4005g00jxqa5o9dig" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/08/python-01-基础篇上/" data-id="ckwczm8na005g0vjx7pepap6m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -925,7 +902,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ckwczj2d2000f00jxbdf84ndp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/05/PyCharm基本使用-01/" data-id="ckwczm8jc000f0vjx9wkiatqz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -972,7 +949,7 @@ Age_of_name = &quot;xx&quot;  #类名
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="ckwczj2dq001500jxkq3jd41p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/01/01/declare/" data-id="ckwczm8jv00150vjx1r6thr8e" class="article-share-link">Share</a>
       
       
     </footer>
