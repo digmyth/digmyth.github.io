@@ -62,6 +62,64 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-sysctl" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/03/15/linux-sysctl/" class="article-date">
+  <time datetime="2021-03-15T01:43:54.000Z" itemprop="datePublished">2021-03-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/15/linux-sysctl/">sysctl TCP优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="内核参数优化"><a href="#内核参数优化" class="headerlink" title="内核参数优化"></a>内核参数优化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">echo 2048 &gt; /proc/sys/net/core/somaxconn 每一个端口最大的监听队列的长度</span><br><span class="line">echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled 关闭透明页功能</span><br><span class="line">vm.max_map_count=655350      限制一个进程可以拥有的VMA(虚拟内存区域)的数量</span><br><span class="line">fs.file-max = 65536     </span><br><span class="line">同时修改vim /etc/security/limits.conf</span><br><span class="line">*　　soft　　nofile　　65536</span><br><span class="line">*　　hard　　nofile　　65536</span><br><span class="line">*   soft    nproc    65535</span><br><span class="line">*   hard    nproc    65535</span><br><span class="line">*   soft    memlock  unlimited</span><br><span class="line">*   hard    memlock  unlimited</span><br></pre></td></tr></table></figure>
+<p>每保持一个TCP连接，进程就要创建一个文件对象，约占内存3.3KB，4GB内存可以维持长达100万条长连接，客户端发送数据的话，还得为TCP对象开启接收缓冲区，这就增大了内存开销, Linux系统里，系统级、用户级、进程级都有最大打开文件数限制</p>
+<ul>
+<li>系统级： 当前系统可以打开的文件数，通过fs.file-max参数修改</li>
+<li>用户级： 指定用 户可以打开的数量，通过/etc/security/limits.conf</li>
+<li>进程级： 单个进程可以打开的数量，通过fs.nr_open参数修改</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">为每一个TCP连接Socket分配的最少字节数或说是接收缓冲区，默认4K，最大可设8MB</span><br><span class="line">net.ipv4.tcp_rmem = 4096(为TCP连接分配的最少字节数) 87380 8388608</span><br><span class="line">net.core.rmem_default = 2129922</span><br><span class="line">net.core.rmem_max = 8388608</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_wmem= 4096(发送缓存区最小值，默认4K) 65536  8388608</span><br><span class="line">net.core.wmem_default = 212992</span><br><span class="line">net.core.wmem_max = 8388608</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss -n | grep ESTAB |wc -l TCP活动连接数统计</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@node03 ~]# slabtop 关注dentry/filp/TCP/sock_node_cache指标</span><br><span class="line"> Active / Total Objects (% used)    : 3721737 / 4145714 (89.8%)</span><br><span class="line"> Active / Total Slabs (% used)      : 125168 / 125168 (100.0%)</span><br><span class="line"> Active / Total Caches (% used)     : 95 / 131 (72.5%)</span><br><span class="line"> Active / Total Size (% used)       : 821348.16K / 878889.63K (93.5%)</span><br><span class="line"> Minimum / Average / Maximum Object : 0.01K / 0.21K / 8.00K</span><br><span class="line"></span><br><span class="line">  OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME                   </span><br><span class="line">1928862 1578283  81%    0.10K  49458	   39    197832K buffer_head</span><br><span class="line">448077 447905  99%    0.19K  21337	 21     85348K dentry  （指标1）</span><br><span class="line">298544 297412  99%    1.00K  18659	 16    298544K filp（指标2）</span><br><span class="line">288966 288966 100%    0.04K   2833	102     11332K TCP（指标3）</span><br><span class="line">233070 233070 100%    0.12K   6855	 34     27420K sock_node_cache（指标4）</span><br></pre></td></tr></table></figure>
+<p>华为官网建议配置<br><a href="https://support.huaweicloud.com/tngg-kunpengdbs/kunpengdbstune_05_0010.html" target="_blank" rel="noopener">华为优化</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">echo 8192 &gt; /proc/sys/net/ipv4/tcp_max_syn_backlog</span><br><span class="line">echo 1024 &gt; /proc/sys/net/core/somaxconn</span><br><span class="line">echo 16777216 &gt; /proc/sys/net/core/rmem_max</span><br><span class="line">echo 16777216 &gt; /proc/sys/net/core/wmem_max</span><br><span class="line">echo &quot;4096 87380 16777216&quot; &gt; /proc/sys/net/ipv4/tcp_rmem</span><br><span class="line">echo &quot;4096 65536 16777216&quot; &gt; /proc/sys/net/ipv4/tcp_wmem</span><br><span class="line">echo 360000 &gt; /proc/sys/net/ipv4/tcp_max_tw_buckets</span><br><span class="line">echo 2048 &gt; /sys/block/$&#123;device&#125;/queue/nr_requests  # $device=sda</span><br></pre></td></tr></table></figure></p>
+<p>解释说明<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tcp_max_syn_backlog: 是指定所能接受SYN同步包的最大客户端数量,默认值是2048</span><br><span class="line">net.core.somaxconn:  服务端所能accept即处理数据的最大客户端数量，即完成连接上限。默认值是128，建议修改成1024。</span><br><span class="line">net.core.rmem_max: 接收套接字缓冲区大小的最大值。默认值是229376，建议修改成16777216。</span><br><span class="line">net.core.wmem_max: 发送套接字缓冲区大小的最大值（以字节为单位）。默认值是229376，建议修改成16777216。</span><br><span class="line">net.ipv4.tcp_rmem: 配置读缓冲的大小，三个值，第一个是这个读缓冲的最小值，第三个是最大值，中间的是默认值。默认值是&quot;4096 87380 6291456&quot;，建议修改成&quot;4096 87380 16777216&quot;。</span><br><span class="line">net.ipv4.tcp_wmem: 配置写缓冲的大小，三个值，第一个是这个写缓冲的最小值，第三个是最大值，中间的是默认值。默认值是&quot;4096 16384 4194304&quot;，建议修改成&quot;4096 65536 16777216&quot;。</span><br><span class="line">net.ipv4.max_tw_buckets: 表示系统同时保持TIME_WAIT套接字的最大数量。默认值是2048，建议修改成360000。</span><br></pre></td></tr></table></figure></p>
+<p>来个示例配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[root@server01 ~]# sysctl   -p</span><br><span class="line">net.core.somaxconn = 2048</span><br><span class="line">net.core.rmem_default = 262144</span><br><span class="line">net.core.wmem_default = 262144</span><br><span class="line">net.core.rmem_max = 16777216</span><br><span class="line">net.core.wmem_max = 16777216</span><br><span class="line">net.core.netdev_max_backlog = 20000</span><br><span class="line">net.ipv4.tcp_rmem = 4096 4096 16777216</span><br><span class="line">net.ipv4.tcp_wmem = 4096 4096 16777216</span><br><span class="line">net.ipv4.tcp_mem = 786432 2097152 3145728</span><br><span class="line">net.ipv4.tcp_max_syn_backlog = 16384</span><br><span class="line">net.ipv4.tcp_fin_timeout = 30</span><br><span class="line">net.ipv4.tcp_keepalive_time = 300</span><br><span class="line">net.ipv4.tcp_max_tw_buckets = 5000</span><br><span class="line">net.ipv4.tcp_tw_reuse = 1</span><br><span class="line">net.ipv4.tcp_tw_recycle = 0</span><br><span class="line">net.ipv4.tcp_syncookies = 1</span><br><span class="line">net.ipv4.tcp_max_orphans = 131072</span><br><span class="line">net.ipv4.ip_local_port_range = 1024 65535</span><br><span class="line">fs.nr_open = 5000000</span><br><span class="line">fs.file-max = 2000000</span><br><span class="line">fs.inotify.max_user_watches = 16384</span><br><span class="line">vm.max_map_count = 655360</span><br><span class="line">[root@server01 ~]# </span><br><span class="line">[root@server01 ~]# </span><br><span class="line">[root@server01 ~]# cat /etc/security/limits.conf</span><br><span class="line">*       hard    nofile  1024000</span><br><span class="line">*       soft    nofile  1024000</span><br><span class="line">*       hard    nproc   unlimited</span><br><span class="line">*       soft    nproc   unlimited</span><br><span class="line">*       soft    core    0</span><br><span class="line">*       hard    core    0</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>慢慢积累吧</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckwcxwr5h003k8mjx67coxgvh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-openstack-glance-hashlib" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/03/14/openstack-glance-hashlib/" class="article-date">
@@ -97,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckwcx5nit004v29jxr9svep7w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckwcxwr6m004x8mjx4ixa72vo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +203,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckwcx5ngg002129jxgangu71y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckwcxwr4e00228mjxf2c6podc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -193,7 +251,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckwcx5ng8001r29jxm3cxx464" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckwcxwr46001s8mjxhslxkwe6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -241,7 +299,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckwcx5niw005129jxdtz5u9wp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckwcxwr6u00538mjx3xm2o96c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -303,7 +361,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckwcx5ngd001y29jxgvxskc5z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckwcxwr4c00208mjxjdwiowhi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckwcx5ngh002329jxzri48izh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckwcxwr4f00258mjxiqnlrcqc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -399,7 +457,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckwcx5ngk002829jx1y94lhne" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckwcxwr4j00298mjx6f4lgkfz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -447,7 +505,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckwcx5ngl002a29jxdba4lpwa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckwcxwr4n002c8mjxqrvepfi8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -498,72 +556,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckwcx5ng9001t29jxfm3wucms" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-kubernetes-csi-nfs" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/01/01/kubernetes-csi-nfs/" class="article-date">
-  <time datetime="2021-01-01T13:52:41.000Z" itemprop="datePublished">2021-01-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/01/01/kubernetes-csi-nfs/">kubernetes-csi-nfs</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>要实现kubernetes中动态创建pv必须先创建StorageClass，每一个StorageClass对应了一个provisioner，kubernetes中内置了很多provisioner，但是很难受的是没有内置的nfs provisioner，对于我们这种没有钱的玩家，nfs是实现后端存储最简单直接的方法，所以不知道为什么k8s不提供，但是没关系有方法实现，k8s允许提供外部的provisioner，而nfs可以使用nfs-client-provisioner<br>项目链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/kubernetes-retired/external-storage/tree/master/nfs-client</span><br></pre></td></tr></table></figure></p>
-<p>创建nfs server<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum install nfs-utils -y</span><br><span class="line">[root@node02 deploy]# cat /etc/exports</span><br><span class="line">/csc-nfsdata/  *(rw,sync,no_root_squash)</span><br><span class="line">[root@node02 deploy]#</span><br></pre></td></tr></table></figure></p>
-<p>开放防火墙<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/nfs.conf</span><br><span class="line">[mountd]</span><br><span class="line"></span><br><span class="line">port=port-number</span><br><span class="line"><span class="meta">#</span> This adds the -p port-number option to the rpc.mount command line: rpc.mount -p port-number.</span><br><span class="line"></span><br><span class="line">firewall-cmd --permanent --add-service mountd</span><br><span class="line">firewall-cmd --permanent --add-service rpc-bind</span><br><span class="line">firewall-cmd --permanent --add-service nfs</span><br><span class="line">firewall-cmd --permanent --add-port=&lt;mountd-port&gt;/tcp</span><br><span class="line">firewall-cmd --permanent --add-port=&lt;mountd-port&gt;/udp</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure></p>
-<p>配置NFS-Client provisioner,首先clone这个项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/kubernetes-retired/external-storage.git</span><br></pre></td></tr></table></figure></p>
-<p>之后进入nfs-client/deploy/文件夹</p>
-<p>可以看到有下面几个文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cd nfs-client/deploy/</span><br><span class="line">[root@nginx1-pro deploy]# ll</span><br><span class="line">总用量 28</span><br><span class="line">-rw-r--r-- 1 root root  225 9月   3 14:26 class.yaml  ## 需要改自己的ns</span><br><span class="line">-rw-r--r-- 1 root root 1030 9月   3 13:17 deployment-arm.yaml</span><br><span class="line">-rw-r--r-- 1 root root 1040 9月   3 13:30 deployment.yaml  ## 需要改自己的ns</span><br><span class="line">drwxr-xr-x 2 root root  214 9月   3 13:32 objects</span><br><span class="line">-rw-r--r-- 1 root root 1834 9月   3 13:19 rbac.yaml   ## 需要改自己的ns</span><br><span class="line">-rw-r--r-- 1 root root  241 9月   3 13:55 test-claim.yaml</span><br><span class="line">-rw-r--r-- 1 root root  399 9月   3 13:38 test-pod.yaml</span><br></pre></td></tr></table></figure></p>
-<p>首先你要做的是创建一个独立的命名空间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster ~]# kubectl create ns csi-nfs</span><br><span class="line">namespace/csi-nfs created</span><br></pre></td></tr></table></figure></p>
-<p>之后修改rbac.yaml和deployment.yaml的namespace为你创建的namespace  </p>
-<p>修改完成之后我们修改deployment.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">    env:</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">PROVISIONER_NAME</span></span><br><span class="line"><span class="attr">        value:</span> <span class="string">fuseim.pri/ifs</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">NFS_SERVER</span></span><br><span class="line"><span class="attr">        value:</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.11</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">NFS_PATH</span></span><br><span class="line"><span class="attr">        value:</span> <span class="string">/data/kubernetes</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">nfs-client-root</span></span><br><span class="line"><span class="attr">    nfs:</span></span><br><span class="line"><span class="attr">      server:</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.11</span></span><br><span class="line"><span class="attr">      path:</span> <span class="string">/data/kubernetes</span></span><br></pre></td></tr></table></figure></p>
-<p>执行rbac 和deploy yaml文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[root@node02 deploy]# kubectl  apply -f rbac.yaml</span><br><span class="line">serviceaccount/nfs-client-provisioner created</span><br><span class="line">clusterrole.rbac.authorization.k8s.io/nfs-client-provisioner-runner created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/run-nfs-client-provisioner created</span><br><span class="line">role.rbac.authorization.k8s.io/leader-locking-nfs-client-provisioner created</span><br><span class="line">rolebinding.rbac.authorization.k8s.io/leader-locking-nfs-client-provisioner created</span><br><span class="line">[root@node02 deploy]#</span><br><span class="line">[root@node02 deploy]# kubectl  apply -f  deployment.yaml</span><br><span class="line">deployment.apps/nfs-client-provisioner created</span><br><span class="line">[root@node02 deploy]# </span><br><span class="line">[root@node02 deploy]# kubectl  apply -f class.yaml </span><br><span class="line">storageclass.storage.k8s.io/managed-nfs-storage created</span><br><span class="line">[root@node02 deploy]#</span><br><span class="line">查看cs </span><br><span class="line">[root@node02 deploy]# kubectl  get sc</span><br><span class="line">NAME                  PROVISIONER      RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE</span><br><span class="line">managed-nfs-storage   fuseim.pri/ifs   Delete          Immediate           false                  20s</span><br><span class="line">[root@node02 deploy]# </span><br><span class="line">cat class.yaml</span><br><span class="line">apiVersion: storage.k8s.io/v1</span><br><span class="line">kind: StorageClass</span><br><span class="line">metadata:</span><br><span class="line">  name: managed-nfs-storage</span><br><span class="line">provisioner: fuseim.pri/ifs # or choose another name, must match deployment&apos;s env PROVISIONER_NAME&apos;</span><br><span class="line">parameters:</span><br><span class="line">  archiveOnDelete: &quot;false&quot;</span><br></pre></td></tr></table></figure></p>
-<p>provisioner就是刚才deployment中的PROVISIONER_NAME，还有一个比较关键的参数是archiveOnDelete，如果你想在删除了pvc之后还保留数据的话需要把这个参数改为true，不然你删除了pvc同时pv也会删除，然后数据也会丢失<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply class.yaml</span><br><span class="line"></span><br><span class="line">kubectl apply -f class.yaml</span><br><span class="line"></span><br><span class="line">很简单，只要pvc有</span><br><span class="line">annotations:</span><br><span class="line">  volume.beta.kubernetes.io/storage-class: &quot;managed-nfs-storage&quot;</span><br></pre></td></tr></table></figure></p>
-<p>pvc就能动态的创建出来</p>
-<p>尝试创建<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[root@node02 deploy]# kubectl apply  -f  test-claim.yaml </span><br><span class="line"></span><br><span class="line">[root@node02 deploy]# cat test-claim.yaml </span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: test-claim</span><br><span class="line">  annotations:</span><br><span class="line">    volume.beta.kubernetes.io/storage-class: &quot;managed-nfs-storage&quot;</span><br><span class="line">spec:</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 1Mi</span><br><span class="line">[root@node02 deploy]# </span><br><span class="line">查看pv和pvc</span><br><span class="line">[root@node02 deploy]# kubectl  get pv,pvc</span><br><span class="line">NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                STORAGECLASS          REASON   AGE</span><br><span class="line">persistentvolume/pvc-a0b85043-84a6-4f8a-9016-bba084a3f014   1Mi        RWX            Delete           Bound    default/test-claim   managed-nfs-storage            29m</span><br><span class="line"></span><br><span class="line">NAME                               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          AGE</span><br><span class="line">persistentvolumeclaim/test-claim   Bound    pvc-a0b85043-84a6-4f8a-9016-bba084a3f014   1Mi        RWX            managed-nfs-storage   29m</span><br><span class="line">[root@node02 deploy]#</span><br></pre></td></tr></table></figure></p>
-<p> 尝试删除pvc，查看pv也会被删除，只不过pv中的数据不会被删除。需要注意的是删除pvc之前要把所使用的pod 删除掉</p>
-<h3 id="pending排障"><a href="#pending排障" class="headerlink" title="pending排障"></a>pending排障</h3><p>如果你部署的kubernetes是v1.20 v1.21.0以上,那么需要修改kube-apiserver.yaml支持selfLink功能</p>
-<p>查看nfs-client-provisioner容器跑在哪个节点上，是否Running,确保宿主节点己安装nfs客户端可以正常挂载nfs-server卷<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@node01:/data/nfs-server/external-storage/nfs-client/deploy# kubectl  get pods -n csi-nfs -o wide</span><br><span class="line">NAME                                      READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES</span><br><span class="line">nfs-client-provisioner-56f95d5b56-k5cjl   1/1     Running   0          37m   172.16.18.93   node03   &lt;none&gt;           &lt;none&gt;</span><br></pre></td></tr></table></figure></p>
-<p>到运行容器节点上查看日志：nfs-client-provisioner-xx容器日志<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f  /var/log/containers/nfs-client-provisioner-6b4</span><br></pre></td></tr></table></figure></p>
-<p>解决办法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">参考： www.orchome.com/10024</span><br><span class="line">解决方法是编辑/etc/kubernetes/manifests/kube-apiserver.yaml</span><br><span class="line">在这里：</span><br><span class="line"></span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - command:</span><br><span class="line">    - kube-apiserver</span><br><span class="line">添加这一行：</span><br><span class="line"></span><br><span class="line">- --feature-gates=RemoveSelfLink=false</span><br><span class="line">然后应用它，即可</span><br><span class="line"></span><br><span class="line">kubectl apply -f /etc/kubernetes/manifests/kube-apiserver.yaml</span><br></pre></td></tr></table></figure></p>
-<p>查看pvc状态，确保nfs-server 卷权限777,否则创建pv失败也会导致pvc Pending<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pvc # Pending</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li>参考</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/01/kubernetes-csi-nfs/" data-id="ckwcx5ngb001w29jxp9ij4ghk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckwcxwr48001v8mjxt59rhor0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -621,7 +614,11 @@
           </li>
         
           <li>
-            <a href="/2021/10/25/jenkins_mvn/">jenkins maven</a>
+            <a href="/2021/11/19/jenkins-install/">jenkins install</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/25/jenkins_mvn/">jenkins容器里安装maven</a>
           </li>
         
           <li>
@@ -630,10 +627,6 @@
         
           <li>
             <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
-          </li>
-        
-          <li>
-            <a href="/2021/08/09/mysql-HA/">Mysql高可用集群</a>
           </li>
         
       </ul>
