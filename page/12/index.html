@@ -62,6 +62,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-03-分页示例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/20/web-django-03-分页示例/" class="article-date">
+  <time datetime="2017-05-20T12:26:37.000Z" itemprop="datePublished">2017-05-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/20/web-django-03-分页示例/">web-Django-02-分页示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-django-分页功能"><a href="#1-django-分页功能" class="headerlink" title="1 django 分页功能"></a>1 django 分页功能</h3><p>app01/views.py Paginator模块的使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">def users(request):</span><br><span class="line">    from django.core.paginator import  Paginator,EmptyPage,PageNotAnInteger</span><br><span class="line">    user_list = models.UserInfo.objects.all()</span><br><span class="line">    paginator = Paginator(user_list,10)</span><br><span class="line">    # paginator.per_page         每页显示条目数量</span><br><span class="line">    # paginator.count            数据总个数  </span><br><span class="line">    # paginator.num_pages        总页数</span><br><span class="line">    # paginator.page_range       总页数的索引范围，如(1,10),(1,20)</span><br><span class="line">    current_page = request.GET.get(&apos;p&apos;)</span><br><span class="line">    try:</span><br><span class="line">        page_obj=paginator.page(current_page)</span><br><span class="line">    except EmptyPage  as e:</span><br><span class="line">        page_obj = paginator.page(1)</span><br><span class="line">    except PageNotAnInteger as e:</span><br><span class="line">        page_obj = paginator.page(1)</span><br><span class="line">    # page_obj.has_next()                 是否有下一页</span><br><span class="line">    # page_obj.next_page_number()         下一页页码</span><br><span class="line">    # page_obj.has_previous()             是否有上一页</span><br><span class="line">    # page_obj.previous_page_number()     上一页页码</span><br><span class="line">    # page_obj.object_list                分页之后的数据列表</span><br><span class="line">    # page_obj.number                     当前页</span><br><span class="line">    # page_obj.paginator                  paginator对象</span><br><span class="line"></span><br><span class="line">    return render(request,&quot;users.html&quot;, &#123;&apos;page_obj&apos;:page_obj&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>templates/users.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;% if page_obj.has_previous %&#125;</span><br><span class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.previous_page_number &#125;&#125;&quot;&gt;上一页&lt;/a&gt;</span><br><span class="line">&#123;% else %&#125;</span><br><span class="line">    &lt;a href=&quot;#&quot;&gt;上一页&lt;/a&gt;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% for i in page_obj.paginator.page_range %&#125;</span><br><span class="line">     &lt;a href=&quot;/users?p=&#123;&#123; i &#125;&#125;&quot;&gt;&#123;&#123; i &#125;&#125;&lt;/a&gt;</span><br><span class="line">&#123;% endfor %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% if page_obj.has_next %&#125;</span><br><span class="line">    &lt;a href=&quot;/users?p=&#123;&#123; page_obj.next_page_number &#125;&#125;&quot;&gt;下一页&lt;/a&gt;</span><br><span class="line">&#123;% else %&#125;</span><br><span class="line">    &lt;a href=&quot;#&quot;&gt;下一页&lt;/a&gt;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&lt;span&gt;</span><br><span class="line">    &lt;a&gt;&#123;&#123;  page_obj.number &#125;&#125;/&#123;&#123; page_obj.paginator.num_pages &#125;&#125;&lt;/a&gt;</span><br><span class="line">&lt;/span&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/20/web-django-03-分页示例/" data-id="ckwcytgk700790qjxlzn2d2w4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-python加密解密加签验签" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/05/15/python加密解密加签验签/" class="article-date">
@@ -100,55 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ckwcyiz89006fdzjx5c8u5a4m" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
-  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ckwcyiz3x002odzjxx21or3nf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/python加密解密加签验签/" data-id="ckwcytgjg006l0qjxd5l0tbrh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -199,7 +196,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ckwcyiz3w002mdzjx5pi15nxt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ckwcytgf5002p0qjx6irs9qkc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
+  <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ckwcytgf2002n0qjxa79z07w1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -261,65 +306,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckwcyiz6j004udzjxmt9xmtfl" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
-  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>别名设置</li>
-<li>namespace设置</li>
-<li>reverse</li>
-<li>include本质</li>
-</ul>
-<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
-<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
-<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
-<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
-<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
-<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
-<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
-<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckwcyiz920078dzjxdjpbc1io" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckwcytghq004t0qjxapdc3gbx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -377,7 +364,65 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckwcyiz8y0073dzjxnf6ex78k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckwcytgk400760qjxaj67u5z5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-web-django-04-路由分发与别名" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/20/web-django-04-路由分发与别名/" class="article-date">
+  <time datetime="2017-04-20T12:26:37.000Z" itemprop="datePublished">2017-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/web-django-04-路由分发与别名/">web-Django-04-路由分发与别名.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>别名设置</li>
+<li>namespace设置</li>
+<li>reverse</li>
+<li>include本质</li>
+</ul>
+<p>Django URLS 路由分发流程己经学习过了，这里了解一下url中的别名设置，<br>reverse反向生成URL，以及include本质如何路由分发的。</p>
+<h3 id="别名设置"><a href="#别名设置" class="headerlink" title="别名设置"></a>别名设置</h3><p>URL有别名name的设置，添加在最后一级分发视图函数的后面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^login/&apos;, views.login,name=&quot;alias_name&quot;),</span><br></pre></td></tr></table></figure></p>
+<h3 id="namespace设置"><a href="#namespace设置" class="headerlink" title="namespace设置"></a>namespace设置</h3><p>URL有namespace的设置<br>当多个app多级分发时可能存在别名相同,这时就用到namespace来加以区分</p>
+<p>namespace添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;)), 或</span><br><span class="line">url(r&apos;^app01&apos;,([url(&apos;^hosts&apos;,oviews.hosts,name=&quot;nnnn&quot;),],None,&quot;oo&quot;)),</span><br></pre></td></tr></table></figure></p>
+<h3 id="reverse用法"><a href="#reverse用法" class="headerlink" title="reverse用法"></a>reverse用法</h3><p>reverse反向生成url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.urls import reverse</span><br><span class="line">def login(request):</span><br><span class="line">    url = reverse(&quot;namespace1:namespace2:alias_name&quot;)</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
+<h3 id="include本质"><a href="#include本质" class="headerlink" title="include本质"></a>include本质</h3><p>include原生写法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, include(&quot;openstack.urls&quot;,namespace=&quot;o&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>include用于路由下级分发，本质是返回元组，最后一个<code>None</code>表示namespace,也就是形如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;^openstack/&apos;, ([url映射关系，],None,None))</span><br></pre></td></tr></table></figure></p>
+<p>总结：<br>了解分发基础知识有利于我们后面学习Django admin，如何动态生成URL的代码学习。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckwcytgka007b0qjxwg97s927" class="article-share-link">Share</a>
       
       
     </footer>
@@ -432,7 +477,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckwcyiz9x007wdzjxzejqxdp9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckwcytgl3007v0qjx7mx8iubb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -512,7 +557,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckwcyiz7x0066dzjxoo1cyt4a" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckwcytgjb006h0qjxdsgolzqd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -572,57 +617,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckwcyiz7l005wdzjxcl2k0bf3" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-python-08-06-异常" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/03/25/python-08-06-异常/" class="article-date">
-  <time datetime="2017-03-25T12:39:12.000Z" itemprop="datePublished">2017-03-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/25/python-08-06-异常/">python-08-06-异常</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>1</li>
-<li>2</li>
-<li>3</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class WxqException(Exception):</span><br><span class="line">    def __init__(self, msg):</span><br><span class="line">        self.message = msg</span><br><span class="line">    def __str__(self):</span><br><span class="line">        return self.message</span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line">        raise WxqException(&quot;Game Over!&quot;)</span><br><span class="line">except WxqException as e:</span><br><span class="line">    print(e)</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckwcyiz7r0060dzjxu5vh7m0q" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckwcytgj2006a0qjx2mfnuttw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -663,7 +658,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
