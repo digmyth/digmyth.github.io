@@ -62,6 +62,60 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-disk" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/15/linux-disk/" class="article-date">
+  <time datetime="2017-07-15T01:42:54.000Z" itemprop="datePublished">2017-07-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/15/linux-disk/">linux磁盘知识</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Ubuntu系统分区信息查看：<code>fdisk /dev/vda</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x630fdccb</span><br><span class="line"></span><br><span class="line">Device     Boot   Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/vda1  *       2048   1953791   1951744  953M 83 Linux</span><br><span class="line">/dev/vda2       1953792 125829119 123875328 59.1G 83 Linux</span><br></pre></td></tr></table></figure></p>
+<p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
+<p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
+<p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
+<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位字节bytes，bs=512 也就是512bytes,这个512刚好等于</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,单位就是扇区，skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,单位就是扇区，seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
+<p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
+<p>总结：</p>
+<ul>
+<li>一个扇区512bytes , 1Block=1KB=2扇区</li>
+<li>dd参数的skip针对if设备，seek针对of设备（跳过多少扇区再处理）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/07/15/linux-disk/" data-id="ckwczgiv9002yyqjxu13wdtpf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-基于CentOS7的PXE装机" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/01/基于CentOS7的PXE装机/" class="article-date">
@@ -124,7 +178,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckwcytglt008e0qjxcr460y0i" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckwczgj1a008gyqjxy37s5gkt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -174,7 +228,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/21/linux-java-install/" data-id="ckwcytgfv003d0qjx00zwhqg8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/21/linux-java-install/" data-id="ckwczgivi0036yqjxpniclvqe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -241,7 +295,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckwcytgko007j0qjx51pipjmq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckwczgj05007dyqjx15j61s2x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -302,7 +356,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckwcytgjv00700qjxl4k9ol3b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckwczgj000079yqjxiovdy0og" class="article-share-link">Share</a>
       
       
     </footer>
@@ -379,7 +433,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckwcytgla00810qjxb3xoii65" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckwczgj0x0083yqjxzjf0zm2d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -429,7 +483,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckwcytgfo00370qjxk9v46sr8" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckwczgive0032yqjx5n1fbu47" class="article-share-link">Share</a>
       
       
     </footer>
@@ -490,7 +544,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckwcytgde00180qjxugdb919d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckwczgiti0018yqjxluroqvuu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -551,7 +605,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckwcytghr004w0qjx4u8t45n2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckwczgixy0051yqjx89tht289" class="article-share-link">Share</a>
       
       
     </footer>
@@ -617,83 +671,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckwcytgc500010qjxqu8plybb" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-cephfs-Ganesha" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/05/cephfs-Ganesha/" class="article-date">
-  <time datetime="2017-06-05T01:41:54.000Z" itemprop="datePublished">2017-06-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/05/cephfs-Ganesha/">cephfs-Ganesha</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="nfs-ganesha简介"><a href="#nfs-ganesha简介" class="headerlink" title="nfs-ganesha简介"></a>nfs-ganesha简介</h2><p>因工作需要调研了cephfs 导为nfs,目前有两种方法：</p>
-<ul>
-<li>方法一：内核mount挂载或 ceph-fuse 挂载至NFS server，如/data再正常搭建NFS-server即可。</li>
-<li>方法二 :   借用nfs-ganesha协议转换间接存储在cephfs集群中。</li>
-</ul>
-<p>nfs-ganesha不仅可以导 cephfs,也可以导RGW.<br>ceph RGW理解:   相当于协议转换层，把符合S3和swift协议的 restFul API 请求转换为rados存储在ceph对象存储中.</p>
-<p>换一种说法： Ceph 导出为 NFS，一种通过 RGW，一种通过 CephFS，通过 FSAL 模块 连接到 RGW 或者 CephFS</p>
-<ul>
-<li>FSAL_RGW 调用 librgw2 将 NFS 协议转义为 S3 协议再通过 RGW 存入到 Ceph 中.</li>
-<li>FSAL_CEPH 调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</li>
-</ul>
-<p>FSAL： File System Abstraction Layer  文件系统抽像层</p>
-<p>题外话，openstack项目manila后端存储驱动，其中一种就是Ganesha Driver<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">## manila 4驱动</span><br><span class="line">Default Driver: 使用 RBD 作为 Manila Service VM 的后端，在 VM 上启动 NFS 实例提供服务</span><br><span class="line">Ganesha Driver: 使用 Ganesha 将 CephFS 重新 Reexport 出去</span><br><span class="line">Native CephFS Driver: 在 Guest VM 上直接使用原生 CephFS Module 访问</span><br><span class="line">VirtFS Driver: 将 CephFS 挂载在 Host 端，VM 通过 VirtFS 访问</span><br></pre></td></tr></table></figure></p>
-<h2 id="nfs-ganesha安装"><a href="#nfs-ganesha安装" class="headerlink" title="nfs-ganesha安装"></a>nfs-ganesha安装</h2><p>在CentOS7系统中有nfs-ganesha rpm软件包，但没有ceph相关模块，所以我这里是编译安装，把FSAL_RGW 模块/FSAL_CEPH 模块编译进去。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone -b V2.4-stable https://github.com/nfs-ganesha/nfs-ganesha.git --recursive</span><br></pre></td></tr></table></figure>
-<p>由于ceph-jewel版本才有libcephfs1-devel软件包，所以这里ganesha客户端 ceph用 jewel版本，服务器ceph版本Luminous<br>ceph-jewel源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@ ganesha]# cat  /etc/yum.repos.d/ceph.repo </span><br><span class="line">[ceph]</span><br><span class="line">name=ceph</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/x86_64/</span><br><span class="line">gpgcheck=0</span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=cephnoarch</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-jewel/el7/noarch/</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure></p>
-<p>软件安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</span><br><span class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</span><br><span class="line">yum install librgw2-devel -y </span><br><span class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</span><br><span class="line">yum install libcephfs1-devel -y</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>如果需要生成 FSAL_RGW 模块，则在编译选项中添加： -DUSE_FSAL_RGW=ON</li>
-<li>如果需要生成 FSAL_CEPH 模块，则在编译选项中添加： -DUSE_FSAL_CEPH=ON</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir /opt/build/</span><br><span class="line">cd /opt/build/</span><br><span class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-<p>在cmake输出中确保有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- USE_FSAL_CEPH = ON</span><br><span class="line">-- USE_FSAL_CEPH_MKNOD = OFF</span><br><span class="line">-- USE_FSAL_CEPH_SETLK = OFF</span><br><span class="line">-- USE_FSAL_CEPH_LL_LOOKUP_ROOT = ON</span><br><span class="line">-- USE_FSAL_RGW = ON</span><br></pre></td></tr></table></figure></p>
-<p>确保： – USE_FSAL_CEPH 为 ON,以及 – USE_FSAL_RGW 为 ON。</p>
-<p>如果过程中出错，请删除/tmp/build/* 及/tmp/build/CMakeCache.txt重新编译</p>
-<p>make install成功输出中有:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/rgw.conf</span><br><span class="line">&gt; -- Up-to-date: /usr/share/doc/ganesha/config_samples/ceph.conf</span><br></pre></td></tr></table></figure></p>
-<p>这两个文件就是配置将 RGW 和 CephFS 配置为 nfs-ganesha的配置模板。</p>
-<h2 id="nfs-ganesha-配置"><a href="#nfs-ganesha-配置" class="headerlink" title="nfs-ganesha 配置"></a>nfs-ganesha 配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/ganesha/ganesha.conf</span><br><span class="line">EXPORT</span><br><span class="line">&#123;</span><br><span class="line">        Export_ID=1;</span><br><span class="line">        Path = /;</span><br><span class="line">        Pseudo = /cephfs;</span><br><span class="line">        Access_Type = RW;</span><br><span class="line">        NFS_Protocols = 4;</span><br><span class="line">        Transport_Protocols = TCP;</span><br><span class="line">        Squash = No_Root_Squash;</span><br><span class="line">        FSAL &#123;</span><br><span class="line">                Name = CEPH;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">EXPORT</span><br><span class="line">&#123;</span><br><span class="line">        Export_ID=2;</span><br><span class="line">        Path = /;</span><br><span class="line">        Pseudo = /rgw;</span><br><span class="line">        Access_Type = RW;</span><br><span class="line">        Squash = No_root_squash;</span><br><span class="line">        NFS_Protocols = 4;</span><br><span class="line">        Transport_Protocols = TCP;</span><br><span class="line">        FSAL &#123;</span><br><span class="line">                Name = RGW;</span><br><span class="line">                User_Id = &quot;admin&quot;;</span><br><span class="line">                Access_Key_Id =&quot;RDS4VW60OA48ZW1HSU61&quot;;</span><br><span class="line">                Secret_Access_Key = &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">RGW &#123;</span><br><span class="line">    ceph_conf = &quot;/etc/ceph/ceph.conf&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  其中<code>Access_Key_Id</code> <code>Secret_Access_Key</code>部份在ceph-rgw中读取<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">  (ceph-mon)[root@pike-vm /]# radosgw-admin user info --uid=admin</span><br><span class="line">&#123;</span><br><span class="line">    &quot;user_id&quot;: &quot;admin&quot;,</span><br><span class="line">    &quot;display_name&quot;: &quot;admin&quot;,</span><br><span class="line">    &quot;email&quot;: &quot;&quot;,</span><br><span class="line">    &quot;suspended&quot;: 0,</span><br><span class="line">    &quot;max_buckets&quot;: 1000,</span><br><span class="line">    &quot;auid&quot;: 0,</span><br><span class="line">    &quot;subusers&quot;: [],</span><br><span class="line">    &quot;keys&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;user&quot;: &quot;admin&quot;,</span><br><span class="line">            &quot;access_key&quot;: &quot;RDS4VW60OA48ZW1HSU61&quot;,</span><br><span class="line">            &quot;secret_key&quot;: &quot;zLmFRu3mmzmsosNk07FPKpMZAARCSvCc3UjToP6Y&quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<h2 id="启动nfs-ganesha"><a href="#启动nfs-ganesha" class="headerlink" title="启动nfs-ganesha"></a>启动nfs-ganesha</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ganesha.nfsd -L /var/log/ganesha.log</span><br></pre></td></tr></table></figure>
-<h2 id="挂载使用"><a href="#挂载使用" class="headerlink" title="挂载使用"></a>挂载使用</h2><p>在客户端进行挂载使用：<br>1  安装<code>ceph-common</code> <code>ceph-fuse</code> <code>libcephfs1-devel</code> <code>librgw2-devel</code><br>2 拷贝ceph.conf配置文件及keyring文件至/etc/ceph<br>3 挂载：<code>mount -t nfs4 {$ganesha-server-ip}:/  /mnt</code><br>如果出现I/O error,请ceph-fuse  -m 172.18.23.17:6789 /mnt 挂载一遍，就是这么神奇，不要问我为什么。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 mnt]# ls</span><br><span class="line">ls: reading directory .: Remote I/O error</span><br></pre></td></tr></table></figure></p>
-<p>成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 cephfs]# ll /mnt/</span><br><span class="line">total 1</span><br><span class="line">drwxrwxrwx 1 root root 33 Nov 14 08:31 cephfs</span><br><span class="line">[root@-3 cephfs]# echo &quot;99cloud new data...&quot; &gt; cephfs.txt </span><br><span class="line">[root@-3 cephfs]# cat cephfs.txt </span><br><span class="line">cephfs data...</span><br></pre></td></tr></table></figure></p>
-<p>在cephfs集群中我们可以看到客户端写入的数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@-3 ~]# ceph-fuse  -m 172.18.23.17:6789 /data/</span><br><span class="line">ceph-fuse[4579]: starting ceph client</span><br><span class="line">ceph-fuse[4579]: starting fuse</span><br><span class="line">[root@-3 ~]# cd /data/</span><br><span class="line">[root@-3 data]# ls</span><br><span class="line">cephfs.txt</span><br><span class="line">[root@3 data]# cat cephfs.txt </span><br><span class="line">cephfs data...</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/" data-id="ckwcytgcz000u0qjxx9itgont" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/08/KVM-introduction/" data-id="ckwczgis40003yqjxb82m93ej" class="article-share-link">Share</a>
       
       
     </footer>
@@ -709,7 +687,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/10/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/12/">__('next') &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/10/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/12/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -755,15 +733,15 @@
           </li>
         
           <li>
+            <a href="/2021/10/25/mysql-backup/">MySQL备份</a>
+          </li>
+        
+          <li>
             <a href="/2021/10/25/jenkins_mvn/">jenkins容器里安装maven</a>
           </li>
         
           <li>
             <a href="/2021/10/15/linux-note个人小记/">linux个人小记</a>
-          </li>
-        
-          <li>
-            <a href="/2021/08/20/harbor-install/">harbor install</a>
           </li>
         
       </ul>
