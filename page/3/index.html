@@ -62,6 +62,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-ansible-awx" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/03/15/linux-ansible-awx/" class="article-date">
+  <time datetime="2021-03-15T02:28:54.000Z" itemprop="datePublished">2021-03-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/15/linux-ansible-awx/">ansible awx</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>wx安装在kubernetes平台，先在kubernetes平台上跑一个operator, 这个operator其实就是一个kubernetes 自定义资源CRD，然后再跑一个awx  CRD 实例，在这过程中需要PV卷</p>
+<p>前提条件，利用nfs 提供PV卷<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/ansible/awx-operator</span><br><span class="line"></span><br><span class="line">[root@k8smaster pvc]# showmount  -e  192.168.1.10</span><br><span class="line">Export list for 12.19.2.10:</span><br><span class="line">/vols/v20    12.19.2.0/24</span><br></pre></td></tr></table></figure></p>
+<p>pv yaml文件定义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: pg</span><br><span class="line">  labels:</span><br><span class="line">     storesys: nfs</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 10Gi</span><br><span class="line">  volumeMode: Filesystem</span><br><span class="line">  accessModes:</span><br><span class="line">  - ReadWriteMany</span><br><span class="line">  - ReadWriteOnce</span><br><span class="line">  - ReadOnlyMany</span><br><span class="line">  persistentVolumeReclaimPolicy: Retain</span><br><span class="line">  nfs: </span><br><span class="line">    server: 12.19.2.10</span><br><span class="line">    path: /vols/v20</span><br></pre></td></tr></table></figure></p>
+<p>awx-operator.yaml文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget   https://raw.githubusercontent.com/ansible/awx-operator/devel/deploy/awx-operator.yaml</span><br></pre></td></tr></table></figure></p>
+<p> myawx.yaml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: awx.ansible.com/v1beta1</span><br><span class="line">kind: AWX</span><br><span class="line">metadata:</span><br><span class="line">  name: awx</span><br><span class="line">spec:</span><br><span class="line">  tower_ingress_type: Ingress</span><br></pre></td></tr></table></figure></p>
+<p>kubectl apply<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply  -f pg-pv.yaml</span><br><span class="line">kubectl apply  -f awx-operator.yaml</span><br><span class="line">kubectl apply  -f  myawx.yaml</span><br><span class="line">kubectl get pods</span><br><span class="line">kubectl get svc</span><br><span class="line">kubectl get ingress</span><br></pre></td></tr></table></figure></p>
+<p> 界面访问<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">url access web;</span><br><span class="line">username: admin</span><br><span class="line">password:  kubectl    get secret awx-admin-password -o jsonpath=&apos;&#123;.data.password&#125;&apos; | base64 --decode</span><br><span class="line">gVEQRpzMtaFqLTung4TBF4b7HarECM7L</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>无</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckwcyiz3z002rdzjxvaep9ke7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-sysctl" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/03/15/linux-sysctl/" class="article-date">
@@ -107,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckwcy49oy003kcdjxh3dzbylg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-sysctl/" data-id="ckwcyiz4s003ndzjx5oltz0m2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -155,7 +206,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckwcy49py004xcdjx8b950bho" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/14/openstack-glance-hashlib/" data-id="ckwcyiz6o0050dzjxxmpgspyz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -203,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckwcy49ns0022cdjxpazg7b5w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/21/kubernetes-gitlab-jenkins-CI/" data-id="ckwcyiz390025dzjxh2iimizh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -251,7 +302,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckwcy49nk001scdjxuzyz6u3b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/02/13/kubernetes-calico-bug/" data-id="ckwcyiz2y001vdzjxddkgmda2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -299,7 +350,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckwcy49q10053cdjxm3qzy16n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/25/prometheus-01/" data-id="ckwcyiz6t0056dzjx6wvqlk9t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -361,7 +412,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckwcy49np0020cdjxh3sc39te" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/15/kubernetes-dashboard/" data-id="ckwcyiz360022dzjxe6m4n0dl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -409,7 +460,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckwcy49nu0025cdjxpaqithyc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/12/kubernetes-ingress/" data-id="ckwcyiz3b0027dzjxp2ixvulm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -457,7 +508,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckwcy49nx0029cdjx5znh5aaa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/11/kubernetes-rbac/" data-id="ckwcyiz3g002cdzjxis6bpbxx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -505,58 +556,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckwcy49nz002ccdjxmsxt9xmy" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-kubernetes-configmap" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/01/02/kubernetes-configmap/" class="article-date">
-  <time datetime="2021-01-02T12:51:41.000Z" itemprop="datePublished">2021-01-02</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/01/02/kubernetes-configmap/">kubernetes configmap</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="创建configmap"><a href="#创建configmap" class="headerlink" title="创建configmap"></a>创建configmap</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># kubectl  get cm/calico-config -n kube-system  -o yaml</span><br><span class="line"># kubectl  get cm/kube-flannel-cfg -n kube-system -o yaml</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl  create ns  cm-ns</span><br><span class="line">kubectl create cm  -h</span><br><span class="line">kubectl create cm filebeat-cfg  -n cm-ns \</span><br><span class="line">   --from-literal=redis_host=&quot;redis.default.svc.cluster.local&quot; \</span><br><span class="line">   --from-literal=log_level=&quot;Info&quot;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">kubectl get cm/filebeat-cfg -n cm-ns -o yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">data:</span><br><span class="line">  log_level: Info</span><br><span class="line">  redis_host: redis.default.svc.cluster.local</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: &quot;2021-01-11T05:58:23Z&quot;</span><br><span class="line">  managedFields:</span><br><span class="line">  - apiVersion: v1</span><br><span class="line">    fieldsType: FieldsV1</span><br><span class="line">    fieldsV1:</span><br><span class="line">      f:data:</span><br><span class="line">        .: &#123;&#125;</span><br><span class="line">        f:log_level: &#123;&#125;</span><br><span class="line">        f:redis_host: &#123;&#125;</span><br><span class="line">    manager: kubectl-create</span><br><span class="line">    operation: Update</span><br><span class="line">    time: &quot;2021-01-11T05:58:23Z&quot;</span><br><span class="line">  name: filebeat-cfg</span><br><span class="line">  namespace: cm-ns</span><br><span class="line">  resourceVersion: &quot;573737&quot;</span><br><span class="line">  uid: b06442dc-90e6-446b-8a3c-f119f26226d4</span><br></pre></td></tr></table></figure>
-<p>启一个pod运用configmap<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/configmap# cat filebeat-pod.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: filebeat-pod</span><br><span class="line">  namespace: cm-ns</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: filebeat</span><br><span class="line">    image: ikubernetes/filebeat:5.6.5-alpine</span><br><span class="line">    env:</span><br><span class="line">    - name: REDIS_HOST</span><br><span class="line">      valueFrom:</span><br><span class="line">        configMapKeyRef:</span><br><span class="line">          name: filebeat-cfg    # configmap名字</span><br><span class="line">          key: redis_host       # 定义的键名</span><br><span class="line">    - name: LOG_LEVEL</span><br><span class="line">      valueFrom:</span><br><span class="line">        configMapKeyRef:</span><br><span class="line">          name: filebeat-cfg    # configmap名字</span><br><span class="line">          key: log_level        # 定义的键名</span><br><span class="line"></span><br><span class="line">root@k8s-m:/data/configmap# kubectl apply -f filebeat-pod.yaml</span><br><span class="line">#pod内部是能查到的定义变量的</span><br><span class="line">root@k8s-m:/data/configmap# kubectl   exec -it  pods/filebeat-pod  -n cm-ns -- env | grep  REDIS_HOST</span><br><span class="line">REDIS_HOST=redis.default.svc.cluster.local</span><br></pre></td></tr></table></figure></p>
-<h3 id="定义2个数据文件"><a href="#定义2个数据文件" class="headerlink" title="定义2个数据文件"></a>定义2个数据文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/configmap/nginx# cat server1.conf </span><br><span class="line">server &#123;</span><br><span class="line"> 	server_name www.first.com;</span><br><span class="line">        listen 80;</span><br><span class="line">        location / &#123;</span><br><span class="line">            	root &quot;/html/first&quot;;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">root@k8s-m:/data/configmap/nginx# cat server2.conf </span><br><span class="line">server &#123;</span><br><span class="line"> 	server_name www.second.com;</span><br><span class="line">        listen 80;</span><br><span class="line">        location / &#123;</span><br><span class="line">            	root &quot;/html/second&quot;;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="创建nginx-cfg"><a href="#创建nginx-cfg" class="headerlink" title="创建nginx-cfg"></a>创建nginx-cfg</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl  create cm nginx-cfg --from-file=server1.conf  --from-file=server-sec.conf=server2.conf -n cm-ns</span><br></pre></td></tr></table></figure>
-<h3 id="pod使用nginx-cfg"><a href="#pod使用nginx-cfg" class="headerlink" title="pod使用nginx-cfg"></a>pod使用nginx-cfg</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster nginx]# cat nginx-pod.yaml </span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  name: nginx-pod</span><br><span class="line">  namespace: cm-ns</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: nginx-t</span><br><span class="line">    image: nginx</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - name: config-vol</span><br><span class="line">      mountPath: /etc/nginx/conf.d/</span><br><span class="line">  volumes:</span><br><span class="line">  - name: config-vol</span><br><span class="line">    configMap:</span><br><span class="line">      name: nginx-cfg</span><br><span class="line">      items:</span><br><span class="line">      - key: server1.conf         # 定义configmap时的key</span><br><span class="line">        path: server-first.conf   # pod内部的文件名</span><br><span class="line">      - key: server-sec.conf      # 定义configmap时的key</span><br><span class="line">        path: server-second.conf  # pod内部的文件名</span><br><span class="line"></span><br><span class="line">[root@k8smaster nginx]# kubectl apply -f nginx-pod.yaml</span><br><span class="line">[root@k8smaster nginx]# kubectl  exec -it pods/nginx-pod -n cm-ns -- ls /etc/nginx/conf.d</span><br><span class="line">server-first.conf  server-second.conf</span><br><span class="line"></span><br><span class="line">kubectl   edit cm/nginx-cfg -n cm-ns    #  修改能在60s生效</span><br></pre></td></tr></table></figure>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>configmap也是一种存储卷，特殊的存储卷，用于保存pod内程序变量配置或文件等</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/01/02/kubernetes-configmap/" data-id="ckwcy49nl001vcdjx3g4iejx2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/01/03/kubernetes-secret/" data-id="ckwcyiz3o002edzjx40qzbgx3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -626,7 +626,7 @@
           </li>
         
           <li>
-            <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
+            <a href="/2021/08/20/harbor-install/">harbor install</a>
           </li>
         
       </ul>

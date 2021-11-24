@@ -62,6 +62,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-linux-vCenter-certs" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/07/15/linux-vCenter-certs/" class="article-date">
+  <time datetime="2021-07-15T01:17:54.000Z" itemprop="datePublished">2021-07-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/07/15/linux-vCenter-certs/">vCenter update certs</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>检查过期相关组件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i in $(/usr/lib/vmware-vmafd/bin/vecs-cli store list);  \</span><br><span class="line">do</span><br><span class="line">    echo STORE $i; \</span><br><span class="line">    sudo /usr/lib/vmware-vmafd/bin/vecs-cli entry list --store $i --text | egrep &quot;Alias|Not After&quot;;</span><br><span class="line">done</span><br></pre></td></tr></table></figure></p>
+<p>回显<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">STORE MACHINE_SSL_CERT</span><br><span class="line">Alias :	__MACHINE_CERT</span><br><span class="line">            Not After : Jul 24 05:29:45 2023 GMT</span><br><span class="line">STORE TRUSTED_ROOTS</span><br><span class="line">Alias :	ca6378753e13f38f2c78597723bbfbd2bdab5c70</span><br><span class="line">            Not After : Feb 12 06:34:52 2029 GMT</span><br><span class="line">STORE TRUSTED_ROOT_CRLS</span><br><span class="line">Alias :	66a9d0b33019168ebc8ab857f2d2e6d3f9ef7d02</span><br><span class="line">STORE machine</span><br><span class="line">Alias :	machine</span><br><span class="line">            Not After : Jul 24 05:30:47 2023 GMT</span><br><span class="line">STORE vsphere-webclient</span><br><span class="line">Alias :	vsphere-webclient</span><br><span class="line">            Not After : Jul 24 05:30:48 2023 GMT</span><br><span class="line">STORE vpxd</span><br><span class="line">Alias :	vpxd</span><br><span class="line">            Not After : Jul 24 05:30:49 2023 GMT</span><br><span class="line">STORE vpxd-extension</span><br><span class="line">Alias :	vpxd-extension</span><br><span class="line">            Not After : Jul 24 05:30:50 2023 GMT</span><br><span class="line">STORE SMS</span><br><span class="line">Alias :	sms_self_signed</span><br><span class="line">            Not After : Feb 18 06:49:32 2029 GMT</span><br></pre></td></tr></table></figure></p>
+<p>签证书文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/usr/lib/vmware-vmca/share/config/certool.cfg</span><br><span class="line">#</span><br><span class="line"># Template file for a CSR request</span><br><span class="line">#</span><br><span class="line"># Country is needed and has to be 2 characters</span><br><span class="line">Country = US</span><br><span class="line">Name	= CA</span><br><span class="line">Organization = VMware</span><br><span class="line">OrgUnit = VMware Engineering</span><br><span class="line">State = California</span><br><span class="line">Locality = Palo Alto</span><br><span class="line">IPAddress = 192.168.1.250</span><br><span class="line">Email = email@acme.com</span><br><span class="line">Hostname = 192.168.1.250</span><br></pre></td></tr></table></figure></p>
+<p>获取PNID<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@photon-machine [ ~ ]# /usr/lib/vmware-vmafd/bin/vmafd-cli get-pnid --server-name localhost</span><br><span class="line">192.168.1.250</span><br></pre></td></tr></table></figure></p>
+<p>全部更新证书<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/lib/vmware-vmca/bin/certificate-manager</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>vcenter 6.5证书过期解决办法参考：<br><a href="https://kb.vmware.com/s/article/76719" target="_blank" rel="noopener">https://kb.vmware.com/s/article/76719</a><br><a href="https://kb.vmware.com/s/article/2097936" target="_blank" rel="noopener">https://kb.vmware.com/s/article/2097936</a><br><a href="https://kb.vmware.com/s/article/2112283" target="_blank" rel="noopener">https://kb.vmware.com/s/article/2112283</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="ckwcyiz4y003rdzjxh6kqh9mo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-hadoop-install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/07/12/hadoop-install/" class="article-date">
@@ -97,7 +146,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="ckwcy49n7001dcdjxx4mm5s72" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="ckwcyiz2c001ddzjxb6s9olzb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +194,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="ckwcy49nw0027cdjxqvpg64tj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="ckwcyiz3d0029dzjxt5nw7z9l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -199,7 +248,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckwcy49pi0047cdjxqgq3408w" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckwcyiz5w004adzjxz30ueixw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +305,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckwcy49r4006ecdjxg3opns6r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckwcyiz8a006hdzjxsz1oxpik" class="article-share-link">Share</a>
       
       
     </footer>
@@ -311,7 +360,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckwcy49pg0044cdjxdvd85fr3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckwcyiz5c0047dzjxytin5o1f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -359,7 +408,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckwcy49o0002ecdjxkcgb7be7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckwcyiz3r002hdzjxyusjl8er" class="article-share-link">Share</a>
       
       
     </footer>
@@ -406,7 +455,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/15/linux-openssl-update/" data-id="ckwcy49or003ecdjxucgkt9za" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/04/15/linux-openssl-update/" data-id="ckwcyiz4k003hdzjxzy6yehxi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -454,7 +503,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckwcy49n00014cdjxgruf227c" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/25/consul-01/" data-id="ckwcyiz250014dzjx711zcr7v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -504,58 +553,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckwcy49og0034cdjxl7ngpgl7" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-ansible-awx" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/03/15/linux-ansible-awx/" class="article-date">
-  <time datetime="2021-03-15T02:28:54.000Z" itemprop="datePublished">2021-03-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/03/15/linux-ansible-awx/">ansible awx</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>wx安装在kubernetes平台，先在kubernetes平台上跑一个operator, 这个operator其实就是一个kubernetes 自定义资源CRD，然后再跑一个awx  CRD 实例，在这过程中需要PV卷</p>
-<p>前提条件，利用nfs 提供PV卷<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/ansible/awx-operator</span><br><span class="line"></span><br><span class="line">[root@k8smaster pvc]# showmount  -e  192.168.1.10</span><br><span class="line">Export list for 12.19.2.10:</span><br><span class="line">/vols/v20    12.19.2.0/24</span><br></pre></td></tr></table></figure></p>
-<p>pv yaml文件定义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: pg</span><br><span class="line">  labels:</span><br><span class="line">     storesys: nfs</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 10Gi</span><br><span class="line">  volumeMode: Filesystem</span><br><span class="line">  accessModes:</span><br><span class="line">  - ReadWriteMany</span><br><span class="line">  - ReadWriteOnce</span><br><span class="line">  - ReadOnlyMany</span><br><span class="line">  persistentVolumeReclaimPolicy: Retain</span><br><span class="line">  nfs: </span><br><span class="line">    server: 12.19.2.10</span><br><span class="line">    path: /vols/v20</span><br></pre></td></tr></table></figure></p>
-<p>awx-operator.yaml文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget   https://raw.githubusercontent.com/ansible/awx-operator/devel/deploy/awx-operator.yaml</span><br></pre></td></tr></table></figure></p>
-<p> myawx.yaml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: awx.ansible.com/v1beta1</span><br><span class="line">kind: AWX</span><br><span class="line">metadata:</span><br><span class="line">  name: awx</span><br><span class="line">spec:</span><br><span class="line">  tower_ingress_type: Ingress</span><br></pre></td></tr></table></figure></p>
-<p>kubectl apply<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply  -f pg-pv.yaml</span><br><span class="line">kubectl apply  -f awx-operator.yaml</span><br><span class="line">kubectl apply  -f  myawx.yaml</span><br><span class="line">kubectl get pods</span><br><span class="line">kubectl get svc</span><br><span class="line">kubectl get ingress</span><br></pre></td></tr></table></figure></p>
-<p> 界面访问<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">url access web;</span><br><span class="line">username: admin</span><br><span class="line">password:  kubectl    get secret awx-admin-password -o jsonpath=&apos;&#123;.data.password&#125;&apos; | base64 --decode</span><br><span class="line">gVEQRpzMtaFqLTung4TBF4b7HarECM7L</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>无</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/03/15/linux-ansible-awx/" data-id="ckwcy49o6002ocdjxjsuo2rzh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/03/15/linux-kafak-cluster/" data-id="ckwcyiz4b0037dzjx2b1wbcji" class="article-share-link">Share</a>
       
       
     </footer>
@@ -625,7 +623,7 @@
           </li>
         
           <li>
-            <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
+            <a href="/2021/08/20/harbor-install/">harbor install</a>
           </li>
         
       </ul>

@@ -110,7 +110,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="ckwcy49n5001acdjxznl6zv2r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="ckwcyiz2a001adzjxc0xu81tc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -160,7 +160,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="ckwcy49nd001icdjx4t82gt38" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="ckwcyiz2o001ldzjxbqbw26oc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -208,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="ckwcy49ne001lcdjx5322ien4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="ckwcyiz2p001mdzjx1hvi74c0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +256,57 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="ckwcy49op003ccdjxh59dsvxy" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="ckwcyiz4i003fdzjxakonyxmz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-harbor-install" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/08/20/harbor-install/" class="article-date">
+  <time datetime="2021-08-20T02:51:41.000Z" itemprop="datePublished">2021-08-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CICD/">CICD</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/08/20/harbor-install/">harbor install</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>下载离线harbor Tar包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/goharbor/harbor/</span><br><span class="line">https://github.com/goharbor/harbor/releases/download/v2.3.4/harbor-offline-installer-v2.3.4.tgz</span><br></pre></td></tr></table></figure></p>
+<p>解压后进入主目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp harbor.yml.tmpl harbor.yml</span><br></pre></td></tr></table></figure></p>
+<p>编辑几个参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hostname: jenkins.do.com</span><br><span class="line">http:</span><br><span class="line">  port: 5080</span><br><span class="line">https:</span><br><span class="line">  port: 443</span><br><span class="line">  certificate: /opt/harbor/certs/jenkins.do.com.crt</span><br><span class="line">  private_key: /opt/harbor/certs/jenkins.do.com.key </span><br><span class="line">harbor_admin_password: admin</span><br><span class="line">data_volume: /data</span><br></pre></td></tr></table></figure></p>
+<p>安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@jenkins harbor]# ./prepare </span><br><span class="line">[root@jenkins harbor]# ./install.sh </span><br><span class="line">[root@jenkins harbor]# docker-compose  down -v</span><br><span class="line">[root@jenkins harbor]# docker-compose  up -d</span><br></pre></td></tr></table></figure></p>
+<p>证书docker目录下也保留一份用于认证到harbor<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@jenkins harbor]# ls /etc/docker/certs.d/jenkins.do.com/</span><br><span class="line">ca.crt  jenkins.do.com.cert  jenkins.do.com.key</span><br></pre></td></tr></table></figure></p>
+<p> 验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">URL     https://jenkins.do.com</span><br><span class="line">docker login jenkins.do.com</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p> 学习</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="ckwcyiz2j001hdzjxcvpbfx1u" class="article-share-link">Share</a>
       
       
     </footer>
@@ -313,7 +363,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="ckwcy49oi0036cdjxs3as23z6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="ckwcyiz4d0039dzjxb2g16edw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -361,7 +411,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="ckwcy49pl004ecdjx0ju45aaw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="ckwcyiz67004hdzjxveelyvsp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -412,7 +462,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="ckwcy49pm004hcdjxw93cyhks" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="ckwcyiz69004kdzjxtpuxeptx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -460,7 +510,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="ckwcy49q20055cdjxz7evcm62" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="ckwcyiz6v0058dzjxhunfmdqp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -508,56 +558,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckwcy49mb000dcdjxezrzp302" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-vCenter-certs" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/07/15/linux-vCenter-certs/" class="article-date">
-  <time datetime="2021-07-15T01:17:54.000Z" itemprop="datePublished">2021-07-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/15/linux-vCenter-certs/">vCenter update certs</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>检查过期相关组件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i in $(/usr/lib/vmware-vmafd/bin/vecs-cli store list);  \</span><br><span class="line">do</span><br><span class="line">    echo STORE $i; \</span><br><span class="line">    sudo /usr/lib/vmware-vmafd/bin/vecs-cli entry list --store $i --text | egrep &quot;Alias|Not After&quot;;</span><br><span class="line">done</span><br></pre></td></tr></table></figure></p>
-<p>回显<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">STORE MACHINE_SSL_CERT</span><br><span class="line">Alias :	__MACHINE_CERT</span><br><span class="line">            Not After : Jul 24 05:29:45 2023 GMT</span><br><span class="line">STORE TRUSTED_ROOTS</span><br><span class="line">Alias :	ca6378753e13f38f2c78597723bbfbd2bdab5c70</span><br><span class="line">            Not After : Feb 12 06:34:52 2029 GMT</span><br><span class="line">STORE TRUSTED_ROOT_CRLS</span><br><span class="line">Alias :	66a9d0b33019168ebc8ab857f2d2e6d3f9ef7d02</span><br><span class="line">STORE machine</span><br><span class="line">Alias :	machine</span><br><span class="line">            Not After : Jul 24 05:30:47 2023 GMT</span><br><span class="line">STORE vsphere-webclient</span><br><span class="line">Alias :	vsphere-webclient</span><br><span class="line">            Not After : Jul 24 05:30:48 2023 GMT</span><br><span class="line">STORE vpxd</span><br><span class="line">Alias :	vpxd</span><br><span class="line">            Not After : Jul 24 05:30:49 2023 GMT</span><br><span class="line">STORE vpxd-extension</span><br><span class="line">Alias :	vpxd-extension</span><br><span class="line">            Not After : Jul 24 05:30:50 2023 GMT</span><br><span class="line">STORE SMS</span><br><span class="line">Alias :	sms_self_signed</span><br><span class="line">            Not After : Feb 18 06:49:32 2029 GMT</span><br></pre></td></tr></table></figure></p>
-<p>签证书文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/usr/lib/vmware-vmca/share/config/certool.cfg</span><br><span class="line">#</span><br><span class="line"># Template file for a CSR request</span><br><span class="line">#</span><br><span class="line"># Country is needed and has to be 2 characters</span><br><span class="line">Country = US</span><br><span class="line">Name	= CA</span><br><span class="line">Organization = VMware</span><br><span class="line">OrgUnit = VMware Engineering</span><br><span class="line">State = California</span><br><span class="line">Locality = Palo Alto</span><br><span class="line">IPAddress = 192.168.1.250</span><br><span class="line">Email = email@acme.com</span><br><span class="line">Hostname = 192.168.1.250</span><br></pre></td></tr></table></figure></p>
-<p>获取PNID<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@photon-machine [ ~ ]# /usr/lib/vmware-vmafd/bin/vmafd-cli get-pnid --server-name localhost</span><br><span class="line">192.168.1.250</span><br></pre></td></tr></table></figure></p>
-<p>全部更新证书<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/lib/vmware-vmca/bin/certificate-manager</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>vcenter 6.5证书过期解决办法参考：<br><a href="https://kb.vmware.com/s/article/76719" target="_blank" rel="noopener">https://kb.vmware.com/s/article/76719</a><br><a href="https://kb.vmware.com/s/article/2097936" target="_blank" rel="noopener">https://kb.vmware.com/s/article/2097936</a><br><a href="https://kb.vmware.com/s/article/2112283" target="_blank" rel="noopener">https://kb.vmware.com/s/article/2112283</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="ckwcy49p1003ocdjxzlcuae9l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckwcyiz1d000ddzjx82on2ooa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -627,7 +628,7 @@
           </li>
         
           <li>
-            <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
+            <a href="/2021/08/20/harbor-install/">harbor install</a>
           </li>
         
       </ul>

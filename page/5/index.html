@@ -62,6 +62,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-openvswit_vlan流表" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/01/01/openvswit_vlan流表/" class="article-date">
+  <time datetime="2020-01-01T01:41:54.000Z" itemprop="datePublished">2020-01-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/01/openvswit_vlan流表/">openvswit_vlan流表</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> 如果计算节点关闭防火墙，配置文件如下，那么就不会产生bridge桥及相应iptables规则<br> ml2部份配置文件如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[securitygroup]</span><br><span class="line">#enable_security_group = True</span><br><span class="line">#firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver</span><br></pre></td></tr></table></figure></p>
+<p>linuxBridge桥接口就会为空<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kvm-app-6:~ # brctl show  # 为空</span><br><span class="line">bridge name	bridge id		STP enabled	interfaces</span><br></pre></td></tr></table></figure></p>
+<p>查看某虚机接口信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kvm-app-6:~ # virsh  list</span><br><span class="line"> Id    Name                           State</span><br><span class="line">----------------------------------------------------</span><br><span class="line"> 1     instance-00000793              running</span><br><span class="line"></span><br><span class="line">kvm-app-6:~ # virsh domiflist instance-00000793</span><br><span class="line">Interface  Type       Source     Model       MAC</span><br><span class="line">-------------------------------------------------------</span><br><span class="line">tap790c394d-70 bridge     br-int     virtio      fa:16:3e:1f:11:99</span><br></pre></td></tr></table></figure></p>
+<p>ovs-vsctl show<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">kvm-app-6:~ # ovs-vsctl show</span><br><span class="line">8ba4a76e-8c27-4807-a65a-f05b22a3ef76</span><br><span class="line">    Manager &quot;ptcp:6640:127.0.0.1&quot;</span><br><span class="line">        is_connected: true</span><br><span class="line">    Bridge br-int</span><br><span class="line">        Controller &quot;tcp:127.0.0.1:6633&quot;</span><br><span class="line">            is_connected: true</span><br><span class="line">        fail_mode: secure</span><br><span class="line">        Port int-br-ex</span><br><span class="line">            Interface int-br-ex</span><br><span class="line">                type: patch</span><br><span class="line">                options: &#123;peer=phy-br-ex&#125;</span><br><span class="line">        Port &quot;tap790c394d-70&quot;</span><br><span class="line">            tag: 1</span><br><span class="line">            Interface &quot;tap790c394d-70&quot;</span><br><span class="line">        Port br-int</span><br><span class="line">            Interface br-int</span><br><span class="line">                type: internal</span><br><span class="line">    Bridge br-ex</span><br><span class="line">        Controller &quot;tcp:127.0.0.1:6633&quot;</span><br><span class="line">            is_connected: true</span><br><span class="line">        fail_mode: secure</span><br><span class="line">        Port phy-br-ex</span><br><span class="line">            Interface phy-br-ex</span><br><span class="line">                type: patch</span><br><span class="line">                options: &#123;peer=int-br-ex&#125;</span><br><span class="line">        Port br-ex</span><br><span class="line">            Interface br-ex</span><br><span class="line">                type: internal</span><br><span class="line">        Port &quot;bond0&quot;</span><br><span class="line">            Interface &quot;bond0&quot;</span><br><span class="line">    ovs_version: &quot;2.7.6&quot;</span><br></pre></td></tr></table></figure></p>
+<p>查看br-int桥接口信息ovs-ofctl  show br-int<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">kvm-app-6:~ # ovs-ofctl  show br-int</span><br><span class="line">OFPT_FEATURES_REPLY (xid=0x2): dpid:00002a77dbc2860a</span><br><span class="line">n_tables:254, n_buffers:0</span><br><span class="line">capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP</span><br><span class="line">actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst</span><br><span class="line"> 1(int-br-ex): addr:3e:38:8a:6e:c1:de</span><br><span class="line">     config:     0</span><br><span class="line">     state:      0</span><br><span class="line">     speed: 0 Mbps now, 0 Mbps max</span><br><span class="line"> 2(tap790c394d-70): addr:fe:16:3e:1f:11:99</span><br><span class="line">     config:     0</span><br><span class="line">     state:      0</span><br><span class="line">     current:    10MB-FD COPPER</span><br><span class="line">     speed: 10 Mbps now, 0 Mbps max</span><br><span class="line"> LOCAL(br-int): addr:2a:77:db:c2:86:0a</span><br><span class="line">     config:     PORT_DOWN</span><br><span class="line">     state:      LINK_DOWN</span><br><span class="line">     speed: 0 Mbps now, 0 Mbps max</span><br><span class="line">OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0</span><br></pre></td></tr></table></figure></p>
+<p>查看br-int流表规则ovs-ofctl  dump-flows  br-int<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">kvm-app-6:~ # ovs-ofctl  dump-flows  br-int</span><br><span class="line">NXST_FLOW reply (xid=0x4):</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=5395.262s, table=0, n_packets=0, n_bytes=0, idle_age=5395, priority=10,icmp6,in_port=2,icmp_type=136 actions=resubmit(,24)</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=5395.261s, table=0, n_packets=505, n_bytes=21210, idle_age=7, priority=10,arp,in_port=2 actions=resubmit(,24)</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=7776.549s, table=0, n_packets=366813, n_bytes=36441400, idle_age=5395, priority=2,in_port=1 actions=drop</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=5395.264s, table=0, n_packets=817, n_bytes=74814, idle_age=4, priority=9,in_port=2 actions=resubmit(,25)</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=5395.379s, table=0, n_packets=840145, n_bytes=83511042, idle_age=0, priority=3,in_port=1,dl_vlan=11 actions=mod_vlan_vid:1,NORMAL</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=7776.964s, table=0, n_packets=4, n_bytes=320, idle_age=7776, priority=0 actions=NORMAL</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=7776.965s, table=23, n_packets=0, n_bytes=0, idle_age=7776, priority=0 actions=drop</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=5395.263s, table=24, n_packets=0, n_bytes=0, idle_age=5395, priority=2,icmp6,in_port=2,icmp_type=136,nd_target=fe80::f816:3eff:fe1f:1199 actions=NORMAL</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=5395.262s, table=24, n_packets=502, n_bytes=21084, idle_age=7, priority=2,arp,in_port=2,arp_spa=10.8.25.220 actions=resubmit(,25)</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=7776.964s, table=24, n_packets=3, n_bytes=126, idle_age=5357, priority=0 actions=drop</span><br><span class="line"> cookie=0x8372d932b48e5321, duration=5395.265s, table=25, n_packets=1319, n_bytes=95898, idle_age=4, priority=2,in_port=2,dl_src=fa:16:3e:1f:11:99 actions=NORMAL</span><br></pre></td></tr></table></figure></p>
+<p>查看br-ex交换机接口信息ovs-ofctl  show br-ex<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> kvm-app-6:~ # ovs-ofctl  show br-ex</span><br><span class="line">OFPT_FEATURES_REPLY (xid=0x2): dpid:0000aa081303781a</span><br><span class="line">n_tables:254, n_buffers:0</span><br><span class="line">capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP</span><br><span class="line">actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst</span><br><span class="line"> 1(bond0): addr:82:01:9b:1b:28:c9</span><br><span class="line">     config:     0</span><br><span class="line">     state:      0</span><br><span class="line">     speed: 0 Mbps now, 0 Mbps max</span><br><span class="line"> 2(phy-br-ex): addr:c2:06:bb:33:da:7a</span><br><span class="line">     config:     0</span><br><span class="line">     state:      0</span><br><span class="line">     speed: 0 Mbps now, 0 Mbps max</span><br><span class="line"> LOCAL(br-ex): addr:aa:08:13:03:78:1a</span><br><span class="line">     config:     PORT_DOWN</span><br><span class="line">     state:      LINK_DOWN</span><br><span class="line">     speed: 0 Mbps now, 0 Mbps max</span><br><span class="line">OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0</span><br></pre></td></tr></table></figure></p>
+<p>查看br-ex流表信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kvm-app-6:~ # ovs-ofctl  dump-flows br-ex</span><br><span class="line">NXST_FLOW reply (xid=0x4):</span><br><span class="line"> cookie=0x90f6220dc9413e6e, duration=5441.562s, table=0, n_packets=1328, n_bytes=96564, idle_age=3, priority=4,in_port=2,dl_vlan=1 actions=mod_vlan_vid:11,NORMAL</span><br><span class="line"> cookie=0x90f6220dc9413e6e, duration=7822.731s, table=0, n_packets=0, n_bytes=0, idle_age=7822, priority=2,in_port=2 actions=drop</span><br><span class="line"> cookie=0x90f6220dc9413e6e, duration=7822.733s, table=0, n_packets=1213423, n_bytes=120613616, idle_age=0, priority=0 actions=NORMAL</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckwcyiz6q0052dzjx4z0lhna4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-nmap详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/12/15/linux-nmap详解/" class="article-date">
@@ -110,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckwcy49om003acdjx2muycefw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckwcyiz4h003ddzjxqh9oia1o" class="article-share-link">Share</a>
       
       
     </footer>
@@ -158,7 +209,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckwcy49ng001mcdjxvwji631j" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckwcyiz2r001odzjxyf2cz9t5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,7 +257,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckwcy49p0003mcdjxnz3wv9ay" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckwcyiz4u003pdzjxm2xsf35c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -260,7 +311,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/log_helm-efk/" data-id="ckwcy49pa003xcdjxrx6p6h2s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/10/15/log_helm-efk/" data-id="ckwcyiz540040dzjx3l1e0vc4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -311,7 +362,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/linux-dd-fio/" data-id="ckwcy49o9002scdjxd8ac8sbh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/10/15/linux-dd-fio/" data-id="ckwcyiz42002vdzjxkcfaaa2y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -385,7 +436,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/09/15/log_elasticsearch_api/" data-id="ckwcy49p4003scdjxsb54awvj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/09/15/log_elasticsearch_api/" data-id="ckwcyiz51003vdzjxjrr2x7jy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -466,7 +517,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/08/15/log_elasticsearch-基本使用/" data-id="ckwcy49p3003qcdjxt2l9sfe1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/08/15/log_elasticsearch-基本使用/" data-id="ckwcyiz4z003tdzjx6zr1pwvn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -514,7 +565,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/07/25/mysql-data-recovery/" data-id="ckwcy49pp004mcdjxr29siaz9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/07/25/mysql-data-recovery/" data-id="ckwcyiz6f004pdzjxw82rk8lk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -572,55 +623,7 @@ elasticsearch集群组件：
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="ckwcy49pc003zcdjxff0eyvcm" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Kubernetes-dashboard-TLS坑" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/" class="article-date">
-  <time datetime="2019-06-11T12:51:41.000Z" itemprop="datePublished">2019-06-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/11/Kubernetes-dashboard-TLS坑/">kubernetes-dashboard-TLS坑</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2019/06/11/Kubernetes-dashboard-TLS坑/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/06/11/Kubernetes-dashboard-TLS坑/" data-id="ckwcy49lz0003cdjxpis25o6g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/06/15/log_lucene-认识/" data-id="ckwcyiz560042dzjxn3pz1vw1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -690,7 +693,7 @@ elasticsearch集群组件：
           </li>
         
           <li>
-            <a href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
+            <a href="/2021/08/20/harbor-install/">harbor install</a>
           </li>
         
       </ul>
