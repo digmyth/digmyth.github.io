@@ -62,6 +62,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-19-Cookies-Session" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/08/web-django-19-Cookies-Session/" class="article-date">
+  <time datetime="2017-10-08T12:26:37.000Z" itemprop="datePublished">2017-10-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/08/web-django-19-Cookies-Session/">web-Django-19-Cookies-Session</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>Cookies</li>
+<li>Session</li>
+<li>代码学习</li>
+<li>相关配置</li>
+<li>总结</li>
+</ul>
+<h2 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h2><p>用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。</p>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服务器端，对应一个随机字符串，再把这个随机字符串写入cookies，格式为{“sessionid”:”随机字符串”},问题就得到了解决。</p>
+<p>cookies就是能在客户端浏览器写键值对的一种机制，类似’user’:’abc’, 如果写的是’sessionid’:’随机字符串’，那么session就诞生了，服务端再拿到这样的随机字符串，记录信息格式如’随机字符串’:’你想存的敏感信息’</p>
+<h2 id="代码学习"><a href="#代码学习" class="headerlink" title="代码学习"></a>代码学习</h2><p>Cookies 工作特性：<br>在浏览器F12 network-&gt;cookies中首次请求时可以看到 Response Cookies有写入的键值对，下次再访问时Request Cookies有这个键值对，证明此时浏览器会带着这个键值对发给服务器。可以简单用下面代码测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def ck(request):</span><br><span class="line">    print(request.COOKIES)   # cookies会封装在request.COOKIES内</span><br><span class="line">    obj = render(request, &quot;ck.html&quot;, &#123;&quot;msg&quot;: &quot;&quot;&#125;)</span><br><span class="line">    obj.set_cookie(&apos;user&apos;, &apos;wxq&apos;)  # 向浏览器写入cookies键值对</span><br><span class="line"></span><br><span class="line">    return obj</span><br></pre></td></tr></table></figure></p>
+<p>下面用代码描述Cookies、Session各自工作：<br>login.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt;</span><br><span class="line">    &#123;%  csrf_token %&#125;</span><br><span class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;/&gt;</span><br><span class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;/&gt;</span><br><span class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt;&lt;span&gt;&#123;&#123; msg &#125;&#125;&lt;/span&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
+<p>views.py视图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">from app01 import models</span><br><span class="line">def login(request):</span><br><span class="line">    if request.method == &quot;GET&quot;:</span><br><span class="line">        return  render(request, &apos;login.html&apos;,&#123;&quot;msg&quot;: &quot;&quot;&#125;)</span><br><span class="line">    else:</span><br><span class="line">        u = request.POST.get(&quot;username&quot;)</span><br><span class="line">        p = request.POST.get(&quot;pwd&quot;)</span><br><span class="line">        v=models.UserInfo.objects.filter(username=u, pwd=p).exists()</span><br><span class="line">        if v:</span><br><span class="line"></span><br><span class="line">            # obj.set_cookie(&quot;user&quot;, u,max_age=5)</span><br><span class="line">            request.session[&quot;user&quot;] = u</span><br><span class="line">            request.session[&quot;pwd&quot;] = p</span><br><span class="line">            return redirect(&quot;/home/&quot;)</span><br><span class="line">        else:</span><br><span class="line"></span><br><span class="line">            return render(request,&quot;login.html&quot;,&#123;&quot;msg&quot;: &quot;用户名或密码错误&quot;&#125;)</span><br><span class="line"></span><br><span class="line">def home(request):</span><br><span class="line">    # v = request.COOKIES.get(&quot;user&quot;)</span><br><span class="line">    v = request.session.get(&quot;user&quot;)</span><br><span class="line">    if v:</span><br><span class="line">        return  HttpResponse(&quot;登录成功&quot;)</span><br><span class="line">    else:</span><br><span class="line">        return redirect(&quot;/login/&quot;)</span><br></pre></td></tr></table></figure></p>
+<h2 id="利用session注销"><a href="#利用session注销" class="headerlink" title="利用session注销"></a>利用session注销</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def logout(request):</span><br><span class="line">	&apos;&apos;&apos;</span><br><span class="line">	obj=HttpResponse(&quot;xxx&quot;)</span><br><span class="line">	obj.set_cookie(&quot;user&quot;,&quot;name&quot;)   # 设置cookie</span><br><span class="line">	request.COOKIES.get(&quot;user&quot;)     # 获取cookie</span><br><span class="line">        obj.delete_cookie(&apos;user&apos;)       # 清除cookie</span><br><span class="line">	&apos;&apos;&apos;</span><br><span class="line">    #request.session[&apos;user&apos;] = &apos;wxq&apos; # 设置session</span><br><span class="line">    #request.session.get(&apos;user&apos;)     # 获取session</span><br><span class="line">    request.session.clear()          # 清除session</span><br><span class="line">	return redirect(&quot;/login/&quot;)</span><br></pre></td></tr></table></figure>
+<h2 id="Cookies、Session相关配置"><a href="#Cookies、Session相关配置" class="headerlink" title="Cookies、Session相关配置"></a>Cookies、Session相关配置</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="noopener">配置参考</a></p>
+<p>settings.py配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SESSION_ENGINE = &apos;django.contrib.sessions.backends.db&apos;   # 引擎（默认）</span><br><span class="line"> </span><br><span class="line">SESSION_COOKIE_NAME ＝ &quot;sessionid&quot;         # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串（默认）</span><br><span class="line">SESSION_COOKIE_PATH ＝ &quot;/&quot;                 # Session的cookie保存的路径（默认）</span><br><span class="line">SESSION_COOKIE_DOMAIN = None               # Session的cookie保存的域名（默认）</span><br><span class="line">SESSION_COOKIE_SECURE = False              # 是否Https传输cookie（默认）</span><br><span class="line">SESSION_COOKIE_HTTPONLY = True             # 是否Session的cookie只支持http传输（默认）</span><br><span class="line">SESSION_COOKIE_AGE = 1209600               # Session的cookie失效日期（2周）（默认）</span><br><span class="line">SESSION_EXPIRE_AT_BROWSER_CLOSE = False    # 是否关闭浏览器使得Session过期（默认）</span><br><span class="line">SESSION_SAVE_EVERY_REQUEST = True          # 是否每次请求都保存Session，默认修改之后才保存（默认）</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1 cookies是记录在浏览器上的键值对，本身与登录没有任何关系。 cookies信息保存在request.COOKIES.<br>2 session是记录在服务器上的键值对，key是一个随机字符串, session信息保存在request.session字典里的.<br>3 只有Django框架有session 相关的封装,Flask/tornado等其它web框架是没有的，需要自己写Cookies、session.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="ckwcwu4ze007bzujxlfje4hha" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-orm(三)" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/09/15/web-django-orm(三)/" class="article-date">
@@ -111,7 +172,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="ckw5pi1vp007s3vjxsei8azcd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="ckwcwu4zx007tzujxopqtfw38" class="article-share-link">Share</a>
       
       
     </footer>
@@ -175,7 +236,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="ckw5pi1rb000u3vjx76f2eeuz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="ckwcwu4tp000uzujxb1wll8dl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -246,7 +307,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="ckw5pi1rw001n3vjxx6y5h9fz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="ckwcwu4us001wzujxf7qznu75" class="article-share-link">Share</a>
       
       
     </footer>
@@ -309,7 +370,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="ckw5pi1re000z3vjxf4rpoksz" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="ckwcwu4tu000zzujxrtw9539j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -379,7 +440,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="ckw5pi1vc00763vjx8c97rxg3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="ckwcwu4z80077zujxkksmvkd2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -433,7 +494,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/15/linux-disk/" data-id="ckw5pi1ss002r3vjxnp95pmct" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/15/linux-disk/" data-id="ckwcwu4vn002rzujxaah5kse6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -508,7 +569,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckw5pi1vw00853vjx2n95kf5i" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckwcwu50c0086zujxvozlotbu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -558,7 +619,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/21/linux-java-install/" data-id="ckw5pi1sw002z3vjxsqm4abnw" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/21/linux-java-install/" data-id="ckwcwu4w10031zujxv0d3s9zv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -625,68 +686,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckw5pi1vb00743vjxv0nlrp7r" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-02-前端html" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/15/web-02-前端html/" class="article-date">
-  <time datetime="2017-06-15T12:51:41.000Z" itemprop="datePublished">2017-06-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/15/web-02-前端html/">web-02-前端html</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>单选框<br>提交时以{“gender”:”男”}形式, checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;男&quot; checked=&quot;checked&quot; /&gt;男</span><br><span class="line">    &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;女&quot;/&gt;女</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>多选框<br>提交时以{“hobby”:”[11,12.13]”}形式，checked表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;11&quot; checked=&quot;checked&quot; /&gt;乒乓球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;12&quot;/&gt;监球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;13&quot;/&gt;足球</span><br><span class="line">    &lt;input type=&quot;checkbox&quot; name=&quot;hobby&quot; value=&quot;14&quot;/&gt;排球</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>下拉框<br>multiple表示多选，没有multiple表示单选，selected表示默认选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;select name=&quot;city&quot; id=&quot;&quot; multiple&gt;</span><br><span class="line">        &lt;option value=&quot;北京&quot; selected=&quot;selected&quot;&gt;北京&lt;/option&gt;</span><br><span class="line">        &lt;option value=&quot;上海&quot;&gt;上海&lt;/option&gt;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line"></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>提交<br>type=”button” 不能提交表单数据，除非事件绑定<br>type=”submit” 默认事件就是提交表单数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form&gt;</span><br><span class="line">   &lt;button&gt;提交&lt;/button&gt;      # button标签在form里也会有事件，会提交</span><br><span class="line">   &lt;input type=&quot;submit&quot;&gt;      # 有事件，也会提交</span><br><span class="line">   &lt;input type=&quot;button&quot; value=&quot;提交&quot;&gt;  # 没有事件，不会提交</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="前端相关概念"><a href="#前端相关概念" class="headerlink" title="前端相关概念"></a>前端相关概念</h2><p>Jquery学习可<a href="https://www.cnblogs.com/ZAIHUANG/p/6032411.html" target="_blank" rel="noopener">参考</a><br>基本概念：</p>
-<ul>
-<li>html很骨感.</li>
-<li>css就是装饰或样式.</li>
-<li>js 就是让其能动起来, js=javascript，Javascript是一门编程语言，我们用它来编写客户端浏览器脚本</li>
-</ul>
-<p>jQuery是一个快速、简洁的JavaScript框架,一种javascript工具库，把我们常用的一些功能进行封装，方便我们调用，极大简化了Javascript编程，提高了开发效率。<br>jQuery设计的宗旨就是“write Less，Do More”</p>
-<p>Bootstrap是一个开发框架，集成了很多现成的网页格式和网页布局，封装了很多CSS样式和JS代码</p>
-<p>Javascipt跟jQuery的区别：<br>jQuery是javascript的一个库，包含多个可重用的函数，用来辅助我们简化javascript开发<br>jQuery能做的javascipt都能做到，而javascript能做的事情，jQuery不一定能做到。</p>
-<p>position定位的学习<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">position</span><br><span class="line">     position: relative  # 与absolute一起使用</span><br><span class="line">     position: absolute  #随滚动条滚动而滚动</span><br><span class="line">      随滚动条滚动而滚动，并且一直往上找，直到找到一个relative后进行定位</span><br><span class="line">     position: fixed     # 永远在窗口某位置</span><br></pre></td></tr></table></figure></p>
-<h2 id="引用图标"><a href="#引用图标" class="headerlink" title="引用图标"></a>引用图标</h2><p>要想用图标有很多种方法<br>方法一：当我们引入了bootstrap.css时，我们可以用它官网的图标<br><a href="https://v3.bootcss.com/components/" target="_blank" rel="noopener">https://v3.bootcss.com/components/</a><br>    <span class="glyphicon glyphicon-hand-right"></span> 图标名字即类名就可使用了</p>
-<p>方法二：fontawesome也有很多图标<br>需要下载font-awesome文件来引入</p>
-<p><link rel="stylesheet" href="/static/font-awesome.css"><br><a href="https://fontawesome.io/icons/" target="_blank" rel="noopener">https://fontawesome.io/icons/</a>  # 每一个图标可点击，点开后能看到引用方法。<br><i class="fa fa-user-circle-o" aria-hidden="true"></i></p>
-<p>方法三：这个也是图标库，方法见官网<br><a href="http://fontawesome.dashgame.com/#basic" target="_blank" rel="noopener">http://fontawesome.dashgame.com/#basic</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckw5pi1v3006q3vjxp0a40wpe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckwcwu4z50075zujx4y1mkvim" class="article-share-link">Share</a>
       
       
     </footer>
@@ -727,7 +727,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -738,6 +738,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/11/20/gitlab-install/">gitlab install</a>
+          </li>
         
           <li>
             <a href="/2021/10/25/jenkins_mvn/">jenkins maven</a>
@@ -753,10 +757,6 @@
         
           <li>
             <a href="/2021/08/09/mysql-HA/">Mysql高可用集群</a>
-          </li>
-        
-          <li>
-            <a href="/2021/08/09/mysql-MGR-02模式切换/">MySQL MGR单主多主模式切换</a>
           </li>
         
       </ul>
