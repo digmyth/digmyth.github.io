@@ -110,7 +110,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="ckwg4q9oh001aasjxg0rhifk4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="ckwg4zvcx001abmjxog8dhyno" class="article-share-link">Share</a>
       
       
     </footer>
@@ -149,15 +149,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>示例1<br>拉取代码mvn打包,同时gitlab是ssh key认证的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    tools &#123;</span><br><span class="line">        maven &apos;mvn3.8.4&apos;</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(&quot;Checkout&quot;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                git branch: &apos;main&apos;, url: &apos;git@gitlab.done.com:root/spring-boot-helloworld.git&apos;,credentialsId: &apos;sshgitlab&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&quot;package&quot;)&#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh  &apos;mvn clean package&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>示例2<br>gitlab代码变更主动通知jenkins构建的场景，构建状态通知给gitlab的post步骤<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    tools &#123;</span><br><span class="line">        maven &apos;mvn3.8.4&apos;</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(&quot;checkout&quot;)&#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                git branch:&apos;main&apos;, url: &apos;git@gitlab.done.com:root/spring-boot-helloworld.git&apos;,credentialsId: &apos;sshgitlab&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&quot;build&quot;)&#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh &apos;mvn clean package&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    post &#123;</span><br><span class="line">        failure &#123;</span><br><span class="line">             updateGitlabCommitStatus name: &apos;build&apos;, state:&apos;failed&apos;</span><br><span class="line">        &#125;</span><br><span class="line">        success &#123;</span><br><span class="line">            updateGitlabCommitStatus name: &apos;build&apos;, state: &apos;success&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>示例3<br>拉代码、打包、基于Dockerfiile构建镜像、push镜像到harbor、删除临时镜像自动化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    tools &#123;</span><br><span class="line">        maven &apos;mvn3.8.4&apos;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    agent any</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(&apos;get clone repo&apos;) &#123;</span><br><span class="line">           steps &#123;</span><br><span class="line">             git branch: &apos;main&apos;, url:&apos;git@gitlab.done.com:root/spring-boot-helloworld.git&apos;, credentialsId: &apos;sshgitlab&apos;</span><br><span class="line">           &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;Mave Build&apos;)&#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">               sh &apos;mvn clean package -Dmaven.test.skip=true&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;Build Image&apos;)&#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">               script &#123;</span><br><span class="line">                  app=docker.build(&apos;harbor.done.com&apos; + &apos;/dev/spring&apos; + &quot;:v2&quot;,&quot;$WORKSPACE&quot;)</span><br><span class="line">               &#125;            </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&apos;Push Image&apos;)&#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                script &#123;</span><br><span class="line">                    docker.withRegistry(&apos;https://&apos; + &apos;harbor.done.com&apos;, &apos;harbor&apos;)&#123;</span><br><span class="line">                    app.push()</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;    </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stage(&quot;clean image&quot;) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                sh  &quot;docker rmi harbor.done.com/dev/&quot;  + &apos;spring&apos;  + &apos;:v2&apos;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>无</p>
-
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2021/11/20/jenkins-pipeline/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/20/jenkins-pipeline/" data-id="ckwg4q9or001masjxfepy1ums" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/20/jenkins-pipeline/" data-id="ckwg4zvd8001mbmjxjt3k14e7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -207,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="ckwg4q9oq001lasjxo2cb13th" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="ckwg4zvd6001lbmjx05ldizxd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -255,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="ckwg4q9os001oasjxtnqm4i41" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="ckwg4zvda001obmjxn8n1psek" class="article-share-link">Share</a>
       
       
     </footer>
@@ -303,7 +304,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="ckwg4q9qe003hasjxbaj81441" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="ckwg4zves003jbmjx1ureu2f1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -389,7 +390,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="ckwg4q9om001hasjxarx2yd7b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="ckwg4zvd3001hbmjxlvz7dhhw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -446,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="ckwg4q9qb003basjxagxgwo3r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="ckwg4zveo003bbmjx5suiqyks" class="article-share-link">Share</a>
       
       
     </footer>
@@ -494,7 +495,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="ckwg4q9rh004oasjxwd1mcslu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="ckwg4zvfn004nbmjxb3imwhfk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -545,7 +546,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="ckwg4q9ri004qasjx9ersml5n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="ckwg4zvfo004qbmjx8ukikobp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -593,7 +594,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="ckwg4q9rv005fasjxtzqdgrh0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="ckwg4zvg4005gbmjxy4in75qw" class="article-share-link">Share</a>
       
       
     </footer>
