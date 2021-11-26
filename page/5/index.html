@@ -62,6 +62,66 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-calico-原理剖析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/07/calico-原理剖析/" class="article-date">
+  <time datetime="2020-03-07T01:42:54.000Z" itemprop="datePublished">2020-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/07/calico-原理剖析/">calico-原理剖析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="arp之calico本质"><a href="#arp之calico本质" class="headerlink" title="arp之calico本质"></a>arp之calico本质</h2><p>参考<a href="https://cloud.tencent.com/developer/article/1495301" target="_blank" rel="noopener">戳穿 Calico 的谎言</a></p>
+<p>什么是代理ARP？<br>当 ARP 请求目标跨网段时，网关设备收到此ARP请求会用自己的MAC地址返回给请求者,这就是代理arp. 实现MAC地址代理,最终使得主机能够通信.</p>
+<p>知识点： </p>
+<ul>
+<li>跨网段通信时会发广播得到网关MAC</li>
+<li>之后发出的网络数据包目标MAC是网关的MAC</li>
+<li>网关的IP地址不会出现在任何网络包头中</li>
+<li>因此，没有人在乎网关地址是否真的存在，只要设备能响应ARP就行了</li>
+</ul>
+<p>我这里用了2台linux主机实验，主机A：192.168.1.109 主机B:192.168.1.110<br>主机A：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip  link add veth0 type veth peer name veth0_p</span><br><span class="line">ip netns add ns0</span><br><span class="line">ip link set veth0_p netns ns0</span><br><span class="line">ip netns exec ns0  ip link set veth0_p name eth0</span><br><span class="line">ip netns exec ns0  ip a add 10.10.10.10/24 dev eth0</span><br><span class="line">ip netns exec ns0 ip link set eth0 up</span><br><span class="line">ip netns exec ns0 ip route add 169.254.1.1 dev eth0</span><br><span class="line">ip netns exec ns0 ip route add default via 169.254.1.1 dev eth0</span><br><span class="line">[root@testarp-A ~]#ip netns exec ns0 route -n    # 命名空间里的路由</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         169.254.1.1     0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">169.254.1.1     0.0.0.0         255.255.255.255 UH    0      0        0 eth0</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ip route add 10.10.10.10 dev veth0</span><br><span class="line">ip route add   10.10.10.20 via 192.168.1.110  dev eth0</span><br></pre></td></tr></table></figure></p>
+<p>主机B:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip  link add veth0 type veth peer name veth0_p</span><br><span class="line">ip netns add ns0</span><br><span class="line">ip link set veth0_p netns ns0</span><br><span class="line">ip netns exec ns0  ip link set veth0_p name eth0</span><br><span class="line">ip netns exec ns0  ip a add 10.10.10.20/24 dev eth0</span><br><span class="line">ip netns exec ns0 ip link set eth0 up</span><br><span class="line">ip netns exec ns0 ip route add 169.254.1.1 dev eth0</span><br><span class="line">ip netns exec ns0 ip route add default via 169.254.1.1 dev eth0</span><br><span class="line">[root@testarp-B ~]# ip netns exec ns0 route -n  </span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         169.254.1.1     0.0.0.0         UG    0      0        0 eth0</span><br><span class="line">10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0</span><br><span class="line">169.254.1.1     0.0.0.0         255.255.255.255 UH    0      0        0 eth0</span><br><span class="line">ip link set veth0 up</span><br><span class="line">ip route add 10.10.10.20 dev veth0</span><br><span class="line">ip route add   10.10.10.10 via 192.168.1.109  dev eth0</span><br></pre></td></tr></table></figure></p>
+<p>Linux主机打开路由转发<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure></p>
+<p>网卡开启代理ARP功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/net/ipv4/conf/veth0/proxy_arp</span><br></pre></td></tr></table></figure></p>
+<p>主机A上网络通信测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@testarp-A ~]# ip netns exec ns0 ping 10.10.10.20</span><br><span class="line">PING 10.10.10.20 (10.10.10.20) 56(84) bytes of data.</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=1 ttl=62 time=0.951 ms</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=2 ttl=62 time=0.484 ms</span><br><span class="line">64 bytes from 10.10.10.20: icmp_seq=3 ttl=62 time=0.556 ms</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@testarp-A ~]# tcpdump  -nni veth0</span><br><span class="line">tcpdump: verbose output suppressed, use -v or -vv for full protocol decode</span><br><span class="line">listening on veth0, link-type EN10MB (Ethernet), capture size 262144 bytes</span><br><span class="line">08:18:15.999200 IP 10.10.10.10 &gt; 10.10.10.20: ICMP echo request, id 1486, seq 1, length 64</span><br><span class="line">08:18:16.000288 IP 10.10.10.20 &gt; 10.10.10.10: ICMP echo reply, id 1486, seq 1, length 64</span><br><span class="line">08:18:21.008712 ARP, Request who-has 10.10.10.20 tell 10.10.10.10, length 28</span><br><span class="line">08:18:21.008757 ARP, Reply 10.10.10.20 is-at ee:46:7c:2e:d9:ba, length 28</span><br></pre></td></tr></table></figure>
+<p>注意： 这里veth0充当路由角色代理ARP,  who is 10.10.10.20 ,返回自己MAC<code>ee:46:7c:2e:d9:ba</code>来响应.</p>
+<p>转发过程分析：<br>1 广播寻找目标IP对应MAC是谁？<br>2 根据路由规则所有数据包都会转发到169.254.1.1，寻找169.254.1.1MAC是谁？<br>2 vet0开启代理ARP进行ARP拦截，返回自己MAC<code>ee:46:7c:2e:d9:ba</code>给以响应<br>3 封包目标IP为10.10.10.20，MAC为<code>ee:46:7c:2e:d9:ba</code>,发出这样的数据包<br>4 主机A查询本地路由，匹配<code>10.10.10.20 via 192.168.1.110 dev eth0</code> 会把包发送给<code>192.168.1.110</code><br>5 主机B收到<code>10.10.10.20</code>的包时，匹配本地路由<code>10.10.10.20 dev veth0 scope link</code>,数据包发送到veth0上<br>6  完成通信，回程类似</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2020/03/07/calico-原理剖析/" data-id="ckwg2f99j000pzqjx2hctt8za" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-pacemaker-corosync" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/15/linux-pacemaker-corosync/" class="article-date">
@@ -97,7 +157,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckwdnpvn3003jyqjx7t3qcprf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/02/15/linux-pacemaker-corosync/" data-id="ckwg2f9cq003pzqjxsjckjjnm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +205,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckwdnpvks001cyqjxi10v2lai" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/20/ingress-nginx/" data-id="ckwg2f9a6001lzqjxqr1bexau" class="article-share-link">Share</a>
       
       
     </footer>
@@ -196,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckwdnpvon0055yqjxwyzmxeay" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2020/01/01/openvswit_vlan流表/" data-id="ckwg2f9eh005bzqjxixr1o8s7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -257,7 +317,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckwdnpvmu0039yqjx9h8qigqk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/15/linux-nmap详解/" data-id="ckwg2f9cd003fzqjxaemtejd5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -305,7 +365,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckwdnpvl1001lyqjxx21t2ewu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/12/01/k8s_pod1/" data-id="ckwg2f9ac001tzqjxe9fetjt0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -353,7 +413,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckwdnpvn7003nyqjx7zu2b1j6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/11/15/linux-udev/" data-id="ckwg2f9ct003rzqjxa8jf1ppx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -407,7 +467,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/log_helm-efk/" data-id="ckwdnpvnf003wyqjxlxzbnm79" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/10/15/log_helm-efk/" data-id="ckwg2f9d0003xzqjxkyloi2h7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -458,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/10/15/linux-dd-fio/" data-id="ckwdnpvm7002pyqjxc5ucwb7p" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/10/15/linux-dd-fio/" data-id="ckwg2f9bm002vzqjx6s6aropx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -532,88 +592,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/09/15/log_elasticsearch_api/" data-id="ckwdnpvnb003ryqjx109yudy9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-log_elasticsearch-基本使用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/08/15/log_elasticsearch-基本使用/" class="article-date">
-  <time datetime="2019-08-15T02:42:36.000Z" itemprop="datePublished">2019-08-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/日志系统/">日志系统</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/15/log_elasticsearch-基本使用/">elasticsearch基本使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>官网：  <a href="https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html</a>   </p>
-<p>elasticsearch: 借住于LuceneAPI    重新封装实现的搜索组件，增加更强大的能力，将Lucene提供的索引组建成shar形式，分片后分布于各节点上从而构建成分布式时时查询组件。 是一个基Lucene实现的开源、分布式、RestFul的全文本搜索引擎，此外，它还是一个分布式实时文档存储，其中每个文档的每个field均是被索引的数据，且可被搜索，也是一个带实时分析功能的分布式搜索引擎，能够扩展至数以百计的节点实时处理PB级的数据</p>
-<p>概念<br> 文档只有被索引后才能被索引，这个文档就放在一个叫索引的文件当中。<br> 在Lucene中每一项相当于MYsql表中一行数据，多个项在一起就组成了索引，但是每个索引会尽量存储同类型数据</p>
-<p> 大索引的多个片分shard散到多个物理节点上去，可成完成读写负载均衡，分片节点挂了所有数据将丢失，但是分布式不应该这样，它还要通过主从副本实现分布解决单点故障问题。<br> 写操作会自动分配到主分片完成写操作，副本分片只有读权限</p>
-<p>索引：  文档的集合，类似于表，索引名只能是小写字母<br>    类型(type): 类型是索引内部的逻辑分区，其意义完全取决于用户需求，一个索引内部可以定义一个或多个类型<br>                拥有相同域的文档的预定义，类似于表的表结构，文档是schema free模式自由,</p>
-<pre><code>建议一个索引中只存一个类型的文档数据
-文档： 是Lucene搜索和索引的原子单位，包含了一个或多个域，是域容器，基于json格式，每个域的组成部份：一个名字和一个或多个值，拥有多个值的域通常称为多值域
-
-
-映射 (maping):  定义如何切词，指明一个文档中的数据在被存储之前的分析过程该如何执行，原始内容存储为文档之前事先需要分析，映射就 是定义此分析机制该如何实现
-                 例如; 切词、过滤掉某些词、域中内容排序
-
-elasticsearch集群组件：
-     每一个物理节点必属于且只属于某ES集群   
-
-    NODE： 运行了单个ES实例的主机即为节点，用于存储数据部份分片、参与集群索引及搜索操作、节点标识靠节点名（默认会生成字串，可自定义）
-
-    shard分片: 把一个Luence大索引切分为底层物理数据，完成分割存储机制，或说将索引切割成为物理存储组件，但每一个shard都是一个独立且完整的索引，创建索引时，ES默认创建5个副本
-               shard有2种类型： primary shard/Replicas shard
-               Primary shard 如何切割定义好后不可更改，但是副本数是可以动态更改的
-</code></pre><p>ES工作过程： 通过多播(default)或单播方式工作在9300/TCP查找同一集群的其它节点，并与之建立通信                   </p>
-<p>集群中的所有节点会选举一个主节点负责管理整个集群状态，以及在集群范围内决定各shard分布方式，用户角度没有主从节点，各节点都可接收请求</p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>elasticsearch强制要求工作在普通用户模式下，不能root 直接./bin/elasticsearch启动服务，好像rpm安装没有此限制<br>同时启动也有很多限制，否则启动失败</p>
-<p>修改系统参数达到启动服务要求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 普通用户模式下安装</span><br><span class="line">2 安装jdk,要求1.8以上，有人声称1.11以上更佳</span><br><span class="line">3 打开文件数限制，包括系统级/etc/security/limits.conf 和ulimit -n 65535用户级</span><br><span class="line">4 打开内核参数级限制,临时设置如下命令</span><br><span class="line">sysctl -w  vm.max_map_count=655350</span><br><span class="line">sysctl -w  fs.file-max=65536</span><br></pre></td></tr></table></figure></p>
-<p>配置文件修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat /home/stack/elasticsearch-7.11.2/config/elasticsearch.yml  | grep -v ^# | grep -v ^$</span><br><span class="line">cluster.name: wxq-es</span><br><span class="line">node.name: node-es3</span><br><span class="line">bootstrap.memory_lock: false</span><br><span class="line">network.host: 192.168.1.30</span><br><span class="line">discovery.seed_hosts: [&quot;192.168.1.30&quot;,]  # 集群模式相应追加主机</span><br><span class="line">cluster.initial_master_nodes: [&quot;192.168.1.30&quot;,]</span><br><span class="line">http.cors.enabled: true   # 方便plugins head插件时跨站请求成功</span><br><span class="line">http.cors.allow-origin: &quot;*&quot;</span><br></pre></td></tr></table></figure></p>
-<p>head 插件安装<br>安装好后直接访问 <a href="http://IP:9100/" target="_blank" rel="noopener">http://IP:9100/</a>    连接地址填入<a href="http://es-server:9200/正确" target="_blank" rel="noopener">http://es-server:9200/正确</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/mobz/elasticsearch-head.git</span><br><span class="line">cd elasticsearch-head</span><br><span class="line">npm install</span><br><span class="line">npm run start</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/elasticsearch # 直接启动即可</span><br></pre></td></tr></table></figure>
-<p>集群状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">green 可用状态</span><br><span class="line">red:  不可用</span><br><span class="line">yellow: 修复状态</span><br><span class="line"></span><br><span class="line">ES参与集群事务的端口tcp/9300</span><br><span class="line">ES接收请求的端口tcp/9200</span><br></pre></td></tr></table></figure>
-<p>API接口使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">确保集群正常； API接口9200</span><br><span class="line">Restful接口API： 4类</span><br><span class="line">1 检查集群节点索引健康与否，以及获取其相应状态</span><br><span class="line">2 管理集群节点索引及元数据</span><br><span class="line">3 执行CRUD操作</span><br><span class="line">4 执行高级操作：例如paging 、filtering</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">所有_cat支持的API操作</span><br><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat</span><br><span class="line">=^.^=</span><br><span class="line">/_cat/allocation</span><br><span class="line">/_cat/shards</span><br><span class="line">/_cat/shards/&#123;index&#125;</span><br><span class="line">/_cat/master</span><br><span class="line">/_cat/nodes</span><br><span class="line">/_cat/tasks</span><br><span class="line">/_cat/indices</span><br><span class="line">/_cat/indices/&#123;index&#125;</span><br><span class="line">/_cat/segments</span><br><span class="line">。。。</span><br></pre></td></tr></table></figure>
-<p>v=verbose显示详细信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.30:9200/_cat/nodes</span><br><span class="line">http://192.168.1.30:9200/_cat/nodes?v</span><br><span class="line">http://192.168.1.30:9200/_cat/master</span><br><span class="line">http://192.168.1.30:9200/_cat/master?v</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat/nodes?v</span><br><span class="line">ip         heap.percent ram.percent cpu load_1m load_5m load_15m node.role   master name</span><br><span class="line">172.21.0.5           36          98  14    0.22    0.60     1.09 cdfhilmrstw -      es02</span><br><span class="line">172.21.0.3           28          98  14    0.22    0.60     1.09 cdfhilmrstw *      es01</span><br><span class="line">172.21.0.4           61          98  14    0.22    0.60     1.09 cdfhilmrstw -      es03</span><br></pre></td></tr></table></figure></p>
-<p>help查看某接口支持查询的详细字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster ~]# curl  http://192.168.1.40:9200/_cat/nodes?help</span><br><span class="line">id                             | id,nodeId                 | unique node id</span><br><span class="line">pid                            | p                         | process id</span><br><span class="line">ip                             | i                         | ip address</span><br><span class="line">port                           | po                        | bound transport port</span><br><span class="line">http_address                   | http                      | bound http address</span><br><span class="line">version                        | v                         | es version</span><br><span class="line">。。。</span><br></pre></td></tr></table></figure></p>
-<p>查询某接口指定字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># curl  http://192.168.1.40:9200/_cat/nodes?h=id,pid,ip,port,http_address,version,uptime</span><br><span class="line">t_iA 6 172.21.0.5 9300 172.21.0.5:9200 7.12.0 56.8m</span><br><span class="line">WIm1 6 172.21.0.3 9300 172.21.0.3:9200 7.12.0 56.8m</span><br><span class="line">3bzJ 6 172.21.0.4 9300 172.21.0.4:9200 7.12.0 56.8m</span><br></pre></td></tr></table></figure></p>
-<p>health的green状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># curl  http://192.168.1.40:9200/_cat/health?v</span><br><span class="line">epoch      timestamp cluster           status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent</span><br><span class="line">1618470428 07:07:08  es-docker-cluster green           3         3     14   7    0    0        0             0                  -                100.0%</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li>带着概念参照官网安装还是挺简单的，练习接口可以了解学习集群及ES的概念</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/08/15/log_elasticsearch-基本使用/" data-id="ckwdnpvn9003pyqjxo9kf99g9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/09/15/log_elasticsearch_api/" data-id="ckwg2f9d40042zqjxus7yos2o" class="article-share-link">Share</a>
       
       
     </footer>

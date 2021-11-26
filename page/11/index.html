@@ -62,6 +62,69 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-cephfs-manila" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/05/cephfs-manila/" class="article-date">
+  <time datetime="2017-08-05T01:41:54.000Z" itemprop="datePublished">2017-08-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/05/cephfs-manila/">cephfs-ganesha-manila</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>openstack manila项目最近很活跃，ceph刚好发布luminous版,具说cephfs性能得到很大提升，那么manila 后端存储cephfs找到了着力点，得到在大力发展。这里对manila cephfs实验做下记录。<a href="https://docs.openstack.org/manila/pike/contributor/cephfs_driver.html#authorize-ceph-driver" target="_blank" rel="noopener">官网链接参考</a></p>
+<h2 id="驱动简介"><a href="#驱动简介" class="headerlink" title="驱动简介"></a>驱动简介</h2><p>manila cephfs驱动分为两种：<br>一种：  cephfs native share<br>相当于租户虚机直接连接cephfs集群，存在安全问题，生产环境中很难推行。</p>
+<p>1  <code>ceph-common</code>包安装在<code>manila-share</code>中<br>2  ceph-common/ceph-fuse 软件安装在租户虚机Guest里<br>3  ceph集群与manila-share网络打通<br>4  ceph集群与租户虚机网络打通</p>
+<p>二种： cephfs nfs share<br>官网说明<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1 Pike or later versions of manila.</span><br><span class="line">2 Kraken or later versions of Ceph.</span><br><span class="line">3 2.5 or later versions of NFS-Ganesha.</span><br><span class="line">4 A Ceph cluster with a filesystem configured</span><br><span class="line">5 ceph-common package installed in the servers running the manila-share service.</span><br><span class="line">6 NFS client installed in the guest.</span><br><span class="line">7 Network connectivity between your Ceph cluster’s public network and the servers running the manila-share service.</span><br><span class="line">8 Network connectivity between your Ceph cluster’s public network and NFS-Ganesha server.</span><br><span class="line">9 Network connectivity between your NFS-Ganesha server and the manila guest.</span><br></pre></td></tr></table></figure></p>
+<p>在cephfs nfs share驱动，借住nfs-Ganesha解决了网络安全性问题，避免ceph public网直接暴露。<br>直观的理解就是Ganesha为协议转换层，FSAL_CEPH把guest vm的NFS协议调用 libcephfs1 将 NFS 转义为 Cephfs 协议再存入到 Ceph 中.</p>
+<h2 id="安装openstack-ceph"><a href="#安装openstack-ceph" class="headerlink" title="安装openstack+ceph"></a>安装openstack+ceph</h2><p>跟据官网所说准备一套openstack pike + ceph  luminous 环境，安装过程略。。。。</p>
+<p>ceph  luminous 源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[ceph]</span><br><span class="line">name=ceph</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/x86_64/</span><br><span class="line">gpgcheck=0</span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=cephnoarch</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-luminous/el7/noarch/</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装nfs-ganesha"><a href="#安装nfs-ganesha" class="headerlink" title="安装nfs-ganesha"></a>安装nfs-ganesha</h2><p> 需要nfs-ganesha 版本为2.5以上，只能编译安装了,具体[请参考(<a href="http://www.digmyth.com/2017/06/05/cephfs-Ganesha/">http://www.digmyth.com/2017/06/05/cephfs-Ganesha/</a>)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc git cmake autoconf libtool bison flex doxygen openssl-devel  gcc-c++ libuuid-devel nfs-utils -y</span><br><span class="line"># 如果要生成 FSAL_RGW 模块，需要安装 librgw2-devel</span><br><span class="line">yum install librgw2-devel -y </span><br><span class="line"># 如果要生成 FSAL_CEPH 模块，需要安装 libcephfs1-devel</span><br><span class="line">yum install libcephfs1-devel -y</span><br><span class="line">cd /opt</span><br><span class="line">git clone --recursive git://github.com/nfs-ganesha/nfs-ganesha.git</span><br><span class="line">mkdir /opt/build &amp;&amp; cd /opt/build</span><br><span class="line">cmake  -DUSE_FSAL_CEPH=ON /opt/nfs-ganesha/src/</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置manila-share"><a href="#配置manila-share" class="headerlink" title="配置manila-share"></a>配置manila-share</h2><p>必要客户端安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum instal ceph ceph-fuse ceph-common libcephfs1-devel librgw2-devel</span><br><span class="line">scp ceph_mon:/etc/ceph/* /etc/ceph    #^# 复制相关配置文件</span><br><span class="line"></span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+<h2 id="ceph授权"><a href="#ceph授权" class="headerlink" title="ceph授权"></a>ceph授权</h2><p> 如下命令会生成<code>manila.keyring</code>文件，一并复制到 manila-share的/etc/ceph目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">read -d &apos;&apos; MON_CAPS &lt;&lt; EOF</span><br><span class="line">allow r,</span><br><span class="line">allow command &quot;auth del&quot;,</span><br><span class="line">allow command &quot;auth caps&quot;,</span><br><span class="line">allow command &quot;auth get&quot;,</span><br><span class="line">allow command &quot;auth get-or-create&quot;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">ceph auth get-or-create client.manila -o manila.keyring \</span><br><span class="line">mds &apos;allow *&apos; \</span><br><span class="line">osd &apos;allow rw&apos; \</span><br><span class="line">mon &quot;$MON_CAPS&quot;</span><br></pre></td></tr></table></figure></p>
+<p>编辑manila-share的/etc/ceph/ceph.conf 添加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">[client.manila]</span><br><span class="line">client mount uid = 0</span><br><span class="line">client mount gid = 0</span><br><span class="line">log file = /var/logs/ceph-client.manila.log</span><br><span class="line">admin socket = /run/ceph/ceph-mon.172.18.23.17.asok</span><br><span class="line">keyring = /etc/ceph/manila.keyring</span><br></pre></td></tr></table></figure></p>
+<p>允许快照支持<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph mds set allow_new_snaps true --yes-i-really-mean-it</span><br></pre></td></tr></table></figure></p>
+<p>编辑manila-share的/etc/manila/manila.conf 添加如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[DEFAULT]</span><br><span class="line">...</span><br><span class="line">enabled_share_backends = generic, cephfsnfs1</span><br><span class="line">default_share_type = default_share_type</span><br><span class="line">enabled_share_protocols = NFS,CIFS,CEPHFS</span><br><span class="line">[cephfsnfs1]</span><br><span class="line">driver_handles_share_servers = False</span><br><span class="line">share_backend_name = CEPHFSNFS1</span><br><span class="line">share_driver = manila.share.drivers.cephfs.driver.CephFSDriver</span><br><span class="line">cephfs_protocol_helper_type = NFS</span><br><span class="line">cephfs_conf_path = /etc/ceph/ceph.conf</span><br><span class="line">cephfs_auth_id = manila</span><br><span class="line">cephfs_cluster_name = ceph</span><br><span class="line">cephfs_enable_snapshots = False</span><br><span class="line">cephfs_ganesha_server_is_remote= False</span><br><span class="line">cephfs_ganesha_server_ip = 172.18.23.17   # 指明nfs-ganesha服务器位置</span><br></pre></td></tr></table></figure></p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>服务验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(manila-share)[root@pike-vm /]# manila service-list</span><br><span class="line"></span><br><span class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</span><br><span class="line">| Id | Binary           | Host               | Zone | Status  | State | Updated_at                 |</span><br><span class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</span><br><span class="line">| 1  | manila-data      | pike-vm            | nova | enabled | up    | 2017-11-15T10:14:37.000000 |</span><br><span class="line">| 2  | manila-scheduler | pike-vm            | nova | enabled | up    | 2017-11-15T10:14:38.000000 |</span><br><span class="line">| 3  | manila-share     | pike-vm@generic    | nova | enabled | up    | 2017-11-15T10:14:40.000000 |</span><br><span class="line">| 4  | manila-share     | pike-vm@cephfsnfs1 | nova | enabled | up    | 2017-11-15T10:14:40.000000 |</span><br><span class="line">+----+------------------+--------------------+------+---------+-------+----------------------------+</span><br></pre></td></tr></table></figure></p>
+<p>创建manila实例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">manila type-create cephfsnfstype false</span><br><span class="line">manila type-key cephfsnfstype set vendor_name=Ceph storage_protocol=NFS</span><br><span class="line">manila create --share-type cephfsnfstype --name cephnfsshare1 nfs 1</span><br></pre></td></tr></table></figure></p>
+<p>查看共享路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(manila-share)[root@pike-vm /]# manila share-export-location-list cephnfsshare1</span><br><span class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</span><br><span class="line">| ID                                   | Path                                                                | Preferred |</span><br><span class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</span><br><span class="line">| 18cf503a-9357-40e2-925a-53333031a3e6 | 172.18.23.17:/volumes/_nogroup/7f53c663-57c5-4740-977b-039e4df7fc86 | False     |</span><br><span class="line">+--------------------------------------+---------------------------------------------------------------------+-----------+</span><br></pre></td></tr></table></figure></p>
+<p>权限管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">manila access-allow cephnfsshare1 ip 172.24.4.225</span><br></pre></td></tr></table></figure>
+<h2 id="guest-vm-挂载"><a href="#guest-vm-挂载" class="headerlink" title="guest vm 挂载"></a>guest vm 挂载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t nfs 172.18.23.17:/volumes/_nogroup/7f53c663-57c5-4740-977b-039e4df7fc86 /mnt/nfs/</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="ckwg2f99o000zzqjxwxyc9ide" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-16-Form" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/07/20/web-django-16-Form/" class="article-date">
@@ -119,7 +182,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="ckwdnpvri007syqjxtgwtl096" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="ckwg2f9g2007pzqjx00f651p7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -173,7 +236,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/15/linux-disk/" data-id="ckwdnpvm9002ryqjxf23pro87" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/15/linux-disk/" data-id="ckwg2f9bk002tzqjx1eh3iv6l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -248,7 +311,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckwdnpvsj008jyqjxo3c6h5x2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/01/基于CentOS7的PXE装机/" data-id="ckwg2f9gt008gzqjx7023mymy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -298,7 +361,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/21/linux-java-install/" data-id="ckwdnpvmh002zyqjxx577z554" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/21/linux-java-install/" data-id="ckwg2f9bw0033zqjxmitgy78h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -365,7 +428,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckwdnpvr2007gyqjxl8mkmpzf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/20/web-django-11-模板渲染/" data-id="ckwg2f9fq0079zqjx4xmfjgbn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -426,7 +489,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckwdnpvqi0070yqjxwufl6lcb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-02-前端html/" data-id="ckwg2f9fn0074zqjxcrvqf0tr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -503,7 +566,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckwdnpvs30088yqjxjh849k9i" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/web-django-orm(二)/" data-id="ckwg2f9gi0083zqjxwmgt464s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -553,7 +616,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckwdnpvmf002xyqjxmmu6px6r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/linux-iptables应用/" data-id="ckwg2f9bu0031zqjx7r8j64vo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -614,68 +677,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckwdnpvki0012yqjxjvo8pl5d" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-mysql-sysbench" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/06/10/mysql-sysbench/" class="article-date">
-  <time datetime="2017-06-10T01:41:54.000Z" itemprop="datePublished">2017-06-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/10/mysql-sysbench/">Mysql sysbench 压测</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>工具安装</li>
-<li>执行压测</li>
-<li>针对优化</li>
-<li>示例结果</li>
-</ul>
-<h3 id="数据库指标"><a href="#数据库指标" class="headerlink" title="数据库指标"></a>数据库指标</h3><p>对于mysql压力测试，大多用sysbench/tpcc-mysql工具。主要针对数据库OLTP（在线事务处理）指标。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">qps : query per second 查询量</span><br><span class="line">tps: transaction per second 事务量</span><br></pre></td></tr></table></figure>
-<h3 id="工具安装"><a href="#工具安装" class="headerlink" title="工具安装"></a>工具安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install sysbench -y</span><br><span class="line">[root@mysql sysbench]# sysbench  --version</span><br><span class="line">sysbench 1.0.9</span><br></pre></td></tr></table></figure>
-<p>在<code>sysbench</code>压测时会调用内置<code>lua</code>脚本, 这些脚本为于<code>/etc/share/sysbench</code>目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/usr/share/sysbench</span><br><span class="line">[root@mysql sysbench]# ll</span><br><span class="line">total 64</span><br><span class="line">-rwxr-xr-x 1 root root  1452 Sep 18 12:29 bulk_insert.lua</span><br><span class="line">-rw-r--r-- 1 root root 13762 Sep 18 12:29 oltp_common.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1290 Sep 18 12:29 oltp_delete.lua</span><br><span class="line">-rwxr-xr-x 1 root root  2018 Sep 18 12:29 oltp_insert.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1265 Sep 18 12:29 oltp_point_select.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1649 Sep 18 12:29 oltp_read_only.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1824 Sep 18 12:29 oltp_read_write.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1118 Sep 18 12:29 oltp_update_index.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1127 Sep 18 12:29 oltp_update_non_index.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1440 Sep 18 12:29 oltp_write_only.lua</span><br><span class="line">-rwxr-xr-x 1 root root  1919 Sep 18 12:29 select_random_points.lua</span><br><span class="line">-rwxr-xr-x 1 root root  2118 Sep 18 12:29 select_random_ranges.lua</span><br><span class="line">drwxr-xr-x 4 root root  4096 Nov 10 02:57 tests</span><br></pre></td></tr></table></figure></p>
-<h3 id="执行压测"><a href="#执行压测" class="headerlink" title="执行压测"></a>执行压测</h3><p>方便压测时找到内置<code>lua</code>脚本，以下命令都在<code>/etc/share/sysbench</code>目录下执行</p>
-<p>在远端连接数据库时，授权<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant all on test.* to root@&apos;%&apos; identified by &apos;123&apos;;</span><br></pre></td></tr></table></figure></p>
-<p>生成压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/share/sysbench/</span><br><span class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  prepare</span><br></pre></td></tr></table></figure></p>
-<p>执行压测<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  run</span><br></pre></td></tr></table></figure></p>
-<p>清理压测数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysbench oltp_read_write.lua --mysql-host=127.0.0.1 --mysql-port=3306 --db-driver=mysql --mysql-db=test --mysql-user=root --mysql-password=MyNewPass4! --table_size=50000 --tables=10 --threads=300 --time=60 --report-interval=10  cleanup</span><br></pre></td></tr></table></figure></p>
-<h3 id="优化数据库"><a href="#优化数据库" class="headerlink" title="优化数据库"></a>优化数据库</h3><p>在压测过程中可能出现一些错误，连接数不够，max_prepared_stmt_count不够，可优化/etc/my.cnf 做适当调整<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">max_connections = 4096</span><br><span class="line">max_prepared_stmt_count=100000      # 默认16384压测时需调大</span><br><span class="line">query_cache_type = 1</span><br><span class="line">query_cache_size = 10M</span><br><span class="line"></span><br><span class="line">wsrep_slave_threads = 4</span><br><span class="line">#wsrep_notify_cmd = /usr/local/bin/wsrep-notify.sh</span><br><span class="line">max_connections = 10000</span><br><span class="line">key_buffer_size = 64M</span><br><span class="line">max_heap_table_size = 64M</span><br><span class="line">tmp_table_size = 64M</span><br><span class="line">innodb_buffer_pool_size = 8192M</span><br></pre></td></tr></table></figure></p>
-<h3 id="示例结果"><a href="#示例结果" class="headerlink" title="示例结果"></a>示例结果</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Initializing worker threads...</span><br><span class="line"></span><br><span class="line">Threads started!</span><br><span class="line"></span><br><span class="line">[ 10s ] thds: 300 tps: 198.33 qps: 5741.67 (r/w/o: 4335.25/830.02/576.41) lat (ms,95%): 3706.08 err/s: 81.77 reconn/s: 0.00</span><br><span class="line">[ 20s ] thds: 300 tps: 222.61 qps: 6095.90 (r/w/o: 4553.90/924.16/617.84) lat (ms,95%): 4203.93 err/s: 102.31 reconn/s: 0.00</span><br><span class="line">[ 30s ] thds: 300 tps: 221.01 qps: 5899.58 (r/w/o: 4399.84/899.83/599.92) lat (ms,95%): 4055.23 err/s: 93.20 reconn/s: 0.00</span><br><span class="line">[ 40s ] thds: 300 tps: 198.06 qps: 5400.91 (r/w/o: 4032.79/827.03/541.09) lat (ms,95%): 4683.57 err/s: 89.98 reconn/s: 0.00</span><br><span class="line">[ 50s ] thds: 300 tps: 186.14 qps: 5162.76 (r/w/o: 3866.39/783.36/513.00) lat (ms,95%): 5312.73 err/s: 90.12 reconn/s: 0.00</span><br><span class="line">[ 60s ] thds: 300 tps: 158.49 qps: 4433.94 (r/w/o: 3325.93/670.45/437.56) lat (ms,95%): 5507.54 err/s: 78.99 reconn/s: 0.00</span><br><span class="line">SQL statistics:</span><br><span class="line">    queries performed:</span><br><span class="line">        read:                            246736</span><br><span class="line">        write:                           50340</span><br><span class="line">        other:                           33317</span><br><span class="line">        total:                           330393</span><br><span class="line">    transactions:                        12147  (195.34 per sec.)</span><br><span class="line">    queries:                             330393 (5313.17 per sec.)</span><br><span class="line">    ignored errors:                      5477   (88.08 per sec.)</span><br><span class="line">    reconnects:                          0      (0.00 per sec.)</span><br><span class="line"></span><br><span class="line">General statistics:</span><br><span class="line">    total time:                          62.1815s</span><br><span class="line">    total number of events:              12147</span><br><span class="line"></span><br><span class="line">Latency (ms):</span><br><span class="line">         min:                                 16.10</span><br><span class="line">         avg:                               1503.84</span><br><span class="line">         max:                              14267.54</span><br><span class="line">         95th percentile:                   4683.57</span><br><span class="line">         sum:                            18267086.41</span><br><span class="line"></span><br><span class="line">Threads fairness:</span><br><span class="line">    events (avg/stddev):           40.4900/6.29</span><br><span class="line">    execution time (avg/stddev):   60.8903/0.59</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/06/10/mysql-sysbench/" data-id="ckwdnpvof004vyqjxdyj6irz6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/06/15/git-01/" data-id="ckwg2f9a0001dzqjxxri7u18n" class="article-share-link">Share</a>
       
       
     </footer>

@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>cinder多后端逻辑 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
+  <title>openssl 证书 | Welcome to wxq&#39;s Blog created in 2017-01-01</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="cinder配置逻辑123456789101112131415enable_backens=backend1,backend2,backend3[backend1]volume_driver=cinder.xxvolume_backend_name=sata[backend2]volume_driver=cinder.xxvolume_backend_name=ssd[backend3]volum">
+  <meta name="description" content="总结几个常用命令测试证书匹配正确性方法11openssl s_server -debug -cert server.crt -key server.key 测试证书匹配正确性方法2返回值一样说明证书匹配12openssl x509 -noout -modulus -in ssl.crt | openssl md5openssl rsa  -noout -modulus -in ssl.key |">
 <meta property="og:type" content="article">
-<meta property="og:title" content="cinder多后端逻辑">
-<meta property="og:url" content="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/index.html">
+<meta property="og:title" content="openssl 证书">
+<meta property="og:url" content="http://www.digmyth.com/2021/06/15/linux-openssl-0证书/index.html">
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
-<meta property="og:description" content="cinder配置逻辑123456789101112131415enable_backens=backend1,backend2,backend3[backend1]volume_driver=cinder.xxvolume_backend_name=sata[backend2]volume_driver=cinder.xxvolume_backend_name=ssd[backend3]volum">
+<meta property="og:description" content="总结几个常用命令测试证书匹配正确性方法11openssl s_server -debug -cert server.crt -key server.key 测试证书匹配正确性方法2返回值一样说明证书匹配12openssl x509 -noout -modulus -in ssl.crt | openssl md5openssl rsa  -noout -modulus -in ssl.key |">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-26T12:41:06.912Z">
+<meta property="og:updated_time" content="2021-11-26T07:30:41.331Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="cinder多后端逻辑">
-<meta name="twitter:description" content="cinder配置逻辑123456789101112131415enable_backens=backend1,backend2,backend3[backend1]volume_driver=cinder.xxvolume_backend_name=sata[backend2]volume_driver=cinder.xxvolume_backend_name=ssd[backend3]volum">
+<meta name="twitter:title" content="openssl 证书">
+<meta name="twitter:description" content="总结几个常用命令测试证书匹配正确性方法11openssl s_server -debug -cert server.crt -key server.key 测试证书匹配正确性方法2返回值一样说明证书匹配12openssl x509 -noout -modulus -in ssl.crt | openssl md5openssl rsa  -noout -modulus -in ssl.key |">
   
     <link rel="alternate" href="/atom.xml" title="Welcome to wxq&#39;s Blog created in 2017-01-01" type="application/atom+xml">
   
@@ -64,14 +64,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-cinder-vol-多后端" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-linux-openssl-0证书" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/08/cinder-vol-多后端/" class="article-date">
-  <time datetime="2018-08-08T01:41:54.000Z" itemprop="datePublished">2018-08-08</time>
+    <a href="/2021/06/15/linux-openssl-0证书/" class="article-date">
+  <time datetime="2021-06-15T01:20:54.000Z" itemprop="datePublished">2021-06-15</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
   </div>
 
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      cinder多后端逻辑
+      openssl 证书
     </h1>
   
 
@@ -90,13 +90,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="cinder配置逻辑"><a href="#cinder配置逻辑" class="headerlink" title="cinder配置逻辑"></a>cinder配置逻辑</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">enable_backens=backend1,backend2,backend3</span><br><span class="line">[backend1]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=sata</span><br><span class="line"></span><br><span class="line">[backend2]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=ssd</span><br><span class="line">[backend3]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=rbd</span><br><span class="line"></span><br><span class="line">cinder type-create sata</span><br><span class="line">cinder type-key  sata set volume_backend_name=sata</span><br><span class="line">cinder create  --volume-type sata  --display-name vol_stat 20</span><br></pre></td></tr></table></figure>
-<h3 id="vmware启用thick配置"><a href="#vmware启用thick配置" class="headerlink" title="vmware启用thick配置"></a>vmware启用thick配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、运行命令：cinder type-create thick_volume（注：创建云硬盘类型）</span><br><span class="line"></span><br><span class="line">2、运行命令：cinder type-key thick_volume set vmware:vmdk_type=thick（注：thick为Vmware使用）</span><br><span class="line"></span><br><span class="line">3、运行命令：cinder type-key thick_volume set volume_backend_name=fusionstorage_sata3copy（注：指定后端）</span><br><span class="line"></span><br><span class="line">4、运行命令：glance image-list（注：查看镜像ID）</span><br><span class="line"></span><br><span class="line">5、运行命令：cinder create --image-id “镜像ID” --volume-type thick_volume --display-name vol-thick 20</span><br><span class="line">（注：创建一个20G大小的云硬盘，使用刚刚创建的云硬盘类型）</span><br></pre></td></tr></table></figure>
+        <p>总结几个常用命令<br>测试证书匹配正确性方法1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl s_server -debug -cert server.crt -key server.key</span><br></pre></td></tr></table></figure></p>
+<p>测试证书匹配正确性方法2<br>返回值一样说明证书匹配<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openssl x509 -noout -modulus -in ssl.crt | openssl md5</span><br><span class="line">openssl rsa  -noout -modulus -in ssl.key | openssl md5</span><br></pre></td></tr></table></figure></p>
+<p>用CA验证证书签发有效性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl verify -CAfile CA.crt xx.do.com.crt</span><br></pre></td></tr></table></figure></p>
+<p>https网站通信验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">openssl s_client -connect 172.10.10.10:443 -CAfile /a/b/c.crt -cert xx.crt</span><br><span class="line">GET / HTTP/1.1</span><br><span class="line">host: xx.do.com</span><br><span class="line">...返回信息说明tls通信成功</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckwg2f99r0011zqjx2fafbkph" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/15/linux-openssl-0证书/" data-id="ckwg2f9c9003dzqjxw9wlcs4k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -105,50 +107,24 @@
     
 <nav id="article-nav">
   
-    <a href="/2018/08/16/linux-dmesg/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2021/07/02/kubernetes-kubeadmHA/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          linux dmesg时间戳换算
+          kubeadm HA
         
       </div>
     </a>
   
   
-    <a href="/2018/08/01/Kubernetes/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2021/06/10/mongodb-02-权限控制/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">kubernetes-入门</div>
+      <div class="article-nav-title">mongodb-访问控制</div>
     </a>
   
 </nav>
 
   
-
-  
-    <! -- 添加捐赠图标 -->
-<div class ="post-donate">
-    <div id="donate_board" class="donate_bar center">
-        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
-        <span class="donate_txt">
-           &uarr;<br>
-		   能帮到您是我的荣幸！
-        </span>
-        <br>
-      </div>  
-	<div id="donate_guide" class="donate_bar center hidden" >
-		<!-- 支付宝打赏图案 -->
-		<!--img src="/img/zhifubao.jpg" alt="支付宝打赏"--> 
-		<!-- 微信打赏图案 -->
-		<img src="/images/wecharpay.png" alt="微信打赏">  
-    </div>
-	<script type="text/javascript">
-		document.getElementById('btn_donate').onclick = function(){
-			$('#donate_board').addClass('hidden');
-			$('#donate_guide').removeClass('hidden');
-		}
-	</script>
-</div>
-<! -- 添加捐赠图标 -->
 
   
 </article>
