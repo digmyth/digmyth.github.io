@@ -110,7 +110,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="ckwg2gquv001a0kjxp9fsny3d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="ckwg42k5k001a65jxizg6l91k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -160,7 +160,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="ckwg2gqv5001l0kjx278xqeg6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="ckwg42k5w001l65jxcbyhucoq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -208,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="ckwg2gqv7001m0kjxnqwl6yn9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="ckwg42k5y001m65jxyvrss0bw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +256,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="ckwg2gqwv003f0kjxbhlwp1pq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="ckwg42k7i003h65jxtpim89or" class="article-share-link">Share</a>
       
       
     </footer>
@@ -295,18 +295,54 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>下载离线harbor Tar包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/goharbor/harbor/</span><br><span class="line">https://github.com/goharbor/harbor/releases/download/v2.3.4/harbor-offline-installer-v2.3.4.tgz</span><br></pre></td></tr></table></figure></p>
+        <h3 id="一-基本安装过程"><a href="#一-基本安装过程" class="headerlink" title="一. 基本安装过程"></a>一. 基本安装过程</h3><p>下载离线harbor Tar包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/goharbor/harbor/</span><br><span class="line">https://github.com/goharbor/harbor/releases/download/v2.3.4/harbor-offline-installer-v2.3.4.tgz</span><br></pre></td></tr></table></figure></p>
 <p>解压后进入主目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp harbor.yml.tmpl harbor.yml</span><br></pre></td></tr></table></figure></p>
-<p>编辑几个参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hostname: jenkins.do.com</span><br><span class="line">http:</span><br><span class="line">  port: 5080</span><br><span class="line">https:</span><br><span class="line">  port: 443</span><br><span class="line">  certificate: /opt/harbor/certs/jenkins.do.com.crt</span><br><span class="line">  private_key: /opt/harbor/certs/jenkins.do.com.key </span><br><span class="line">harbor_admin_password: admin</span><br><span class="line">data_volume: /data</span><br></pre></td></tr></table></figure></p>
-<p>安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@jenkins harbor]# ./prepare </span><br><span class="line">[root@jenkins harbor]# ./install.sh </span><br><span class="line">[root@jenkins harbor]# docker-compose  down -v</span><br><span class="line">[root@jenkins harbor]# docker-compose  up -d</span><br></pre></td></tr></table></figure></p>
-<p>证书docker目录下也保留一份用于认证到harbor<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@jenkins harbor]# ls /etc/docker/certs.d/jenkins.do.com/</span><br><span class="line">ca.crt  jenkins.do.com.cert  jenkins.do.com.key</span><br></pre></td></tr></table></figure></p>
-<p> 验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">URL     https://jenkins.do.com</span><br><span class="line">docker login jenkins.do.com</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p> 学习</p>
+<p>编辑几个参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hostname: harbor.do.com</span><br><span class="line">http:</span><br><span class="line">  port: 5080</span><br><span class="line">https:</span><br><span class="line">  port: 443</span><br><span class="line">  certificate: /opt/harbor/certs/harbor.do.com.crt</span><br><span class="line">  private_key: /opt/harbor/certs/harbor.do.com.key </span><br><span class="line">harbor_admin_password: admin</span><br><span class="line">data_volume: /data</span><br></pre></td></tr></table></figure></p>
+<p>安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@harbor harbor]# rm  -rf /data</span><br><span class="line">[root@harbor harbor]# ./prepare </span><br><span class="line">[root@harbor harbor]# ./install.sh </span><br><span class="line">[root@harbor harbor]# docker-compose  down -v</span><br><span class="line">[root@harbor harbor]# docker-compose  up -d</span><br></pre></td></tr></table></figure></p>
+<p>证书docker目录下也保留一份用于认证到harbor<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@harbor harbor]# ls /etc/docker/certs.d/harbor.do.com/</span><br><span class="line">ca.crt  harbor.do.com.cert  harbor.do.com.key</span><br></pre></td></tr></table></figure></p>
+<h3 id="二-证书细节"><a href="#二-证书细节" class="headerlink" title="二. 证书细节"></a>二. 证书细节</h3><p>如果有https证书的需求，需要额外几个步骤制作证书，这里记录说明.</p>
+<p>harbor证书需要一个SAN/alternative_NAME的证书扩展的玩意，一般的openssl证书还不行，严格按照官网来.</p>
+<ol>
+<li><p>生成CA key.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out ca.key 4096</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自签CA证书</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -x509 -new -nodes -sha512 -days 3650 -subj &quot;/C=CN/ST=Beijing/L=Beijing/O=example/OU=Personal/CN=harbor.done.com&quot; -key ca.key -out ca.crt</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>生成服务器key</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out harbor.done.com.key 4096</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成服务器csr</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -sha512 -new -subj &quot;/C=CN/ST=Beijing/L=Beijing/O=example/OU=Personal/CN=harbor.done.com&quot; -key harbor.done.com.key  -out harbor.done.com.csr</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成v3的玩意儿</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; v3.ext &lt;&lt;-EOF</span><br><span class="line">authorityKeyIdentifier=keyid,issuer</span><br><span class="line">basicConstraints=CA:FALSE</span><br><span class="line">keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment</span><br><span class="line">extendedKeyUsage = serverAuth</span><br><span class="line">subjectAltName = @alt_names</span><br><span class="line"></span><br><span class="line">[alt_names]</span><br><span class="line">DNS.1=harbor.done.com</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li><p>签发服务器证书</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl x509 -req -sha512 -days 3650     -extfile v3.ext     -CA ca.crt -CAkey ca.key -CAcreateserial -in harbor.done.com.csr -out harbor.done.com.crt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>证书转换<br>放置docker端docker会认crt为CA证书，cert为客户端证书，所以不能直接放harbor.done.com.crt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl x509 -inform PEM -in harbor.done.com.crt -out  harbor.done.com.cert</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用证书<br>harbor程序使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">https:</span><br><span class="line">  # https port for harbor, default is 443</span><br><span class="line">  port: 443</span><br><span class="line">  # The path of cert and key files for nginx</span><br><span class="line">  certificate: /opt/harbor/certs/harbor.done.com.crt</span><br><span class="line">  private_key: /opt/harbor/certs/harbor.done.com.key</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>docker Daemon使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@node:~# ll /etc/docker/certs.d/harbor.done.com/</span><br><span class="line">total 20</span><br><span class="line">-rw------- 1 root root 2037 Nov 26 03:49 ca.crt</span><br><span class="line">-rw------- 1 root root 2074 Nov 26 03:49 harbor.done.com.cert</span><br><span class="line">-rw------- 1 root root 3243 Nov 26 03:49 harbor.done.com.key</span><br></pre></td></tr></table></figure></p>
+<h4 id="三-k8s-secret"><a href="#三-k8s-secret" class="headerlink" title="三. k8s secret"></a>三. k8s secret</h4><p>除每个k8s node节点/etc/docker/certs/harbor.do.com/下保存证书外，如果harbor创建的仓库是私有仓库，那么k8s拉镜像时还是需要用户名密码保存在secret的.</p>
+<p>创建secret<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl create secret docker-registry regcred \</span><br><span class="line">  --docker-server=harbor.done.com  \</span><br><span class="line">  --docker-username=xx  \</span><br><span class="line">  --docker-password=xx  -n testns</span><br></pre></td></tr></table></figure></p>
+<p>deployment引用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: demo</span><br><span class="line">  namespace: testns</span><br><span class="line">spec:</span><br><span class="line">  replicas: 1</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      workload.user.cattle.io/workloadselector: apps.deployment-testns-demo</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        workload.user.cattle.io/workloadselector: apps.deployment-testns-demo</span><br><span class="line">    spec:</span><br><span class="line">      affinity: &#123;&#125;</span><br><span class="line">      containers:</span><br><span class="line">      - image: harbor.done.com/dev/spring:v1</span><br><span class="line">        imagePullPolicy: Always</span><br><span class="line">        name: container-x</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 80</span><br><span class="line">          name: port80</span><br><span class="line">          protocol: TCP</span><br><span class="line">        resources: &#123;&#125;</span><br><span class="line">      imagePullSecrets:</span><br><span class="line">      - name: regcred</span><br><span class="line">      restartPolicy: Always</span><br></pre></td></tr></table></figure></p>
+<p>###四. 验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">URL    https://harbor.do.com</span><br><span class="line">docker login harbor.do.com</span><br></pre></td></tr></table></figure></p>
+<h3 id="五-总结"><a href="#五-总结" class="headerlink" title="五. 总结"></a>五. 总结</h3><p> 学习</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="ckwg2gqv0001h0kjxog3c46wm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="ckwg42k5r001h65jxabhswco9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -363,7 +399,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="ckwg2gqwp00370kjxb79lndns" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="ckwg42k7a003965jx6lrwjmpk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -411,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="ckwg2gqxv004j0kjxfmr8vu0x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="ckwg42k8e004l65jxp4wzp58n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -462,7 +498,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="ckwg2gqxy004m0kjxxsln1l4n" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="ckwg42k8g004o65jx2f2tqqvw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -510,7 +546,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="ckwg2gqyh005c0kjxstq108qu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="ckwg42k90005e65jx0522o7zf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -558,7 +594,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckwg2gqu7000d0kjxra49it1b" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckwg42k4s000d65jx1uyfw48h" class="article-share-link">Share</a>
       
       
     </footer>
