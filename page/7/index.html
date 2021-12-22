@@ -62,6 +62,70 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-openvswitch" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/08/openvswitch/" class="article-date">
+  <time datetime="2019-01-08T01:41:54.000Z" itemprop="datePublished">2019-01-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/08/openvswitch/">OpenVSwitch</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>交换机端口查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># ovs-vsctl show</span><br><span class="line"># ovs-ofctl show</span><br><span class="line"># ovs-ofctl show br-int</span><br><span class="line"># ovs-ofctl show br-tun</span><br><span class="line"># virsh domiflist instance-00000017</span><br></pre></td></tr></table></figure></p>
+<p>open flow流表查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># ovs-ofctl dump-flows br-int</span><br><span class="line"># ovs-ofctl dump-flows br-tun</span><br><span class="line"></span><br><span class="line"># ip netns exec qrouter-c266eb04-0be8-448f-986f-6eef3a9bcdce ifconfig</span><br><span class="line"></span><br><span class="line"># dpkg-query -S /sbin/brctl</span><br><span class="line"># apt-get install bridge-utils</span><br><span class="line"># brctl show</span><br></pre></td></tr></table></figure></p>
+<p>添加br-ex网桥：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># ovs-vsctl add-br br-ex</span><br><span class="line">桥加载到物理网口：</span><br><span class="line"># ovs-vsctl add-port br-ex eth0</span><br><span class="line">添加到不同vlan与端口模式</span><br><span class="line"># ovs-vsctl add-port br-ex eth1 tag=100            //设置为access端口</span><br><span class="line"># ovs-vsctl add-port br-ex eth2 trunk=200	   //设置为trunk端口,允许vlan200通过，默认允许所有vlan直接转发</span><br></pre></td></tr></table></figure></p>
+<p>列出所有桥：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ovs-vsctl list-br</span><br><span class="line">ovs-vsctl list-ports br-int</span><br><span class="line">ovs-vsctl  port-to-br  port_name</span><br></pre></td></tr></table></figure></p>
+<p>列出桥上所接端口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># ovs-vsctl  list-ports br-ex</span><br><span class="line"># ovs-ofctl dump-ports br-ex</span><br><span class="line"># ovs-vsctl  list port</span><br></pre></td></tr></table></figure></p>
+<p>根据交换机某个接口名称查端口号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ovs-vsctl list interface tap0_br | grep &quot;ofport &quot;</span><br><span class="line">ofport              : 1</span><br></pre></td></tr></table></figure></p>
+<p>流表操作<br>注意： 流量匹配是有顺序的,table0–&gt;table1—&gt;table3–&gt;table4 –&gt;table5…<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># ovs-vsctl add-br vswitch0</span><br><span class="line"></span><br><span class="line">#发现有一条actions为NORMAL的流表项，这是默认存在的，用以实现交换机的基本动作</span><br><span class="line"># ovs-ofctl dump-flows vswitch0</span><br><span class="line">cookie=0x0, duration=267197.837s, table=0, n_packets=459, n_bytes=42190, idle_age=387, hard_age=65534, priority=0 actions=NORMAL</span><br><span class="line"></span><br><span class="line"># ovs-ofctl del-flows vswitch0   # 流表删除后所有流量将被丢弃</span><br><span class="line"># ovs-ofctl dump-flows vswitch0</span><br><span class="line"></span><br><span class="line"># 可以在table0添加类似规则使流量正常转发,没写表名默认table0</span><br><span class="line"># ovs-ofctl add-flow br-int &quot;priority=1,in_port=1,actions=output:4&quot;</span><br><span class="line"># ovs-ofctl add-flow br-int &quot;priority=2,in_port=4,actions=output:1&quot;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#flow优先级越高，会优先匹配,以下规则drop优先，流量被丢弃</span><br><span class="line"># ovs-ofctl del-flows br-int</span><br><span class="line"># ovs-ofctl add-flow br-int &quot;priority=1,in_port=1,actions=output:4&quot;</span><br><span class="line"># ovs-ofctl add-flow br-int &quot;priority=2,in_port=4,actions=output:1&quot;</span><br><span class="line"># ovs-ofctl add-flow vswitch0 &quot;priority=3,in_port=1,actions=drop&quot;</span><br></pre></td></tr></table></figure>
+<p>将table0的规则添加到table1上，发出流量也是不通的，因为流表是有顺序的，table0没有匹配到，流量被丢弃<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># ovs-ofctl del-flows vswitch0</span><br><span class="line"># ovs-ofctl add-flow vswitch0 &quot;table=1,priority=1,in_port=1,actions=output:4&quot;</span><br><span class="line"># ovs-ofctl add-flow vswitch0 &quot;table=1,priority=2,in_port=4,actions=output:1&quot;</span><br><span class="line"># ovs-ofctl dump-flows vswitch0</span><br><span class="line">NXST_FLOW reply (xid=0x4):</span><br><span class="line"> cookie=0x0, duration=3.485s, table=1, n_packets=0, n_bytes=0, idle_age=3, priority=1,in_port=1 actions=output:4</span><br><span class="line"> cookie=0x0, duration=3.033s, table=1, n_packets=0, n_bytes=0, idle_age=3, priority=2,in_port=4 actions=output:1</span><br></pre></td></tr></table></figure></p>
+<p>现在给table0加上一条将数据包发送到table1处理的flow,  发现流量正常，这就明白了多个table之间是如何协调工作的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># ovs-ofctl add-flow vswitch0 &quot;table=0,actions=goto_table=1&quot;</span><br></pre></td></tr></table></figure></p>
+<p>组表操作<br>添加一个组表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># ovs-ofctl -O OpenFlow13 add-group vswitch0 &quot;group_id=1,type=select,bucket=resubmit(,1)&quot;</span><br></pre></td></tr></table></figure></p>
+<p>查看组表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># ovs-ofctl -O OpenFlow13 dump-groups vswitch0</span><br></pre></td></tr></table></figure></p>
+<p>在table0中增加两条flow，目的是将数据包发送到group table1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ovs-ofctl -O OpenFlow13 add-flow vswitch0 &quot;table=0,in_port=1,actions=group:1&quot;</span><br><span class="line"># ovs-ofctl -O OpenFlow13 add-flow vswitch0 &quot;table=0,in_port=4,actions=group:1&quot;</span><br></pre></td></tr></table></figure></p>
+<p>向table1中增加两条flow，真正的数据转发在table1中进行,流量也正常通过<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ovs-ofctl add-flow vswitch0 &quot;table=1,priority=1,in_port=1,actions=output:4&quot;</span><br><span class="line"># ovs-ofctl add-flow vswitch0 &quot;table=1,priority=2,in_port=4,actions=output:1&quot;</span><br></pre></td></tr></table></figure></p>
+<h3 id="虚机挂在网桥上"><a href="#虚机挂在网桥上" class="headerlink" title="虚机挂在网桥上"></a>虚机挂在网桥上</h3><p>xml格式定义openvswitch网桥，以便于virt-install –network参数指定网桥启动虚机<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># ovsbr0.xml</span><br><span class="line">&lt;network&gt;</span><br><span class="line">  &lt;name&gt;ovsbr0&lt;/name&gt;</span><br><span class="line">  &lt;forward mode=&apos;bridge&apos;/&gt;</span><br><span class="line">  &lt;bridge name=&apos;ovsbr0&apos;/&gt;</span><br><span class="line">  &lt;virtualport type=&apos;openvswitch&apos;/&gt;</span><br><span class="line">&lt;/network&gt;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">virsh net-define ovsbr0.xml</span><br><span class="line">virsh net-start ovsbr0</span><br><span class="line">virsh net-autostart ovsbr0</span><br></pre></td></tr></table></figure>
+<p>在安装kvm虚拟机时使用ovsbr0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">virt-install \</span><br><span class="line">    -n vm-name \</span><br><span class="line">    -r 4096  \</span><br><span class="line">    --disk path=/data/kvm/rhel75-vm1.qcow2,format=qcow2,size=60 \</span><br><span class="line">    --vcpus 4  \</span><br><span class="line">    --noautoconsole \</span><br><span class="line">    --cdrom=/data/kvm/iso/rhel75-x86_64.iso \</span><br><span class="line">    --os-type=linux  \</span><br><span class="line">    --network network:ovsbr0 \</span><br><span class="line">    --vnc --vnclisten=0.0.0.0 --vncport=5901</span><br></pre></td></tr></table></figure></p>
+<p>也可以将正在运行的KVM虚拟机的vnet网络接口强制接到ovs网桥上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#virsh dumpxml $vmname|grep vnet 查看某虚拟机在宿主机上对应的网络接口</span><br><span class="line">add-port ovsbr0 vnetxx</span><br></pre></td></tr></table></figure></p>
+<p>网桥接口划vlan并配IP命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ovs-vsctl add-port ovsbr0 tag10 tag=10 -- set interface tag10 type=internal</span><br><span class="line">ifconfig tag10 192.168.10.10/24 up</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># ip link命令设置vlan接口命令</span><br><span class="line">ip link add link eth0 name eth0.10 type vlan id 10</span><br><span class="line">ifconfig eth0.10 192.168.10.33 netmask 255.255.255.0 broadcast 192.168.10.255 up</span><br><span class="line">route add default gw 192.168.10.1 dev eth0.10</span><br></pre></td></tr></table></figure>
+<p>总结：这里只是命令总结，并没有什么实验逻辑</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="ckxh8c4tj005g39jxbe1xp44z" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-linux-download-technique" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/12/01/linux-download-technique/" class="article-date">
@@ -97,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="ckxh86uv400361ijxzff0fu6r" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="ckxh8c4rs003639jxb1djbrw7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -158,7 +222,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="ckxh86v0t008i1ijxcf0xa2py" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="ckxh8c4vw008i39jxqtg6du4w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -246,7 +310,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="ckxh86v0q008g1ijxfbl3bz3g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="ckxh8c4vv008g39jx4y925jj3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -294,7 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="ckxh86uri00041ijxz3xaukjs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="ckxh8c4p7000439jxm6s2z5pk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -341,7 +405,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="ckxh86uv100341ijx0dnnehx7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="ckxh8c4rr003439jxfk7dt91v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -386,57 +450,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckxh86uss00131ijxqgmj8y0a" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Kubernetes" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="k8s-的世界"><a href="#k8s-的世界" class="headerlink" title="k8s 的世界"></a>k8s 的世界</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- charts , k8s 的包， 类似 *.rpm 的东西</span><br><span class="line">- helm , k8s 的包管理机制，类似 yum 的东西</span><br><span class="line"></span><br><span class="line">openstack 容器化 ( docker 版本）</span><br><span class="line">- kolla-ansible</span><br><span class="line">- tripleo</span><br><span class="line"></span><br><span class="line">openstack 容器化( k8s  版本）</span><br><span class="line">- openstack-helm</span><br><span class="line">- kolla-kubernetes</span><br></pre></td></tr></table></figure>
-<p>openshift中有几种网络端口模式(暴露服务)</p>
-<h3 id="hostnetwork"><a href="#hostnetwork" class="headerlink" title="hostnetwork"></a>hostnetwork</h3><p>hostnetwork 就是Docker的host网络，pod直接占用宿主机IP及端口，没什么可说的</p>
-<h3 id="hostport"><a href="#hostport" class="headerlink" title="hostport"></a>hostport</h3><p>hostport 是在单宿主机通过IP+端口来映射容器或pod(-p 参数), 实现外部能访问容器服务或pod服务</p>
-<h3 id="nodeport"><a href="#nodeport" class="headerlink" title="nodeport"></a>nodeport</h3><p>nodeport也是在宿主机通过IP+端口来映射，与hostport不同之处是映射ServiceIP+端口，再转到pod服务</p>
-<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>router是以hostnetwork网络模式跑在宿主机上的容器化haproxy pod, pod IP和端口就是节点的IP和端，对外暴露80、443、1936端口，haproxy中有service query 信息来自于etcd, 再通过service访问到pod服务。</p>
-<p>注： router是hostnetwork网络模式就意味着一个节点只能运行一个router</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="ckxh86urn00081ijxssobcsy1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckxh8c4q2001339jxo7dh9nsj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -479,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckxh86urr000b1ijx76jhqw6k" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckxh8c4pf000b39jxo3snjmgu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -527,7 +541,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckxh86urj00051ijxop2prbyf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckxh8c4p8000539jxejqqn7mx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -575,7 +589,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckxh86ur600001ijxrvn0e0d6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckxh8c4ov000039jxi6gx3ysa" class="article-share-link">Share</a>
       
       
     </footer>
