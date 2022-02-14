@@ -62,6 +62,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-veth-pair+namespace" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/10/veth-pair+namespace/" class="article-date">
+  <time datetime="2019-01-10T01:41:54.000Z" itemprop="datePublished">2019-01-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/10/veth-pair+namespace/">veth-pair+namespace</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>查找对端veth pair<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@k8s-m:/data/dashboard# cat /sys/class/net/cali3b4bae3cec1/iflink </span><br><span class="line">4</span><br><span class="line">root@k8s-m:/data/dashboard# ethtool  -S  cali3b4bae3cec1</span><br><span class="line">NIC statistics:</span><br><span class="line">     peer_ifindex: 4</span><br><span class="line">     rx_queue_0_xdp_packets: 0</span><br><span class="line">     rx_queue_0_xdp_bytes: 0</span><br><span class="line">     rx_queue_0_xdp_drops: 0</span><br></pre></td></tr></table></figure></p>
+<p>namespace场景参考如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># ip link add veth-a type veth peer name veth-b    # 生成veth pair对，相当于一根网线</span><br><span class="line"># ip netns add ns1    #  创建名称空间</span><br><span class="line"># ip link set veth-a netns ns1  #将网线A端加入名称容间</span><br><span class="line">root@k8s-m:~# ip  netns exec ns1 ethtool -S veth-a   # veth-a的对端编号16</span><br><span class="line">NIC statistics:</span><br><span class="line">     peer_ifindex: 16</span><br><span class="line">     rx_queue_0_xdp_packets: 0</span><br><span class="line">     rx_queue_0_xdp_bytes: 0</span><br><span class="line">     rx_queue_0_xdp_drops: 0</span><br><span class="line">root@k8s-m:~# ip  netns exec ns1 cat /sys/class/net/veth-a/iflink    # veth-a的对端编号16</span><br><span class="line">16</span><br><span class="line"># ip a     #  查看编号16的设备</span><br><span class="line">16: veth-b@if17: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN group default qlen 1000</span><br><span class="line">    link/ether be:ec:d2:fc:64:3f brd ff:ff:ff:ff:ff:ff link-netns ns1</span><br></pre></td></tr></table></figure></p>
+<p>利用ovs实现跨主机通信的简单应用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ovs-vsctl add-br ovs0</span><br><span class="line">ovs-vsctl add-port ovs0 eth0</span><br><span class="line">物理网卡加进ovs可能会断网，解决办法：</span><br><span class="line"># ifconfig ovs0 172.16.10.10/24</span><br><span class="line"># ifconfig eth0  0.0.0.0.0</span><br><span class="line"># route del default</span><br><span class="line"># route add default gw 172.16.10.254 dev ovs0</span><br><span class="line"># ifconfig ovs0 hw ether $eth0_mac</span><br></pre></td></tr></table></figure></p>
+<p>注意： 完事后放在开机启动项，不然开机失效连不上机</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2019/01/10/veth-pair+namespace/" data-id="ckzmdkvlj0075z0jxdp4ybztz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-openvswitch" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/01/08/openvswitch/" class="article-date">
@@ -113,7 +160,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="ckxpi2voi005o05jxzubtkdw9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2019/01/08/openvswitch/" data-id="ckzmdkvkb005iz0jx7qd0nlun" class="article-share-link">Share</a>
       
       
     </footer>
@@ -161,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="ckxpi2vm5003405jx7316ts8l" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/12/01/linux-download-technique/" data-id="ckzmdkvij0039z0jx6v4a8nk9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -222,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="ckxpi2vqr008o05jxww55a1kn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/25/web-socket-02/" data-id="ckzmdkvni008kz0jxt55u7m1n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +357,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="ckxpi2vqs008q05jx3288ah9x" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/11/06/web-socket-01/" data-id="ckzmdkvng008iz0jxq60uwhuo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,7 +405,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="ckxpi2vjz000405jxvvesugor" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/10/01/Kubernetes-dashboard/" data-id="ckzmdkvf00004z0jxfvn9wacc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -405,7 +452,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="ckxpi2vma003905jx0oaq6fc6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/16/linux-dmesg/" data-id="ckzmdkvif0036z0jx4c587tbc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -450,50 +497,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckxpi2vkq001205jxoy03igmb" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Openshift/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="ckxpi2vk6000b05jx6gszqgfo" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="ckzmdkvg50013z0jxb4715355" class="article-share-link">Share</a>
       
       
     </footer>
@@ -541,7 +545,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckxpi2vk0000505jx28ruze7f" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="ckzmdkvf20005z0jxnmgr53j7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -589,7 +593,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckxpi2vjn000005jxn4yey51m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="ckzmdkvej0000z0jxrbs495hv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -674,7 +678,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2021 wxq<br>
+      &copy; 2022 wxq<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

@@ -97,7 +97,57 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckxpi2vkb000f05jxp4va9y37" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckzmdkvff000dz0jxcpjdx6s6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-linux-SNI" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/07/15/linux-SNI/" class="article-date">
+  <time datetime="2021-07-15T01:32:54.000Z" itemprop="datePublished">2021-07-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/07/15/linux-SNI/">https SNI</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="SNI的介绍"><a href="#SNI的介绍" class="headerlink" title="SNI的介绍"></a>SNI的介绍</h3><p>随着IPv4地址的短缺，为了让多个域名复用一个IP，在HTTP服务器上引入了虚拟主机的概念。SNI最早在2004年被提出，目前主流的浏览器、服务器和测试工具都已支持SNI。服务器可以根据客户端请求中不同的Host将请求分发给本机中不同的虚拟主机来处理。但是，在被多个虚拟主机共享IP的HTTPS服务器中，在握手建立之前服务器无法知道客户端请求的具体Host，所以无法将请求交给特定的虚拟主机，从而导致服务器无法读取虚拟主机中配置的证书信息。SNI就是用来解决这个问题的，SNI是SSL和TLS的一个扩展协议。SNI要求客户端在与服务器握手时就携带需要访问的域名的Host信息，具体实现方法是在客户端“Client Hello”报文的请求头中，增加了Server Name的扩展字段，因此服务器便会知道需要用哪个虚拟主机的证书与客户端握手并建立TLS连接。</p>
+<h3 id="客户端支持SNI的必要性"><a href="#客户端支持SNI的必要性" class="headerlink" title="客户端支持SNI的必要性"></a>客户端支持SNI的必要性</h3><p>在使用DDoS高防和WAF时，建议客户端支持SNI协议，其原因有以下两点：</p>
+<ul>
+<li>真实的DDoS高防IP和WAF服务器的数量是有限的，面对数以万计的域名无法实现一个域名一台物理服务器的配置，所以整个DDoS高防和WAF服务集群必然存在多个域名复用相同服务器的情况。因此，客户端必须通过支持SNI才能在与DDoS高防和WAF交互的同时，让DDoS高防或WAF清楚客户端请求的具体域名，从而调取对应的虚拟主机与客户端交互。</li>
+<li>当DDoS高防和WAF开启HTTPS协议时，如果客户端不支持SNI，那么客户端在与DDoS和WAF进行SSL握手时，DDoS和WAF就会返回默认证书，因此客户端就会返回“服务器证书不可信”的提示。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>待续</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-SNI/" data-id="ckzmdkvhy002pz0jxhnme76ce" class="article-share-link">Share</a>
       
       
     </footer>
@@ -146,7 +196,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="ckxpi2vmx004105jx1av9y65z" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="ckzmdkvjd0043z0jxod423ct8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -194,7 +244,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="ckxpi2vkx001d05jxgt5jimgl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="ckzmdkvgg001dz0jxk82z51f0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -242,7 +292,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="ckxpi2vlq002f05jxvz6gdaai" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="ckzmdkvhm002cz0jxxmxexxah" class="article-share-link">Share</a>
       
       
     </footer>
@@ -290,7 +340,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/15/linux-openssl-0证书/" data-id="ckxpi2vmk003n05jx1mzo3i2g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/15/linux-openssl-0证书/" data-id="ckzmdkvj5003rz0jx90m6nxsr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -344,7 +394,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckxpi2vnc004k05jxwuj56bqt" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckzmdkvju004mz0jxtvuadjys" class="article-share-link">Share</a>
       
       
     </footer>
@@ -392,7 +442,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/08/Rabbitmq-install-02/" data-id="ckxpi2vke000k05jxkd52lz5c" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/08/Rabbitmq-install-02/" data-id="ckzmdkvfo000kz0jxaa3ha9nv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -449,7 +499,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckxpi2vpn006z05jxu8thni1e" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckzmdkvl8006vz0jxbdoluv79" class="article-share-link">Share</a>
       
       
     </footer>
@@ -504,55 +554,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckxpi2vn9004h05jxr78vkyla" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-kubernetes-ubuntu-docker" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/04/28/kubernetes-ubuntu-docker/" class="article-date">
-  <time datetime="2021-04-28T12:21:41.000Z" itemprop="datePublished">2021-04-28</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/04/28/kubernetes-ubuntu-docker/">Ubuntu k8s for  docker</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2021/04/28/kubernetes-ubuntu-docker/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/04/28/kubernetes-ubuntu-docker/" data-id="ckxpi2vlt002k05jxlyoo4rx4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckzmdkvjr004jz0jxs2o9m2jo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -637,7 +639,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2021 wxq<br>
+      &copy; 2022 wxq<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
