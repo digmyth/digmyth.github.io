@@ -105,7 +105,60 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="ckzmdkvgk001fz0jxvw020zz9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="ckzwc7ody001a22jx01bb4jyt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-nginx-tls-passthrough" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/12/nginx-tls-passthrough/" class="article-date">
+  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/12/nginx-tls-passthrough/">nginx tls 透传</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Nginx充当反向代理不卸载HTTPS/TLS会话,直接将https请求透传给后端upstream server, 由后端应用服务器直接解析https请求，反向代理Nginx不配任何证书且只能是四层代理。</p>
+<p>需要支持的模块<code>--with-http_ssl_module</code>,<code>--with-stream</code>,<code>--with-stream_ssl_preread_module</code></p>
+<h3 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h3><p>nginx.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    map $ssl_preread_server_name $name &#123;</span><br><span class="line">      www.portal.com app01;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass $name;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里用到了SNI技术，在握手时传递upstream后端服务的证书域名，否则不拆https包无法获取Host，即无法获取到后端相应服务器端证书而访问失败。做了<code>map $ssl_preread_server_name $name</code>客户端只能通用域名访问服务，因此客户端需要能够解析<code>www.portal.com</code>为Nginx服务器地址。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>Nginx TLS透传用到了SNI技术</li>
+<li>多组upstream服务定义时需要多个域名区别，不能像proxy模块代理那样可以基于端口对应多组upstream服务</li>
+<li>官网参考 <a href="https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html" target="_blank" rel="noopener">https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html</a></li>
+<li><a href="https://blog.dianduidian.com/post/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%BD%93%E5%90%8E%E7%AB%AF%E4%B8%BAhttps%E6%97%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82%E5%92%8C%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">nginx反向代理后端为https时的细节,与本节透传知识无关</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/12/nginx-tls-passthrough/" data-id="ckzwc7oi1005722jx5if0cgs3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -177,7 +230,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="ckzmdkvh0001uz0jxlmd8dbh9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="ckzwc7oem001u22jxpfeq71ah" class="article-share-link">Share</a>
       
       
     </footer>
@@ -283,7 +336,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="ckzmdkvk0004yz0jxted50twl" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="ckzwc7ohx004z22jxk4talj0k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -336,7 +389,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="ckzmdkvmi0082z0jxvq2ai8a2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="ckzwc7olv008822jxb9hfkq1a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -406,7 +459,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="ckzmdkvjw004rz0jxt5o8xym1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="ckzwc7ohs004s22jx65dst68l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -460,7 +513,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="ckzmdkvfw000uz0jx24pv5p80" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="ckzwc7od8000r22jx6o76gxyg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-proxy-01-代理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/31/proxy-01-代理/" class="article-date">
+  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/31/proxy-01-代理/">proxy-01-代理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/10/31/proxy-01-代理/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="ckzwc7oid005p22jxrglfesfh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -509,55 +610,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="ckzmdkvj9003xz0jx3jl6bojk" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-proxy-01-代理" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/31/proxy-01-代理/" class="article-date">
-  <time datetime="2017-10-31T00:48:08.000Z" itemprop="datePublished">2017-10-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/31/proxy-01-代理/">proxy-01-代理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/10/31/proxy-01-代理/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="ckzmdkvkg005oz0jx8rt6g7fg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="ckzwc7oh9003y22jxcaiysy61" class="article-share-link">Share</a>
       
       
     </footer>
@@ -617,68 +670,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="ckzmdkvmb007wz0jxoy789xv1" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-web-django-19-Cookies-Session" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/08/web-django-19-Cookies-Session/" class="article-date">
-  <time datetime="2017-10-08T12:26:37.000Z" itemprop="datePublished">2017-10-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/08/web-django-19-Cookies-Session/">web-Django-19-Cookies-Session</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>Cookies</li>
-<li>Session</li>
-<li>代码学习</li>
-<li>相关配置</li>
-<li>总结</li>
-</ul>
-<h2 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h2><p>用户第一次请求时，服务器会在浏览器上写入cookies键值对，下一次请求会把这个键值对带上，服务器会验证这个cookies键值对，基于这样的特性cookies可以做登录验证和投票。如果没有cookies时，会先让你做用户登录。</p>
-<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>所有的用户信息都写入客户端浏览器存在安全问题也不现实，我们把这些信息都写到服务器端，对应一个随机字符串，再把这个随机字符串写入cookies，格式为{“sessionid”:”随机字符串”},问题就得到了解决。</p>
-<p>cookies就是能在客户端浏览器写键值对的一种机制，类似’user’:’abc’, 如果写的是’sessionid’:’随机字符串’，那么session就诞生了，服务端再拿到这样的随机字符串，记录信息格式如’随机字符串’:’你想存的敏感信息’</p>
-<h2 id="代码学习"><a href="#代码学习" class="headerlink" title="代码学习"></a>代码学习</h2><p>Cookies 工作特性：<br>在浏览器F12 network-&gt;cookies中首次请求时可以看到 Response Cookies有写入的键值对，下次再访问时Request Cookies有这个键值对，证明此时浏览器会带着这个键值对发给服务器。可以简单用下面代码测试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def ck(request):</span><br><span class="line">    print(request.COOKIES)   # cookies会封装在request.COOKIES内</span><br><span class="line">    obj = render(request, &quot;ck.html&quot;, &#123;&quot;msg&quot;: &quot;&quot;&#125;)</span><br><span class="line">    obj.set_cookie(&apos;user&apos;, &apos;wxq&apos;)  # 向浏览器写入cookies键值对</span><br><span class="line"></span><br><span class="line">    return obj</span><br></pre></td></tr></table></figure></p>
-<p>下面用代码描述Cookies、Session各自工作：<br>login.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt;</span><br><span class="line">    &#123;%  csrf_token %&#125;</span><br><span class="line">    &lt;input type=&quot;text&quot; name=&quot;username&quot;/&gt;</span><br><span class="line">    &lt;input type=&quot;password&quot; name=&quot;pwd&quot;/&gt;</span><br><span class="line">    &lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt;&lt;span&gt;&#123;&#123; msg &#125;&#125;&lt;/span&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
-<p>views.py视图<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">from app01 import models</span><br><span class="line">def login(request):</span><br><span class="line">    if request.method == &quot;GET&quot;:</span><br><span class="line">        return  render(request, &apos;login.html&apos;,&#123;&quot;msg&quot;: &quot;&quot;&#125;)</span><br><span class="line">    else:</span><br><span class="line">        u = request.POST.get(&quot;username&quot;)</span><br><span class="line">        p = request.POST.get(&quot;pwd&quot;)</span><br><span class="line">        v=models.UserInfo.objects.filter(username=u, pwd=p).exists()</span><br><span class="line">        if v:</span><br><span class="line"></span><br><span class="line">            # obj.set_cookie(&quot;user&quot;, u,max_age=5)</span><br><span class="line">            request.session[&quot;user&quot;] = u</span><br><span class="line">            request.session[&quot;pwd&quot;] = p</span><br><span class="line">            return redirect(&quot;/home/&quot;)</span><br><span class="line">        else:</span><br><span class="line"></span><br><span class="line">            return render(request,&quot;login.html&quot;,&#123;&quot;msg&quot;: &quot;用户名或密码错误&quot;&#125;)</span><br><span class="line"></span><br><span class="line">def home(request):</span><br><span class="line">    # v = request.COOKIES.get(&quot;user&quot;)</span><br><span class="line">    v = request.session.get(&quot;user&quot;)</span><br><span class="line">    if v:</span><br><span class="line">        return  HttpResponse(&quot;登录成功&quot;)</span><br><span class="line">    else:</span><br><span class="line">        return redirect(&quot;/login/&quot;)</span><br></pre></td></tr></table></figure></p>
-<h2 id="利用session注销"><a href="#利用session注销" class="headerlink" title="利用session注销"></a>利用session注销</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def logout(request):</span><br><span class="line">	&apos;&apos;&apos;</span><br><span class="line">	obj=HttpResponse(&quot;xxx&quot;)</span><br><span class="line">	obj.set_cookie(&quot;user&quot;,&quot;name&quot;)   # 设置cookie</span><br><span class="line">	request.COOKIES.get(&quot;user&quot;)     # 获取cookie</span><br><span class="line">        obj.delete_cookie(&apos;user&apos;)       # 清除cookie</span><br><span class="line">	&apos;&apos;&apos;</span><br><span class="line">    #request.session[&apos;user&apos;] = &apos;wxq&apos; # 设置session</span><br><span class="line">    #request.session.get(&apos;user&apos;)     # 获取session</span><br><span class="line">    request.session.clear()          # 清除session</span><br><span class="line">	return redirect(&quot;/login/&quot;)</span><br></pre></td></tr></table></figure>
-<h2 id="Cookies、Session相关配置"><a href="#Cookies、Session相关配置" class="headerlink" title="Cookies、Session相关配置"></a>Cookies、Session相关配置</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="noopener">配置参考</a></p>
-<p>settings.py配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SESSION_ENGINE = &apos;django.contrib.sessions.backends.db&apos;   # 引擎（默认）</span><br><span class="line"> </span><br><span class="line">SESSION_COOKIE_NAME ＝ &quot;sessionid&quot;         # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串（默认）</span><br><span class="line">SESSION_COOKIE_PATH ＝ &quot;/&quot;                 # Session的cookie保存的路径（默认）</span><br><span class="line">SESSION_COOKIE_DOMAIN = None               # Session的cookie保存的域名（默认）</span><br><span class="line">SESSION_COOKIE_SECURE = False              # 是否Https传输cookie（默认）</span><br><span class="line">SESSION_COOKIE_HTTPONLY = True             # 是否Session的cookie只支持http传输（默认）</span><br><span class="line">SESSION_COOKIE_AGE = 1209600               # Session的cookie失效日期（2周）（默认）</span><br><span class="line">SESSION_EXPIRE_AT_BROWSER_CLOSE = False    # 是否关闭浏览器使得Session过期（默认）</span><br><span class="line">SESSION_SAVE_EVERY_REQUEST = True          # 是否每次请求都保存Session，默认修改之后才保存（默认）</span><br></pre></td></tr></table></figure></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1 cookies是记录在浏览器上的键值对，本身与登录没有任何关系。 cookies信息保存在request.COOKIES.<br>2 session是记录在服务器上的键值对，key是一个随机字符串, session信息保存在request.session字典里的.<br>3 只有Django框架有session 相关的封装,Flask/tornado等其它web框架是没有的，需要自己写Cookies、session.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="ckzmdkvm9007uz0jxpm0ravlf" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="ckzwc7olp008422jxztkh8vj9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -704,7 +696,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
     </div>
   </div>
 
