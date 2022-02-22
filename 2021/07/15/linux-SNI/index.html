@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Welcome to wxq&#39;s Blog created in 2017-01-01">
 <meta property="og:description" content="SNI的介绍随着IPv4地址的短缺，为了让多个域名复用一个IP，在HTTP服务器上引入了虚拟主机的概念。SNI最早在2004年被提出，目前主流的浏览器、服务器和测试工具都已支持SNI。服务器可以根据客户端请求中不同的Host将请求分发给本机中不同的虚拟主机来处理。但是，在被多个虚拟主机共享IP的HTTPS服务器中，在握手建立之前服务器无法知道客户端请求的具体Host，所以无法将请求交给特定的虚拟主">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2022-02-21T06:48:00.708Z">
+<meta property="og:updated_time" content="2022-02-22T09:30:26.061Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="https SNI">
 <meta name="twitter:description" content="SNI的介绍随着IPv4地址的短缺，为了让多个域名复用一个IP，在HTTP服务器上引入了虚拟主机的概念。SNI最早在2004年被提出，目前主流的浏览器、服务器和测试工具都已支持SNI。服务器可以根据客户端请求中不同的Host将请求分发给本机中不同的虚拟主机来处理。但是，在被多个虚拟主机共享IP的HTTPS服务器中，在握手建立之前服务器无法知道客户端请求的具体Host，所以无法将请求交给特定的虚拟主">
@@ -96,12 +96,12 @@
 <li>真实的DDoS高防IP和WAF服务器的数量是有限的，面对数以万计的域名无法实现一个域名一台物理服务器的配置，所以整个DDoS高防和WAF服务集群必然存在多个域名复用相同服务器的情况。因此，客户端必须通过支持SNI才能在与DDoS高防和WAF交互的同时，让DDoS高防或WAF清楚客户端请求的具体域名，从而调取对应的虚拟主机与客户端交互。</li>
 <li>当DDoS高防和WAF开启HTTPS协议时，如果客户端不支持SNI，那么客户端在与DDoS和WAF进行SSL握手时，DDoS和WAF就会返回默认证书，因此客户端就会返回“服务器证书不可信”的提示。</li>
 </ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>待续</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>大白话就是多个域名复用一个IP地址时，如果客户端不在握手前的Server Name的扩展字段带上Host信息(域名),服务器端就不知道下发哪个域名的证书给客户端用于https通信.<br>浏览器上利用域名访问如果不进行7层拆包是读不到Host信息的，仅域名访问是解决不了上述问题的。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/15/linux-SNI/" data-id="ckzwc7off002k22jxrea2uqr5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-SNI/" data-id="ckzxxpppt002k03jxbq2qi1dx" class="article-share-link">Share</a>
       
       
     </footer>

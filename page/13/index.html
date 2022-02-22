@@ -62,9 +62,9 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-linux-SUSE-init" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-linux-7.x内核升级" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/05/15/linux-SUSE-init/" class="article-date">
+    <a href="/2017/05/15/linux-7.x内核升级/" class="article-date">
   <time datetime="2017-05-15T01:42:54.000Z" itemprop="datePublished">2017-05-15</time>
 </a>
     
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/15/linux-SUSE-init/">linux_Suse init</a>
+      <a class="article-title" href="/2017/05/15/linux-7.x内核升级/">linux_7.X内核升级</a>
     </h1>
   
 
@@ -88,16 +88,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/05/15/linux-SUSE-init/#more">Read More</a>
-          </p>
-        
+        <h3 id="查看版本"><a href="#查看版本" class="headerlink" title="查看版本"></a>查看版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># uname  -r</span><br><span class="line">3.10.0-693.el7.x86_64</span><br></pre></td></tr></table></figure>
+<h3 id="升级内核需要先导入elrepo的key，然后安装elrepo的yum源"><a href="#升级内核需要先导入elrepo的key，然后安装elrepo的yum源" class="headerlink" title="升级内核需要先导入elrepo的key，然后安装elrepo的yum源"></a>升级内核需要先导入elrepo的key，然后安装elrepo的yum源</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># rpm -import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org</span><br><span class="line"># rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm</span><br><span class="line">Retrieving http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm</span><br><span class="line">Retrieving http://elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm</span><br><span class="line">Preparing...                          ################################# [100%]</span><br><span class="line">Updating / installing...</span><br><span class="line">   1:elrepo-release-7.0-3.el7.elrepo  ################################# [100%]</span><br><span class="line"></span><br><span class="line"># yum --disablerepo=&quot;*&quot; --enablerepo=&quot;elrepo-kernel&quot; list available</span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">elrepo-kernel                                                        | 2.9 kB  00:00:00     </span><br><span class="line">elrepo-kernel/primary_db                                             | 1.8 MB  00:00:01     </span><br><span class="line">Determining fastest mirrors</span><br><span class="line"> * elrepo-kernel: mirrors.neusoft.edu.cn</span><br><span class="line">Available Packages</span><br><span class="line">kernel-lt.x86_64                              4.4.145-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-lt-devel.x86_64                        4.4.145-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-lt-doc.noarch                          4.4.145-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-lt-headers.x86_64                      4.4.145-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-lt-tools.x86_64                        4.4.145-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-lt-tools-libs.x86_64                   4.4.145-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-lt-tools-libs-devel.x86_64             4.4.145-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-ml.x86_64                              4.17.11-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-ml-devel.x86_64                        4.17.11-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-ml-doc.noarch                          4.17.11-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-ml-headers.x86_64                      4.17.11-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-ml-tools.x86_64                        4.17.11-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-ml-tools-libs.x86_64                   4.17.11-1.el7.elrepo             elrepo-kernel</span><br><span class="line">kernel-ml-tools-libs-devel.x86_64             4.17.11-1.el7.elrepo             elrepo-kernel</span><br><span class="line">perf.x86_64                                   4.17.11-1.el7.elrepo             elrepo-kernel</span><br><span class="line">python-perf.x86_64                            4.17.11-1.el7.elrepo             elrepo-kernel</span><br></pre></td></tr></table></figure>
+<h3 id="安装你需要的版本"><a href="#安装你需要的版本" class="headerlink" title="安装你需要的版本"></a>安装你需要的版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># yum -y --enablerepo=elrepo-kernel install kernel-ml.x86_64 kernel-ml-devel.x86_64</span><br><span class="line">版本性质：主分支ml(mainline)，稳定版(stable)，长期维护版lt(longterm)</span><br></pre></td></tr></table></figure>
+<h3 id="查看内核是否安装完成"><a href="#查看内核是否安装完成" class="headerlink" title="查看内核是否安装完成"></a>查看内核是否安装完成</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># rpm -qa |grep kernel</span><br><span class="line">kernel-tools-3.10.0-693.el7.x86_64</span><br><span class="line">kernel-ml-4.17.11-1.el7.elrepo.x86_64</span><br><span class="line">kernel-3.10.0-693.el7.x86_64</span><br><span class="line">kernel-ml-devel-4.17.11-1.el7.elrepo.x86_64</span><br><span class="line">kernel-tools-libs-3.10.0-693.el7.x86_64</span><br></pre></td></tr></table></figure>
+<h3 id="查看并修改grub的启动顺序"><a href="#查看并修改grub的启动顺序" class="headerlink" title="查看并修改grub的启动顺序"></a>查看并修改grub的启动顺序</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># awk -F\&apos; &apos;$1==&quot;menuentry &quot; &#123;print $2&#125;&apos; /etc/grub2.cfg</span><br><span class="line">CentOS Linux (4.17.11-1.el7.elrepo.x86_64) 7 (Core)</span><br><span class="line">CentOS Linux (3.10.0-693.el7.x86_64) 7 (Core)</span><br><span class="line">CentOS Linux (0-rescue-d14171e79a9e4b5da1a69e7348d0f45f) 7 (Core)</span><br></pre></td></tr></table></figure>
+<p>注： 最新内核为第一个，故启动项为0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># vim /etc/default/grub</span><br><span class="line">GRUB_TIMEOUT=5</span><br><span class="line">GRUB_DISTRIBUTOR=&quot;$(sed &apos;s, release .*$,,g&apos; /etc/system-release)&quot;</span><br><span class="line">GRUB_DEFAULT=saved(这里改成0)</span><br><span class="line">GRUB_DISABLE_SUBMENU=true</span><br><span class="line">GRUB_TERMINAL_OUTPUT=&quot;console&quot;</span><br><span class="line">GRUB_CMDLINE_LINUX=&quot;crashkernel=auto rhgb quiet&quot;</span><br><span class="line">GRUB_DISABLE_RECOVERY=&quot;true&quot;</span><br></pre></td></tr></table></figure></p>
+<h3 id="生成grub重新创建内核配置并重启"><a href="#生成grub重新创建内核配置并重启" class="headerlink" title="生成grub重新创建内核配置并重启"></a>生成grub重新创建内核配置并重启</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># grub2-mkconfig -o /boot/grub2/grub.cfg</span><br><span class="line">Generating grub configuration file ...</span><br><span class="line">Found linux image: /boot/vmlinuz-4.17.11-1.el7.elrepo.x86_64</span><br><span class="line">Found initrd image: /boot/initramfs-4.17.11-1.el7.elrepo.x86_64.img</span><br><span class="line">Found linux image: /boot/vmlinuz-3.10.0-693.el7.x86_64</span><br><span class="line">Found initrd image: /boot/initramfs-3.10.0-693.el7.x86_64.img</span><br><span class="line">Found linux image: /boot/vmlinuz-0-rescue-d14171e79a9e4b5da1a69e7348d0f45f</span><br><span class="line">Found initrd image: /boot/initramfs-0-rescue-d14171e79a9e4b5da1a69e7348d0f45f.img</span><br><span class="line">done</span><br><span class="line">[root@localhost ~]# reboot</span><br></pre></td></tr></table></figure>
+<h3 id="确认内核版本"><a href="#确认内核版本" class="headerlink" title="确认内核版本"></a>确认内核版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># uname -r</span><br><span class="line">4.17.11-1.el7.elrepo.x86_64</span><br></pre></td></tr></table></figure>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/05/15/linux-SUSE-init/" data-id="ckzwc7ofl002p22jxos9ovol5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/05/15/linux-7.x内核升级/" data-id="ckzxxppq4002w03jxzbr50xpr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -159,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckzwc7oi3005922jxfnpgf5if" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/29/mysql-pyton操作mysql/" data-id="ckzxxppsy005p03jxe1va6zn0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -217,7 +220,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckzwc7okv007l22jx1jxrk0ri" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-02-基本配置示例/" data-id="ckzxxppvd007r03jxat42w896" class="article-share-link">Share</a>
       
       
     </footer>
@@ -275,7 +278,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckzwc7ol6007s22jxgalt8rds" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/20/web-django-04-路由分发与别名/" data-id="ckzxxppvi007w03jxdke2e0c0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -330,7 +333,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckzwc7om4008g22jxtwd9thtg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/04/15/web-django-orm(一)/" data-id="ckzxxppwf008k03jxajul2bsv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -410,7 +413,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckzwc7ojp006t22jxdkhwb4vd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/31/python-10-02-网络编程/" data-id="ckzxxppul006x03jx9m1etw4r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -470,7 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckzwc7oji006l22jxjr6fqi0t" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/26/python-08-02-面象对象编程中级/" data-id="ckzxxppu1006l03jx9y3pck49" class="article-share-link">Share</a>
       
       
     </footer>
@@ -520,7 +523,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckzwc7ojm006p22jx4x48w6gu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/25/python-08-06-异常/" data-id="ckzxxppu6006p03jxjndeitzj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -624,7 +627,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckzwc7ojo006r22jx5jajtvb7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/python-09-01-进程和线程/" data-id="ckzxxppuj006v03jxzntoyw1f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -709,7 +712,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckzwc7ol3007p22jxvfzdkuym" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/03/20/web-django-01-入门/" data-id="ckzxxppva007o03jxtgtxlf5v" class="article-share-link">Share</a>
       
       
     </footer>
