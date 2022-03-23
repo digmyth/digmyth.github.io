@@ -62,6 +62,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-network-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/02/15/network-01/" class="article-date">
+  <time datetime="2022-02-15T01:32:54.000Z" itemprop="datePublished">2022-02-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/网络/">网络</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/15/network-01/">网络</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="vlan-应用"><a href="#vlan-应用" class="headerlink" title="vlan 应用"></a>vlan 应用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">安装包</span><br><span class="line">apt-get install vlan</span><br><span class="line"></span><br><span class="line">模块支持</span><br><span class="line">modprobe 8021q           //加载模块</span><br><span class="line">modprobe -r  8021q       //卸载模块</span><br><span class="line">echo &quot;8021q&quot; &gt;&gt; /etc/modules   //自动加载</span><br><span class="line"></span><br><span class="line">查看帮助</span><br><span class="line">vconfig -h </span><br><span class="line">man vconfig  更详细</span><br><span class="line"></span><br><span class="line">为网卡添加vlan设置（移除）</span><br><span class="line">vconfig  add eth3 100</span><br><span class="line">vconfig  add eth3 200</span><br><span class="line">vconfig  rem  eth3.200    （移除）</span><br><span class="line"></span><br><span class="line">查看所设置的参数</span><br><span class="line">cat /proc/net/vlan/eth0.100</span><br><span class="line"></span><br><span class="line">为vlan网卡设地址或写进网卡配置文件</span><br><span class="line">ifconfig eth0.100 192.168.1.100/24 up</span><br><span class="line">ifconfig eth0.200 192.168.1.200/24 up</span><br></pre></td></tr></table></figure>
+<h3 id="ovs跨主机通信"><a href="#ovs跨主机通信" class="headerlink" title="ovs跨主机通信"></a>ovs跨主机通信</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">一个简单应用：</span><br><span class="line">ovs-vsctl add-br ovs0</span><br><span class="line">ovs-vsctl add-port ovs0 eth0</span><br><span class="line">物理网卡加进ovs可能会断网，解决办法：</span><br><span class="line">1 ifconfig ovs0 172.16.10.10/24</span><br><span class="line">2 ifconfig eth0  0.0.0.0.0</span><br><span class="line">3 route del default</span><br><span class="line">4 route add default gw 172.16.10.254 dev ovs0</span><br><span class="line">5 ifconfig ovs0 hw ether $eth0_mac</span><br><span class="line"></span><br><span class="line">示例：完事后放在开机启动项，不然开机失效联不上机</span><br></pre></td></tr></table></figure>
+<h3 id="veth-pair查找"><a href="#veth-pair查找" class="headerlink" title="veth pair查找"></a>veth pair查找</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># ip link add veth-a type veth peer name veth-b    # 生成veth pair对，相当于一根网线</span><br><span class="line"># ip netns add ns1    #  创建名称空间</span><br><span class="line"># ip link set veth-a netns ns1  #将网线A端加入名称容间</span><br><span class="line">root@k8s-m:~# ip  netns exec ns1 ethtool -S veth-a   # veth-a的对端编号16</span><br><span class="line">NIC statistics:</span><br><span class="line">     peer_ifindex: 16</span><br><span class="line">     rx_queue_0_xdp_packets: 0</span><br><span class="line">     rx_queue_0_xdp_bytes: 0</span><br><span class="line">     rx_queue_0_xdp_drops: 0</span><br><span class="line">root@k8s-m:~# ip  netns exec ns1 cat /sys/class/net/veth-a/iflink    # veth-a的对端编号16</span><br><span class="line">16</span><br><span class="line"># ip a     #  查看编号16的设备</span><br><span class="line">16: veth-b@if17: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN group default qlen 1000</span><br><span class="line">    link/ether be:ec:d2:fc:64:3f brd ff:ff:ff:ff:ff:ff link-netns ns1</span><br></pre></td></tr></table></figure>
+<h3 id="ns名称空间"><a href="#ns名称空间" class="headerlink" title="ns名称空间"></a>ns名称空间</h3><p><a href="https://medium.com/@anilkreddyr/kubernetes-with-flannel-understanding-the-networking-part-2-78b53e5364c7" target="_blank" rel="noopener">参考学习链接</a></p>
+<p>每创建一个容器都会生成名称空间，但是我们用ip netns却看不到名称空间，这是因为ip netns工作在/var/run/netns目录下，而docker产生的名称空间并不在这个目录下，所以看不到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># ip netns add ns1</span><br><span class="line"># ip netns</span><br><span class="line"># ip netns exec ns1 ls -la /proc/self/ns</span><br></pre></td></tr></table></figure></p>
+<h3 id="网桥工作模式"><a href="#网桥工作模式" class="headerlink" title="网桥工作模式"></a>网桥工作模式</h3><p>网桥可以工作于直接寄居于物理网卡之上，也可以工作于独立网桥模式(ip_forward模式),利用iptables规则SNAT转发对外通信，但是在k8s pod间通信中用的路由技术对外通信。</p>
+<p>此处针对网桥工作于独立网桥模式(ip_forward模式)场景<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># ip link add veth-a type veth peer name veth-b               //生成veth-pair</span><br><span class="line"># brctl addbr docker0									  //生成网桥</span><br><span class="line"># ifconfig docker0 172.17.1.254/24</span><br><span class="line"># brctl addif docker0 veth-b</span><br><span class="line"># ip link set veth-b up</span><br><span class="line"># ip netns add ns1</span><br><span class="line"># ip link set veth-a netns ns1</span><br><span class="line"># ip netns exec ns1 ip link set dev veth-a name eth0</span><br><span class="line"># ip netns exec ns1 ip link set eth0 up</span><br><span class="line"># ip netns exec ns1 ip link set lo up</span><br><span class="line"># ip netns exec ns1 ip  addr add  172.17.1.1/24 dev eth0</span><br><span class="line"># ip netns exec ns1 ip  route add default via 172.17.1.254</span><br></pre></td></tr></table></figure></p>
+<p>此时可ping通宿主机所有ip地址，即使没开启路由转发和iptables 地址转换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># iptables -t nat -I POSTROUTING -s 172.17.1.0/24 ! -d  172.17.1.0/24 -j MASQUERADE</span><br><span class="line"># sed -i &apos;/ipv4.ip/cnet.ipv4.ip_forward=1&apos;  /etc/sysctl.conf</span><br><span class="line">#sysctl -p</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>kubernetes网络更加复杂，以后总结.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2022/02/15/network-01/" data-id="cl13f3wc3005n0sjx9b33r04i" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-gitlab-install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/11/20/gitlab-install/" class="article-date">
@@ -110,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="ckzxxppo8001803jxd2jmajmu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="cl13f3w6m001a0sjx7ljzegxn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -158,7 +210,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/20/jenkins-pipeline/" data-id="ckzxxppop001m03jx7fzap7y4" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/20/jenkins-pipeline/" data-id="cl13f3w6z001m0sjxjiuoqvtx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -208,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="ckzxxppon001l03jxd5s7iyh6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="cl13f3w6x001l0sjx05arcykq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +308,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="ckzxxppos001p03jx91y7eraa" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="cl13f3w73001r0sjxma96ovck" class="article-share-link">Share</a>
       
       
     </footer>
@@ -304,7 +356,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="ckzxxppqw003n03jxpm5c7dk1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="cl13f3wa3003p0sjxiedrzpz2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -390,7 +442,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="ckzxxppoi001h03jx2pwdlkke" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="cl13f3w6v001i0sjxv7i44piw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -447,7 +499,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="ckzxxppqr003i03jxcggrpvqs" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="cl13f3w9s003i0sjxb3r3zepd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -495,7 +547,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="ckzxxpps0004s03jxazuuf791" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-HA/" data-id="cl13f3wb7004t0sjxsk8lf11n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -546,55 +598,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="ckzxxppsq005e03jxgru2xpxd" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-prometheus-relabel" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/07/25/prometheus-relabel/" class="article-date">
-  <time datetime="2021-07-24T21:48:08.000Z" itemprop="datePublished">2021-07-25</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Prometheus/">Prometheus</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>定义在job字段内<br>示例1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"># A scrape configuration containing exactly one endpoint to scrape:</span><br><span class="line"># Here it&apos;s Prometheus itself.</span><br><span class="line">scrape_configs:</span><br><span class="line">  # The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span><br><span class="line">  - job_name: &apos;prometheus&apos;</span><br><span class="line"></span><br><span class="line">    # metrics_path defaults to &apos;/metrics&apos;</span><br><span class="line">    # scheme defaults to &apos;http&apos;.</span><br><span class="line"></span><br><span class="line">    consul_sd_configs:</span><br><span class="line">    - server: &quot;192.168.1.40:8500&quot;</span><br><span class="line">      tags:</span><br><span class="line">      - &quot;prometheus&quot;</span><br><span class="line">      refresh_interval: 2m </span><br><span class="line"></span><br><span class="line">  # All nodes</span><br><span class="line">  - job_name: &apos;nodes&apos;</span><br><span class="line">    consul_sd_configs:</span><br><span class="line">    - server: &quot;192.168.1.40:8500&quot;</span><br><span class="line">      tags:</span><br><span class="line">      - &quot;nodes&quot;</span><br><span class="line">      refresh_interval: 2m </span><br><span class="line"></span><br><span class="line">    relabel_configs:</span><br><span class="line">    - source_labels:</span><br><span class="line">      - __scheme__</span><br><span class="line">      - __address__</span><br><span class="line">      - __metrics_path__</span><br><span class="line">      regex: &quot;(http|https)(.*)&quot;</span><br><span class="line">      separator: &quot;&quot;</span><br><span class="line">      target_label: &quot;endpoint&quot; # 添加标记，值为replacement内容</span><br><span class="line">      replacement: &quot;$&#123;1&#125;://$&#123;2&#125;&quot;</span><br><span class="line">      action: replace</span><br><span class="line"></span><br><span class="line">    metric_relabel_configs:   # 删除指标</span><br><span class="line">    #- source_labels:</span><br><span class="line">    #  - __name__</span><br><span class="line">    #  regex: &quot;go_info.*&quot;</span><br><span class="line">    #  action: drop</span><br><span class="line">   # metric_relabel_configs:</span><br><span class="line">    - source_labels:</span><br><span class="line">      - __name__</span><br><span class="line">      regex: &quot;salar.*&quot;</span><br><span class="line">      action: drop</span><br></pre></td></tr></table></figure></p>
-<p>示例2<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># Here it&apos;s Prometheus itself.</span><br><span class="line">scrape_configs:</span><br><span class="line">  # The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span><br><span class="line">  - job_name: &apos;nodes&apos;</span><br><span class="line">    file_sd_configs:</span><br><span class="line">    - files:</span><br><span class="line">      - targets/nodes-*.yaml</span><br><span class="line">      refresh_interval: 1m</span><br><span class="line">  </span><br><span class="line">    relable_configs:</span><br><span class="line">    - regex: &quot;(app)&quot;</span><br><span class="line">      replacement: &quot;$&#123;1&#125;_name&quot;  # 重命名为xxx_name</span><br><span class="line">      action: labelmap   # 标签名的重命名</span><br><span class="line"></span><br><span class="line">    - regex: &quot;(app)&quot;   #删除app这个标签 </span><br><span class="line">      action: labeldrop</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>drop:  正则匹配成功就删除<br>keep:  正则匹配成功就保留</p>
-<p>relabel_configs:<br>  抓取前的标记，针对target自身标记，将来自服务发现的元数据标签中的信息附加到指标上标签上和过滤目标的作用</p>
-<p>metric_relabel_configs:<br>  抓取后的标记，针对抓取指标的标记，用于删除指标、从指标中删除标签、添加编辑修改指标的值</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="ckzxxppt6006103jxhq2lvv1d" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="cl13f3wba004y0sjx2qs1xyk5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -620,7 +624,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li></ul>
     </div>
   </div>
 
@@ -635,7 +639,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -646,6 +650,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/02/15/network-01/">网络</a>
+          </li>
         
           <li>
             <a href="/2021/11/20/gitlab-install/">gitlab install</a>
@@ -661,10 +669,6 @@
         
           <li>
             <a href="/2021/10/25/jenkins_mvn/">jenkins容器里安装maven</a>
-          </li>
-        
-          <li>
-            <a href="/2021/10/15/linux-note个人小记/">linux个人小记</a>
           </li>
         
       </ul>

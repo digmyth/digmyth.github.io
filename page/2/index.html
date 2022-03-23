@@ -62,6 +62,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-prometheus-relabel" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/07/25/prometheus-relabel/" class="article-date">
+  <time datetime="2021-07-24T21:48:08.000Z" itemprop="datePublished">2021-07-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Prometheus/">Prometheus</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/07/25/prometheus-relabel/">prometheus 重新打标</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>定义在job字段内<br>示例1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"># A scrape configuration containing exactly one endpoint to scrape:</span><br><span class="line"># Here it&apos;s Prometheus itself.</span><br><span class="line">scrape_configs:</span><br><span class="line">  # The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span><br><span class="line">  - job_name: &apos;prometheus&apos;</span><br><span class="line"></span><br><span class="line">    # metrics_path defaults to &apos;/metrics&apos;</span><br><span class="line">    # scheme defaults to &apos;http&apos;.</span><br><span class="line"></span><br><span class="line">    consul_sd_configs:</span><br><span class="line">    - server: &quot;192.168.1.40:8500&quot;</span><br><span class="line">      tags:</span><br><span class="line">      - &quot;prometheus&quot;</span><br><span class="line">      refresh_interval: 2m </span><br><span class="line"></span><br><span class="line">  # All nodes</span><br><span class="line">  - job_name: &apos;nodes&apos;</span><br><span class="line">    consul_sd_configs:</span><br><span class="line">    - server: &quot;192.168.1.40:8500&quot;</span><br><span class="line">      tags:</span><br><span class="line">      - &quot;nodes&quot;</span><br><span class="line">      refresh_interval: 2m </span><br><span class="line"></span><br><span class="line">    relabel_configs:</span><br><span class="line">    - source_labels:</span><br><span class="line">      - __scheme__</span><br><span class="line">      - __address__</span><br><span class="line">      - __metrics_path__</span><br><span class="line">      regex: &quot;(http|https)(.*)&quot;</span><br><span class="line">      separator: &quot;&quot;</span><br><span class="line">      target_label: &quot;endpoint&quot; # 添加标记，值为replacement内容</span><br><span class="line">      replacement: &quot;$&#123;1&#125;://$&#123;2&#125;&quot;</span><br><span class="line">      action: replace</span><br><span class="line"></span><br><span class="line">    metric_relabel_configs:   # 删除指标</span><br><span class="line">    #- source_labels:</span><br><span class="line">    #  - __name__</span><br><span class="line">    #  regex: &quot;go_info.*&quot;</span><br><span class="line">    #  action: drop</span><br><span class="line">   # metric_relabel_configs:</span><br><span class="line">    - source_labels:</span><br><span class="line">      - __name__</span><br><span class="line">      regex: &quot;salar.*&quot;</span><br><span class="line">      action: drop</span><br></pre></td></tr></table></figure></p>
+<p>示例2<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># Here it&apos;s Prometheus itself.</span><br><span class="line">scrape_configs:</span><br><span class="line">  # The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span><br><span class="line">  - job_name: &apos;nodes&apos;</span><br><span class="line">    file_sd_configs:</span><br><span class="line">    - files:</span><br><span class="line">      - targets/nodes-*.yaml</span><br><span class="line">      refresh_interval: 1m</span><br><span class="line">  </span><br><span class="line">    relable_configs:</span><br><span class="line">    - regex: &quot;(app)&quot;</span><br><span class="line">      replacement: &quot;$&#123;1&#125;_name&quot;  # 重命名为xxx_name</span><br><span class="line">      action: labelmap   # 标签名的重命名</span><br><span class="line"></span><br><span class="line">    - regex: &quot;(app)&quot;   #删除app这个标签 </span><br><span class="line">      action: labeldrop</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>drop:  正则匹配成功就删除<br>keep:  正则匹配成功就保留</p>
+<p>relabel_configs:<br>  抓取前的标记，针对target自身标记，将来自服务发现的元数据标签中的信息附加到指标上标签上和过滤目标的作用</p>
+<p>metric_relabel_configs:<br>  抓取后的标记，针对抓取指标的标记，用于删除指标、从指标中删除标签、添加编辑修改指标的值</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="cl13f3wcj00630sjxtsybxyhm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-PostgreSQL-快速入门" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/07/20/PostgreSQL-快速入门/" class="article-date">
@@ -97,7 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="ckzxxppna000f03jxiuu1nwx5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="cl13f3w5r000f0sjxn42wbzwh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -147,7 +195,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/15/linux-SNI/" data-id="ckzxxpppt002k03jxbq2qi1dx" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-SNI/" data-id="cl13f3w82002k0sjxtqilk034" class="article-share-link">Share</a>
       
       
     </footer>
@@ -196,7 +244,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="ckzxxpprr004a03jxryhfttq1" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="cl13f3wav00450sjxiokvesri" class="article-share-link">Share</a>
       
       
     </footer>
@@ -244,7 +292,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="ckzxxppoa001a03jxwdlzovnv" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="cl13f3w6r001e0sjxvk1ojhdn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -292,7 +340,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="ckzxxpppj002c03jxoiiaadw6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="cl13f3w7u002c0sjxcfgn01x3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -340,7 +388,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/15/linux-openssl-0证书/" data-id="ckzxxpprc003t03jxbqtu8tsi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/15/linux-openssl-0证书/" data-id="cl13f3wam003v0sjx1wj1jui6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -394,7 +442,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="ckzxxpprx004l03jx359rkzkg" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="cl13f3wb3004l0sjx0etluas3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -442,7 +490,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/08/Rabbitmq-install-02/" data-id="ckzxxppnh000k03jxt60bin63" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/08/Rabbitmq-install-02/" data-id="cl13f3w5w000k0sjxzcqsd6n6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -499,62 +547,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="ckzxxppuv007803jxq8aotwu9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-mongodb-01集群" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/05/10/mongodb-01集群/" class="article-date">
-  <time datetime="2021-05-10T01:41:54.000Z" itemprop="datePublished">2021-05-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mongodb/">Mongodb</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/05/10/mongodb-01集群/">mongodb-01集群</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在mongodb集群中，只有主节点可以读写，其它节点可以提升为主节点后才能读写，从节点只能读<br>安装mongo数据库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node03 ~]# cat  /etc/yum.repos.d/mongo.repo </span><br><span class="line">[mongodb-org-4.4]</span><br><span class="line">name=MongoDB Repository</span><br><span class="line">baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.4/x86_64/</span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=1</span><br><span class="line">gpgkey=https://www.mongodb.org/static/pgp/server-4.4.asc</span><br><span class="line">yum install -y mongodb-org</span><br></pre></td></tr></table></figure></p>
-<p>修改配置文件参与集群配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">[root@node03 ~]# cat /etc/mongod.conf </span><br><span class="line"># mongod.conf</span><br><span class="line"></span><br><span class="line"># for documentation of all options, see:</span><br><span class="line">#   http://docs.mongodb.org/manual/reference/configuration-options/</span><br><span class="line"></span><br><span class="line"># where to write logging data.</span><br><span class="line">systemLog:</span><br><span class="line">  destination: file</span><br><span class="line">  logAppend: true</span><br><span class="line">  path: /var/log/mongodb/mongod.log</span><br><span class="line"></span><br><span class="line"># Where and how to store data.</span><br><span class="line">storage:</span><br><span class="line">  dbPath: /var/lib/mongo</span><br><span class="line">  journal:</span><br><span class="line">    enabled: true</span><br><span class="line">#  engine:</span><br><span class="line">#  wiredTiger:</span><br><span class="line"></span><br><span class="line"># how the process runs</span><br><span class="line">processManagement:</span><br><span class="line">  fork: true  # fork and run in background</span><br><span class="line">  pidFilePath: /var/run/mongodb/mongod.pid  # location of pidfile</span><br><span class="line">  timeZoneInfo: /usr/share/zoneinfo</span><br><span class="line"></span><br><span class="line"># network interfaces</span><br><span class="line">net:</span><br><span class="line">  port: 27017</span><br><span class="line">  bindIp: 0.0.0.0  # Enter 0.0.0.0,:: to bind to all IPv4 and IPv6 addresses or, alternatively, use the net.bindIpAll setting.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#security:</span><br><span class="line"></span><br><span class="line">#operationProfiling:</span><br><span class="line"></span><br><span class="line">replication:  # 开启复制集</span><br><span class="line">  replSetName: wxqset</span><br><span class="line">#sharding:</span><br><span class="line"></span><br><span class="line">## Enterprise-Only Options</span><br><span class="line"></span><br><span class="line">#auditLog:</span><br><span class="line"></span><br><span class="line">#snmp:</span><br></pre></td></tr></table></figure></p>
-<p>复制集集群基本步骤<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1 集群所有节点修改配置文件replSetName: testSet 并启动mongod</span><br><span class="line">2 在需要作为主节点的机器上 rs.initiate() 初始化配置</span><br><span class="line">3 在主节点上添加从节点 rs.add(&quot;192.168.1.10:27017&quot;)</span><br><span class="line">4 在从节点机器设置  rs.secondaryOk()， 用一些命令测试验证集群正常工作rs.status()  show dbs;</span><br><span class="line">5 在从节点机器上添加数据测试验证同步情况</span><br><span class="line">  use db01;</span><br><span class="line">  for (i=1;i&lt;=10000;i++) db.students.insert(&#123;name: &quot;student&quot;+i,age:(i%120),address:&quot;BJ&quot;&#125;)</span><br><span class="line">6 从节点进行查询验证 </span><br><span class="line">  use db01;</span><br><span class="line">  db.students.find().count()</span><br><span class="line">  db.getCollectionNames()</span><br></pre></td></tr></table></figure></p>
-<p>查看集群状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rs.help()</span><br><span class="line">rs.status()</span><br><span class="line">rs.conf()</span><br></pre></td></tr></table></figure></p>
-<p>以上三节点集群配置，如果在你的集群中资源较少并且其中一台主机不想参与集群复制，出于节省资源目的，那么可以让第三个节点成为Arbiter仲裁节点，因为偶数节点复制情况下，脑裂情况下无法选举出主节点。</p>
-<p>那么在上面集群基础上踢除一个节点出来作为Arbiter仲裁节点<br>在集群主节点上面执行踢除操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rs.remove(&quot;10.10.10.30:27017&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>回到仲裁节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node03 ~]# cat /etc/mongod.conf | grep dbPath</span><br><span class="line">  dbPath: /var/lib/mongo</span><br><span class="line">[root@node03 ~]# rm  -rf /var/lib/mongo/*</span><br><span class="line">[root@node03 ~]# systemctl  start mongod</span><br></pre></td></tr></table></figure></p>
-<p>再次回到主节点添加仲裁节点，并且可以在2个复制节点间主从切换测试了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rs.addArb(&quot;10.10.10.30:27017&quot;)</span><br><span class="line">rs.status()</span><br><span class="line">rs.stepDown()  # 降级为从节点</span><br></pre></td></tr></table></figure>
-<p>手动调整优先级触发选举，优先级高会变为主节点, 需要在主节点上操作</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rs.conf()   # 查看各节点ID</span><br><span class="line">cfg=rs.conf()</span><br><span class="line">cfg.members[ID].priority=8</span><br><span class="line">rs.reconfig(cfg)</span><br><span class="line">rs.isMaster()</span><br></pre></td></tr></table></figure>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>什么情况下会触发选举<br>1 副本集初始化时rs.initial()<br>2 从节点联系不到主节点时<br>3 主节点收到rs.stepDown()命令时（主节点下线）<br>4 某从节点有更高的优先级且己经满足成为主节点的所有条件<br>5 主节点己经联系不到副本集的多数方</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/10/mongodb-01集群/" data-id="ckzxxpprv004j03jxx391xsm0" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="cl13f3wdf007e0sjxmmenly2y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -580,7 +573,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li></ul>
     </div>
   </div>
 
@@ -595,7 +588,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -606,6 +599,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/02/15/network-01/">网络</a>
+          </li>
         
           <li>
             <a href="/2021/11/20/gitlab-install/">gitlab install</a>
@@ -621,10 +618,6 @@
         
           <li>
             <a href="/2021/10/25/jenkins_mvn/">jenkins容器里安装maven</a>
-          </li>
-        
-          <li>
-            <a href="/2021/10/15/linux-note个人小记/">linux个人小记</a>
           </li>
         
       </ul>
