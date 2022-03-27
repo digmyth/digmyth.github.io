@@ -62,6 +62,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mysql-MGR-02模式切换" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/08/09/mysql-MGR-02模式切换/" class="article-date">
+  <time datetime="2021-08-08T21:45:54.000Z" itemprop="datePublished">2021-08-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/08/09/mysql-MGR-02模式切换/">MySQL MGR单主多主模式切换</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+</ul>
+<p>模式查看<br>group_replication_single_primary_mode=1表示当前为单主模式，强一致检查group_replication_enforce_update_everywhere_checks属于关闭状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select @@group_replication_single_primary_mode,@@group_replication_enforce_update_everywhere_checks;</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">| @@group_replication_single_primary_mode | @@group_replication_enforce_update_everywhere_checks |</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">|                                       1 |                                                    0 |</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>节点角色查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM performance_schema.replication_group_members;</span><br><span class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+-------------+----------------+----------------------------+</span><br><span class="line">| CHANNEL_NAME              | MEMBER_ID                            | MEMBER_HOST | MEMBER_PORT | MEMBER_STATE | MEMBER_ROLE | MEMBER_VERSION | MEMBER_COMMUNICATION_STACK |</span><br><span class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+-------------+----------------+----------------------------+</span><br><span class="line">| group_replication_applier | 2cc80a03-363f-11ec-9bdd-000c295cfe4c | sql02       |        3306 | ONLINE       | PRIMARY     | 8.0.27         | XCom                       |</span><br><span class="line">| group_replication_applier | 78563b4c-21b6-11ec-a7f5-7bc466af3c1e | sql01       |        3306 | ONLINE       | SECONDARY   | 8.0.27         | XCom                       |</span><br><span class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+-------------+----------------+----------------------------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>切换为多主<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select group_replication_switch_to_multi_primary_mode();</span><br><span class="line">+--------------------------------------------------+</span><br><span class="line">| group_replication_switch_to_multi_primary_mode() |</span><br><span class="line">+--------------------------------------------------+</span><br><span class="line">| Mode switched to multi-primary successfully.     |</span><br><span class="line">+--------------------------------------------------+</span><br><span class="line">1 row in set (1.07 sec)</span><br></pre></td></tr></table></figure></p>
+<p>多主模式下要求强一致性，所以group_replication_enforce_update_everywhere_checks=1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select @@group_replication_single_primary_mode,@@group_replication_enforce_update_everywhere_checks;</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">| @@group_replication_single_primary_mode | @@group_replication_enforce_update_everywhere_checks |</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">|                                       0 |                                                    1 |</span><br><span class="line">+-----------------------------------------+------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>切换为单主，同时指定主节点UUID<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select group_replication_switch_to_single_primary_mode(&apos;78563b4c-21b6-11ec-a7f5-7bc466af3c1e&apos;);</span><br><span class="line">+---------------------------------------------------+</span><br><span class="line">| group_replication_switch_to_single_primary_mode() |</span><br><span class="line">+---------------------------------------------------+</span><br><span class="line">| Mode switched to single-primary successfully.     |</span><br><span class="line">+---------------------------------------------------+</span><br><span class="line">1 row in set (0.05 sec)</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2021/08/09/mysql-MGR-02模式切换/" data-id="cl19ckgpv004u0ojxdn9sj3to" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-prometheus-relabel" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/07/25/prometheus-relabel/" class="article-date">
@@ -97,7 +148,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="cl13f3wcj00630sjxtsybxyhm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/25/prometheus-relabel/" data-id="cl19ckgqf005u0ojxz1k03yev" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +196,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="cl13f3w5r000f0sjxn42wbzwh" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/20/PostgreSQL-快速入门/" data-id="cl19ckglf000d0ojxc80prnsr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -195,7 +246,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/15/linux-SNI/" data-id="cl13f3w82002k0sjxtqilk034" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-SNI/" data-id="cl19ckgnz002v0ojx2yb8v7ig" class="article-share-link">Share</a>
       
       
     </footer>
@@ -244,7 +295,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="cl13f3wav00450sjxiokvesri" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/15/linux-vCenter-certs/" data-id="cl19ckgp800440ojxqnm6pous" class="article-share-link">Share</a>
       
       
     </footer>
@@ -292,7 +343,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="cl13f3w6r001e0sjxvk1ojhdn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/12/hadoop-install/" data-id="cl19ckgmi001h0ojxgkdg2426" class="article-share-link">Share</a>
       
       
     </footer>
@@ -340,7 +391,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="cl13f3w7u002c0sjxcfgn01x3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/07/02/kubernetes-kubeadmHA/" data-id="cl19ckgnj002e0ojx4d44hr1c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -388,7 +439,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/15/linux-openssl-0证书/" data-id="cl13f3wam003v0sjx1wj1jui6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/15/linux-openssl-0证书/" data-id="cl19ckgoy003u0ojx8hftbutj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -442,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="cl13f3wb3004l0sjx0etluas3" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/10/mongodb-02-权限控制/" data-id="cl19ckgps004n0ojxw5gsf2ub" class="article-share-link">Share</a>
       
       
     </footer>
@@ -490,64 +541,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/06/08/Rabbitmq-install-02/" data-id="cl13f3w5w000k0sjxzcqsd6n6" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-redis-install" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/05/29/redis-install/" class="article-date">
-  <time datetime="2021-05-29T01:41:54.000Z" itemprop="datePublished">2021-05-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/05/29/redis-install/">redis install</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/redis-stable.tar.gz # 最新稳定版</span><br><span class="line">wget https://download.redis.io/releases/redis-6.2.5.tar.gz</span><br><span class="line">tar xzf redis-6.2.5.tar.gz</span><br><span class="line">cd redis-6.2.5</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
-<p>如果重新make不下去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make distclean  &amp;&amp; make</span><br></pre></td></tr></table></figure></p>
-<p>自动拷贝程序文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br><span class="line"># ls /usr/local/bin</span><br><span class="line">redis-benchmark  redis-check-aof  redis-check-rdb  redis-cli  redis-sentinel  redis-server</span><br></pre></td></tr></table></figure></p>
-<p>拷贝配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cp  redis.conf /etc/</span><br><span class="line"># edit  parameter</span><br><span class="line">requirepass passwd</span><br><span class="line"># save &quot;&quot;   # 完全禁用本地持久化</span><br><span class="line"># 跟据策略持久化的配置 </span><br><span class="line">save 3600 1</span><br><span class="line">save 300 100</span><br><span class="line">save 60 10000</span><br><span class="line">dir /data/redis-data   # 存储路径</span><br><span class="line">daemonize yes   # 确保redis-server启动时能在后台启动</span><br></pre></td></tr></table></figure></p>
-<p>手写启动文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# vi /usr/lib/systemd/system/redis.service </span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Redis persistent key-value database</span><br><span class="line">After=network.target</span><br><span class="line">After=network-online.target</span><br><span class="line">Wants=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/local/bin/redis-server /etc/redis.conf</span><br><span class="line">ExecStop=/usr/local/bin/redis-cli shutdown</span><br><span class="line">#Type=notify</span><br><span class="line">Type=forking</span><br><span class="line">User=root</span><br><span class="line">Group=root</span><br><span class="line">RuntimeDirectory=redis</span><br><span class="line">RuntimeDirectoryMode=0755</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></p>
-<p>主从集群</p>
-<p>如果想做纯主从复制集群，非哨兵模式监听集群状态并自动切换主从角色(当时只有2台主机)，那么通过简单配置就可以.</p>
-<p>主节点可读可写，从节点只读.</p>
-<p>redis持久化方式：RBD、AOF<br>RBD为默认持久化方式：通过另起子进程生成内存快照临时文件，之后重命名临时文件为dump.rdb,达到通过数据改变频率方式将内存数据刷写进磁盘完成持久化.<br>RBD持久化好处是重启时dump.rbd恢复数据很快.<br>RBD持久化坏处是死机时没有来得及写入磁盘造成少量数据丢失.</p>
-<p>AOF持久化：类似mysql binlog日志方式，将写操作实时记录进日志，当redis重启时加载AOF日志文件恢复数据.<br>AOF持久化好处是不会造成数据丢失，同时有RDB、AOF持久化时,redis会优先使用AOF恢复.<br>AOF持久化坏处是数据量大时记录日志文件会持续增大影响性能，并且恢复时速度慢.</p>
-<p>配置主从,edit /etc/redis.conf,分别写入对方信息，方便发生故障时不因配置影响角色切换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">masterauth &lt;master-password&gt;</span><br><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br></pre></td></tr></table></figure></p>
-<p>查看主从状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">info             # 查看所有信息</span><br><span class="line">info replication # 查看主从信息</span><br></pre></td></tr></table></figure></p>
-<p>主从切换<br>当主节点挂了的情况下，到从节点上执行.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">slaveof no one</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>官网<br><a href="https://redis.io/download#from-source-code" target="_blank" rel="noopener">https://redis.io/download#from-source-code</a><br><a href="https://redis.io/topics/quickstart" target="_blank" rel="noopener">https://redis.io/topics/quickstart</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/05/29/redis-install/" data-id="cl13f3wdf007e0sjxmmenly2y" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/06/08/Rabbitmq-install-02/" data-id="cl19ckgll000k0ojxf3yz9ja0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -601,6 +595,10 @@
       <ul>
         
           <li>
+            <a href="/2022/02/15/elk_version_8.1.1/">ELF8.1填坑</a>
+          </li>
+        
+          <li>
             <a href="/2022/02/15/network-01/">网络</a>
           </li>
         
@@ -614,10 +612,6 @@
         
           <li>
             <a href="/2021/11/19/jenkins-install/">jenkins install</a>
-          </li>
-        
-          <li>
-            <a href="/2021/10/25/jenkins_mvn/">jenkins容器里安装maven</a>
           </li>
         
       </ul>
