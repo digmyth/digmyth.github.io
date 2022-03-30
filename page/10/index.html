@@ -116,61 +116,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cl19coc6x00853ljxayb5y0ay" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-nginx-tls-passthrough" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/12/nginx-tls-passthrough/" class="article-date">
-  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Nginx/">Nginx</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/12/nginx-tls-passthrough/">nginx tls 透传</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Nginx充当反向代理不卸载HTTPS/TLS会话,直接将https请求透传给后端upstream server, 由后端应用服务器直接解析https请求，反向代理Nginx不配任何证书且只能是四层代理。</p>
-<p>需要支持的模块<code>--with-http_ssl_module</code>,<code>--with-stream</code>,<code>--with-stream_ssl_preread_module</code></p>
-<h3 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h3><p>单域名对应一个IP地址的场景nginx.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass app01;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>多域名复用一个IP地址的场景nginx.conf，此时需要用到SNI技术<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    map $ssl_preread_server_name $name &#123;</span><br><span class="line">      www.portal.com app01;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass $name;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里用到了SNI技术，在握手时传递upstream后端服务的证书域名，否则不拆https包无法获取Host，即无法获取到后端相应服务器端证书而访问失败。做了<code>map $ssl_preread_server_name $name</code>客户端只能通用域名访问服务，因此客户端需要能够解析<code>www.portal.com</code>为Nginx服务器地址。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li>Nginx TLS透传与SNI技术本身没有关系，与是不是多域名复用一个IP地址有关</li>
-<li>如果同IP同端口需要用域名区分后端不同的upstream，此时才用到SNI技术和<code>map $ssl_preread_server_name $name</code> <code>,</code>–with-stream_ssl_preread_module<code></code></li>
-<li>官网参考 <a href="https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html" target="_blank" rel="noopener">https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html</a></li>
-<li><a href="https://blog.dianduidian.com/post/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%BD%93%E5%90%8E%E7%AB%AF%E4%B8%BAhttps%E6%97%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82%E5%92%8C%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">nginx反向代理后端为https时的细节,与本节透传知识无关</a></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/nginx-tls-passthrough/" data-id="cl19coc57005g3ljxz0888k7s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cl1ddvuue0085yqjxjtqs040r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -226,7 +172,61 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cl19coc2c001f3ljxl7k2umrn" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cl1ddvunt001fyqjxfkjtqi9t" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-nginx-tls-passthrough" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/12/nginx-tls-passthrough/" class="article-date">
+  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/12/nginx-tls-passthrough/">nginx tls 透传</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Nginx充当反向代理不卸载HTTPS/TLS会话,直接将https请求透传给后端upstream server, 由后端应用服务器直接解析https请求，反向代理Nginx不配任何证书且只能是四层代理。</p>
+<p>需要支持的模块<code>--with-http_ssl_module</code>,<code>--with-stream</code>,<code>--with-stream_ssl_preread_module</code></p>
+<h3 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h3><p>单域名对应一个IP地址的场景nginx.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass app01;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>多域名复用一个IP地址的场景nginx.conf，此时需要用到SNI技术<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    map $ssl_preread_server_name $name &#123;</span><br><span class="line">      www.portal.com app01;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass $name;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里用到了SNI技术，在握手时传递upstream后端服务的证书域名，否则不拆https包无法获取Host，即无法获取到后端相应服务器端证书而访问失败。做了<code>map $ssl_preread_server_name $name</code>客户端只能通用域名访问服务，因此客户端需要能够解析<code>www.portal.com</code>为Nginx服务器地址。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>Nginx TLS透传与SNI技术本身没有关系，与是不是多域名复用一个IP地址有关</li>
+<li>如果同IP同端口需要用域名区分后端不同的upstream，此时才用到SNI技术和<code>map $ssl_preread_server_name $name</code> <code>,</code>–with-stream_ssl_preread_module<code></code></li>
+<li>官网参考 <a href="https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html" target="_blank" rel="noopener">https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html</a></li>
+<li><a href="https://blog.dianduidian.com/post/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%BD%93%E5%90%8E%E7%AB%AF%E4%B8%BAhttps%E6%97%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82%E5%92%8C%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">nginx反向代理后端为https时的细节,与本节透传知识无关</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/12/nginx-tls-passthrough/" data-id="cl1ddvusb005hyqjxs894ljpd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -285,7 +285,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="cl19coc3v003m3ljx675jm6cj" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="cl1ddvuqe003myqjxmufoeyi0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -357,7 +357,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cl19coc2m001u3ljxj787mrci" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cl1ddvuoa001uyqjxhm5301lj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -463,7 +463,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cl19coc5000523ljxy5miqdii" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cl1ddvusa005eyqjxdgxabod1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -516,7 +516,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cl19coc7000893ljxgqq1kdty" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cl1ddvuuh0089yqjxpgptc9g2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -586,7 +586,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cl19coc4v004u3ljxmv0wru5s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cl1ddvurx004uyqjxyinoejop" class="article-share-link">Share</a>
       
       
     </footer>
@@ -640,7 +640,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cl19coc1w000u3ljx3ckzujoc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cl1ddvun9000uyqjxn89j3yfq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -689,7 +689,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="cl19coc43003y3ljxaliqj47s" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="cl1ddvuqq003yyqjx0on8wvqs" class="article-share-link">Share</a>
       
       
     </footer>
