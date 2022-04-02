@@ -62,14 +62,14 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Kubernetes" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-cinder-vol-多后端" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+    <a href="/2018/08/08/cinder-vol-多后端/" class="article-date">
+  <time datetime="2018-08-08T01:41:54.000Z" itemprop="datePublished">2018-08-08</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+    <a class="article-category-link" href="/categories/Openstack/">Openstack</a>
   </div>
 
   </div>
@@ -80,7 +80,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+      <a class="article-title" href="/2018/08/08/cinder-vol-多后端/">cinder多后端逻辑</a>
     </h1>
   
 
@@ -88,109 +88,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="k8s-的世界"><a href="#k8s-的世界" class="headerlink" title="k8s 的世界"></a>k8s 的世界</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- charts , k8s 的包， 类似 *.rpm 的东西</span><br><span class="line">- helm , k8s 的包管理机制，类似 yum 的东西</span><br><span class="line"></span><br><span class="line">openstack 容器化 ( docker 版本）</span><br><span class="line">- kolla-ansible</span><br><span class="line">- tripleo</span><br><span class="line"></span><br><span class="line">openstack 容器化( k8s  版本）</span><br><span class="line">- openstack-helm</span><br><span class="line">- kolla-kubernetes</span><br></pre></td></tr></table></figure>
-<p>openshift中有几种网络端口模式(暴露服务)</p>
-<h3 id="hostnetwork"><a href="#hostnetwork" class="headerlink" title="hostnetwork"></a>hostnetwork</h3><p>hostnetwork 就是Docker的host网络，pod直接占用宿主机IP及端口，没什么可说的</p>
-<h3 id="hostport"><a href="#hostport" class="headerlink" title="hostport"></a>hostport</h3><p>hostport 是在单宿主机通过IP+端口来映射容器或pod(-p 参数), 实现外部能访问容器服务或pod服务</p>
-<h3 id="nodeport"><a href="#nodeport" class="headerlink" title="nodeport"></a>nodeport</h3><p>nodeport也是在宿主机通过IP+端口来映射，与hostport不同之处是映射ServiceIP+端口，再转到pod服务</p>
-<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>router是以hostnetwork网络模式跑在宿主机上的容器化haproxy pod, pod IP和端口就是节点的IP和端，对外暴露80、443、1936端口，haproxy中有service query 信息来自于etcd, 再通过service访问到pod服务。</p>
-<p>注： router是hostnetwork网络模式就意味着一个节点只能运行一个router</p>
+        <h3 id="cinder配置逻辑"><a href="#cinder配置逻辑" class="headerlink" title="cinder配置逻辑"></a>cinder配置逻辑</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">enable_backens=backend1,backend2,backend3</span><br><span class="line">[backend1]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=sata</span><br><span class="line"></span><br><span class="line">[backend2]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=ssd</span><br><span class="line">[backend3]</span><br><span class="line">volume_driver=cinder.xx</span><br><span class="line">volume_backend_name=rbd</span><br><span class="line"></span><br><span class="line">cinder type-create sata</span><br><span class="line">cinder type-key  sata set volume_backend_name=sata</span><br><span class="line">cinder create  --volume-type sata  --display-name vol_stat 20</span><br></pre></td></tr></table></figure>
+<h3 id="vmware启用thick配置"><a href="#vmware启用thick配置" class="headerlink" title="vmware启用thick配置"></a>vmware启用thick配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1、运行命令：cinder type-create thick_volume（注：创建云硬盘类型）</span><br><span class="line"></span><br><span class="line">2、运行命令：cinder type-key thick_volume set vmware:vmdk_type=thick（注：thick为Vmware使用）</span><br><span class="line"></span><br><span class="line">3、运行命令：cinder type-key thick_volume set volume_backend_name=fusionstorage_sata3copy（注：指定后端）</span><br><span class="line"></span><br><span class="line">4、运行命令：glance image-list（注：查看镜像ID）</span><br><span class="line"></span><br><span class="line">5、运行命令：cinder create --image-id “镜像ID” --volume-type thick_volume --display-name vol-thick 20</span><br><span class="line">（注：创建一个20G大小的云硬盘，使用刚刚创建的云硬盘类型）</span><br></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cl1ddvumq0008yqjx39v53mch" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Openshift/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cl1ddvumt000byqjx8endejyr" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
-  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        The article has been encrypted, please enter your password to view.<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="cl1ddvumm0005yqjx4n9y3728" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/08/cinder-vol-多后端/" data-id="cl1houu1z0012yfjx2nsgxog6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -238,7 +142,148 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="cl1ddvum80000yqjxylancepd" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/08/01/Dockerfile-详解/" data-id="cl1houu0v0001yfjxg86avs2g" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Kubernetes-kubeadm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Kubernetes-kubeadm/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Kubernetes-kubeadm/">kubernetes-kubeadm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        The article has been encrypted, please enter your password to view.<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/08/01/Kubernetes-kubeadm/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes-kubeadm/" data-id="cl1houu120005yfjxvadrkpru" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Openshift" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Openshift/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Openshift/">Openshift-入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Openshift/" data-id="cl1houu160008yfjxlxlqsivd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-Kubernetes" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/01/Kubernetes/" class="article-date">
+  <time datetime="2018-08-01T12:51:41.000Z" itemprop="datePublished">2018-08-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/容器世界/">容器世界</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/Kubernetes/">kubernetes-入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="k8s-的世界"><a href="#k8s-的世界" class="headerlink" title="k8s 的世界"></a>k8s 的世界</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- charts , k8s 的包， 类似 *.rpm 的东西</span><br><span class="line">- helm , k8s 的包管理机制，类似 yum 的东西</span><br><span class="line"></span><br><span class="line">openstack 容器化 ( docker 版本）</span><br><span class="line">- kolla-ansible</span><br><span class="line">- tripleo</span><br><span class="line"></span><br><span class="line">openstack 容器化( k8s  版本）</span><br><span class="line">- openstack-helm</span><br><span class="line">- kolla-kubernetes</span><br></pre></td></tr></table></figure>
+<p>openshift中有几种网络端口模式(暴露服务)</p>
+<h3 id="hostnetwork"><a href="#hostnetwork" class="headerlink" title="hostnetwork"></a>hostnetwork</h3><p>hostnetwork 就是Docker的host网络，pod直接占用宿主机IP及端口，没什么可说的</p>
+<h3 id="hostport"><a href="#hostport" class="headerlink" title="hostport"></a>hostport</h3><p>hostport 是在单宿主机通过IP+端口来映射容器或pod(-p 参数), 实现外部能访问容器服务或pod服务</p>
+<h3 id="nodeport"><a href="#nodeport" class="headerlink" title="nodeport"></a>nodeport</h3><p>nodeport也是在宿主机通过IP+端口来映射，与hostport不同之处是映射ServiceIP+端口，再转到pod服务</p>
+<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>router是以hostnetwork网络模式跑在宿主机上的容器化haproxy pod, pod IP和端口就是节点的IP和端，对外暴露80、443、1936端口，haproxy中有service query 信息来自于etcd, 再通过service访问到pod服务。</p>
+<p>注： router是hostnetwork网络模式就意味着一个节点只能运行一个router</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2018/08/01/Kubernetes/" data-id="cl1houu17000byfjxbtohimv7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -286,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="cl1ddvus50056yqjxkgxgm1jq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/07/25/mysql-limit/" data-id="cl1houu6r005eyfjxb29rbn92" class="article-share-link">Share</a>
       
       
     </footer>
@@ -335,7 +380,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="cl1ddvut8006nyqjxwauhrdjq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/15/python-08-07-抽象类抽象方法/" data-id="cl1houu7l006nyfjx1d19gx4a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -383,7 +428,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq-install-01/" data-id="cl1ddvun0000iyqjxey4rh3zu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/06/08/Rabbitmq-install-01/" data-id="cl1houu1k000kyfjx1btr5lko" class="article-share-link">Share</a>
       
       
     </footer>
@@ -429,7 +474,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cl1ddvutn0074yqjxugpnp2uq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/05/29/shell-func/" data-id="cl1houu800079yfjx721z805n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -473,105 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="cl1ddvutp0077yqjxo7bybo5m" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-mysql-01基础篇" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/01/29/mysql-01基础篇/" class="article-date">
-  <time datetime="2018-01-29T01:41:54.000Z" itemprop="datePublished">2018-01-29</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/29/mysql-01基础篇/">Mysql 基础篇</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>知识扫盲</li>
-<li>基础语句</li>
-<li>主键、外键</li>
-<li>修改表</li>
-<li>分组与聚合</li>
-<li>连表查询</li>
-<li>其它查询</li>
-<li>shell终端获取数据</li>
-</ul>
-<p>数据库操作无非就是<code>insert`</code>delete<code></code>update<code></code>selete<code>,这篇博客对</code>mysql`数据库语句做个总结记录便于学习</p>
-<ul>
-<li>知识扫盲 </li>
-</ul>
-<p>什么是事务： 原子性操作(不可拆分)就是要么全成功，要么全失败。</p>
-<p>mysql语句的注释符是  <code>--</code>，在SQL注入或别的场景中语句形如：username=”root” and  1 =1 –  and password=’123’<br>很明显 <code>username=&quot;root&quot; and  1 =1</code>将永远成立，  and password=’123’ 部份将被注释，这点需要注意。</p>
-<h2 id="基础语句"><a href="#基础语句" class="headerlink" title="基础语句"></a>基础语句</h2><p>基础语句过于简单，这里就简单逻列下。</p>
-<p>创建数据库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE db1 DEFAULT CHARSET utf8 COLLATE utf8_general_ci;</span><br></pre></td></tr></table></figure></p>
-<p>创建一张表<br>注意：<code>auto_increment</code>表示自增，<code>primary key</code> 表示id 这列为主键<br><code>default charset utf8</code>指定默认字符集<br><code>engine=innodb</code>指定因默认引警</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">create table tb1(</span><br><span class="line">id int not null auto_increment primary key,</span><br><span class="line">name char(20) not null,</span><br><span class="line">age int) engine=innodb default charset utf8;</span><br></pre></td></tr></table></figure>
-<p>插入数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into tb1(name,age) values(&apos;wxq&apos;,20),(&apos;pp&apos;,18);</span><br></pre></td></tr></table></figure></p>
-<p>更改数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update tb1 set age=25  where name=&apos;wxq&apos;;</span><br></pre></td></tr></table></figure></p>
-<p>删除某条数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete from tb1 where id&gt;1;</span><br></pre></td></tr></table></figure></p>
-<p>删除表内所有数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">delete from 表名      # 不会删除自增序列</span><br><span class="line">truncate table 表名   # 会删除自增序列，再次插入数据将从0开始，删除更辙底</span><br></pre></td></tr></table></figure></p>
-<p>删除表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop table tb1</span><br></pre></td></tr></table></figure></p>
-<h2 id="主键"><a href="#主键" class="headerlink" title="主键"></a>主键</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">主键</span><br><span class="line">create table tb1(</span><br><span class="line">id int not null auto_increment primary key,</span><br><span class="line">name char(20) not null,</span><br><span class="line">age int) engine=innodb default charset utf8;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">组合主键</span><br><span class="line">create table tb1(</span><br><span class="line">                nid int not null,</span><br><span class="line">                num int not null,</span><br><span class="line">                primary key(nid,num)</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
-<h2 id="外键"><a href="#外键" class="headerlink" title="外键"></a>外键</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">constraint fk_任意字符 foreign key (department_id自己字段) references  department外面的表(nid外面表的字段)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">外键(约束):一对多</span><br><span class="line"> create table tb1(</span><br><span class="line">                id int not null primary key,</span><br><span class="line">                name char(32) null ,</span><br><span class="line">                age int not null,</span><br><span class="line">                department_id int not null</span><br><span class="line">                constraint fk_department_nid foreign key (department_id) references  department(nid)</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
-<p>双向外键（约束）：多对对<br>创建主机与部门之间的多对多关系<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">create table host (</span><br><span class="line">id int not null auto_increatement primary key,</span><br><span class="line">host char(20) not null );</span><br><span class="line"></span><br><span class="line">create table department(</span><br><span class="line">id int not null auto_increatement primary key,</span><br><span class="line">title char(20) not null</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">create table de_2_host (</span><br><span class="line">id int not null auto_increatement primary key,</span><br><span class="line">hid int not null,</span><br><span class="line">did int not null,</span><br><span class="line">constraint fk_hid_host foreign key (hid) references  host(id)，</span><br><span class="line">constraint fk_did_department foreign key (did) references  department(id)</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
-<h2 id="修改表"><a href="#修改表" class="headerlink" title="修改表"></a>修改表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">添加列：alter table 表名 add 列名 类型</span><br><span class="line">删除列：alter table 表名 drop column 列名</span><br><span class="line">修改列：</span><br><span class="line">        alter table 表名 modify column 列名 类型;  -- 类型</span><br><span class="line">        alter table 表名 change 原列名 新列名 类型; -- 列名，类型</span><br><span class="line">  </span><br><span class="line">添加主键：</span><br><span class="line">        alter table 表名 add primary key(列名);</span><br><span class="line">删除主键：</span><br><span class="line">        alter table 表名 drop primary key;</span><br><span class="line">        alter table 表名  modify  列名 int, drop primary key;</span><br><span class="line">  </span><br><span class="line">添加外键：alter table 从表 add constraint 外键名称（形如：FK_从表_主表） foreign key 从表(外键字段) references 主表(主键字段);</span><br><span class="line">删除外键：alter table 表名 drop foreign key 外键名称</span><br><span class="line">  </span><br><span class="line">修改默认值：ALTER TABLE testalter_tbl ALTER i SET DEFAULT 1000;</span><br><span class="line">删除默认值：ALTER TABLE testalter_tbl ALTER i DROP DEFAULT;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">show variables like &apos;%char%&apos;;       查看整个mysql字符集</span><br><span class="line">show create table migrate_version;  查看表字符集</span><br><span class="line">alter table migrate_version character set utf8;  设置表字符集或者如下条：</span><br><span class="line">alter table migrate_version default character set utf8 collate utf8_general_ci;</span><br></pre></td></tr></table></figure>
-<h2 id="分组与聚合"><a href="#分组与聚合" class="headerlink" title="分组与聚合"></a>分组与聚合</h2><p>group by </p>
-<pre><code>- 对列进行聚合 sum(sid),max(sid),min(sid),count(sid)
-- 聚合条件过滤,having count(sid) &gt; 7
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">分组</span><br><span class="line">    select num from 表 group by num</span><br><span class="line">    select num,nid from 表 group by num,nid</span><br><span class="line">    select num,nid from 表  where nid &gt; 10 group by num,nid order nid desc</span><br><span class="line">    select num,nid,count(*),sum(score),max(score),min(score) from 表 group by num,nid</span><br><span class="line"> </span><br><span class="line">    select num from 表 group by num having max(id) &gt; 10</span><br><span class="line"> </span><br><span class="line">    特别的：group by 必须在where之后，order by之前</span><br></pre></td></tr></table></figure>
-<h2 id="连表查询"><a href="#连表查询" class="headerlink" title="连表查询"></a>连表查询</h2><p>示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select  A.sid,A.sname,B.caption</span><br><span class="line">from  student as A </span><br><span class="line">left join   class as B </span><br><span class="line">on  A.class_id = class.cid;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>left  join 表名 on  多出的数据将会出现NULL数据</li>
-<li>rigth join 表名 on  相对left 只是表位置变化，其它没有区别</li>
-<li>inner join 表名 on  不会出现NULL数据，没有关联的数据将不会显示</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">连表</span><br><span class="line">    无对应关系则不显示</span><br><span class="line">    select A.num, A.name, B.name</span><br><span class="line">    from A,B</span><br><span class="line">    Where A.nid = B.nid</span><br><span class="line"> </span><br><span class="line">    无对应关系则不显示</span><br><span class="line">    select A.num, A.name, B.name</span><br><span class="line">    from A inner join B</span><br><span class="line">    on A.nid = B.nid</span><br><span class="line"> </span><br><span class="line">    A表所有显示，如果B中无对应关系，则值为null</span><br><span class="line">    select A.num, A.name, B.name</span><br><span class="line">    from A left join B</span><br><span class="line">    on A.nid = B.nid</span><br><span class="line"> </span><br><span class="line">    B表所有显示，如果B中无对应关系，则值为null</span><br><span class="line">    select A.num, A.name, B.name</span><br><span class="line">    from A right join B</span><br><span class="line">    on A.nid = B.nid</span><br></pre></td></tr></table></figure>
-<h2 id="其它查询"><a href="#其它查询" class="headerlink" title="其它查询"></a>其它查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">a、条件</span><br><span class="line">    select * from 表 where id &gt; 1 and name != &apos;wxq&apos; and num = 12;</span><br><span class="line"> </span><br><span class="line">    select * from 表 where id between 5 and 16;</span><br><span class="line"> </span><br><span class="line">    select * from 表 where id in (11,22,33)</span><br><span class="line">    select * from 表 where id not in (11,22,33)</span><br><span class="line">    select distinct name from 表 where id in (select nid from 表)  # distinct重复数所将只显示一条</span><br><span class="line"> </span><br><span class="line">b、通配符</span><br><span class="line">    select * from 表 where name like &apos;wxq%&apos;  - wxq开头的所有（多个字符串）</span><br><span class="line">    select * from 表 where name like &apos;wx_&apos;  - wx开头的所有（一个字符）</span><br><span class="line"> </span><br><span class="line">c、限制</span><br><span class="line">    select * from 表 limit 5;            - 前5行</span><br><span class="line">    select * from 表 limit 4,5;          - 从第4行开始的5行</span><br><span class="line">    select * from 表 limit 5 offset 4    - 从第4行开始的5行</span><br><span class="line"> </span><br><span class="line">d、排序</span><br><span class="line">    select * from 表 order by 列 asc              - 根据 “列” 从小到大排列</span><br><span class="line">    select * from 表 order by 列 desc             - 根据 “列” 从大到小排列</span><br><span class="line">    select * from 表 order by 列1 desc,列2 asc    - 根据 “列1” 从大到小排列，如果相同则按列2从小到大排序</span><br><span class="line"> </span><br><span class="line">e、组合</span><br><span class="line">    组合，自动处理重合</span><br><span class="line">    select nickname</span><br><span class="line">    from A</span><br><span class="line">    union</span><br><span class="line">    select name</span><br><span class="line">    from B</span><br><span class="line"> </span><br><span class="line">    组合，不处理重合</span><br><span class="line">    select nickname</span><br><span class="line">    from A</span><br><span class="line">    union all</span><br><span class="line">    select name</span><br><span class="line">    from B</span><br></pre></td></tr></table></figure>
-<h2 id="shell终端获取数据"><a href="#shell终端获取数据" class="headerlink" title="shell终端获取数据"></a>shell终端获取数据</h2><p>下面介绍在<code>shell</code>终端获取<code>mysql</code>的几种方法</p>
-<p>用法一：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql ~]# mysql -p123 -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</span><br><span class="line">+---------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------+-------+</span><br><span class="line">| Uptime        | 8025  |</span><br><span class="line">+---------------+-------+</span><br></pre></td></tr></table></figure></p>
-<p>用法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql ~]# mysql -p123 -N -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</span><br><span class="line">+--------+------+</span><br><span class="line">| Uptime | 8029 |</span><br><span class="line">+--------+------+</span><br></pre></td></tr></table></figure></p>
-<p>用法三：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql ~]# mysql -p123 -s -N -e &quot;show global status where variable_name=&apos;uptime&apos;&quot;</span><br><span class="line">Uptime	8037</span><br></pre></td></tr></table></figure></p>
-<p>用法四：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@mysql ~]# echo &quot;show global status where variable_name=&apos;uptime&apos;;&quot; | mysql -N -p123</span><br><span class="line">Uptime	8072</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># echo  &quot;show databases;&quot; | mysql -h 127.0.0.1 -uroot -A -p123 | tail -n +2  | head -n 2</span><br><span class="line">	-A  表示不自动rehash</span><br><span class="line">	tail -n +2 表示从第二行开始打印</span><br><span class="line">	head -n 2表示打印前2行</span><br><span class="line"></span><br><span class="line"># echo &quot;use nova01 ; show tables;&quot; | mysql -uroot -padmin</span><br><span class="line"># mysql -uroot -padmin -S /var/run/mysqld/mysqld.sock  -e &quot;use nova01;show tables;&quot;</span><br><span class="line"># mysql -uroot -padmin -S /var/run/mysqld/mysqld.sock \</span><br><span class="line">    -e &quot;grant all on *.* to user1@&apos;localhost&apos; identified by \&quot;user1\&quot;;&quot;</span><br></pre></td></tr></table></figure>
-<p>该操作会在用户家目录下生成一个隐藏文件”.mylogin.cnf”，里面记录了MYSQL的密文的密码，只要配置了以后，我们也是直接使用命令登录，再也无需输入账号密码了，如果你想取消，删除此文件即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_config_editor set --user=root --host=localhost --port=3306 --password</span><br></pre></td></tr></table></figure></p>
-<p>密码破解<br>配置文件添加参数，然后重启数据库，不用密码直接登录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]      #在mysqld这行下写入下面内容</span><br><span class="line">skip-grant-tables</span><br></pre></td></tr></table></figure></p>
-<p>清空原有密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Reading table information for completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; update user set authentication_string=&apos;&apos; where user = &apos;root&apos;;</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line">Rows matched: 1 Changed: 1 Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; exit;</span><br></pre></td></tr></table></figure></p>
-<p>开启密码认证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#开启密码验证并重新登录数据库</span><br><span class="line">[root@mysql01 ~]# vim /etc/my.cnf         #编辑主配置文件</span><br><span class="line">[mysqld] </span><br><span class="line">skip-grant-tables            #删除此行</span><br><span class="line">[root@mysql01 ~]# systemctl restart mysqld</span><br><span class="line">[root@mysql01 ~]# mysql -u root  -p          #直接登录数据库</span><br><span class="line">mysql&gt; alter user root@localhost identified by &apos;123&apos;;</span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">mysql&gt; exit</span><br><span class="line">#使用新密码进行登录测试</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2018/01/29/mysql-01基础篇/" data-id="cl1ddvurm004syqjx8dodmh8v" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2018/01/29/shell-get-namespace/" data-id="cl1houu7z0077yfjxkal7mlko" class="article-share-link">Share</a>
       
       
     </footer>
@@ -597,7 +544,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CICD/">CICD</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Ceph/">Ceph</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/GPU/">GPU</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Openstack/">Openstack</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/PostgreSQL/">PostgreSQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Prometheus/">Prometheus</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shell/">Shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDjango开发/">WebDjango开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebFlask开发/">WebFlask开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebSocket/">WebSocket</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web爬虫开发/">Web爬虫开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ansible/">ansible</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/声明/">声明</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/容器世界/">容器世界</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志系统/">日志系统</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a></li></ul>
     </div>
   </div>
 
@@ -629,6 +576,10 @@
           </li>
         
           <li>
+            <a href="/2022/02/15/gpu-01-初识/">GPU</a>
+          </li>
+        
+          <li>
             <a href="/2022/02/15/network-01/">网络</a>
           </li>
         
@@ -638,10 +589,6 @@
         
           <li>
             <a href="/2021/11/20/jenkins-pipeline/">jenkins pipeline</a>
-          </li>
-        
-          <li>
-            <a href="/2021/11/19/jenkins-install/">jenkins install</a>
           </li>
         
       </ul>
