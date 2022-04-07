@@ -62,6 +62,61 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-nginx-upsync" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/03/12/nginx-upsync/" class="article-date">
+  <time datetime="2022-03-12T01:41:54.000Z" itemprop="datePublished">2022-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/03/12/nginx-upsync/">nginx upsync</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Nginx动态更新upstream</p>
+<p>原理： 把upstream server注册到consul,nginx定时获取更新配置</p>
+<p>安装consul<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget https://releases.hashicorp.com/consul/1.9.2/consul_1.9.2_linux_amd64.zip</span><br><span class="line">unzip  consul_1.9.2_linux_amd64.zip</span><br><span class="line">mv consul  /usr/local/sbin</span><br><span class="line">mkdir /consul/data</span><br><span class="line">mkdir /etc/consul</span><br><span class="line">consul agent -dev -ui --data-dir=/consul/data -config-dir=/etc/consul -client=0.0.0.0    # 启动consul</span><br></pre></td></tr></table></figure></p>
+<p>界面访问<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://consulIP:5800/ui</span><br></pre></td></tr></table></figure></p>
+<p>注册upstream server<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># curl -X PUT -d  &apos;&#123;&quot;weight&quot;:1,&quot;max_fails&quot;:3,&quot;fail_timeout&quot;:20&#125;&apos;    127.0.0.1:8500/v1/kv/upstreams/appserver/192.168.1.203:8000</span><br></pre></td></tr></table></figure></p>
+<p>编译nginx支持<code>nginx-upsync-module</code>模块<br>首先下载nginx-upsync-module源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /opt/upsync  ;  git clone https://github.com/weibocom/nginx-upsync-module.git</span><br></pre></td></tr></table></figure></p>
+<p>nginx编译参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure       --sbin-path=/usr/local/nginx/sbin/nginx      --conf-path=/usr/local/nginx/conf/nginx.conf      --pid-path=/usr/local/nginx/nginx.pid   --http-client-body-temp-path=/usr/local/nginx/client_body_temp  --http-proxy-temp-path=/usr/local/nginx/proxy_temp  --http-fastcgi-temp-path=/usr/local/nginx/fastcgi_temp  --http-uwsgi-temp-path=/usr/local/nginx/uwsgi_temp --http-scgi-temp-path=/usr/local/nginx/scgi_temp     --with-http_ssl_module  --with-http_stub_status_module --with-stream  --with-stream_ssl_preread_module --add-module=/opt/upsync/nginx-upsync-module/    ;    make &amp;&amp; make install</span><br></pre></td></tr></table></figure></p>
+<p>nginx.conf配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">#user  nobody;</span><br><span class="line">worker_processes  12;</span><br><span class="line"></span><br><span class="line">#error_log  logs/error.log;</span><br><span class="line">#error_log  logs/error.log  notice;</span><br><span class="line">#error_log  logs/error.log  info;</span><br><span class="line"></span><br><span class="line">#pid        logs/nginx.pid;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  10240;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    upstream appserver &#123;</span><br><span class="line">        server 127.0.0.1:11111 down;   # 没卵用但必须要有</span><br><span class="line">        upsync 127.0.0.1:8500/v1/kv/upstreams/appserver/ upsync_timeout=6m upsync_interval=500ms upsync_type=consul strong_dependency=off;</span><br><span class="line">        upsync_dump_path /usr/local/nginx/conf/servers/upstream.conf;</span><br><span class="line"></span><br><span class="line">        include /usr/local/nginx/conf/servers/upstream.conf;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen 8001;</span><br><span class="line">        server_name  localhost;</span><br><span class="line"></span><br><span class="line">        location  / &#123;</span><br><span class="line">            proxy_pass http://appserver;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>启动nginx服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># /usr/local/nginx/sbin/nginx -t</span><br><span class="line">nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful</span><br><span class="line"> /usr/local/nginx/sbin/nginx</span><br></pre></td></tr></table></figure></p>
+<p>查看同步过来的upstream server组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># cat /usr/local/nginx/conf/servers/upstream.conf</span><br><span class="line">server 192.168.1.203:8000 weight=1 max_fails=3 fail_timeout=20s;</span><br><span class="line">server 192.168.1.202:8000 weight=1 max_fails=9 fail_timeout=20s;</span><br></pre></td></tr></table></figure></p>
+<p>移除某upstream server<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X DELETE 127.0.0.1:8500/v1/kv/upstreams/test/192.168.1.203:8000</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>无</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2022/03/12/nginx-upsync/" data-id="cl1oueuuv005k0ojxoyc1r90f" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-log_elk_version_8.1.1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2022/02/15/log_elk_version_8.1.1/" class="article-date">
@@ -97,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2022/02/15/log_elk_version_8.1.1/" data-id="cl1houu5m004ayfjxysoysibu" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2022/02/15/log_elk_version_8.1.1/" data-id="cl1oueuu3004b0ojxj48b11sj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -145,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2022/02/15/gpu-01-初识/" data-id="cl1houu250018yfjxq55xcoi7" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2022/02/15/gpu-01-初识/" data-id="cl1oueupj001d0ojxpzcikmd1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -197,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2022/02/15/network-01/" data-id="cl1houu6q005cyfjx5hcprabb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2022/02/15/network-01/" data-id="cl1oueuur005d0ojx95ygsw85" class="article-share-link">Share</a>
       
       
     </footer>
@@ -258,7 +313,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="cl1houu2d001fyfjxhnev6ong" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/20/gitlab-install/" data-id="cl1oueupf001b0ojxm6ebb3wl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -306,7 +361,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/20/jenkins-pipeline/" data-id="cl1houu2o001pyfjxch5jpug9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/20/jenkins-pipeline/" data-id="cl1oueuqb001p0ojxsnm0kp93" class="article-share-link">Share</a>
       
       
     </footer>
@@ -356,7 +411,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="cl1houu2l001myfjxrlzuy7pk" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/11/19/jenkins-install/" data-id="cl1oueuq8001o0ojxwk3mghgj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -404,7 +459,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="cl1houu2q001ryfjxhlu779w2" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/25/jenkins_mvn/" data-id="cl1oueuqi001u0ojx0n9tw310" class="article-share-link">Share</a>
       
       
     </footer>
@@ -452,7 +507,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="cl1houu50003syfjxfjzkna7m" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/10/15/linux-note个人小记/" data-id="cl1oueutw003w0ojxdn926epa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -538,64 +593,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="cl1houu2j001lyfjxaky1rar0" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-lvm-migrate" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/08/15/linux-lvm-migrate/" class="article-date">
-  <time datetime="2021-08-15T13:12:30.000Z" itemprop="datePublished">2021-08-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/15/linux-lvm-migrate/">LVM 换盘</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>背景： 多个LUN划给主机做成LVM卷，现在要更换后端LUN，也就是更换集中存储设备，业务端涉及虚机上千就不从虚机端拷贝数据了，直接从LVM物理卷更换</p>
-<p>模拟线上操作，添加2G * 2块盘做为LVM卷，第三块盘为新添加，替换掉第一块盘，保证LV卷数据不丢失</p>
-<p>扫盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for  i in $(find /sys -iname &apos;scan&apos;); do echo &quot;- - -&quot; &gt; $i; done</span><br></pre></td></tr></table></figure></p>
-<p>裸盘分区<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">parted /dev/sdb  -s -- mklabel gpt mkpart primary 1 100%</span><br><span class="line">parted /dev/sdc  -s -- mklabel gpt mkpart primary 1 100%</span><br><span class="line">parted /dev/sdd  -s -- mklabel gpt mkpart primary 1 100%</span><br></pre></td></tr></table></figure></p>
-<p>制作PV<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvcreate  /dev/sdb  /dev/sdc</span><br></pre></td></tr></table></figure></p>
-<p>制作VG<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgcreate vg001 /dev/sdb  /dev/sdc</span><br></pre></td></tr></table></figure></p>
-<p>划分LV, 有意划分3G大小卷跨物理PV<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lvcreate -L 3G -n lv001 vg001</span><br></pre></td></tr></table></figure></p>
-<p>查看物理PE信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvdisplay</span><br></pre></td></tr></table></figure></p>
-<p>查看VG信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgdisplay</span><br></pre></td></tr></table></figure></p>
-<p>卷写入数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># mkfs.ext4 /dev/mapper/vg001-lv001</span><br><span class="line"># mount /dev/mapper/vg001-lv001  /data</span><br><span class="line"># echo &quot;test lvm data&quot; &gt; /data/test.txt</span><br></pre></td></tr></table></figure></p>
-<p>添加第三块到VG<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgextend  vg001 /dev/sdd</span><br></pre></td></tr></table></figure></p>
-<p>移除第一块盘中的PE<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvmove /dev/sdb</span><br></pre></td></tr></table></figure></p>
-<p>从VG中移除第一块盘<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vgreduce  vg001 /dev/sdb</span><br></pre></td></tr></table></figure></p>
-<p>最后移除PV<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvremove /dev/sdb</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2021/08/15/linux-lvm-migrate/" data-id="cl1houu4q003kyfjx5mf80qto" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2021/08/20/harbor-install/" data-id="cl1oueuq1001k0ojxhybc41tk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -636,7 +634,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -647,6 +645,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/03/12/nginx-upsync/">nginx upsync</a>
+          </li>
         
           <li>
             <a href="/2022/02/15/log_elk_version_8.1.1/">ELF8.1填坑</a>
@@ -662,10 +664,6 @@
         
           <li>
             <a href="/2021/11/20/gitlab-install/">gitlab install</a>
-          </li>
-        
-          <li>
-            <a href="/2021/11/20/jenkins-pipeline/">jenkins pipeline</a>
           </li>
         
       </ul>

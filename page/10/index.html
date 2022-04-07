@@ -62,6 +62,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-web-django-23-Django序列化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/01/web-django-23-Django序列化/" class="article-date">
+  <time datetime="2017-12-01T12:26:37.000Z" itemprop="datePublished">2017-12-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDjango开发/">WebDjango开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/01/web-django-23-Django序列化/">web-Django-23-Django序列化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>序列化</li>
+</ul>
+<h2 id="Django中的序列化操作"><a href="#Django中的序列化操作" class="headerlink" title="Django中的序列化操作"></a>Django中的序列化操作</h2><p><a href="http://www.cnblogs.com/wupeiqi/articles/5246483.html" target="_blank" rel="noopener">序列化操作参考</a><br><a href="http://www.digmyth.com/2017/11/20/web-django-20-ajax/">ajax学习</a><br>Django返回前端数据一般为json格式，那么就要数据进行序列化。<br>方法一：<br>Django内置serializers<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from django.core import serializers</span><br><span class="line">ret = models.BookType.objects.all()</span><br><span class="line">data = serializers.serialize(&quot;json&quot;, ret)</span><br></pre></td></tr></table></figure></p>
+<p>方法二：<br>json.dumps<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import json</span><br><span class="line"> </span><br><span class="line">#ret = models.BookType.objects.all().values(&apos;caption&apos;)</span><br><span class="line">ret = models.BookType.objects.all().values_list(&apos;caption&apos;)</span><br><span class="line">ret=list(ret)</span><br><span class="line">result = json.dumps(ret,nsure_ascii=False)</span><br></pre></td></tr></table></figure></p>
+<p>方法三：<br>由于json.dumps时无法处理datetime日期，所以可以通过自定义处理器来做扩展<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import json </span><br><span class="line">from datetime import date </span><br><span class="line">from datetime import datetime </span><br><span class="line">   </span><br><span class="line">class JsonCustomEncoder(json.JSONEncoder): </span><br><span class="line">    def default(self, field): </span><br><span class="line">        if isinstance(field, datetime): </span><br><span class="line">            return o.strftime(&apos;%Y-%m-%d %H:%M:%S&apos;) </span><br><span class="line">        elif isinstance(field, date): </span><br><span class="line">            return o.strftime(&apos;%Y-%m-%d&apos;) </span><br><span class="line">        else: </span><br><span class="line">            return json.JSONEncoder.default(self, field) </span><br><span class="line"># ds = json.dumps(d, cls=JsonCustomEncoder)</span><br></pre></td></tr></table></figure></p>
+<p>有时在前端渲染也需要<code>date:&#39;Y-m-d&#39;</code>处理一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;出版日期&lt;input  type=&quot;date&quot; name=&quot;pubdate&quot; value=&quot;&#123;&#123; edit_book.pubDate | date:&apos;Y-m-d&apos; &#125;&#125;&quot;&gt;&lt;/p&gt;</span><br></pre></td></tr></table></figure></p>
+<p>如果用到了Form或ModelForm，同样需要widgets处理下时间格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">widgets=&#123;</span><br><span class="line">&quot;pubDate&quot;:fwidgets.DateInput(attrs=&#123;&quot;type&quot;:&quot;date&quot;,&quot;class&quot;:&quot;c1&quot;&#125;)</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/12/01/web-django-23-Django序列化/" data-id="cl1oueuyn008i0ojxqjkfu8t1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-web-django-21-图片上传" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/11/21/web-django-21-图片上传/" class="article-date">
@@ -110,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cl1houu8o008dyfjx2rar9fd6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/21/web-django-21-图片上传/" data-id="cl1oueuyb008c0ojxi0zeol8m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -177,7 +229,117 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cl1houu8k0087yfjxrt448en5" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/20/web-django-20-ajax/" data-id="cl1oueuy7008a0ojx9oe8zsrt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-haproxy-基础" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/12/haproxy-基础/" class="article-date">
+  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>目录</li>
+<li>haproxy基本介绍</li>
+<li>haproxy基础语法</li>
+<li>haproxy应用</li>
+</ul>
+<h2 id="haproxy基本介绍"><a href="#haproxy基本介绍" class="headerlink" title="haproxy基本介绍"></a>haproxy基本介绍</h2><h2 id="haproxy基础语法"><a href="#haproxy基础语法" class="headerlink" title="haproxy基础语法"></a>haproxy基础语法</h2><p>当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。</p>
+<p>取模法：<br>key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器</p>
+<p>当有服务器添加或移走这种缓存就失效了</p>
+<p>如何解决，是有办法的，那就是改进上面那种方法，称一致性hash算法：consitent hash</p>
+<p>有一个环，用32位二进制从0开始计数，环上分布有离散的2^32 点。<br>key hash 后的值除以2^32时取余数，这个余数一定在0到2^32-1范围内，也就是在这个环上<br>那么数据就是存储在余数的下一台服务器上，服务器是离散分布在这样的环上的。<br>缺点：服务器分布可能存在偏斜，也就是可能所有服务器集中在环三分之一处。<br>当存储数据找下一台服务器，那台服务器存储量太大了。</p>
+<p>解决办法：<br>使用虚拟节点离散分布在环上来代替物理节点。<br>hadoop前身开源搜索引擎，任何搜索引擎首先是大数据搜索平台，其次才是高性能分析平台。</p>
+<p>流式数据存储处理平台：storm  spark大数据处理平台。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">nginx:</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">	proxy_pass: </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="haproxy应用"><a href="#haproxy应用" class="headerlink" title="haproxy应用"></a>haproxy应用</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cl1oueupv001h0ojxajt4hwbl" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-nginx-tls-passthrough" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/12/nginx-tls-passthrough/" class="article-date">
+  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/12/nginx-tls-passthrough/">nginx tls 透传</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Nginx充当反向代理不卸载HTTPS/TLS会话,直接将https请求透传给后端upstream server, 由后端应用服务器直接解析https请求，反向代理Nginx不配任何证书且只能是四层代理。</p>
+<p>需要支持的模块<code>--with-http_ssl_module</code>,<code>--with-stream</code>,<code>--with-stream_ssl_preread_module</code></p>
+<h3 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h3><p>单域名对应一个IP地址的场景nginx.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass app01;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>多域名复用一个IP地址的场景nginx.conf，此时需要用到SNI技术<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    map $ssl_preread_server_name $name &#123;</span><br><span class="line">      www.portal.com app01;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass $name;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里用到了SNI技术，在握手时传递upstream后端服务的证书域名，否则不拆https包无法获取Host，即无法获取到后端相应服务器端证书而访问失败。做了<code>map $ssl_preread_server_name $name</code>客户端只能通用域名访问服务，因此客户端需要能够解析<code>www.portal.com</code>为Nginx服务器地址。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>Nginx TLS透传与SNI技术本身没有关系，与是不是多域名复用一个IP地址有关</li>
+<li>如果同IP同端口需要用域名区分后端不同的upstream，此时才用到SNI技术和<code>map $ssl_preread_server_name $name</code> <code>,</code>–with-stream_ssl_preread_module<code></code></li>
+<li>官网参考 <a href="https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html" target="_blank" rel="noopener">https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html</a></li>
+<li><a href="https://blog.dianduidian.com/post/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%BD%93%E5%90%8E%E7%AB%AF%E4%B8%BAhttps%E6%97%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82%E5%92%8C%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">nginx反向代理后端为https时的细节,与本节透传知识无关</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/12/nginx-tls-passthrough/" data-id="cl1oueuuw005m0ojxd77e6k20" class="article-share-link">Share</a>
       
       
     </footer>
@@ -236,117 +398,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="cl1houu4v003oyfjx1j6c5p34" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-haproxy-基础" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/12/haproxy-基础/" class="article-date">
-  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/12/haproxy-基础/">linux haproxy基础</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>目录</li>
-<li>haproxy基本介绍</li>
-<li>haproxy基础语法</li>
-<li>haproxy应用</li>
-</ul>
-<h2 id="haproxy基本介绍"><a href="#haproxy基本介绍" class="headerlink" title="haproxy基本介绍"></a>haproxy基本介绍</h2><h2 id="haproxy基础语法"><a href="#haproxy基础语法" class="headerlink" title="haproxy基础语法"></a>haproxy基础语法</h2><p>当有多个缓存key/value服务器时，app缓存到服务器1，那么必须到服务器1才能找到缓存。</p>
-<p>取模法：<br>key- hash(16进制数值)–这个数值除以服务器数量的余数就是哪台服务器</p>
-<p>当有服务器添加或移走这种缓存就失效了</p>
-<p>如何解决，是有办法的，那就是改进上面那种方法，称一致性hash算法：consitent hash</p>
-<p>有一个环，用32位二进制从0开始计数，环上分布有离散的2^32 点。<br>key hash 后的值除以2^32时取余数，这个余数一定在0到2^32-1范围内，也就是在这个环上<br>那么数据就是存储在余数的下一台服务器上，服务器是离散分布在这样的环上的。<br>缺点：服务器分布可能存在偏斜，也就是可能所有服务器集中在环三分之一处。<br>当存储数据找下一台服务器，那台服务器存储量太大了。</p>
-<p>解决办法：<br>使用虚拟节点离散分布在环上来代替物理节点。<br>hadoop前身开源搜索引擎，任何搜索引擎首先是大数据搜索平台，其次才是高性能分析平台。</p>
-<p>流式数据存储处理平台：storm  spark大数据处理平台。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">nginx:</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">	proxy_pass: </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="haproxy应用"><a href="#haproxy应用" class="headerlink" title="haproxy应用"></a>haproxy应用</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/haproxy-基础/" data-id="cl1houu2f001hyfjx45hq0khk" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-nginx-tls-passthrough" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/12/nginx-tls-passthrough/" class="article-date">
-  <time datetime="2017-11-12T01:41:54.000Z" itemprop="datePublished">2017-11-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Nginx/">Nginx</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/12/nginx-tls-passthrough/">nginx tls 透传</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Nginx充当反向代理不卸载HTTPS/TLS会话,直接将https请求透传给后端upstream server, 由后端应用服务器直接解析https请求，反向代理Nginx不配任何证书且只能是四层代理。</p>
-<p>需要支持的模块<code>--with-http_ssl_module</code>,<code>--with-stream</code>,<code>--with-stream_ssl_preread_module</code></p>
-<h3 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h3><p>单域名对应一个IP地址的场景nginx.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass app01;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>多域名复用一个IP地址的场景nginx.conf，此时需要用到SNI技术<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">stream &#123;</span><br><span class="line">    map $ssl_preread_server_name $name &#123;</span><br><span class="line">      www.portal.com app01;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    upstream app01 &#123;</span><br><span class="line">        hash ip_hash consistent;</span><br><span class="line">        server 192.168.109.146:8443  max_fails=3 fail_timeout=30s;</span><br><span class="line">        server 192.168.109.144:8443  max_fails=3 fail_timeout=30s ;</span><br><span class="line">    &#125;</span><br><span class="line">log_format basic &apos;$remote_addr [$time_local] &apos;</span><br><span class="line">                 &apos;$protocol $status $bytes_sent $bytes_received &apos;</span><br><span class="line">                 &apos;$session_time &quot;$upstream_addr&quot; &apos;</span><br><span class="line">                 &apos;&quot;$upstream_bytes_sent&quot; &quot;$upstream_bytes_received&quot; &quot;$upstream_connect_time&quot;&apos;;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 192.168.109.145:443;</span><br><span class="line">        proxy_connect_timeout 2s;</span><br><span class="line">        proxy_timeout 4s;</span><br><span class="line">        proxy_pass $name;</span><br><span class="line">        ssl_preread on;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里用到了SNI技术，在握手时传递upstream后端服务的证书域名，否则不拆https包无法获取Host，即无法获取到后端相应服务器端证书而访问失败。做了<code>map $ssl_preread_server_name $name</code>客户端只能通用域名访问服务，因此客户端需要能够解析<code>www.portal.com</code>为Nginx服务器地址。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
-<li>Nginx TLS透传与SNI技术本身没有关系，与是不是多域名复用一个IP地址有关</li>
-<li>如果同IP同端口需要用域名区分后端不同的upstream，此时才用到SNI技术和<code>map $ssl_preread_server_name $name</code> <code>,</code>–with-stream_ssl_preread_module<code></code></li>
-<li>官网参考 <a href="https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html" target="_blank" rel="noopener">https://nginx.org/en/docs/stream/ngx_stream_ssl_preread_module.html</a></li>
-<li><a href="https://blog.dianduidian.com/post/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%BD%93%E5%90%8E%E7%AB%AF%E4%B8%BAhttps%E6%97%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82%E5%92%8C%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">nginx反向代理后端为https时的细节,与本节透传知识无关</a></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/12/nginx-tls-passthrough/" data-id="cl1houu6t005jyfjxnio2vfus" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/12/linux-nginx/" data-id="cl1oueut8003i0ojx7e2l6v0a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -418,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cl1houu2s001uyfjxb5o7djlr" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/kolla-Pike-on-CentOS7.3/" data-id="cl1oueuqn001x0ojx2xxc6dy6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -524,7 +576,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cl1houu6l0054yfjx0sfrkduq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/09/mysql-MGR/" data-id="cl1oueuun00550ojxcwooy3zi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -577,7 +629,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cl1houu8l0089yfjxwt6wpqkp" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/web-django-22-验证码/" data-id="cl1oueuyj008g0ojxsbb3x5x7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -647,61 +699,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cl1houu67004uyfjxdycz50jz" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-ceph-01-运维那事" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/11/05/ceph-01-运维那事/" class="article-date">
-  <time datetime="2017-11-05T01:41:54.000Z" itemprop="datePublished">2017-11-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/05/ceph-01-运维那事/">ceph-01-运维那事</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>待整理ceph运维笔记</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph osd set noout</span><br><span class="line">ceph osd unset noout</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd create wxq --size 1</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(ceph-mon)[root@pike-vm /]# rbd info rbd/wxq</span><br><span class="line">rbd image &apos;wxq&apos;:</span><br><span class="line">	size 1024 kB in 1 objects</span><br><span class="line">	order 22 (4096 kB objects)</span><br><span class="line">	block_name_prefix: rbd_data.498102ae8944a</span><br><span class="line">	format: 2</span><br><span class="line">	features: layering, exclusive-lock, object-map, fast-diff, deep-flatten</span><br><span class="line">	flags:</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(ceph-mon)[root@pike-vm /]# ceph osd map rbd rbd_data.498102ae8944a</span><br><span class="line">osdmap e183 pool &apos;rbd&apos; (0) object &apos;rbd_data.498102ae8944a&apos; -&gt; pg 0.455bea7d (0.3d) -&gt; up ([1], p1) acting ([1], p1)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@lab8106 ]#ceph-objectstore-tool  \</span><br><span class="line"> --data-path /var/lib/ceph/osd/ceph-1/   \</span><br><span class="line"> --journal-path /var/lib/ceph/osd/ceph-1/journal  \</span><br><span class="line"> --pgid 0.3d    \</span><br><span class="line"> rbd_data.498102ae8944a </span><br><span class="line"> remove</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(ceph-mon)[root@pike-vm /]# ceph pg map 8.7d </span><br><span class="line">osdmap e183 pg 8.7d (8.7d) -&gt; up [2] acting [2]</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(ceph-mon)[root@pike-vm /]# ceph pg 8.7d query</span><br><span class="line">&#123;</span><br><span class="line">    &quot;state&quot;: &quot;active+clean&quot;,</span><br><span class="line">    &quot;snap_trimq&quot;: &quot;[]&quot;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph  pg dump</span><br><span class="line">ceph  osd dump</span><br><span class="line">ceph pg map 8.7d</span><br><span class="line">ceph pg 8.7d list_missing</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph pg 4.438 mark_unfound_lost revert</span><br><span class="line">ceph pg 4.438 mark_unfound_lost delete</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph pg repair 0.44</span><br><span class="line">ceph osd pool set rbd min_size 1</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cl1houu1r000ryfjxi84i60fq" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/11/08/mysql-Galera/" data-id="cl1oueuui004v0ojxvojr071r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -742,7 +740,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -753,6 +751,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/03/12/nginx-upsync/">nginx upsync</a>
+          </li>
         
           <li>
             <a href="/2022/02/15/log_elk_version_8.1.1/">ELF8.1填坑</a>
@@ -768,10 +770,6 @@
         
           <li>
             <a href="/2021/11/20/gitlab-install/">gitlab install</a>
-          </li>
-        
-          <li>
-            <a href="/2021/11/20/jenkins-pipeline/">jenkins pipeline</a>
           </li>
         
       </ul>

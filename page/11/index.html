@@ -62,6 +62,60 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ceph-01-运维那事" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/05/ceph-01-运维那事/" class="article-date">
+  <time datetime="2017-11-05T01:41:54.000Z" itemprop="datePublished">2017-11-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Ceph/">Ceph</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/05/ceph-01-运维那事/">ceph-01-运维那事</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>待整理ceph运维笔记</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph osd set noout</span><br><span class="line">ceph osd unset noout</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rbd create wxq --size 1</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(ceph-mon)[root@pike-vm /]# rbd info rbd/wxq</span><br><span class="line">rbd image &apos;wxq&apos;:</span><br><span class="line">	size 1024 kB in 1 objects</span><br><span class="line">	order 22 (4096 kB objects)</span><br><span class="line">	block_name_prefix: rbd_data.498102ae8944a</span><br><span class="line">	format: 2</span><br><span class="line">	features: layering, exclusive-lock, object-map, fast-diff, deep-flatten</span><br><span class="line">	flags:</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(ceph-mon)[root@pike-vm /]# ceph osd map rbd rbd_data.498102ae8944a</span><br><span class="line">osdmap e183 pool &apos;rbd&apos; (0) object &apos;rbd_data.498102ae8944a&apos; -&gt; pg 0.455bea7d (0.3d) -&gt; up ([1], p1) acting ([1], p1)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@lab8106 ]#ceph-objectstore-tool  \</span><br><span class="line"> --data-path /var/lib/ceph/osd/ceph-1/   \</span><br><span class="line"> --journal-path /var/lib/ceph/osd/ceph-1/journal  \</span><br><span class="line"> --pgid 0.3d    \</span><br><span class="line"> rbd_data.498102ae8944a </span><br><span class="line"> remove</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(ceph-mon)[root@pike-vm /]# ceph pg map 8.7d </span><br><span class="line">osdmap e183 pg 8.7d (8.7d) -&gt; up [2] acting [2]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(ceph-mon)[root@pike-vm /]# ceph pg 8.7d query</span><br><span class="line">&#123;</span><br><span class="line">    &quot;state&quot;: &quot;active+clean&quot;,</span><br><span class="line">    &quot;snap_trimq&quot;: &quot;[]&quot;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ceph  pg dump</span><br><span class="line">ceph  osd dump</span><br><span class="line">ceph pg map 8.7d</span><br><span class="line">ceph pg 8.7d list_missing</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph pg 4.438 mark_unfound_lost revert</span><br><span class="line">ceph pg 4.438 mark_unfound_lost delete</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph pg repair 0.44</span><br><span class="line">ceph osd pool set rbd min_size 1</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.digmyth.com/2017/11/05/ceph-01-运维那事/" data-id="cl1oueuoh000u0ojxd8jnu5ja" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-proxy-01-代理" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/10/31/proxy-01-代理/" class="article-date">
@@ -97,7 +151,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="cl1houu73005xyfjxh49mut7g" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/proxy-01-代理/" data-id="cl1oueuv4005y0ojxpbh2h276" class="article-share-link">Share</a>
       
       
     </footer>
@@ -146,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="cl1houu56003yyfjxxe8x3uh9" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/31/linux-shellinabox/" data-id="cl1oueutx003y0ojxcwj3ufgh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cl1houu8j0085yfjxvg8xi327" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/09/web-django-19-auth认证系统/" data-id="cl1oueuy400880ojxwlh4yrwh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -267,7 +321,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cl1houu8h0083yfjxf5057tfe" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/10/08/web-django-19-Cookies-Session/" data-id="cl1oueuy000860ojx1f7rzb3s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -329,7 +383,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cl1houu8y008pyfjxujbs42a6" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/15/web-django-orm(三)/" data-id="cl1oueuz1008q0ojxdaezvecr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -393,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cl1houu1v000yyfjxdnewrrwb" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/09/05/ceph-luminous安装/" data-id="cl1oueuop000y0ojx7tud1s76" class="article-share-link">Share</a>
       
       
     </footer>
@@ -464,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cl1houu30001zyfjxc74o2kbi" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/08/kolla-on-redhat7.2/" data-id="cl1oueuqz00230ojxwj97j9yb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -527,7 +581,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cl1houu1w000zyfjxem2rb9dm" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/08/05/cephfs-manila/" data-id="cl1oueuot00110ojx9jj05336" class="article-share-link">Share</a>
       
       
     </footer>
@@ -597,61 +651,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cl1houu8f007zyfjxddkwmy9d" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-linux-disk" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/07/15/linux-disk/" class="article-date">
-  <time datetime="2017-07-15T01:42:54.000Z" itemprop="datePublished">2017-07-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/15/linux-disk/">linux磁盘知识</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Ubuntu系统分区信息查看：<code>fdisk /dev/vda</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/vda: 60 GiB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x630fdccb</span><br><span class="line"></span><br><span class="line">Device     Boot   Start       End   Sectors  Size Id Type</span><br><span class="line">/dev/vda1  *       2048   1953791   1951744  953M 83 Linux</span><br><span class="line">/dev/vda2       1953792 125829119 123875328 59.1G 83 Linux</span><br></pre></td></tr></table></figure></p>
-<p>Sart、End、Sectors单位都是扇区， 1扇区=512bytes，那么2扇区就是1KB 通常称为一个block块，那么就有了<code>2sectors=1KB=1 block</code>,可以通过<code>blockdev --getsz /dev/vda</code>得到整块盘扇区数<br><code>像上面1953791-2048+1=1951744</code>扇,953M=1951744/2/1024KB</p>
-<p>CentOS差别可能就是 Blocks数显示，上面说了1Block=1KB<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000afe6d</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/vda1   *        2048     4196351     2097152   83  Linux</span><br><span class="line">/dev/vda2         4196352   125829119    60816384   83  Linux</span><br></pre></td></tr></table></figure></p>
-<p>我来验证一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4196351-2048+1得到扇区数，(4196351-2048+1)/2=2097152刚好等于Blocks数，也就是2097152KB=2048MB=2GB</span><br></pre></td></tr></table></figure></p>
-<p>我们再来学习下dd命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bs参数代表逻辑块大小，默认单位字节bytes，bs=512 也就是512bytes,这个512刚好等于</span><br><span class="line">count参数代表逻辑块的个数或扇区数，那么处理的存储大小就是bs*count</span><br><span class="line">skip 表示跳过if 设备的扇区数开始读数据,单位就是扇区，skip=200代表200个扇区，也就是100KB</span><br><span class="line">seek表示跳过of设备的扇区数开始写数据,单位就是扇区，seek=400代表400个扇区，也就是200KB</span><br></pre></td></tr></table></figure></p>
-<p>那么学了这些有什么用呢？<br>一个裸盘有硬件raid卡信息是不能正常被格式化的，这个raid信息会存在硬盘的最后63个扇区的地方，我们可以用dd复盖掉<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">snumber=$(($(blockdev --getsz /dev/sda)-63))</span><br><span class="line">dd if=/dev/zero of=/dev/sda bs=512 count=63 seek=$snumber</span><br></pre></td></tr></table></figure></p>
-<p>总结：</p>
-<ul>
-<li>一个扇区512bytes , 1Block=1KB=2扇区</li>
-<li>dd参数的skip针对if设备，seek针对of设备（跳过多少扇区再处理）</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.digmyth.com/2017/07/15/linux-disk/" data-id="cl1houu440035yfjxmw21fcfc" class="article-share-link">Share</a>
+      <a data-url="http://www.digmyth.com/2017/07/20/web-django-16-Form/" data-id="cl1oueuxt00820ojx1m2o2noa" class="article-share-link">Share</a>
       
       
     </footer>
@@ -692,7 +692,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li></ul>
     </div>
   </div>
 
@@ -703,6 +703,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/03/12/nginx-upsync/">nginx upsync</a>
+          </li>
         
           <li>
             <a href="/2022/02/15/log_elk_version_8.1.1/">ELF8.1填坑</a>
@@ -718,10 +722,6 @@
         
           <li>
             <a href="/2021/11/20/gitlab-install/">gitlab install</a>
-          </li>
-        
-          <li>
-            <a href="/2021/11/20/jenkins-pipeline/">jenkins pipeline</a>
           </li>
         
       </ul>
